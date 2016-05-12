@@ -7,6 +7,8 @@ In your working area, first set up the CMSSW release:
 cmsrel CMSSW_8_0_4
 cd CMSSW_8_0_4/src/
 cmsenv
+mkdir Analysis
+cd Analysis
 ```
 then, clone the git repository:
 ```bash
