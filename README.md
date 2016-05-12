@@ -7,14 +7,12 @@ In your working area, first set up the CMSSW release:
 cmsrel CMSSW_8_0_4
 cd CMSSW_8_0_4/src/
 cmsenv
-mkdir Analysis
-cd Analysis
 ```
 then, clone the git repository:
 ```bash
 git clone https://github.com/CMS-PD/ALPHA
 ```
-my knowledge of git ends here.
+my knowledge of git ends here, but more will be added in the future!
 
 ## Run instructions
 Compile the code:
