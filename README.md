@@ -1,2 +1,2 @@
 # ALPHA
-A Light Post Heppy Analyzer
+A Light Post-Heppy Analyzer
