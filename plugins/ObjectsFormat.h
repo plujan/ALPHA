@@ -20,6 +20,7 @@ class ObjectsFormat {
         static void FillMuonType(LeptonType&, const pat::Muon*, bool);
         static void FillJetType(JetType&, const pat::Jet*, bool);
         static void FillMEtType(MEtType&, const pat::MET*, bool);
+        static void FillMEtCorType(MEtCorType&, const pat::MET*, bool);
         static void ResetLeptonType(LeptonType&);
         static void ResetJetType(JetType&);
         static std::string ListLeptonType();

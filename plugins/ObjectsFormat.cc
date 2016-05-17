@@ -196,6 +196,19 @@ void ObjectsFormat::FillMEtType(MEtType& I, const pat::MET* R, bool isMC) {
 }
 
 
+void ObjectsFormat::FillMEtCorType(MEtCorType& I, const pat::MET* R, bool isMC) {
+    I.pt          = R->pt();
+    I.eta         = R->eta();
+    I.phi         = R->phi();
+    I.sign        = R->metSignificance();
+    I.ptScaleUp   = -1.;
+    I.ptScaleDown = -1.;
+    I.ptResUp     = -1.;
+    I.ptResDown   = -1.;
+}
+
+
+
 /*
 void ObjectsFormat::FillCandidateType(CandidateType& I, pat::CompositeCandidate* R, bool isMC) {
   if(!R) return;
