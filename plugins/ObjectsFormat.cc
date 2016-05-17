@@ -208,6 +208,35 @@ void ObjectsFormat::FillMEtCorType(MEtCorType& I, const pat::MET* R, bool isMC) 
 }
 
 
+void ObjectsFormat::FillMEtFullType(MEtFullType& I, const pat::MET* R, bool isMC) {
+    I.pt          = R->pt();
+    I.eta         = R->eta();
+    I.sign        = R->metSignificance();
+    I.phi         = R->phi();
+    I.ptRaw       = R->uncorPt();
+    I.phiRaw      = R->uncorPhi();
+    if(isMC && R->genMET()) {I.ptGen       = R->genMET()->pt();}
+    if(isMC && R->genMET()) {I.phiGen      = R->genMET()->phi();}
+    I.ptJERUp     = R->shiftedPt(pat::MET::METUncertainty::JetResUp);
+    I.ptJERDown   = R->shiftedPt(pat::MET::METUncertainty::JetResDown);
+    I.ptJESUp     = R->shiftedPt(pat::MET::METUncertainty::JetEnUp);
+    I.ptJESDown   = R->shiftedPt(pat::MET::METUncertainty::JetEnDown);
+    I.ptMUSUp     = R->shiftedPt(pat::MET::METUncertainty::MuonEnUp);
+    I.ptMUSDown   = R->shiftedPt(pat::MET::METUncertainty::MuonEnDown);
+    I.ptELSUp     = R->shiftedPt(pat::MET::METUncertainty::ElectronEnUp);
+    I.ptELSDown   = R->shiftedPt(pat::MET::METUncertainty::ElectronEnDown);
+    I.ptTAUUp     = R->shiftedPt(pat::MET::METUncertainty::TauEnUp);
+    I.ptTAUDown   = R->shiftedPt(pat::MET::METUncertainty::TauEnDown);
+    I.ptUNCUp     = R->shiftedPt(pat::MET::METUncertainty::UnclusteredEnUp);
+    I.ptUNCDown   = R->shiftedPt(pat::MET::METUncertainty::UnclusteredEnDown);
+    I.ptPHOUp     = R->shiftedPt(pat::MET::METUncertainty::PhotonEnUp);
+    I.ptPHODown   = R->shiftedPt(pat::MET::METUncertainty::PhotonEnDown);
+    I.phf         = R->NeutralEMFraction();
+    I.nhf         = R->NeutralHadEtFraction();
+    I.elf         = R->ChargedEMEtFraction();
+    I.chf         = R->ChargedHadEtFraction();
+    I.muf         = R->MuonEtFraction();
+}
 
 /*
 void ObjectsFormat::FillCandidateType(CandidateType& I, pat::CompositeCandidate* R, bool isMC) {
