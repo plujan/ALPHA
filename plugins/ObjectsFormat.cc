@@ -188,6 +188,13 @@ void ObjectsFormat::ResetJetType(JetType& I) {
 std::string ObjectsFormat::ListJetType() {return "pt/F:eta/F:phi/F:mass/F:energy/F:ptRaw/F:ptUnc/F:dPhi_met/F:dPhi_jet1/F:puId/F:CSV/F:CSVR/F:chf/F:nhf/F:phf/F:elf/F:muf/F:chm/I:npr/I:flavour/I:mother/I:isLoose/O:isMedium/O:isTight/O:isCSVL/O:isCSVM/O:isCSVT/O:isMatched/O";}
 
 
+void ObjectsFormat::FillMEtType(MEtType& I, const pat::MET* R, bool isMC) {
+    I.pt          = R->pt();
+    I.eta         = R->eta();
+    I.phi         = R->phi();
+    I.sign        = R->metSignificance();
+}
+
 
 /*
 void ObjectsFormat::FillCandidateType(CandidateType& I, pat::CompositeCandidate* R, bool isMC) {
