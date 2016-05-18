@@ -195,6 +195,13 @@ void ObjectsFormat::FillMEtType(MEtType& I, const pat::MET* R, bool isMC) {
     I.sign        = R->metSignificance();
 }
 
+void ObjectsFormat::ResetMEtType(MEtType& I) {
+    I.pt          = -1.;
+    I.eta         = -9.;
+    I.phi         = -9.;
+    I.sign        = -1.;
+}
+
 
 void ObjectsFormat::FillMEtCorType(MEtCorType& I, const pat::MET* R, bool isMC) {
     I.pt          = R->pt();
@@ -206,6 +213,8 @@ void ObjectsFormat::FillMEtCorType(MEtCorType& I, const pat::MET* R, bool isMC) 
     I.ptResUp     = -1.;
     I.ptResDown   = -1.;
 }
+
+
 
 
 void ObjectsFormat::FillMEtFullType(MEtFullType& I, const pat::MET* R, bool isMC) {
