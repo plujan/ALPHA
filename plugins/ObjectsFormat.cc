@@ -1,6 +1,9 @@
 
 #include "ObjectsFormat.h"
 
+//*******************//
+//  Leptons (e+mu)   //
+//*******************//
 
 void ObjectsFormat::FillElectronType(LeptonType& I, const pat::Electron* R, bool isMC) {
     if(!R) return;
@@ -83,6 +86,9 @@ void ObjectsFormat::ResetLeptonType(LeptonType& I) {
 
 std::string ObjectsFormat::ListLeptonType() {return "pt/F:eta/F:phi/F:mass/F:energy/F:charge/I:pdgId/I:pfIso03/F:pfIso04/F:trkIso/F:miniIso/F:dxy/F:dz/F:dPhi_met/F:isElectron/O:isMuon/O:isVeto/O:isLoose/O:isMedium/O:isTight/O:isHighpt/O:isMatched/O";}
 
+//*******************//
+//        Jets       //
+//*******************//
 
 void ObjectsFormat::FillJetType(JetType& I, const pat::Jet* R, bool isMC) {
     if(!R) return;
@@ -188,11 +194,39 @@ void ObjectsFormat::ResetJetType(JetType& I) {
 std::string ObjectsFormat::ListJetType() {return "pt/F:eta/F:phi/F:mass/F:energy/F:ptRaw/F:ptUnc/F:dPhi_met/F:dPhi_jet1/F:puId/F:CSV/F:CSVR/F:chf/F:nhf/F:phf/F:elf/F:muf/F:chm/I:npr/I:flavour/I:mother/I:isLoose/O:isMedium/O:isTight/O:isCSVL/O:isCSVM/O:isCSVT/O:isMatched/O";}
 
 
+
+//*******************//
+//  Missing energy   //
+//*******************//
+
+//void ObjectsFormat::FillMEtType(MEtType& I, const pat::MET* R, bool isMC) {
+//    I.pt          = R->pt();
+//    I.eta         = R->eta();
+//    I.phi         = R->phi();
+//    I.sign        = R->metSignificance();
+//}
+
+//void ObjectsFormat::ResetMEtType(MEtType& I) {
+//    I.pt          = -1.;
+//    I.eta         = -9.;
+//    I.phi         = -9.;
+//    I.sign        = -1.;
+//}
+
+//std::string ObjectsFormat::ListMEtType() {return "pt/F:eta/F:phi/F:sign/F";}
+
+
 void ObjectsFormat::FillMEtType(MEtType& I, const pat::MET* R, bool isMC) {
     I.pt          = R->pt();
     I.eta         = R->eta();
     I.phi         = R->phi();
     I.sign        = R->metSignificance();
+    if(isMC && R->genMET()) {I.ptGen       = R->genMET()->pt();}
+    if(isMC && R->genMET()) {I.phiGen      = R->genMET()->phi();}
+    I.ptScaleUp   = -1.;
+    I.ptScaleDown = -1.;
+    I.ptResUp     = -1.;
+    I.ptResDown   = -1.;
 }
 
 void ObjectsFormat::ResetMEtType(MEtType& I) {
@@ -200,34 +234,15 @@ void ObjectsFormat::ResetMEtType(MEtType& I) {
     I.eta         = -9.;
     I.phi         = -9.;
     I.sign        = -1.;
-}
-
-std::string ObjectsFormat::ListMEtType() {return "pt/F:eta/F:phi/F:sign/F";}
-
-
-void ObjectsFormat::FillMEtCorType(MEtCorType& I, const pat::MET* R, bool isMC) {
-    I.pt          = R->pt();
-    I.eta         = R->eta();
-    I.phi         = R->phi();
-    I.sign        = R->metSignificance();
+    I.ptGen       = -1.;
+    I.phiGen      = -9.;
     I.ptScaleUp   = -1.;
     I.ptScaleDown = -1.;
     I.ptResUp     = -1.;
     I.ptResDown   = -1.;
 }
 
-void ObjectsFormat::ResetMEtCorType(MEtCorType& I) {
-    I.pt          = -1.;
-    I.eta         = -9.;
-    I.phi         = -9.;
-    I.sign        = -1.;
-    I.ptScaleUp   = -1.;
-    I.ptScaleDown = -1.;
-    I.ptResUp     = -1.;
-    I.ptResDown   = -1.;
-}
-
-std::string ObjectsFormat::ListMEtCorType() {return "pt/F:eta/F:phi/F:sign/F:ptScaleUp/F:ptScaleDown/F:ptResUp/F:ptResDown/F";}
+std::string ObjectsFormat::ListMEtType() {return "pt/F:eta/F:phi/F:sign/F:ptGen/F:phiGen/F:ptScaleUp/F:ptScaleDown/F:ptResUp/F:ptResDown/F";}
 
 
 
