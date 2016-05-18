@@ -154,6 +154,7 @@ class Ntuple : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
         std::vector<LeptonType> Muons;
         std::vector<LeptonType> Leptons;
         std::vector<JetType> Jets;
+        MEtType MEt;
 };
 
 #endif
