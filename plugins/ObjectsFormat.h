@@ -29,6 +29,9 @@ class ObjectsFormat {
         static void ResetMEtFullType(MEtFullType&);
         static std::string ListLeptonType();
         static std::string ListJetType();
+        static std::string ListMEtType();
+        static std::string ListMEtCorType();
+        static std::string ListMEtFullType();
         
     private:
     
