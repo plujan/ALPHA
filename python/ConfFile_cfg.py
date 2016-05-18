@@ -60,6 +60,8 @@ process.ntuple = cms.EDAnalyzer('Ntuple',
         jet1btag = cms.int32(0), # 0: no selection, 1: loose, 2: medium, 3: tight
         jet2btag = cms.int32(0),
         met = cms.InputTag("slimmedMETs"),
+        metRecoilMC = cms.string('%s/src/ALPHA/data/recoilfit_gjetsMC_Zu1_pf_v5.root' % os.environ['CMSSW_BASE']),
+        metRecoilData = cms.string('%s/src/ALPHA/data/recoilfit_gjetsData_Zu1_pf_v5.root' % os.environ['CMSSW_BASE']),
     ),
     writeNElectrons = cms.int32(0),
     writeNMuons = cms.int32(0),
