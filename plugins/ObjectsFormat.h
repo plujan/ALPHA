@@ -25,7 +25,8 @@ class ObjectsFormat {
         static void ResetLeptonType(LeptonType&);
         static void ResetJetType(JetType&);
         static void ResetMEtType(MEtType&);
-        static void ResetMEtCorType(MEtType&);
+        static void ResetMEtCorType(MEtCorType&);
+        static void ResetMEtFullType(MEtFullType&);
         static std::string ListLeptonType();
         static std::string ListJetType();
         

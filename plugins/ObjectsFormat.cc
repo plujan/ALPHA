@@ -229,8 +229,8 @@ void ObjectsFormat::ResetMEtCorType(MEtCorType& I) {
 void ObjectsFormat::FillMEtFullType(MEtFullType& I, const pat::MET* R, bool isMC) {
     I.pt          = R->pt();
     I.eta         = R->eta();
-    I.sign        = R->metSignificance();
     I.phi         = R->phi();
+    I.sign        = R->metSignificance();
     I.ptRaw       = R->uncorPt();
     I.phiRaw      = R->uncorPhi();
     if(isMC && R->genMET()) {I.ptGen       = R->genMET()->pt();}
@@ -254,6 +254,36 @@ void ObjectsFormat::FillMEtFullType(MEtFullType& I, const pat::MET* R, bool isMC
     I.elf         = R->ChargedEMEtFraction();
     I.chf         = R->ChargedHadEtFraction();
     I.muf         = R->MuonEtFraction();
+}
+
+void ObjectsFormat::ResetMEtFullType(MEtFullType& I) {
+    I.pt          = -1.;
+    I.eta         = -9.;
+    I.phi         = -9.;
+    I.sign        = -1.;
+    I.ptRaw       = -1.;
+    I.phiRaw      = -9.;
+    I.ptGen       = -1.;
+    I.phiGen      = -9.;
+    I.ptJERUp     = -1.;
+    I.ptJERDown   = -1.;
+    I.ptJESUp     = -1.;
+    I.ptJESDown   = -1.;
+    I.ptMUSUp     = -1.;
+    I.ptMUSDown   = -1.;
+    I.ptELSUp     = -1.;
+    I.ptELSDown   = -1.;
+    I.ptTAUUp     = -1.;
+    I.ptTAUDown   = -1.;
+    I.ptUNCUp     = -1.;
+    I.ptUNCDown   = -1.;
+    I.ptPHOUp     = -1.;
+    I.ptPHODown   = -1.;
+    I.phf         = -1.;
+    I.nhf         = -1.;
+    I.elf         = -1.;
+    I.chf         = -1.;
+    I.muf         = -1.;
 }
 
 /*
