@@ -21,6 +21,8 @@
 #include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
 #include "CondFormats/JetMETObjects/interface/JetCorrectionUncertainty.h"
 
+#include "RecoilCorrector.h" // From: https://github.com/cms-met/MetTools/tree/master/RecoilCorrections
+
 #include "TFile.h"
 #include "TH2.h"
 
@@ -46,13 +48,17 @@ class JetAnalyzer {
         int JetId;
         float Jet1Pt, Jet2Pt;
         std::string BTag;
+        int Jet1BTag, Jet2BTag;
+        bool UseRecoil;
         std::string RecoilMCFile;
         std::string RecoilDataFile;
-        int Jet1BTag, Jet2BTag;
+        
         bool isJESFile;
         
         TFile* JESFile;
         TH2F* hist;
+        
+        RecoilCorrector* recoilCorr;
 };
 
 #endif

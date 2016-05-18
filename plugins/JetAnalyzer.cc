@@ -1,4 +1,7 @@
+//#include "RecoilCorrector.hh" // From: https://github.com/cms-met/MetTools/tree/master/RecoilCorrections
+
 #include "JetAnalyzer.h"
+
 
 JetAnalyzer::JetAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl):
     JetToken(CColl.consumes<std::vector<pat::Jet> >(PSet.getParameter<edm::InputTag>("jets"))),
@@ -9,6 +12,7 @@ JetAnalyzer::JetAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl
     BTag(PSet.getParameter<std::string>("btag")),
     Jet1BTag(PSet.getParameter<int>("jet1btag")),
     Jet2BTag(PSet.getParameter<int>("jet2btag")),
+    UseRecoil(PSet.getParameter<bool>("metRecoil")),
     RecoilMCFile(PSet.getParameter<std::string>("metRecoilMC")),
     RecoilDataFile(PSet.getParameter<std::string>("metRecoilData"))
 {
@@ -22,14 +26,26 @@ JetAnalyzer::JetAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl
       isJESFile=true;
     }
     
-    std::cout << " - JetAnalyzer initialized:" << std::endl;
-    std::cout << "Id  :\t" << JetId << std::endl;
-    std::cout << "pT  :\t" << Jet1Pt << "\t" << Jet2Pt << std::endl;
-    std::cout << "bTag:\t" << Jet1BTag << "\t" << Jet2BTag << std::endl;
+    std::cout << "orcochen" << std::endl;
+    recoilCorr = new RecoilCorrector(RecoilMCFile, "fcnPF");
+    std::cout << "orcochen" << std::endl;
+    recoilCorr->addMCFile(RecoilMCFile);std::cout << "orcochen" << std::endl;
+    recoilCorr->addDataFile(RecoilDataFile);std::cout << "orcochen" << std::endl;
+    
+    
+    std::cout << " - JetAnalyzer initialization -" << std::endl;
+    std::cout << "  jet Id            :\t" << JetId << std::endl;
+    std::cout << "  jet pT [1, 2]     :\t" << Jet1Pt << "\t" << Jet2Pt << std::endl;
+    std::cout << "  b-tagging algo    :\t" << BTag << std::endl;
+    std::cout << "  b-tag cut [1, 2]  :\t" << Jet1BTag << "\t" << Jet2BTag << std::endl;
+    std::cout << "  apply recoil corr :\t" << (UseRecoil ? "YES" : "NO") << std::endl;
+    std::cout << "  recoil file MC    :\t" << RecoilMCFile << std::endl;
+    std::cout << "  recoil file Data  :\t" << RecoilDataFile << std::endl;
 }
 
 JetAnalyzer::~JetAnalyzer() {
     JESFile->Close();
+    delete recoilCorr;
 }
 
 
