@@ -214,7 +214,16 @@ void ObjectsFormat::FillMEtCorType(MEtCorType& I, const pat::MET* R, bool isMC) 
     I.ptResDown   = -1.;
 }
 
-
+void ObjectsFormat::ResetMEtCorType(MEtCorType& I) {
+    I.pt          = -1.;
+    I.eta         = -9.;
+    I.phi         = -9.;
+    I.sign        = -1.;
+    I.ptScaleUp   = -1.;
+    I.ptScaleDown = -1.;
+    I.ptResUp     = -1.;
+    I.ptResDown   = -1.;
+}
 
 
 void ObjectsFormat::FillMEtFullType(MEtFullType& I, const pat::MET* R, bool isMC) {

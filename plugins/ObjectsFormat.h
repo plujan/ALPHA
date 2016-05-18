@@ -24,7 +24,8 @@ class ObjectsFormat {
         static void FillMEtFullType(MEtFullType&, const pat::MET*, bool);
         static void ResetLeptonType(LeptonType&);
         static void ResetJetType(JetType&);
-        static void resetMEtType(MEtType&);
+        static void ResetMEtType(MEtType&);
+        static void ResetMEtCorType(MEtType&);
         static std::string ListLeptonType();
         static std::string ListJetType();
         
