@@ -1,4 +1,7 @@
+//#include "RecoilCorrector.hh" // From: https://github.com/cms-met/MetTools/tree/master/RecoilCorrections
+
 #include "JetAnalyzer.h"
+
 
 JetAnalyzer::JetAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl):
     JetToken(CColl.consumes<std::vector<pat::Jet> >(PSet.getParameter<edm::InputTag>("jets"))),
@@ -8,7 +11,10 @@ JetAnalyzer::JetAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl
     Jet2Pt(PSet.getParameter<double>("jet2pt")),
     BTag(PSet.getParameter<std::string>("btag")),
     Jet1BTag(PSet.getParameter<int>("jet1btag")),
-    Jet2BTag(PSet.getParameter<int>("jet2btag"))
+    Jet2BTag(PSet.getParameter<int>("jet2btag")),
+    UseRecoil(PSet.getParameter<bool>("metRecoil")),
+    RecoilMCFile(PSet.getParameter<std::string>("metRecoilMC")),
+    RecoilDataFile(PSet.getParameter<std::string>("metRecoilData"))
 {
   
     isJESFile=false;
@@ -20,14 +26,26 @@ JetAnalyzer::JetAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl
       isJESFile=true;
     }
     
-    std::cout << " - JetAnalyzer initialized:" << std::endl;
-    std::cout << "Id  :\t" << JetId << std::endl;
-    std::cout << "pT  :\t" << Jet1Pt << "\t" << Jet2Pt << std::endl;
-    std::cout << "bTag:\t" << Jet1BTag << "\t" << Jet2BTag << std::endl;
+    // Recoil Corrector
+    recoilCorr = new RecoilCorrector(RecoilMCFile);
+    recoilCorr->addDataFile(RecoilDataFile);
+    recoilCorr->addMCFile(RecoilMCFile);
+    
+    
+    
+    std::cout << " --- JetAnalyzer initialization ---" << std::endl;
+    std::cout << "  jet Id            :\t" << JetId << std::endl;
+    std::cout << "  jet pT [1, 2]     :\t" << Jet1Pt << "\t" << Jet2Pt << std::endl;
+    std::cout << "  b-tagging algo    :\t" << BTag << std::endl;
+    std::cout << "  b-tag cut [1, 2]  :\t" << Jet1BTag << "\t" << Jet2BTag << std::endl;
+    std::cout << "  apply recoil corr :\t" << (UseRecoil ? "YES" : "NO") << std::endl;
+    std::cout << "  recoil file MC    :\t" << RecoilMCFile << std::endl;
+    std::cout << "  recoil file Data  :\t" << RecoilDataFile << std::endl;
 }
 
 JetAnalyzer::~JetAnalyzer() {
     JESFile->Close();
+    delete recoilCorr;
 }
 
 
@@ -86,6 +104,34 @@ pat::MET JetAnalyzer::FillMetVector(const edm::Event& iEvent) {
     return MEt;
 }
 
+void JetAnalyzer::ApplyRecoilCorrections(pat::MET& MET, const reco::Candidate::LorentzVector* GenV, const reco::Candidate::LorentzVector* RecoV, int nJets) {
+    double MetPt(0.), MetPhi(0.), GenPt(0.), GenPhi(0.), LepPt(0.), LepPhi(0.), LepPx(0.), LepPy(0.);
+    double RecoilX(0.), RecoilY(0.), Upara(0.), Uperp(0.);
+    
+    if(GenV) {
+        GenPt = GenV->pt();
+        GenPhi = GenV->phi();
+    }
+    else {
+        throw cms::Exception("Null pointer", "GenV boson is null. No Recoil Correction can be derived");
+        return;
+    }
+    
+    if(RecoV) {
+        LepPt = RecoV->pt();
+        LepPhi = RecoV->phi();
+        LepPx = RecoV->px();
+        LepPy = RecoV->py();
+        RecoilX = - MET.px() - LepPx;
+        RecoilY = - MET.py() - LepPy;
+        Upara = (RecoilX*LepPx + RecoilY*LepPy) / LepPt;
+        Uperp = (RecoilX*LepPy - RecoilY*LepPx) / LepPt;
+    }
+        
+    std::cout << "===============================================================\n\n\n\n" << GenPt << "    " << GenPhi << "   " << LepPt << "    " << LepPhi << "    " << Upara << "    " << Uperp << "\n\n===============================================================\n\n\n\n" << std::endl;
+    
+    recoilCorr->CorrectType2(MetPt, MetPhi, GenPt, GenPhi, LepPt, LepPhi, Upara, Uperp, 0, 0, nJets);
+}
 
 float JetAnalyzer::GetScaleUncertainty(pat::Jet& jet) {
     if(!isJESFile) return 1.;
