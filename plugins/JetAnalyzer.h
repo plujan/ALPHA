@@ -33,6 +33,7 @@ class JetAnalyzer {
         ~JetAnalyzer();
         virtual std::vector<pat::Jet> FillJetVector(const edm::Event&);
         virtual pat::MET FillMetVector(const edm::Event&);
+        virtual void ApplyRecoilCorrections(pat::MET&, const reco::Candidate::LorentzVector*, const reco::Candidate::LorentzVector*, int);
         virtual float GetScaleUncertainty(pat::Jet&);
         virtual float GetResolutionRatio(float);
         virtual float GetResolutionErrorUp(float);

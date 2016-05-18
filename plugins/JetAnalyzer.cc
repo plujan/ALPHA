@@ -26,14 +26,14 @@ JetAnalyzer::JetAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl
       isJESFile=true;
     }
     
-    std::cout << "orcochen" << std::endl;
-    recoilCorr = new RecoilCorrector(RecoilMCFile, "fcnPF");
-    std::cout << "orcochen" << std::endl;
-    recoilCorr->addMCFile(RecoilMCFile);std::cout << "orcochen" << std::endl;
-    recoilCorr->addDataFile(RecoilDataFile);std::cout << "orcochen" << std::endl;
+    // Recoil Corrector
+    recoilCorr = new RecoilCorrector(RecoilMCFile);
+    recoilCorr->addDataFile(RecoilDataFile);
+    recoilCorr->addMCFile(RecoilMCFile);
     
     
-    std::cout << " - JetAnalyzer initialization -" << std::endl;
+    
+    std::cout << " --- JetAnalyzer initialization ---" << std::endl;
     std::cout << "  jet Id            :\t" << JetId << std::endl;
     std::cout << "  jet pT [1, 2]     :\t" << Jet1Pt << "\t" << Jet2Pt << std::endl;
     std::cout << "  b-tagging algo    :\t" << BTag << std::endl;
@@ -104,6 +104,34 @@ pat::MET JetAnalyzer::FillMetVector(const edm::Event& iEvent) {
     return MEt;
 }
 
+void JetAnalyzer::ApplyRecoilCorrections(pat::MET& MET, const reco::Candidate::LorentzVector* GenV, const reco::Candidate::LorentzVector* RecoV, int nJets) {
+    double MetPt(0.), MetPhi(0.), GenPt(0.), GenPhi(0.), LepPt(0.), LepPhi(0.), LepPx(0.), LepPy(0.);
+    double RecoilX(0.), RecoilY(0.), Upara(0.), Uperp(0.);
+    
+    if(GenV) {
+        GenPt = GenV->pt();
+        GenPhi = GenV->phi();
+    }
+    else {
+        throw cms::Exception("Null pointer", "GenV boson is null. No Recoil Correction can be derived");
+        return;
+    }
+    
+    if(RecoV) {
+        LepPt = RecoV->pt();
+        LepPhi = RecoV->phi();
+        LepPx = RecoV->px();
+        LepPy = RecoV->py();
+        RecoilX = - MET.px() - LepPx;
+        RecoilY = - MET.py() - LepPy;
+        Upara = (RecoilX*LepPx + RecoilY*LepPy) / LepPt;
+        Uperp = (RecoilX*LepPy - RecoilY*LepPx) / LepPt;
+    }
+        
+    std::cout << "===============================================================\n\n\n\n" << GenPt << "    " << GenPhi << "   " << LepPt << "    " << LepPhi << "    " << Upara << "    " << Uperp << "\n\n===============================================================\n\n\n\n" << std::endl;
+    
+    recoilCorr->CorrectType2(MetPt, MetPhi, GenPt, GenPhi, LepPt, LepPhi, Upara, Uperp, 0, 0, nJets);
+}
 
 float JetAnalyzer::GetScaleUncertainty(pat::Jet& jet) {
     if(!isJESFile) return 1.;
