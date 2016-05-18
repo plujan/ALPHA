@@ -19,10 +19,19 @@ class ObjectsFormat {
         static void FillElectronType(LeptonType&, const pat::Electron*, bool);
         static void FillMuonType(LeptonType&, const pat::Muon*, bool);
         static void FillJetType(JetType&, const pat::Jet*, bool);
+        static void FillMEtType(MEtType&, const pat::MET*, bool);
+//        static void FillMEtCorType(MEtCorType&, const pat::MET*, bool);
+        static void FillMEtFullType(MEtFullType&, const pat::MET*, bool);
         static void ResetLeptonType(LeptonType&);
         static void ResetJetType(JetType&);
+        static void ResetMEtType(MEtType&);
+//        static void ResetMEtCorType(MEtCorType&);
+        static void ResetMEtFullType(MEtFullType&);
         static std::string ListLeptonType();
         static std::string ListJetType();
+        static std::string ListMEtType();
+//        static std::string ListMEtCorType();
+        static std::string ListMEtFullType();
         
     private:
     

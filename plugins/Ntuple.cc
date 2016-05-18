@@ -93,6 +93,7 @@ void Ntuple::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     for(int i = 0; i < WriteNMuons; i++) ObjectsFormat::ResetLeptonType(Muons[i]);
     for(int i = 0; i < WriteNLeptons; i++) ObjectsFormat::ResetLeptonType(Leptons[i]);
     for(int i = 0; i < WriteNJets; i++) ObjectsFormat::ResetJetType(Jets[i]);
+    ObjectsFormat::ResetMEtType(MEt);
     
     // Electrons
     std::vector<pat::Electron> ElecVect=theElectronAnalyzer->FillElectronVector(iEvent);
@@ -101,7 +102,7 @@ void Ntuple::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     // Jets
     std::vector<pat::Jet> JetsVect=theJetAnalyzer->FillJetVector(iEvent);
     // Missing Energy
-    pat::MET MEt = theJetAnalyzer->FillMetVector(iEvent);
+    pat::MET MET = theJetAnalyzer->FillMetVector(iEvent);
     
     // PU weight
     PUWeight=theGenAnalyzer->GetPUWeight(iEvent);
@@ -123,15 +124,21 @@ void Ntuple::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         for(unsigned int i = 0; i < MuonVect.size(); i++) std::cout << "  muon     [" << i << "]\tpt: " << MuonVect[i].pt() << "\teta: " << MuonVect[i].eta() << "\tphi: " << MuonVect[i].phi() << std::endl;
         std::cout << "number of AK4 jets:  " << JetsVect.size() << std::endl;
         for(unsigned int i = 0; i < JetsVect.size(); i++) std::cout << "  AK4 jet  [" << i << "]\tpt: " << JetsVect[i].pt() << "\teta: " << JetsVect[i].eta() << "\tphi: " << JetsVect[i].phi() << std::endl;
-        
-        if(ElecVect.size() > MuonVect.size()) {
-            for(unsigned int i = 0; i < Leptons.size() && i < ElecVect.size(); i++) ObjectsFormat::FillElectronType(Leptons[i], &ElecVect[i], isMC);
-        }
-        else {
-            for(unsigned int i = 0; i < Leptons.size() && i < MuonVect.size(); i++) ObjectsFormat::FillMuonType(Leptons[i], &MuonVect[i], isMC);
-        }
-        for(unsigned int i = 0; i < Jets.size() && i < JetsVect.size(); i++) ObjectsFormat::FillJetType(Jets[i], &JetsVect[i], isMC);
+        std::cout << "Missing energy:      " << MET.pt() << std::endl;
     }
+    
+    // ---------- Do analysis selections ----------
+    // ...
+    
+    // ---------- Fill objects ----------
+    if(ElecVect.size() > MuonVect.size()) {
+        for(unsigned int i = 0; i < Leptons.size() && i < ElecVect.size(); i++) ObjectsFormat::FillElectronType(Leptons[i], &ElecVect[i], isMC);
+    }
+    else {
+        for(unsigned int i = 0; i < Leptons.size() && i < MuonVect.size(); i++) ObjectsFormat::FillMuonType(Leptons[i], &MuonVect[i], isMC);
+    }
+    for(unsigned int i = 0; i < Jets.size() && i < JetsVect.size(); i++) ObjectsFormat::FillJetType(Jets[i], &JetsVect[i], isMC);
+    ObjectsFormat::FillMEtType(MEt, &MET, isMC);
     
     // ---------- Z TO LEPTONS ----------
 //    bool isZtoMM(false), isZtoEE(false);
@@ -259,6 +266,7 @@ void Ntuple::beginJob() {
     for(int i = 0; i < WriteNMuons; i++) tree->Branch(("Muon"+std::to_string(i+1)).c_str(), &(Muons[i]), ObjectsFormat::ListLeptonType().c_str());
     for(int i = 0; i < WriteNLeptons; i++) tree->Branch(("Lepton"+std::to_string(i+1)).c_str(), &(Leptons[i]), ObjectsFormat::ListLeptonType().c_str());
     for(int i = 0; i < WriteNJets; i++) tree->Branch(("Jet"+std::to_string(i+1)).c_str(), &(Jets[i]), ObjectsFormat::ListJetType().c_str());
+    tree->Branch("MEt", &MEt, ObjectsFormat::ListMEtType().c_str());
     
 }
 
