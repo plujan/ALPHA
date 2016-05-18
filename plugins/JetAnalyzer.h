@@ -46,6 +46,8 @@ class JetAnalyzer {
         int JetId;
         float Jet1Pt, Jet2Pt;
         std::string BTag;
+        std::string RecoilMCFile;
+        std::string RecoilDataFile;
         int Jet1BTag, Jet2BTag;
         bool isJESFile;
         

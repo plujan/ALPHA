@@ -8,7 +8,9 @@ JetAnalyzer::JetAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl
     Jet2Pt(PSet.getParameter<double>("jet2pt")),
     BTag(PSet.getParameter<std::string>("btag")),
     Jet1BTag(PSet.getParameter<int>("jet1btag")),
-    Jet2BTag(PSet.getParameter<int>("jet2btag"))
+    Jet2BTag(PSet.getParameter<int>("jet2btag")),
+    RecoilMCFile(PSet.getParameter<std::string>("metRecoilMC")),
+    RecoilDataFile(PSet.getParameter<std::string>("metRecoilData"))
 {
   
     isJESFile=false;
