@@ -316,22 +316,14 @@ void ObjectsFormat::ResetMEtFullType(MEtFullType& I) {
 
 std::string ObjectsFormat::ListMEtFullType() {return "pt/F:eta/F:phi/F:sign/F:ptRaw/F:phiRaw/F:ptGen/F:phiGen/F:ptJERUp/F:ptJERDown/F:ptJESUp/F:ptJESDown/F:ptMUSUp/F:ptMUSDown/F:ptELSUp/F:ptELSDown/F:ptTAUUp/F:ptTAUDown/F:ptUNCUp/F:ptUNCDown/F:ptPHOUp/F:ptPHODown/F:phf/F:nhf/F:elf/F:chf/F:muf/F";}
 
-/*
+
 void ObjectsFormat::FillCandidateType(CandidateType& I, pat::CompositeCandidate* R, bool isMC) {
   if(!R) return;
   I.pt          = R->pt();
   I.eta         = R->eta();
   I.phi         = R->phi();
-  I.et          = R->et();
-  I.p           = R->p();
-  I.energy      = R->energy();
   I.mass        = R->mass();
-  if(R->genParticle()) {
-    I.ptGen       = R->genParticle()->pt();
-    I.etaGen      = R->genParticle()->eta();
-    I.phiGen      = R->genParticle()->phi();
-    I.massGen     = R->genParticle()->mass();
-  }
+  I.tmass       = sqrt( 2.*R->daughter(0)->pt()*R->daughter(1)->pt()*(1.-cos(deltaPhi(R->daughter(0)->phi(), R->daughter(1)->phi())) ) );
   I.dR          = deltaR(*R->daughter(0), *R->daughter(1));
   I.dEta        = fabs( R->daughter(0)->eta() - R->daughter(1)->eta() );
   I.dPhi        = fabs( deltaPhi(R->daughter(0)->phi(), R->daughter(1)->phi()) );
@@ -341,7 +333,7 @@ void ObjectsFormat::FillCandidateType(CandidateType& I, pat::CompositeCandidate*
 //  I.centrality  = (R->daughter(0)->pt()+R->daughter(0)->pt()) / (R->daughter(0)->p()+R->daughter(0)->p());// /R->mass();
 //  I.charge      = R->charge();
 }
-
+/*
 void ObjectsFormat::FillCandidateType(CandidateType& I, const reco::Candidate::LorentzVector* V1, const reco::Candidate::LorentzVector* V2) {
   if(!V1 || !V2) return;
   reco::Candidate::LorentzVector V(*V1+*V2);

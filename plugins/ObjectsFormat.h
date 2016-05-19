@@ -22,6 +22,7 @@ class ObjectsFormat {
         static void FillMEtType(MEtType&, const pat::MET*, bool);
 //        static void FillMEtCorType(MEtCorType&, const pat::MET*, bool);
         static void FillMEtFullType(MEtFullType&, const pat::MET*, bool);
+        static void FillCandidateType(CandidateType&, pat::CompositeCandidate*, bool);
         static void ResetLeptonType(LeptonType&);
         static void ResetJetType(JetType&);
         static void ResetMEtType(MEtType&);
