@@ -1,3 +1,4 @@
+import os
 import FWCore.ParameterSet.Config as cms
 
 process = cms.Process("Demo")
@@ -5,7 +6,7 @@ process = cms.Process("Demo")
 process.load("FWCore.MessageService.MessageLogger_cfi")
 #process.MessageLogger.cerr.threshold = 'ERROR'
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
 
 # input
 process.source = cms.Source("PoolSource",
@@ -34,9 +35,14 @@ process.ntuple = cms.EDAnalyzer('Ntuple',
     muonSet = cms.PSet(
         muons = cms.InputTag("slimmedMuons"),
         vertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
-        muon1id = cms.int32(3), # 0: no selections, 1: loose, 2: soft, 3: tight
+        muonIdFileName = cms.string('%s/src/Analysis/ALPHA/data/MuonID_Z_RunCD_Reco74X_Dec1.root' % os.environ['CMSSW_BASE']),
+        muonIsoFileName = cms.string('%s/src/Analysis/ALPHA/data/MuonIso_Z_RunCD_Reco74X_Dec1.root' % os.environ['CMSSW_BASE']),
+        muonHighptFileName = cms.string('%s/src/Analysis/ALPHA/data/MuonHighPt_Z_RunCD_Reco74X_Dec17.root' % os.environ['CMSSW_BASE']),
+        muonTriggerFileName = cms.string('%s/src/Analysis/ALPHA/data/SingleMuonTrigger_Z_RunCD_Reco74X_Dec1.root' % os.environ['CMSSW_BASE']),
+        doubleMuonTriggerFileName = cms.string('%s/src/Analysis/ALPHA/data/MuHLTEfficiencies_Run_2012ABCD_53X_DR03-2.root' % os.environ['CMSSW_BASE']),#obsolete
+        muon1id = cms.int32(3), # 0: no selections, 1: loose, 2: medium, 3: tight, 4: soft, 5: high pt
         muon2id = cms.int32(3),
-        muon1iso = cms.int32(2), # 0: no selections, 1: loose, 2: tight
+        muon1iso = cms.int32(2), # 0: no selections, 1: loose (0.25), 2: tight (0.15) (pfIso in cone 0.4)
         muon2iso = cms.int32(2),
         muon1pt = cms.double(20.),
         muon2pt = cms.double(10.),
