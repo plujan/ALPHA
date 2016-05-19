@@ -333,6 +333,25 @@ void ObjectsFormat::FillCandidateType(CandidateType& I, pat::CompositeCandidate*
 //  I.centrality  = (R->daughter(0)->pt()+R->daughter(0)->pt()) / (R->daughter(0)->p()+R->daughter(0)->p());// /R->mass();
 //  I.charge      = R->charge();
 }
+
+void ObjectsFormat::ResetCandidateType(CandidateType& I) {
+  I.pt          = -1.;
+  I.eta         = -9.;
+  I.phi         = -9.;
+  I.mass        = -1.;
+  I.tmass       = -1.;
+  I.dR          = -1.;
+  I.dEta        = -1.;
+  I.dPhi        = -1.;
+  I.twist       = -1.;
+//  I.angle       = -1.;
+//  I.ptBalance   = -1.;
+//  I.centrality  = -1.;
+//  I.charge      = -1.;
+}
+
+std::string ObjectsFormat::ListCandidateType() {return "pt/F:eta/F:phi/F:mass/F:tmass/F:dR/F:dEta/F:dPhi/F:twist/F";}
+
 /*
 void ObjectsFormat::FillCandidateType(CandidateType& I, const reco::Candidate::LorentzVector* V1, const reco::Candidate::LorentzVector* V2) {
   if(!V1 || !V2) return;

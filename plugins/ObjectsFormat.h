@@ -28,11 +28,13 @@ class ObjectsFormat {
         static void ResetMEtType(MEtType&);
 //        static void ResetMEtCorType(MEtCorType&);
         static void ResetMEtFullType(MEtFullType&);
+        static void ResetCandidateType(CandidateType&);
         static std::string ListLeptonType();
         static std::string ListJetType();
         static std::string ListMEtType();
 //        static std::string ListMEtCorType();
         static std::string ListMEtFullType();
+        static std::string ListCandidateType();
         
     private:
     
