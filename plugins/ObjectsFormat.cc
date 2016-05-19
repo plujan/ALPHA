@@ -227,10 +227,10 @@ void ObjectsFormat::FillMEtType(MEtType& I, const pat::MET* R, bool isMC) {
     I.phiType1    = R->hasUserFloat("phiType1") ? R->userFloat("phiType1") : -9.;
     if(isMC && R->genMET()) {I.ptGen       = R->genMET()->pt();}
     if(isMC && R->genMET()) {I.phiGen      = R->genMET()->phi();}
-    I.ptScaleUp   = -1.;
-    I.ptScaleDown = -1.;
-    I.ptResUp     = -1.;
-    I.ptResDown   = -1.;
+    I.ptScaleUp   = R->hasUserFloat("ptScaleUp") ? R->userFloat("ptScaleUp") : -1.;
+    I.ptScaleDown = R->hasUserFloat("ptScaleDown") ? R->userFloat("ptScaleDown") : -1.;
+    I.ptResUp     = R->hasUserFloat("ptResUp") ? R->userFloat("ptResUp") : -1.;
+    I.ptResDown   = R->hasUserFloat("ptResDown") ? R->userFloat("ptResDown") : -1.;
 }
 
 void ObjectsFormat::ResetMEtType(MEtType& I) {
