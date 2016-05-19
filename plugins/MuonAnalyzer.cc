@@ -21,67 +21,67 @@ MuonAnalyzer::MuonAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CCo
     // https://twiki.cern.ch/twiki/bin/viewauth/CMS/MuonReferenceEffs
     DoubleMuonTriggerFile=new TFile(DoubleMuonTriggerFileName.c_str(), "READ");
     if(!DoubleMuonTriggerFile->IsZombie()) {
-      MuonTriggerLt20=(TH2F*)DoubleMuonTriggerFile->Get("DATA_over_MC_Mu17Mu8_Tight_Mu1_10To20_&_Mu2_20ToInfty_with_SYST_uncrt");
-      MuonTriggerGt20=(TH2F*)DoubleMuonTriggerFile->Get("DATA_over_MC_Mu17Mu8_Tight_Mu1_20ToInfty_&_Mu2_20ToInfty_with_SYST_uncrt");
-      for(int i=1; i<=MuonTriggerGt20->GetNbinsX(); i++) {
-        for(int j=1; j<=MuonTriggerGt20->GetNbinsY(); j++) {
-          if(j>i) {
-            if(MuonTriggerGt20->GetBinContent(i, j)>0.) std::cout << " - MuonAnalyzer Warning: Trying to symmetrize diagonal matrix in bin " << i << ", " << j << std::endl;
-            MuonTriggerGt20->SetBinContent(i, j, MuonTriggerGt20->GetBinContent(j, i));
-            MuonTriggerGt20->SetBinError(i, j, MuonTriggerGt20->GetBinError(j, i));
-          }
+        MuonTriggerLt20=(TH2F*)DoubleMuonTriggerFile->Get("DATA_over_MC_Mu17Mu8_Tight_Mu1_10To20_&_Mu2_20ToInfty_with_SYST_uncrt");
+        MuonTriggerGt20=(TH2F*)DoubleMuonTriggerFile->Get("DATA_over_MC_Mu17Mu8_Tight_Mu1_20ToInfty_&_Mu2_20ToInfty_with_SYST_uncrt");
+        for(int i=1; i<=MuonTriggerGt20->GetNbinsX(); i++) {
+            for(int j=1; j<=MuonTriggerGt20->GetNbinsY(); j++) {
+                if(j>i) {
+                    if(MuonTriggerGt20->GetBinContent(i, j)>0.) std::cout << " - MuonAnalyzer Warning: Trying to symmetrize diagonal matrix in bin " << i << ", " << j << std::endl;
+                    MuonTriggerGt20->SetBinContent(i, j, MuonTriggerGt20->GetBinContent(j, i));
+                    MuonTriggerGt20->SetBinError(i, j, MuonTriggerGt20->GetBinError(j, i));
+                }
+            }
         }
-      }
-      isDoubleMuonTriggerFile=true;
+        isDoubleMuonTriggerFile=true;
     }
     else {
-      throw cms::Exception("MuonAnalyzer", " - MuonAnalyzer Warning: No Double Muon Trigger Weight File");
-      return;
+        throw cms::Exception("MuonAnalyzer", "No Double Muon Trigger Weight File");
+        return;
     }
 
     //Single Muon Trigger, 2015-2016
     MuonTriggerFile=new TFile(MuonTriggerFileName.c_str(), "READ");
     if(!MuonTriggerFile->IsZombie()) {
-      MuonTriggerIsoMu20=(TH2F*)MuonTriggerFile->Get("runD_IsoMu20_OR_IsoTkMu20_HLTv4p3_PtEtaBins/pt_abseta_ratio");
-      isMuonTriggerFile=true;
+        MuonTriggerIsoMu20=(TH2F*)MuonTriggerFile->Get("runD_IsoMu20_OR_IsoTkMu20_HLTv4p3_PtEtaBins/pt_abseta_ratio");
+        isMuonTriggerFile=true;
     }
     else {
-      throw cms::Exception("MuonAnalyzer", " - MuonAnalyzer Warning: No Muon Trigger Weight File");
-      return;
+        throw cms::Exception("MuonAnalyzer", "No Muon Trigger Weight File");
+        return;
     }
     
     //Muon id and iso, 2015-2016
     MuonIdFile=new TFile(MuonIdFileName.c_str(), "READ");
     if(!MuonIdFile->IsZombie()) {
-      MuonIdLoose=(TH2F*)MuonIdFile->Get("NUM_LooseID_DEN_genTracks_PAR_pt_spliteta_bin1/pt_abseta_ratio");
-      MuonIdTight=(TH2F*)MuonIdFile->Get("NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1/pt_abseta_ratio");
-      isMuonIdFile=true;
+        MuonIdLoose=(TH2F*)MuonIdFile->Get("NUM_LooseID_DEN_genTracks_PAR_pt_spliteta_bin1/pt_abseta_ratio");
+        MuonIdTight=(TH2F*)MuonIdFile->Get("NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1/pt_abseta_ratio");
+        isMuonIdFile=true;
     }
     else {
-      throw cms::Exception("MuonAnalyzer", " - MuonAnalyzer Warning: No MuonId Weight File");
-      return;
+        throw cms::Exception("MuonAnalyzer", "No MuonId Weight File");
+        return;
     }
 
     MuonIsoFile=new TFile(MuonIsoFileName.c_str(), "READ");
     if(!MuonIsoFile->IsZombie()) {
-      MuonIsoLoose=(TH2F*)MuonIsoFile->Get("NUM_LooseRelIso_DEN_LooseID_PAR_pt_spliteta_bin1/pt_abseta_ratio");
-      MuonIsoTight=(TH2F*)MuonIsoFile->Get("NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1/pt_abseta_ratio");
-      isMuonIsoFile=true;
+        MuonIsoLoose=(TH2F*)MuonIsoFile->Get("NUM_LooseRelIso_DEN_LooseID_PAR_pt_spliteta_bin1/pt_abseta_ratio");
+        MuonIsoTight=(TH2F*)MuonIsoFile->Get("NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1/pt_abseta_ratio");
+        isMuonIsoFile=true;
     }
     else {
-      throw cms::Exception("MuonAnalyzer", " - MuonAnalyzer Warning: No MuonIso Weight File");
-      return;
+        throw cms::Exception("MuonAnalyzer", "No MuonIso Weight File");
+        return;
     }
 
     MuonHighptFile=new TFile(MuonHighptFileName.c_str(), "READ");
     if(!MuonHighptFile->IsZombie()) {
-      MuonIdHighpt=(TH2F*)MuonHighptFile->Get("HighPtID_PtEtaBins_Pt53/pTtuneP_abseta_ratio");
-      MuonIsoHighpt=(TH2F*)MuonHighptFile->Get("tkRelIsoID_PtEtaBins_Pt53/pTtuneP_abseta_ratio");
-      isMuonHighptFile=true;
+        MuonIdHighpt=(TH2F*)MuonHighptFile->Get("HighPtID_PtEtaBins_Pt53/pTtuneP_abseta_ratio");
+        MuonIsoHighpt=(TH2F*)MuonHighptFile->Get("tkRelIsoID_PtEtaBins_Pt53/pTtuneP_abseta_ratio");
+        isMuonHighptFile=true;
     }
     else {
-      throw cms::Exception("MuonAnalyzer", " - MuonAnalyzer Warning: No MuonHighpt Weight File");
-      return;
+        throw cms::Exception("MuonAnalyzer", "No MuonHighpt Weight File");
+        return;
     }
 
 }
