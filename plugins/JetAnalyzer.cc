@@ -117,7 +117,7 @@ void JetAnalyzer::ApplyRecoilCorrections(pat::MET& MET, const reco::Candidate::L
         GenPhi = GenV->phi();
     }
     else {
-        throw cms::Exception("Null pointer", "GenV boson is null. No Recoil Correction can be derived");
+        throw cms::Exception("JetAnalyzer", "GenV boson is null. No Recoil Correction can be derived");
         return;
     }
     
