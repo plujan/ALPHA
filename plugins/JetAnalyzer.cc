@@ -101,7 +101,9 @@ pat::MET JetAnalyzer::FillMetVector(const edm::Event& iEvent) {
     iEvent.getByToken(MetToken, MetCollection);
     pat::MET MEt = MetCollection->front();
     MEt.addUserFloat("ptRaw", MEt.uncorPt());
+    MEt.addUserFloat("phiRaw", MEt.uncorPhi());
     MEt.addUserFloat("ptType1", MEt.pt());
+    MEt.addUserFloat("phiType1", MEt.phi());
     return MEt;
 }
 
