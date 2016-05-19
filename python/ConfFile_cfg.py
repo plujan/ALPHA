@@ -21,7 +21,7 @@ process.TFileService = cms.Service("TFileService",
     closeFileFast = cms.untracked.bool(True)
 )
 
-process.cleanedMu = cms.EDProducer("PATMuonCleanerBySegments",
+process.cleanedMuons = cms.EDProducer("PATMuonCleanerBySegments",
     src = cms.InputTag("slimmedMuons"),#("calibratedMuons"),
     preselection = cms.string("track.isNonnull"),
     passthrough = cms.string("isGlobalMuon && numberOfMatches >= 2"),
@@ -40,7 +40,7 @@ process.ntuple = cms.EDAnalyzer('Ntuple',
         electron2pt = cms.double(10.),
     ),
     muonSet = cms.PSet(
-        muons = cms.InputTag("slimmedMuons"),
+        muons = cms.InputTag("cleanedMuons"),#("slimmedMuons"),
         vertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
         muonIdFileName = cms.string('%s/src/Analysis/ALPHA/data/MuonID_Z_RunCD_Reco74X_Dec1.root' % os.environ['CMSSW_BASE']),
         muonIsoFileName = cms.string('%s/src/Analysis/ALPHA/data/MuonIso_Z_RunCD_Reco74X_Dec1.root' % os.environ['CMSSW_BASE']),
@@ -94,5 +94,5 @@ process.ntuple = cms.EDAnalyzer('Ntuple',
 #  )
 #)
 
-process.seq = cms.Sequence(process.cleanedMu * process.ntuple)
+process.seq = cms.Sequence(process.cleanedMuons * process.ntuple)
 process.p = cms.Path(process.seq)
