@@ -100,7 +100,8 @@ pat::MET JetAnalyzer::FillMetVector(const edm::Event& iEvent) {
     edm::Handle<std::vector<pat::MET> > MetCollection;
     iEvent.getByToken(MetToken, MetCollection);
     pat::MET MEt = MetCollection->front();
-    
+    MEt.addUserFloat("ptRaw", MEt.uncorPt());
+    MEt.addUserFloat("ptType1", MEt.pt());
     return MEt;
 }
 
@@ -127,10 +128,10 @@ void JetAnalyzer::ApplyRecoilCorrections(pat::MET& MET, const reco::Candidate::L
         Upara = (RecoilX*LepPx + RecoilY*LepPy) / LepPt;
         Uperp = (RecoilX*LepPy - RecoilY*LepPx) / LepPt;
     }
-        
-    std::cout << "===============================================================\n\n\n\n" << GenPt << "    " << GenPhi << "   " << LepPt << "    " << LepPhi << "    " << Upara << "    " << Uperp << "\n\n===============================================================\n\n\n\n" << std::endl;
     
+    // Apply Recoil Corrections
     recoilCorr->CorrectType2(MetPt, MetPhi, GenPt, GenPhi, LepPt, LepPhi, Upara, Uperp, 0, 0, nJets);
+    MET.setP4(reco::Candidate::PolarLorentzVector(MetPt, MET.eta(), MetPhi, MET.mass()));
 }
 
 float JetAnalyzer::GetScaleUncertainty(pat::Jet& jet) {
