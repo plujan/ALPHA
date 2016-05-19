@@ -14,7 +14,7 @@ then, clone the git repository:
 ```bash
 git clone https://github.com/CMS-PD/ALPHA
 ```
-my knowledge of git ends here, but more will be added in the future!
+See also the TWiki for developers git instructions: [https://twiki.cern.ch/twiki/bin/view/CMS/ALPHA](https://twiki.cern.ch/twiki/bin/view/CMS/ALPHA)
 
 ## Run instructions
 Compile the code:
