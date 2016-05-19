@@ -223,6 +223,8 @@ void ObjectsFormat::FillMEtType(MEtType& I, const pat::MET* R, bool isMC) {
     I.sign        = R->metSignificance();
     I.ptRaw       = R->hasUserFloat("ptRaw") ? R->userFloat("ptRaw") : -1.;
     I.phiRaw      = R->hasUserFloat("phiRaw") ? R->userFloat("phiRaw") : -9.;
+    I.ptType1     = R->hasUserFloat("ptType1") ? R->userFloat("ptType1") : -1.;
+    I.phiType1    = R->hasUserFloat("phiType1") ? R->userFloat("phiType1") : -9.;
     if(isMC && R->genMET()) {I.ptGen       = R->genMET()->pt();}
     if(isMC && R->genMET()) {I.phiGen      = R->genMET()->phi();}
     I.ptScaleUp   = -1.;
@@ -238,6 +240,8 @@ void ObjectsFormat::ResetMEtType(MEtType& I) {
     I.sign        = -1.;
     I.ptRaw       = -1.;
     I.phiRaw      = -9.;
+    I.ptType1     = -1.;
+    I.phiType1    = -9.;
     I.ptGen       = -1.;
     I.phiGen      = -9.;
     I.ptScaleUp   = -1.;
@@ -246,7 +250,7 @@ void ObjectsFormat::ResetMEtType(MEtType& I) {
     I.ptResDown   = -1.;
 }
 
-std::string ObjectsFormat::ListMEtType() {return "pt/F:eta/F:phi/F:sign/F:ptRaw/F:phiRaw/F:ptGen/F:phiGen/F:ptScaleUp/F:ptScaleDown/F:ptResUp/F:ptResDown/F";}
+std::string ObjectsFormat::ListMEtType() {return "pt/F:eta/F:phi/F:sign/F:ptRaw/F:phiRaw/F:ptType1/F:phiType1/F:ptGen/F:phiGen/F:ptScaleUp/F:ptScaleDown/F:ptResUp/F:ptResDown/F";}
 
 
 
