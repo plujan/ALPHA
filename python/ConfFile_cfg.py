@@ -21,6 +21,13 @@ process.TFileService = cms.Service("TFileService",
     closeFileFast = cms.untracked.bool(True)
 )
 
+process.cleanedMu = cms.EDProducer("PATMuonCleanerBySegments",
+    src = cms.InputTag("slimmedMuons"),#("calibratedMuons"),
+    preselection = cms.string("track.isNonnull"),
+    passthrough = cms.string("isGlobalMuon && numberOfMatches >= 2"),
+    fractionOfSharedSegments = cms.double(0.499)
+)
+
 process.ntuple = cms.EDAnalyzer('Ntuple',
     electronSet = cms.PSet(
         electrons = cms.InputTag("slimmedElectrons"),
@@ -87,4 +94,5 @@ process.ntuple = cms.EDAnalyzer('Ntuple',
 #  )
 #)
 
-process.p = cms.Path(process.ntuple)
+process.seq = cms.Sequence(process.cleanedMu * process.ntuple)
+process.p = cms.Path(process.seq)
