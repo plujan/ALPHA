@@ -29,6 +29,13 @@ process.cleanedMuons = cms.EDProducer("PATMuonCleanerBySegments",
 )
 
 process.ntuple = cms.EDAnalyzer('Ntuple',
+    pileupSet = cms.PSet(
+        pileup = cms.InputTag("slimmedAddPileupInfo"),
+        dataFileName = cms.string('%s/src/Analysis/ALPHA/data/Prod6.root' % os.environ['CMSSW_BASE']),
+        mcFileName = cms.string('%s/src/Analysis/ALPHA/data/MC_True.root' % os.environ['CMSSW_BASE']),
+        dataName = cms.string('pileup'),
+        mcName = cms.string('S10'),
+    ),
     electronSet = cms.PSet(
         electrons = cms.InputTag("slimmedElectrons"),
         vertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
