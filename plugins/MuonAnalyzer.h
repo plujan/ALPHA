@@ -49,11 +49,11 @@ class MuonAnalyzer {
       
         edm::EDGetTokenT<std::vector<pat::Muon> > MuonToken;
         edm::EDGetTokenT<reco::VertexCollection> VertexToken;
-	std::string MuonIdFileName;
-	std::string MuonIsoFileName;
-	std::string MuonHighptFileName;
-	std::string MuonTriggerFileName;
-	std::string DoubleMuonTriggerFileName;
+        std::string MuonIdFileName;
+        std::string MuonIsoFileName;
+        std::string MuonHighptFileName;
+        std::string MuonTriggerFileName;
+        std::string DoubleMuonTriggerFileName;
         int Muon1Id, Muon2Id, Muon1Iso, Muon2Iso;
         float Muon1Pt, Muon2Pt;
         float MuonPtMax, MuonPtMin;
@@ -68,7 +68,7 @@ class MuonAnalyzer {
         
         TH2F* MuonTriggerLt20;
         TH2F* MuonTriggerGt20;
-	TH2F* MuonTriggerIsoMu20;
+        TH2F* MuonTriggerIsoMu20;
         
         TH2F* MuonIdLoose;
         TH2F* MuonIdTight;

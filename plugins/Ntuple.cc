@@ -30,6 +30,7 @@
 // constructors and destructor
 //
 Ntuple::Ntuple(const edm::ParameterSet& iConfig):
+    PileupPSet(iConfig.getParameter<edm::ParameterSet>("pileupSet")),
     ElectronPSet(iConfig.getParameter<edm::ParameterSet>("electronSet")),
     MuonPSet(iConfig.getParameter<edm::ParameterSet>("muonSet")),
     PhotonPSet(iConfig.getParameter<edm::ParameterSet>("photonSet")),
@@ -45,7 +46,7 @@ Ntuple::Ntuple(const edm::ParameterSet& iConfig):
     
     // Initialize Objects
     theGenAnalyzer=new GenAnalyzer();
-    thePileupAnalyzer=new PileupAnalyzer();
+    thePileupAnalyzer=new PileupAnalyzer(PileupPSet, consumesCollector());
     theTriggerAnalyzer=new TriggerAnalyzer();
     theElectronAnalyzer=new ElectronAnalyzer(ElectronPSet, consumesCollector());
     theMuonAnalyzer=new MuonAnalyzer(MuonPSet, consumesCollector());
@@ -104,9 +105,10 @@ void Ntuple::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     // Missing Energy
     pat::MET MET = theJetAnalyzer->FillMetVector(iEvent);
     
+    
     // PU weight
-    PUWeight=theGenAnalyzer->GetPUWeight(iEvent);
-    EventWeight*=PUWeight;
+    PUWeight = thePileupAnalyzer->GetPUWeight(iEvent);
+    EventWeight *= PUWeight;
     
     // Trigger
     std::vector<std::string> TrigNames;
@@ -117,7 +119,7 @@ void Ntuple::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     
     // ---------- Print Summary ----------
     if(Verbose) {
-        std::cout << " --- Event n. " << iEvent.id().event() << ", lumi " << iEvent.luminosityBlock() << ", run " << iEvent.id().run() << std::endl;
+        std::cout << " --- Event n. " << iEvent.id().event() << ", lumi " << iEvent.luminosityBlock() << ", run " << iEvent.id().run() << ", PU weight " << PUWeight << std::endl;
         std::cout << "number of electrons: " << ElecVect.size() << std::endl;
         for(unsigned int i = 0; i < ElecVect.size(); i++) std::cout << "  electron [" << i << "]\tpt: " << ElecVect[i].pt() << "\teta: " << ElecVect[i].eta() << "\tphi: " << ElecVect[i].phi() << std::endl;
         std::cout << "number of muons:     " << MuonVect.size() << std::endl;
@@ -140,53 +142,41 @@ void Ntuple::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     for(unsigned int i = 0; i < Jets.size() && i < JetsVect.size(); i++) ObjectsFormat::FillJetType(Jets[i], &JetsVect[i], isMC);
     ObjectsFormat::FillMEtType(MEt, &MET, isMC);
     
+    
+    
     // ---------- Z TO LEPTONS ----------
-//    bool isZtoMM(false), isZtoEE(false);
-//    int l1(0), l2(-1);
-//    
-//    if(MuonVect.size()>=2 && ElecVect.size()>=2) {
-//        if(MuonVect.at(0).pt() > ElecVect.at(0).pt()) {isZtoMM=true; isZtoEE=false;}
-//        else {isZtoMM=false; isZtoEE=true;}
-//    }
-//    else if(ElecVect.size()>=2) {isZtoMM=false; isZtoEE=true;}
-//    else if(MuonVect.size()>=2) {isZtoMM=true; isZtoEE=false;}
-//    else {if(Verbose) std::cout << " - No Iso SF OS Leptons" << std::endl; return;}
+    bool isZtoMM(false), isZtoEE(false);
+    int l1(0), l2(-1);
+    
+    if(MuonVect.size()>=2 && ElecVect.size()>=2) {
+        if(MuonVect.at(0).pt() > ElecVect.at(0).pt()) {isZtoMM=true; isZtoEE=false;}
+        else {isZtoMM=false; isZtoEE=true;}
+    }
+    else if(ElecVect.size()>=2) {isZtoMM=false; isZtoEE=true;}
+    else if(MuonVect.size()>=2) {isZtoMM=true; isZtoEE=false;}
+    else {if(Verbose) std::cout << " - No Iso SF OS Leptons" << std::endl; return;}
 
-//    if(isZtoEE) {
-//        for(unsigned int i=1; i<ElecVect.size(); i++) if(l2<0 && ElecVect.at(i).charge()!=ElecVect.at(l1).charge()) l2=i;
-//    }
-//    else {
-//        for(unsigned int i=1; i<MuonVect.size(); i++) if(l2<0 && MuonVect.at(i).charge()!=MuonVect.at(l1).charge()) l2=i;
-//    }
-//    if(l1<0 || l2<0) {if(Verbose) std::cout << " - No OS SF leptons" << std::endl; return;}
-//    
-//    if(Verbose) {
-//        std::cout << "\tEvent n. " << iEvent.id().event() << ", weight: " << EventWeight << std::endl;
-//        std::cout << "\tTrigger fired: " << TrigBit << std::endl;
-//        //for(unsigned int i=0; i<TrigNames.size(); i++) if(TrigBit%==0) std::cout << "\t\t" << i << " - " << TrigNames[i] << std::endl;
-//        std::cout << "\tNumber of Electrons: " << ElecVect.size() << std::endl;
-//        for(unsigned int i=0; i<ElecVect.size(); i++) std::cout << "\t\t" << i << " - pt: " << ElecVect[i].pt() << ", eta: " << ElecVect[i].eta() << ", phi: " << ElecVect[i].phi() << std::endl;
-//        std::cout << "\tNumber of Muons: " << MuonVect.size() << std::endl;
-//        for(unsigned int i=0; i<MuonVect.size(); i++) std::cout << "\t\t" << i << " - pt: " << MuonVect[i].pt() << ", eta: " << MuonVect[i].eta() << ", phi: " << MuonVect[i].phi() << std::endl;
-//        std::cout << "\tNumber of Jets: " << JetsVect.size() << std::endl;
-//        for(unsigned int i=0; i<JetsVect.size(); i++) std::cout << "\t\t" << i << " - pt: " << JetsVect[i].pt() << ", eta: " << JetsVect[i].eta() << ", phi: " << JetsVect[i].phi() << std::endl;
-//        std::cout << "\tMissing Energy: " << MEt.pt() << std::endl;
-//        std::cout << std::endl;
-//    }
-//    
-//    // Reconstruct Z candidate
-//    pat::CompositeCandidate theZ;
-//    if(isZtoEE) {
-//        theZ.addDaughter(ElecVect.at(l1));
-//        theZ.addDaughter(ElecVect.at(l2));
-//    }
-//    else {
-//        theZ.addDaughter(MuonVect.at(l1));
-//        theZ.addDaughter(MuonVect.at(l2));
-//    }
-//    AddFourMomenta addP4;
-//    addP4.set(theZ);
-//    if(theZ.mass()<50.) {if(Verbose) std::cout << " - Z off-shell" << std::endl; return;}
+    if(isZtoEE) {
+        for(unsigned int i=1; i<ElecVect.size(); i++) if(l2<0 && ElecVect.at(i).charge()!=ElecVect.at(l1).charge()) l2=i;
+    }
+    else {
+        for(unsigned int i=1; i<MuonVect.size(); i++) if(l2<0 && MuonVect.at(i).charge()!=MuonVect.at(l1).charge()) l2=i;
+    }
+    if(l1<0 || l2<0) {if(Verbose) std::cout << " - No OS SF leptons" << std::endl; return;}
+
+    // Reconstruct Z candidate
+    pat::CompositeCandidate theZ;
+    if(isZtoMM) {
+        theZ.addDaughter(MuonVect.at(l1));
+        theZ.addDaughter(MuonVect.at(l2));
+    }
+    else {
+        theZ.addDaughter(ElecVect.at(l1));
+        theZ.addDaughter(ElecVect.at(l2));
+    }
+    AddFourMomenta addP4;
+    addP4.set(theZ);
+    if(theZ.mass()<50.) {if(Verbose) std::cout << " - Z off-shell" << std::endl; return;}
 //    
 //    // Lepton and Trigger SF
 //    if(isMC) {
@@ -221,13 +211,7 @@ void Ntuple::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
 //    //double subjet0Bdisc = subjet->bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags");
 //    
 //    
-//    if(Verbose) {
-//        std::cout << "\tReconstructed " << JetsVect.size() << " fatjets:" << std::endl;
-//        for(int i=0; i<(int)JetsVect.size(); i++) std::cout << "\t  fatjet " << i << " has pT: " << JetsVect[i].pt() << ", mass: " << JetsVect[i].mass() << " and CSVIVFV2: " << JetsVect[i].bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") << std::endl;
-//        std::cout << "\tLeading fat jet with " << nSubJets << " subjets, leading has pT: " << fatJet->pt() << ", mass: " << fatJet->mass() << " and CSVIVFV2: " << fatJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") << std::endl;
-//        if(subJet1) std::cout << "\t  subjet 1 has pT: " << subJet1->pt() << ", mass: " << subJet1->mass() << " and CSVIVFV2: " << subJet1->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") << std::endl;
-//        if(subJet2) std::cout << "\t  subjet 2 has pT: " << subJet2->pt() << ", mass: " << subJet2->mass() << " and CSVIVFV2: " << subJet2->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") << std::endl;
-//    }
+//    theJetAnalyzer->ApplyRecoilCorrections(MET, &MET.genMET()->p4(), &theZ.p4(), 0);
 
     tree->Fill();
 

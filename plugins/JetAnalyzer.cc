@@ -41,6 +41,7 @@ JetAnalyzer::JetAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl
     std::cout << "  apply recoil corr :\t" << (UseRecoil ? "YES" : "NO") << std::endl;
     std::cout << "  recoil file MC    :\t" << RecoilMCFile << std::endl;
     std::cout << "  recoil file Data  :\t" << RecoilDataFile << std::endl;
+    std::cout << std::endl;
 }
 
 JetAnalyzer::~JetAnalyzer() {
@@ -117,7 +118,7 @@ void JetAnalyzer::ApplyRecoilCorrections(pat::MET& MET, const reco::Candidate::L
         GenPhi = GenV->phi();
     }
     else {
-        throw cms::Exception("Null pointer", "GenV boson is null. No Recoil Correction can be derived");
+        throw cms::Exception("JetAnalyzer", "GenV boson is null. No Recoil Correction can be derived");
         return;
     }
     
