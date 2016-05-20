@@ -7,11 +7,14 @@ PileupAnalyzer::PileupAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&&
     MCFileName(PSet.getParameter<std::string>("mcFileName")),
     DataName(PSet.getParameter<std::string>("dataName")),
     MCName(PSet.getParameter<std::string>("mcName"))
-{
+{   
+    std::cout << " --- PileupAnalyzer initialization ---" << std::endl;
+    std::cout << "  pileup MC file    :\t" << MCFileName << "\t\thistogram: " << MCName << std::endl;
+    std::cout << "  pileup Data file  :\t" << DataFileName << "\t\thistogram: " << DataName << std::endl;
+    std::cout << std::endl;
+    
     // PU reweighting
     LumiWeights=new edm::LumiReWeighting(MCFileName, DataFileName, MCName, DataName);
-    
-    std::cout << " - PileupAnalyzer initialized" << std::endl;
 }
 
 PileupAnalyzer::~PileupAnalyzer() {
