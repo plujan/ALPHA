@@ -27,6 +27,7 @@ class TriggerAnalyzer {
     private:
     
         edm::EDGetTokenT<edm::TriggerResults> TriggerToken;
+        std::vector<std::string> TriggerList;
 };
 
 

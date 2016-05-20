@@ -2,10 +2,12 @@
 
 
 TriggerAnalyzer::TriggerAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl):
-    TriggerToken(CColl.consumes<edm::TriggerResults>(PSet.getParameter<edm::InputTag>("trigger")))
+    TriggerToken(CColl.consumes<edm::TriggerResults>(PSet.getParameter<edm::InputTag>("trigger"))),
+    TriggerList(PSet.getParameter<std::vector<std::string> >("paths"))
 {
     std::cout << " --- TriggerAnalyzer initialization ---" << std::endl;
-    
+    std::cout << "  HLT paths:" << std::endl;
+    for(unsigned int i = 0; i < TriggerList.size(); i++) std::cout << "    " << TriggerList[i] << "*" << std::endl;
     std::cout << std::endl;
 }
 
