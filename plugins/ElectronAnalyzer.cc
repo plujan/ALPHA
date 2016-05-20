@@ -10,6 +10,10 @@ ElectronAnalyzer::ElectronAnalyzer(const edm::ParameterSet& PSet, edm::ConsumesC
     EleMediumIdMapToken(CColl.consumes<edm::ValueMap<bool>>(PSet.getParameter<edm::InputTag>("eleMediumIdMap"))),
     EleTightIdMapToken(CColl.consumes<edm::ValueMap<bool>>(PSet.getParameter<edm::InputTag>("eleTightIdMap"))),
     EleHEEPIdMapToken(CColl.consumes<edm::ValueMap<bool>>(PSet.getParameter<edm::InputTag>("eleHEEPIdMap"))),
+    EleMVANonTrigMediumIdMapToken(CColl.consumes<edm::ValueMap<bool>>(PSet.getParameter<edm::InputTag>("eleMVANonTrigMediumIdMap"))),
+    EleMVANonTrigTightIdMapToken(CColl.consumes<edm::ValueMap<bool>>(PSet.getParameter<edm::InputTag>("eleMVANonTrigTightIdMap"))),
+    EleMVATrigMediumIdMapToken(CColl.consumes<edm::ValueMap<bool>>(PSet.getParameter<edm::InputTag>("eleMVATrigMediumIdMap"))),
+    EleMVATrigTightIdMapToken(CColl.consumes<edm::ValueMap<bool>>(PSet.getParameter<edm::InputTag>("eleMVATrigTightIdMap"))),
     Electron1Id(PSet.getParameter<int>("electron1id")),
     Electron2Id(PSet.getParameter<int>("electron2id")),
     Electron1Iso(PSet.getParameter<int>("electron1iso")),
@@ -57,6 +61,7 @@ ElectronAnalyzer::~ElectronAnalyzer() {
 
 
 std::vector<pat::Electron> ElectronAnalyzer::FillElectronVector(const edm::Event& iEvent) {
+    bool isMC(!iEvent.isRealData());
     int IdTh(Electron1Id), IsoTh(Electron1Iso);
     float PtTh(Electron1Pt);
     std::vector<pat::Electron> Vect;
@@ -77,11 +82,19 @@ std::vector<pat::Electron> ElectronAnalyzer::FillElectronVector(const edm::Event
     edm::Handle<edm::ValueMap<bool> > MediumIdDecisions;
     edm::Handle<edm::ValueMap<bool> > TightIdDecisions;
     edm::Handle<edm::ValueMap<bool> > HEEPIdDecisions;
+    edm::Handle<edm::ValueMap<bool> > MVANonTrigMediumIdDecisions;
+    edm::Handle<edm::ValueMap<bool> > MVANonTrigTightIdDecisions;
+    edm::Handle<edm::ValueMap<bool> > MVATrigMediumIdDecisions;
+    edm::Handle<edm::ValueMap<bool> > MVATrigTightIdDecisions;
     iEvent.getByToken(EleVetoIdMapToken, VetoIdDecisions);
     iEvent.getByToken(EleLooseIdMapToken, LooseIdDecisions);
     iEvent.getByToken(EleMediumIdMapToken, MediumIdDecisions);
     iEvent.getByToken(EleTightIdMapToken, TightIdDecisions);
     iEvent.getByToken(EleHEEPIdMapToken, HEEPIdDecisions);
+    iEvent.getByToken(EleMVANonTrigMediumIdMapToken, MVANonTrigMediumIdDecisions);
+    iEvent.getByToken(EleMVANonTrigTightIdMapToken, MVANonTrigTightIdDecisions);
+    iEvent.getByToken(EleMVATrigMediumIdMapToken, MVATrigMediumIdDecisions);
+    iEvent.getByToken(EleMVATrigTightIdMapToken, MVATrigTightIdDecisions);
     unsigned int elIdx = 0;
 
     // Loop on Electron collection
@@ -106,12 +119,20 @@ std::vector<pat::Electron> ElectronAnalyzer::FillElectronVector(const edm::Event
         bool isPassMedium = (*MediumIdDecisions)[elRef];
         bool isPassTight = (*TightIdDecisions)[elRef];
         bool isPassHEEP = (*HEEPIdDecisions)[elRef];
+        bool isPassMVANonTrigMedium = (*MVANonTrigMediumIdDecisions)[elRef];
+        bool isPassMVANonTrigTight = (*MVANonTrigTightIdDecisions)[elRef];
+        bool isPassMVATrigMedium = (*MVATrigMediumIdDecisions)[elRef];
+        bool isPassMVATrigTight = (*MVATrigTightIdDecisions)[elRef];
 
         if(IdTh==0 && !isPassVeto) continue;
         if(IdTh==1 && !isPassLoose) continue;
         if(IdTh==2 && !isPassMedium) continue;
         if(IdTh==3 && !isPassTight) continue;
         if(IdTh==4 && !isPassHEEP) continue;
+        if(IdTh==5 && !isPassMVANonTrigMedium) continue;
+        if(IdTh==6 && !isPassMVANonTrigTight) continue;
+        if(IdTh==7 && !isPassMVATrigMedium) continue;
+        if(IdTh==8 && !isPassMVATrigTight) continue;
 
         ++elIdx;
         
@@ -126,6 +147,10 @@ std::vector<pat::Electron> ElectronAnalyzer::FillElectronVector(const edm::Event
         el.addUserInt("isMedium", isPassMedium ? 1 : 0);
         el.addUserInt("isTight", isPassTight ? 1 : 0);
         el.addUserInt("isHEEP", isPassHEEP ? 1 : 0);
+        el.addUserInt("isMVANonTrigMedium", isPassMVANonTrigMedium ? 1 : 0);
+        el.addUserInt("isMVANonTrigTight", isPassMVANonTrigTight ? 1 : 0);
+        el.addUserInt("isMVATrigMedium", isPassMVATrigMedium ? 1 : 0);
+        el.addUserInt("isMVATrigTight", isPassMVATrigTight ? 1 : 0);
         // Fill vector
         Vect.push_back(el);
     }

@@ -48,6 +48,10 @@ class ElectronAnalyzer {
 	edm::EDGetTokenT<edm::ValueMap<bool>> EleMediumIdMapToken;
 	edm::EDGetTokenT<edm::ValueMap<bool>> EleTightIdMapToken;
 	edm::EDGetTokenT<edm::ValueMap<bool>> EleHEEPIdMapToken;
+	edm::EDGetTokenT<edm::ValueMap<bool>> EleMVANonTrigMediumIdMapToken;
+	edm::EDGetTokenT<edm::ValueMap<bool>> EleMVANonTrigTightIdMapToken;
+	edm::EDGetTokenT<edm::ValueMap<bool>> EleMVATrigMediumIdMapToken;
+	edm::EDGetTokenT<edm::ValueMap<bool>> EleMVATrigTightIdMapToken;
         int Electron1Id, Electron2Id, Electron1Iso, Electron2Iso;
         float Electron1Pt, Electron2Pt;
         float EleTriggerPtMax, EleEfficiencyPtMax;

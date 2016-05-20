@@ -99,6 +99,7 @@ MuonAnalyzer::~MuonAnalyzer() {
 
 
 std::vector<pat::Muon> MuonAnalyzer::FillMuonVector(const edm::Event& iEvent) {
+    bool isMC(!iEvent.isRealData());
     int IdTh(Muon1Id), IsoTh(Muon1Iso);
     float PtTh(Muon1Pt);
     std::vector<pat::Muon> Vect;
@@ -130,8 +131,7 @@ std::vector<pat::Muon> MuonAnalyzer::FillMuonVector(const edm::Event& iEvent) {
         if(IdTh==1 && !mu.isLooseMuon()) continue;
         if(IdTh==2 && !mu.isMediumMuon()) continue;
         if(IdTh==3 && !mu.isTightMuon(*vertex)) continue;
-        if(IdTh==4 && !mu.isSoftMuon(*vertex)) continue;
-        if(IdTh==5 && !mu.isHighPtMuon(*vertex)) continue;
+        if(IdTh==4 && !mu.isHighPtMuon(*vertex)) continue;
         // Add userFloat
         mu.addUserFloat("pfIso03", pfIso03);
         mu.addUserFloat("pfIso04", pfIso04);
@@ -141,7 +141,6 @@ std::vector<pat::Muon> MuonAnalyzer::FillMuonVector(const edm::Event& iEvent) {
         mu.addUserInt("isLoose", mu.isLooseMuon() ? 1 : 0);
         mu.addUserInt("isMedium", mu.isMediumMuon() ? 1 : 0);
         mu.addUserInt("isTight", mu.isTightMuon(*vertex) ? 1 : 0);
-        mu.addUserInt("isSoft", mu.isSoftMuon(*vertex) ? 1 : 0);
         mu.addUserInt("isHighPt", mu.isHighPtMuon(*vertex) ? 1 : 0);
         // Fill vector
         Vect.push_back(mu);
@@ -151,7 +150,16 @@ std::vector<pat::Muon> MuonAnalyzer::FillMuonVector(const edm::Event& iEvent) {
 
 
 bool MuonAnalyzer::IsCustomTracker(pat::Muon& mu, const reco::Vertex* vertex) {
-    return false;
+    if(!(mu.isMuon())) return false;
+    if(!(mu.isTrackerMuon())) return false;
+    if(!(mu.numberOfMatchedStations() > 1)) return false;
+    if(!(mu.bestTrack()->ptError()/mu.bestTrack()->pt() < 0.3)) return false;
+    if(!(abs( mu.bestTrack()->dxy(vertex->position()) ) < 0.2) ) return false;
+    if(!(abs( mu.bestTrack()->dz(vertex->position()) ) < 0.5) ) return false;
+    if(!(mu.innerTrack().isNonnull())) return false;
+    if(!(mu.innerTrack()->hitPattern().numberOfValidPixelHits() > 0)) return false;
+    if(!(mu.innerTrack()->hitPattern().trackerLayersWithMeasurement() > 5)) return false;
+    return true;
 }
 
 
