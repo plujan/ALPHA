@@ -30,6 +30,7 @@
 // constructors and destructor
 //
 Ntuple::Ntuple(const edm::ParameterSet& iConfig):
+    TriggerPSet(iConfig.getParameter<edm::ParameterSet>("triggerSet")),
     PileupPSet(iConfig.getParameter<edm::ParameterSet>("pileupSet")),
     ElectronPSet(iConfig.getParameter<edm::ParameterSet>("electronSet")),
     MuonPSet(iConfig.getParameter<edm::ParameterSet>("muonSet")),
@@ -47,7 +48,7 @@ Ntuple::Ntuple(const edm::ParameterSet& iConfig):
     // Initialize Objects
     theGenAnalyzer=new GenAnalyzer();
     thePileupAnalyzer=new PileupAnalyzer(PileupPSet, consumesCollector());
-    theTriggerAnalyzer=new TriggerAnalyzer();
+    theTriggerAnalyzer=new TriggerAnalyzer(TriggerPSet, consumesCollector());
     theElectronAnalyzer=new ElectronAnalyzer(ElectronPSet, consumesCollector());
     theMuonAnalyzer=new MuonAnalyzer(MuonPSet, consumesCollector());
     thePhotonAnalyzer=new PhotonAnalyzer(PhotonPSet, consumesCollector());

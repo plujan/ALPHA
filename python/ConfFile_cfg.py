@@ -29,6 +29,9 @@ process.cleanedMuons = cms.EDProducer("PATMuonCleanerBySegments",
 )
 
 process.ntuple = cms.EDAnalyzer('Ntuple',
+    triggerSet = cms.PSet(
+        trigger = cms.InputTag("TriggerResults"),
+    ),
     pileupSet = cms.PSet(
         pileup = cms.InputTag("slimmedAddPileupInfo"),
         dataFileName = cms.string('%s/src/Analysis/ALPHA/data/Prod6.root' % os.environ['CMSSW_BASE']),
