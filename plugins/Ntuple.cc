@@ -30,6 +30,7 @@
 // constructors and destructor
 //
 Ntuple::Ntuple(const edm::ParameterSet& iConfig):
+    PileupPSet(iConfig.getParameter<edm::ParameterSet>("pileupSet")),
     ElectronPSet(iConfig.getParameter<edm::ParameterSet>("electronSet")),
     MuonPSet(iConfig.getParameter<edm::ParameterSet>("muonSet")),
     PhotonPSet(iConfig.getParameter<edm::ParameterSet>("photonSet")),
@@ -45,7 +46,7 @@ Ntuple::Ntuple(const edm::ParameterSet& iConfig):
     
     // Initialize Objects
     theGenAnalyzer=new GenAnalyzer();
-    thePileupAnalyzer=new PileupAnalyzer();
+    thePileupAnalyzer=new PileupAnalyzer(PileupPSet, consumesCollector());
     theTriggerAnalyzer=new TriggerAnalyzer();
     theElectronAnalyzer=new ElectronAnalyzer(ElectronPSet, consumesCollector());
     theMuonAnalyzer=new MuonAnalyzer(MuonPSet, consumesCollector());
@@ -106,8 +107,8 @@ void Ntuple::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     
     
     // PU weight
-    PUWeight=theGenAnalyzer->GetPUWeight(iEvent);
-    EventWeight*=PUWeight;
+    PUWeight = thePileupAnalyzer->GetPUWeight(iEvent);
+    EventWeight *= PUWeight;
     
     // Trigger
     std::vector<std::string> TrigNames;
