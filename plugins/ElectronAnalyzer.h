@@ -12,9 +12,13 @@
 #include "DataFormats/PatCandidates/interface/Electron.h"
 #include "RecoEgamma/EgammaTools/interface/ConversionTools.h"
 #include "DataFormats/PatCandidates/interface/Conversion.h"
+#include "DataFormats/EgammaCandidates/interface/ConversionFwd.h"
+#include "DataFormats/EgammaCandidates/interface/Conversion.h"
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
 #include "DataFormats/VertexReco/interface/Vertex.h"
-
+#include "DataFormats/EgammaCandidates/interface/GsfElectron.h"
+#include "DataFormats/Common/interface/ValueMap.h"
+#include "DataFormats/PatCandidates/interface/VIDCutFlowResult.h"
 
 #include "TFile.h"
 #include "TH2.h"
@@ -24,10 +28,10 @@ class ElectronAnalyzer {
         ElectronAnalyzer(const edm::ParameterSet&, edm::ConsumesCollector&&);
         ~ElectronAnalyzer();
         virtual std::vector<pat::Electron> FillElectronVector(const edm::Event&);
-        virtual bool IsElectronCut(pat::Electron&, const reco::Vertex*, int);
-        virtual bool IsLooseElectron(pat::Electron&, const reco::Vertex*);
-        virtual bool IsLooseMVAElectron(pat::Electron&);
-        virtual bool IsTightMVAElectron(pat::Electron&);
+        //virtual bool IsElectronCut(pat::Electron&, const reco::Vertex*, int);
+        //virtual bool IsLooseElectron(pat::Electron&, const reco::Vertex*);
+        //virtual bool IsLooseMVAElectron(pat::Electron&);
+        //virtual bool IsTightMVAElectron(pat::Electron&);
         virtual float GetDoubleElectronTriggerSF(pat::Electron&, pat::Electron&);
         virtual float GetElectronIdSF(pat::Electron&);
         virtual float GetElectronIdSFError(pat::Electron&);
@@ -39,6 +43,11 @@ class ElectronAnalyzer {
       
         edm::EDGetTokenT<std::vector<pat::Electron> > ElectronToken;
         edm::EDGetTokenT<reco::VertexCollection> VertexToken;
+	edm::EDGetTokenT<edm::ValueMap<bool>> EleVetoIdMapToken;
+	edm::EDGetTokenT<edm::ValueMap<bool>> EleLooseIdMapToken;
+	edm::EDGetTokenT<edm::ValueMap<bool>> EleMediumIdMapToken;
+	edm::EDGetTokenT<edm::ValueMap<bool>> EleTightIdMapToken;
+	edm::EDGetTokenT<edm::ValueMap<bool>> EleHEEPIdMapToken;
         int Electron1Id, Electron2Id, Electron1Iso, Electron2Iso;
         float Electron1Pt, Electron2Pt;
         float EleTriggerPtMax, EleEfficiencyPtMax;

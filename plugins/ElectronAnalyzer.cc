@@ -5,6 +5,11 @@
 ElectronAnalyzer::ElectronAnalyzer(const edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl):
     ElectronToken(CColl.consumes<std::vector<pat::Electron> >(PSet.getParameter<edm::InputTag>("electrons"))),
     VertexToken(CColl.consumes<reco::VertexCollection>(PSet.getParameter<edm::InputTag>("vertices"))),
+    EleVetoIdMapToken(CColl.consumes<edm::ValueMap<bool>>(PSet.getParameter<edm::InputTag>("eleVetoIdMap"))),
+    EleLooseIdMapToken(CColl.consumes<edm::ValueMap<bool>>(PSet.getParameter<edm::InputTag>("eleLooseIdMap"))),
+    EleMediumIdMapToken(CColl.consumes<edm::ValueMap<bool>>(PSet.getParameter<edm::InputTag>("eleMediumIdMap"))),
+    EleTightIdMapToken(CColl.consumes<edm::ValueMap<bool>>(PSet.getParameter<edm::InputTag>("eleTightIdMap"))),
+    EleHEEPIdMapToken(CColl.consumes<edm::ValueMap<bool>>(PSet.getParameter<edm::InputTag>("eleHEEPIdMap"))),
     Electron1Id(PSet.getParameter<int>("electron1id")),
     Electron2Id(PSet.getParameter<int>("electron2id")),
     Electron1Iso(PSet.getParameter<int>("electron1iso")),
@@ -66,6 +71,19 @@ std::vector<pat::Electron> ElectronAnalyzer::FillElectronVector(const edm::Event
     iEvent.getByToken(VertexToken, PVCollection);
     const reco::Vertex* vertex=&PVCollection->front();
     
+    //value map for ID 2015-2016
+    edm::Handle<edm::ValueMap<bool> > VetoIdDecisions;
+    edm::Handle<edm::ValueMap<bool> > LooseIdDecisions;
+    edm::Handle<edm::ValueMap<bool> > MediumIdDecisions;
+    edm::Handle<edm::ValueMap<bool> > TightIdDecisions;
+    edm::Handle<edm::ValueMap<bool> > HEEPIdDecisions;
+    iEvent.getByToken(EleVetoIdMapToken, VetoIdDecisions);
+    iEvent.getByToken(EleLooseIdMapToken, LooseIdDecisions);
+    iEvent.getByToken(EleMediumIdMapToken, MediumIdDecisions);
+    iEvent.getByToken(EleTightIdMapToken, TightIdDecisions);
+    iEvent.getByToken(EleHEEPIdMapToken, HEEPIdDecisions);
+    unsigned int elIdx = 0;
+
     // Loop on Electron collection
     for(std::vector<pat::Electron>::const_iterator it=EleCollection->begin(); it!=EleCollection->end(); ++it) {
         if(Vect.size()>0) {
@@ -74,15 +92,28 @@ std::vector<pat::Electron> ElectronAnalyzer::FillElectronVector(const edm::Event
             PtTh=Electron2Pt;
         }
         pat::Electron el=*it;
+	pat::ElectronRef elRef(EleCollection, elIdx);
         // Pt and eta
         if(el.pt()<PtTh || fabs(el.eta())>2.5) continue;
         // PF (?) Isolation R=0.4 https://twiki.cern.ch/twiki/bin/viewauth/CMS/EgammaPFBasedIsolation#for_PAT_electron_users_using_sta
         float pfIso04 = ( el.chargedHadronIso() + std::max(el.neutralHadronIso() + el.photonIso() - 0.5*el.puChargedHadronIso(), 0.) ) / el.pt();
         float pfIso03 = ( el.pfIsolationVariables().sumChargedHadronPt + std::max(el.pfIsolationVariables().sumNeutralHadronEt + el.pfIsolationVariables().sumPhotonEt - 0.5*el.pfIsolationVariables().sumPUPt, 0.) ) / el.pt();
         if(IsoTh==1 && pfIso03>0.15) continue;
-        // Electron Id
-        if(IdTh==1 && !IsLooseElectron(el, vertex)) continue; //isLooseMVAElectron(el)
-        //if(IdTh==2 && !isTightElectron(el, vertex)) continue;
+
+        //Electron CutBased and HEEP ID 2015-2016, https://twiki.cern.ch/twiki/bin/viewauth/CMS/EgammaIDRecipesRun2
+        bool isPassVeto = (*VetoIdDecisions)[elRef];
+        bool isPassLoose = (*LooseIdDecisions)[elRef];
+        bool isPassMedium = (*MediumIdDecisions)[elRef];
+        bool isPassTight = (*TightIdDecisions)[elRef];
+        bool isPassHEEP = (*HEEPIdDecisions)[elRef];
+
+        if(IdTh==0 && !isPassVeto) continue;
+        if(IdTh==1 && !isPassLoose) continue;
+        if(IdTh==2 && !isPassMedium) continue;
+        if(IdTh==3 && !isPassTight) continue;
+        if(IdTh==4 && !isPassHEEP) continue;
+
+        ++elIdx;
         
         // Fill userFloat
         el.addUserFloat("pfIso03", pfIso03);
@@ -90,16 +121,20 @@ std::vector<pat::Electron> ElectronAnalyzer::FillElectronVector(const edm::Event
         el.addUserFloat("trkIso", el.pfIsolationVariables().sumChargedHadronPt);
         el.addUserFloat("dxy", el.gsfTrack()->dxy( vertex->position() ));
         el.addUserFloat("dz", el.gsfTrack()->dz( vertex->position() ));
-        el.addUserInt("isVeto", IsElectronCut(el, vertex, 0) ? 1 : 0);
-        el.addUserInt("isLoose", IsElectronCut(el, vertex, 1) ? 1 : 0);
-        el.addUserInt("isMedium", IsElectronCut(el, vertex, 2) ? 1 : 0);
-        el.addUserInt("isTight", IsElectronCut(el, vertex, 3) ? 1 : 0);
+        el.addUserInt("isVeto", isPassVeto ? 1 : 0);
+        el.addUserInt("isLoose", isPassLoose ? 1 : 0);
+        el.addUserInt("isMedium", isPassMedium ? 1 : 0);
+        el.addUserInt("isTight", isPassTight ? 1 : 0);
+        el.addUserInt("isHEEP", isPassHEEP ? 1 : 0);
         // Fill vector
         Vect.push_back(el);
     }
     return Vect;
 }
 
+/*
+
+//// Obsolete Electron ID for Run1
 
 // Electron Cut-based Quality ID: see https://twiki.cern.ch/twiki/bin/view/CMS/EgammaCutBasedIdentification#Electron_ID_Working_Points
 bool ElectronAnalyzer::IsElectronCut(pat::Electron& el, const reco::Vertex* vertex, int q) {
@@ -209,6 +244,8 @@ bool ElectronAnalyzer::IsTightMVAElectron(pat::Electron& el) {
     }
     return true;
 }
+
+*/
 
 float ElectronAnalyzer::GetDoubleElectronTriggerSF(pat::Electron& el1, pat::Electron& el2) {
     if(!isEleTriggerFile) return 1.;

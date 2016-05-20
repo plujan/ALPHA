@@ -2,7 +2,7 @@
 #define OBJECTS_H
 
 struct LeptonType {
-    LeptonType(): pt(-1.), eta(-9.), phi(-9.), mass(-1.), energy(-1.), charge(0), pdgId(0), pfIso03(-1.), pfIso04(-1.), trkIso(-1.), miniIso(-1.), dxy(-99.), dz(-99.), dPhi_met(-1.), isElectron(false), isMuon(false), isVeto(false), isLoose(false), isMedium(false), isTight(false), isHighpt(false), isMatched(false) {}
+LeptonType(): pt(-1.), eta(-9.), phi(-9.), mass(-1.), energy(-1.), charge(0), pdgId(0), pfIso03(-1.), pfIso04(-1.), trkIso(-1.), miniIso(-1.), dxy(-99.), dz(-99.), dPhi_met(-1.), isElectron(false), isMuon(false), isVeto(false), isLoose(false), isMedium(false), isTight(false), isHEEP(false), isHighpt(false), isMatched(false) {}
     float pt;
     float eta;
     float phi;
@@ -23,6 +23,7 @@ struct LeptonType {
     bool isLoose;
     bool isMedium;
     bool isTight;
+    bool isHEEP;
     bool isHighpt;
     bool isMatched;
 };
