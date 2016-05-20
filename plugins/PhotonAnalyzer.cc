@@ -26,6 +26,7 @@ PhotonAnalyzer::~PhotonAnalyzer() {
 
 
 std::vector<pat::Photon> PhotonAnalyzer::FillPhotonVector(const edm::Event& iEvent) {
+    bool isMC(!iEvent.isRealData());
     int IdTh(Photon1Id), IsoTh(Photon1Iso);
     float PtTh(Photon1Pt);
     std::vector<pat::Photon> Vect;

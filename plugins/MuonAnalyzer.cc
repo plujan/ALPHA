@@ -99,6 +99,7 @@ MuonAnalyzer::~MuonAnalyzer() {
 
 
 std::vector<pat::Muon> MuonAnalyzer::FillMuonVector(const edm::Event& iEvent) {
+    bool isMC(!iEvent.isRealData());
     int IdTh(Muon1Id), IsoTh(Muon1Iso);
     float PtTh(Muon1Pt);
     std::vector<pat::Muon> Vect;
@@ -130,8 +131,7 @@ std::vector<pat::Muon> MuonAnalyzer::FillMuonVector(const edm::Event& iEvent) {
         if(IdTh==1 && !mu.isLooseMuon()) continue;
         if(IdTh==2 && !mu.isMediumMuon()) continue;
         if(IdTh==3 && !mu.isTightMuon(*vertex)) continue;
-        if(IdTh==4 && !mu.isSoftMuon(*vertex)) continue;
-        if(IdTh==5 && !mu.isHighPtMuon(*vertex)) continue;
+        if(IdTh==4 && !mu.isHighPtMuon(*vertex)) continue;
         // Add userFloat
         mu.addUserFloat("pfIso03", pfIso03);
         mu.addUserFloat("pfIso04", pfIso04);
@@ -141,7 +141,6 @@ std::vector<pat::Muon> MuonAnalyzer::FillMuonVector(const edm::Event& iEvent) {
         mu.addUserInt("isLoose", mu.isLooseMuon() ? 1 : 0);
         mu.addUserInt("isMedium", mu.isMediumMuon() ? 1 : 0);
         mu.addUserInt("isTight", mu.isTightMuon(*vertex) ? 1 : 0);
-        mu.addUserInt("isSoft", mu.isSoftMuon(*vertex) ? 1 : 0);
         mu.addUserInt("isHighPt", mu.isHighPtMuon(*vertex) ? 1 : 0);
         // Fill vector
         Vect.push_back(mu);

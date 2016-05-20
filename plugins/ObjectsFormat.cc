@@ -29,6 +29,10 @@ void ObjectsFormat::FillElectronType(LeptonType& I, const pat::Electron* R, bool
     I.isMedium    = R->hasUserInt("isMedium") ? R->userInt("isMedium") : false;
     I.isTight     = R->hasUserInt("isTight") ? R->userInt("isTight") : false;
     I.isHEEP      = R->hasUserInt("isHEEP") ? R->userInt("isHEEP") : false;
+    I.isMVANonTrigMedium      = R->hasUserInt("isMVANonTrigMedium") ? R->userInt("isMVANonTrigMedium") : false;
+    I.isMVANonTrigTight      = R->hasUserInt("isMVANonTrigTight") ? R->userInt("isMVANonTrigTight") : false;
+    I.isMVATrigMedium      = R->hasUserInt("isMVATrigMedium") ? R->userInt("isMVATrigMedium") : false;
+    I.isMVATrigTight      = R->hasUserInt("isMVATrigTight") ? R->userInt("isMVATrigTight") : false;
     if(isMC && R->genLepton()) I.isMatched = false;//(Utilities::FindMotherId(dynamic_cast<const reco::Candidate*>(R->genLepton()))==23);
 }
 
@@ -81,11 +85,15 @@ void ObjectsFormat::ResetLeptonType(LeptonType& I) {
     I.isMedium    = false;
     I.isTight     = false;
     I.isHEEP     = false;
+    I.isMVANonTrigMedium = false;
+    I.isMVANonTrigTight = false;
+    I.isMVATrigMedium = false;
+    I.isMVATrigTight = false;
     I.isHighpt    = false;
     I.isMatched   = false;
 }
 
-std::string ObjectsFormat::ListLeptonType() {return "pt/F:eta/F:phi/F:mass/F:energy/F:charge/I:pdgId/I:pfIso03/F:pfIso04/F:trkIso/F:miniIso/F:dxy/F:dz/F:dPhi_met/F:isElectron/O:isMuon/O:isVeto/O:isLoose/O:isMedium/O:isTight/O:isHEEP/O:isHighpt/O:isMatched/O";}
+std::string ObjectsFormat::ListLeptonType() {return "pt/F:eta/F:phi/F:mass/F:energy/F:charge/I:pdgId/I:pfIso03/F:pfIso04/F:trkIso/F:miniIso/F:dxy/F:dz/F:dPhi_met/F:isElectron/O:isMuon/O:isVeto/O:isLoose/O:isMedium/O:isTight/O:isHEEP/O:isMVANonTrigMedium/O:isMVANonTrigTight/O:isMVATrigMedium/O:isMVATrigTight/O:isHighpt/O:isMatched/O";}
 
 //*******************//
 //        Jets       //
