@@ -41,6 +41,7 @@ JetAnalyzer::JetAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl
     std::cout << "  apply recoil corr :\t" << (UseRecoil ? "YES" : "NO") << std::endl;
     std::cout << "  recoil file MC    :\t" << RecoilMCFile << std::endl;
     std::cout << "  recoil file Data  :\t" << RecoilDataFile << std::endl;
+    std::cout << std::endl;
 }
 
 JetAnalyzer::~JetAnalyzer() {
