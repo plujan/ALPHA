@@ -21,6 +21,19 @@ process.TFileService = cms.Service("TFileService",
     closeFileFast = cms.untracked.bool(True)
 )
 
+#electrons first attempt
+process.load("Configuration.StandardSequences.GeometryRecoDB_cff")
+process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
+from Configuration.AlCa.GlobalTag import GlobalTag
+process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run2_mc', '')
+from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
+switchOnVIDElectronIdProducer(process, DataFormat.MiniAOD)
+my_id_modules = ['RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Spring15_25ns_V1_cff',
+                 'RecoEgamma.ElectronIdentification.Identification.heepElectronID_HEEPV60_cff']
+for idmod in my_id_modules:
+    setupAllVIDIdsInModule(process,idmod,setupVIDElectronSelection)
+
+
 process.cleanedMuons = cms.EDProducer("PATMuonCleanerBySegments",
     src = cms.InputTag("slimmedMuons"),#("calibratedMuons"),
     preselection = cms.string("track.isNonnull"),
@@ -39,7 +52,12 @@ process.ntuple = cms.EDAnalyzer('Ntuple',
     electronSet = cms.PSet(
         electrons = cms.InputTag("slimmedElectrons"),
         vertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
-        electron1id = cms.int32(1), # 0: veto, 1: loose
+        eleVetoIdMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-veto"),
+        eleLooseIdMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-loose"),
+        eleMediumIdMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-medium"),
+        eleTightIdMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-tight"),
+        eleHEEPIdMap = cms.InputTag("egmGsfElectronIDs:heepElectronID-HEEPV60"),
+        electron1id = cms.int32(1), # 0: veto, 1: loose, 2: medium, 3: tight, 4: HEEP
         electron2id = cms.int32(1),
         electron1iso = cms.int32(1), # 0: veto, 1: standard
         electron2iso = cms.int32(1),
@@ -101,5 +119,6 @@ process.ntuple = cms.EDAnalyzer('Ntuple',
 #  )
 #)
 
-process.seq = cms.Sequence(process.cleanedMuons * process.ntuple)
+process.seq = cms.Sequence(process.egmGsfElectronIDSequence * process.cleanedMuons * process.ntuple)
+#process.seq = cms.Sequence(process.cleanedMuons * process.ntuple)
 process.p = cms.Path(process.seq)

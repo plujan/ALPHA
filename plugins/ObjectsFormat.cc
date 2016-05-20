@@ -28,7 +28,7 @@ void ObjectsFormat::FillElectronType(LeptonType& I, const pat::Electron* R, bool
     I.isLoose     = R->hasUserInt("isLoose") ? R->userInt("isLoose") : false;
     I.isMedium    = R->hasUserInt("isMedium") ? R->userInt("isMedium") : false;
     I.isTight     = R->hasUserInt("isTight") ? R->userInt("isTight") : false;
-    I.isHighpt    = R->hasUserInt("isHighpt") ? R->userInt("isHighpt") : false;
+    I.isHEEP      = R->hasUserInt("isHEEP") ? R->userInt("isHEEP") : false;
     if(isMC && R->genLepton()) I.isMatched = false;//(Utilities::FindMotherId(dynamic_cast<const reco::Candidate*>(R->genLepton()))==23);
 }
 
@@ -80,11 +80,12 @@ void ObjectsFormat::ResetLeptonType(LeptonType& I) {
     I.isLoose     = false;
     I.isMedium    = false;
     I.isTight     = false;
+    I.isHEEP     = false;
     I.isHighpt    = false;
     I.isMatched   = false;
 }
 
-std::string ObjectsFormat::ListLeptonType() {return "pt/F:eta/F:phi/F:mass/F:energy/F:charge/I:pdgId/I:pfIso03/F:pfIso04/F:trkIso/F:miniIso/F:dxy/F:dz/F:dPhi_met/F:isElectron/O:isMuon/O:isVeto/O:isLoose/O:isMedium/O:isTight/O:isHighpt/O:isMatched/O";}
+std::string ObjectsFormat::ListLeptonType() {return "pt/F:eta/F:phi/F:mass/F:energy/F:charge/I:pdgId/I:pfIso03/F:pfIso04/F:trkIso/F:miniIso/F:dxy/F:dz/F:dPhi_met/F:isElectron/O:isMuon/O:isVeto/O:isLoose/O:isMedium/O:isTight/O:isHEEP/O:isHighpt/O:isMatched/O";}
 
 //*******************//
 //        Jets       //
