@@ -4,7 +4,7 @@ import os
 process = cms.Process("ALPHA")
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
-#process.MessageLogger.cerr.threshold = 'ERROR'
+process.MessageLogger.cerr.threshold = 'ERROR'
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
