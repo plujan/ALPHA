@@ -150,7 +150,16 @@ std::vector<pat::Muon> MuonAnalyzer::FillMuonVector(const edm::Event& iEvent) {
 
 
 bool MuonAnalyzer::IsCustomTracker(pat::Muon& mu, const reco::Vertex* vertex) {
-    return false;
+    if(!(mu.isMuon())) return false;
+    if(!(mu.isTrackerMuon())) return false;
+    if(!(mu.numberOfMatchedStations() > 1)) return false;
+    if(!(mu.bestTrack()->ptError()/mu.bestTrack()->pt() < 0.3)) return false;
+    if(!(abs( mu.bestTrack()->dxy(vertex->position()) ) < 0.2) ) return false;
+    if(!(abs( mu.bestTrack()->dz(vertex->position()) ) < 0.5) ) return false;
+    if(!(mu.innerTrack().isNonnull())) return false;
+    if(!(mu.innerTrack()->hitPattern().numberOfValidPixelHits() > 0)) return false;
+    if(!(mu.innerTrack()->hitPattern().trackerLayersWithMeasurement() > 5)) return false;
+    return true;
 }
 
 
