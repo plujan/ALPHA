@@ -28,16 +28,22 @@ class ElectronAnalyzer {
         ElectronAnalyzer(const edm::ParameterSet&, edm::ConsumesCollector&&);
         ~ElectronAnalyzer();
         virtual std::vector<pat::Electron> FillElectronVector(const edm::Event&);
-        //virtual bool IsElectronCut(pat::Electron&, const reco::Vertex*, int);
-        //virtual bool IsLooseElectron(pat::Electron&, const reco::Vertex*);
-        //virtual bool IsLooseMVAElectron(pat::Electron&);
-        //virtual bool IsTightMVAElectron(pat::Electron&);
         virtual float GetDoubleElectronTriggerSF(pat::Electron&, pat::Electron&);
-        virtual float GetElectronIdSF(pat::Electron&);
-        virtual float GetElectronIdSFError(pat::Electron&);
-        virtual float GetElectronIsoSF(pat::Electron&);
-        virtual float GetElectronIsoSFError(pat::Electron&);
-        virtual float GetLooseElectronSF(pat::Electron&);
+        //virtual float GetLooseElectronSF(pat::Electron&);
+        virtual float GetElectronIdSFVeto(pat::Electron&);
+        virtual float GetElectronIdSFVetoError(pat::Electron&);
+        virtual float GetElectronIdSFLoose(pat::Electron&);
+        virtual float GetElectronIdSFLooseError(pat::Electron&);
+        virtual float GetElectronIdSFMedium(pat::Electron&);
+        virtual float GetElectronIdSFMediumError(pat::Electron&);
+        virtual float GetElectronIdSFTight(pat::Electron&);
+        virtual float GetElectronIdSFTightError(pat::Electron&);
+        virtual float GetElectronIdSFMVATrigMedium(pat::Electron&);
+        virtual float GetElectronIdSFMVATrigMediumError(pat::Electron&);
+        virtual float GetElectronIdSFMVATrigTight(pat::Electron&);
+        virtual float GetElectronIdSFMVATrigTightError(pat::Electron&);
+        virtual float GetElectronRecoEffSF(pat::Electron&);
+        virtual float GetElectronRecoEffSFError(pat::Electron&);
       
     private:
       
@@ -52,21 +58,40 @@ class ElectronAnalyzer {
 	edm::EDGetTokenT<edm::ValueMap<bool>> EleMVANonTrigTightIdMapToken;
 	edm::EDGetTokenT<edm::ValueMap<bool>> EleMVATrigMediumIdMapToken;
 	edm::EDGetTokenT<edm::ValueMap<bool>> EleMVATrigTightIdMapToken;
-        int Electron1Id, Electron2Id, Electron1Iso, Electron2Iso;
+	std::string EleVetoIdFileName;
+	std::string EleLooseIdFileName;
+	std::string EleMediumIdFileName;
+	std::string EleTightIdFileName;
+	std::string EleMVATrigMediumIdFileName;
+	std::string EleMVATrigTightIdFileName;
+	std::string EleRecoEffFileName;
+
+        int Electron1Id, Electron2Id;// Electron1Iso, Electron2Iso;
         float Electron1Pt, Electron2Pt;
-        float EleTriggerPtMax, EleEfficiencyPtMax;
+        float EleTriggerPtMax;
         
-        bool isEleTriggerFile, isEleEfficiencyFile;
+        bool isEleVetoIdFile, isEleLooseIdFile, isEleMediumIdFile, isEleTightIdFile, isEleMVATrigMediumIdFile, isEleMVATrigTightIdFile, isEleTriggerFile, isEleRecoEffFile;
         
         TFile* EleTriggerFile;
-        TFile* EleEfficiencyFile;
+        TFile* EleVetoIdFile;
+        TFile* EleLooseIdFile;
+        TFile* EleMediumIdFile;
+        TFile* EleTightIdFile;
+        TFile* EleMVATrigMediumIdFile;
+        TFile* EleMVATrigTightIdFile;
+        TFile* EleRecoEffFile;
         
         TH2F* EleTriggerDATAHighLeg;
         TH2F* EleTriggerDATALowLeg;
         TH2F* EleTriggerMCHighLeg;
         TH2F* EleTriggerMCLowLeg;
-        TH2F* ElectronId;
-        TH2F* ElectronIso;
+        TH2F* ElectronIdVeto;
+        TH2F* ElectronIdLoose;
+        TH2F* ElectronIdMedium;
+        TH2F* ElectronIdTight;
+        TH2F* ElectronIdMVATrigMedium;
+        TH2F* ElectronIdMVATrigTight;
+        TH2F* ElectronRecoEff;
 };
 
 
