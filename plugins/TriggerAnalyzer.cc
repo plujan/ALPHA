@@ -19,8 +19,8 @@ TriggerAnalyzer::~TriggerAnalyzer() {
 
 // ---------- TRIGGER ----------
 
-int TriggerAnalyzer::FillTriggerBitmap(const edm::Event& iEvent, std::vector<std::string> Vect) {
-    unsigned int n=Vect.size();
+int TriggerAnalyzer::FillTriggerBitmap(const edm::Event& iEvent, std::vector<std::string> Triggers) {
+    unsigned int n=Triggers.size();
     std::vector<bool> Fired(n);
 
     edm::Handle<edm::TriggerResults> hltTriggerResults;
@@ -29,7 +29,7 @@ int TriggerAnalyzer::FillTriggerBitmap(const edm::Event& iEvent, std::vector<std
     // Get Trigger index
     for(unsigned int i=0, in=trigNames.size(); i<in; i++) {
       for(unsigned int j=0; j<n; j++) {
-        if(trigNames.triggerName(i).find(Vect[j])!=std::string::npos) {
+        if(trigNames.triggerName(i).find(Triggers[j])!=std::string::npos) {
           unsigned int index=trigNames.triggerIndex(trigNames.triggerName(i));
           Fired[j]=hltTriggerResults->accept(index);
         }
