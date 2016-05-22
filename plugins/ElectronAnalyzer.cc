@@ -14,17 +14,24 @@ ElectronAnalyzer::ElectronAnalyzer(const edm::ParameterSet& PSet, edm::ConsumesC
     EleMVANonTrigTightIdMapToken(CColl.consumes<edm::ValueMap<bool>>(PSet.getParameter<edm::InputTag>("eleMVANonTrigTightIdMap"))),
     EleMVATrigMediumIdMapToken(CColl.consumes<edm::ValueMap<bool>>(PSet.getParameter<edm::InputTag>("eleMVATrigMediumIdMap"))),
     EleMVATrigTightIdMapToken(CColl.consumes<edm::ValueMap<bool>>(PSet.getParameter<edm::InputTag>("eleMVATrigTightIdMap"))),
+    EleVetoIdFileName(PSet.getParameter<std::string>("eleVetoIdFileName")),
+    EleLooseIdFileName(PSet.getParameter<std::string>("eleLooseIdFileName")),
+    EleMediumIdFileName(PSet.getParameter<std::string>("eleMediumIdFileName")),
+    EleTightIdFileName(PSet.getParameter<std::string>("eleTightIdFileName")),
+    EleMVATrigMediumIdFileName(PSet.getParameter<std::string>("eleMVATrigMediumIdFileName")),
+    EleMVATrigTightIdFileName(PSet.getParameter<std::string>("eleMVATrigTightIdFileName")),
+    EleRecoEffFileName(PSet.getParameter<std::string>("eleRecoEffFileName")),
     Electron1Id(PSet.getParameter<int>("electron1id")),
     Electron2Id(PSet.getParameter<int>("electron2id")),
-    Electron1Iso(PSet.getParameter<int>("electron1iso")),
-    Electron2Iso(PSet.getParameter<int>("electron2iso")),
+    //Electron1Iso(PSet.getParameter<int>("electron1iso")),
+    //Electron2Iso(PSet.getParameter<int>("electron2iso")),
     Electron1Pt(PSet.getParameter<double>("electron1pt")),
     Electron2Pt(PSet.getParameter<double>("electron2pt"))
 {
-    isEleTriggerFile=isEleEfficiencyFile=false;
+    isEleVetoIdFile = isEleLooseIdFile = isEleMediumIdFile = isEleTightIdFile = isEleRecoEffFile = isEleTriggerFile=false;
     
-    // AN-13-022
-    // Electron trigger
+    // AN-13-022, obsolete!!
+    // Electron trigger, obsolete!!!
     EleTriggerFile=new TFile("data/DETrigger.root", "READ");
     if(!EleTriggerFile->IsZombie()) {
         EleTriggerDATAHighLeg=(TH2F*)EleTriggerFile->Get("test/DATA_Ele17Leg");
@@ -35,25 +42,94 @@ ElectronAnalyzer::ElectronAnalyzer(const edm::ParameterSet& PSet, edm::ConsumesC
     }
     else std::cout << " - ElectronAnalyzer Warning: No EleTrigger Weight File" << std::endl;
     
-    // Electron reco+id+iso
-    // https://twiki.cern.ch/twiki/bin/viewauth/CMS/MultivariateElectronIdentification#Triggering_MVA
-    EleEfficiencyFile=new TFile("data/electrons_scale_factors.root", "READ");
-    if(!EleEfficiencyFile->IsZombie()) {
-        ElectronId=(TH2F*)EleEfficiencyFile->Get("electronsDATAMCratio_FO_ID");
-        ElectronIso=(TH2F*)EleEfficiencyFile->Get("electronsDATAMCratio_FO_ISO");
-        isEleEfficiencyFile=true;
+
+    // Electron reco SF 2015-2016
+    EleRecoEffFile=new TFile(EleRecoEffFileName.c_str(), "READ");
+    if(!EleRecoEffFile->IsZombie()) {
+      ElectronRecoEff=(TH2F*)EleRecoEffFile->Get("EGamma_SF2D");
+      isEleRecoEffFile=true;
     }
-    else std::cout << " - ElectronAnalyzer Warning: No EleEfficiency Weight File" << std::endl;
+    else {
+      throw cms::Exception("ElectronAnalyzer", "No EleRecoEff Weight File");
+      return;
+    }
+
+    // Electron id SF, 2015-2016
+    EleVetoIdFile=new TFile(EleVetoIdFileName.c_str(), "READ");
+    if(!EleVetoIdFile->IsZombie()) {
+      ElectronIdVeto=(TH2F*)EleVetoIdFile->Get("EGamma_SF2D");
+      isEleVetoIdFile=true;
+    }
+    else {
+      throw cms::Exception("ElectronAnalyzer", "No EleVetoId Weight File");
+      return;
+    }
+
+    EleLooseIdFile=new TFile(EleLooseIdFileName.c_str(), "READ");
+    if(!EleLooseIdFile->IsZombie()) {
+      ElectronIdLoose=(TH2F*)EleLooseIdFile->Get("EGamma_SF2D");
+      isEleLooseIdFile=true;
+    }
+    else {
+      throw cms::Exception("ElectronAnalyzer", "No EleLooseId Weight File");
+      return;
+    }
+
+    EleMediumIdFile=new TFile(EleMediumIdFileName.c_str(), "READ");
+    if(!EleMediumIdFile->IsZombie()) {
+      ElectronIdMedium=(TH2F*)EleMediumIdFile->Get("EGamma_SF2D");
+      isEleMediumIdFile=true;
+    }
+    else {
+      throw cms::Exception("ElectronAnalyzer", "No EleMediumId Weight File");
+      return;
+    }
+
+    EleTightIdFile=new TFile(EleTightIdFileName.c_str(), "READ");
+    if(!EleTightIdFile->IsZombie()) {
+      ElectronIdTight=(TH2F*)EleTightIdFile->Get("EGamma_SF2D");
+      isEleTightIdFile=true;
+    }
+    else {
+      throw cms::Exception("ElectronAnalyzer", "No EleTightId Weight File");
+      return;
+    }
+
+    EleMVATrigMediumIdFile=new TFile(EleMVATrigMediumIdFileName.c_str(), "READ");
+    if(!EleMVATrigMediumIdFile->IsZombie()) {
+      ElectronIdMVATrigMedium=(TH2F*)EleMVATrigMediumIdFile->Get("EGamma_SF2D");
+      isEleMVATrigMediumIdFile=true;
+    }
+    else {
+      throw cms::Exception("ElectronAnalyzer", "No EleMVATrigMediumId Weight File");
+      return;
+    }
+
+    EleMVATrigTightIdFile=new TFile(EleMVATrigTightIdFileName.c_str(), "READ");
+    if(!EleMVATrigTightIdFile->IsZombie()) {
+      ElectronIdMVATrigTight=(TH2F*)EleMVATrigTightIdFile->Get("EGamma_SF2D");
+      isEleMVATrigTightIdFile=true;
+    }
+    else {
+      throw cms::Exception("ElectronAnalyzer", "No EleMVATrigTightId Weight File");
+      return;
+    }
     
     std::cout << " - ElectronAnalyzer initialized:" << std::endl;
     std::cout << "Id  :\t" << Electron1Id << "\t" << Electron2Id << std::endl;
-    std::cout << "Iso :\t" << Electron1Iso << "\t" << Electron2Iso << std::endl;
+    //std::cout << "Iso :\t" << Electron1Iso << "\t" << Electron2Iso << std::endl;
     std::cout << "pT  :\t" << Electron1Pt << "\t" << Electron2Pt << std::endl;
 }
 
 ElectronAnalyzer::~ElectronAnalyzer() {
     EleTriggerFile->Close();
-    EleEfficiencyFile->Close();
+    EleVetoIdFile->Close();
+    EleLooseIdFile->Close();
+    EleMediumIdFile->Close();
+    EleTightIdFile->Close();
+    EleMVATrigMediumIdFile->Close();
+    EleMVATrigTightIdFile->Close();
+    EleRecoEffFile->Close();
 }
 
 
@@ -61,8 +137,8 @@ ElectronAnalyzer::~ElectronAnalyzer() {
 
 
 std::vector<pat::Electron> ElectronAnalyzer::FillElectronVector(const edm::Event& iEvent) {
-    bool isMC(!iEvent.isRealData());
-    int IdTh(Electron1Id), IsoTh(Electron1Iso);
+    //bool isMC(!iEvent.isRealData());
+    int IdTh(Electron1Id);//, IsoTh(Electron1Iso);
     float PtTh(Electron1Pt);
     std::vector<pat::Electron> Vect;
     // Declare and open collection
@@ -101,7 +177,7 @@ std::vector<pat::Electron> ElectronAnalyzer::FillElectronVector(const edm::Event
     for(std::vector<pat::Electron>::const_iterator it=EleCollection->begin(); it!=EleCollection->end(); ++it) {
         if(Vect.size()>0) {
             IdTh=Electron2Id;
-            IsoTh=Electron2Iso;
+            //IsoTh=Electron2Iso;
             PtTh=Electron2Pt;
         }
         pat::Electron el=*it;
@@ -111,7 +187,7 @@ std::vector<pat::Electron> ElectronAnalyzer::FillElectronVector(const edm::Event
         // PF (?) Isolation R=0.4 https://twiki.cern.ch/twiki/bin/viewauth/CMS/EgammaPFBasedIsolation#for_PAT_electron_users_using_sta
         float pfIso04 = ( el.chargedHadronIso() + std::max(el.neutralHadronIso() + el.photonIso() - 0.5*el.puChargedHadronIso(), 0.) ) / el.pt();
         float pfIso03 = ( el.pfIsolationVariables().sumChargedHadronPt + std::max(el.pfIsolationVariables().sumNeutralHadronEt + el.pfIsolationVariables().sumPhotonEt - 0.5*el.pfIsolationVariables().sumPUPt, 0.) ) / el.pt();
-        if(IsoTh==1 && pfIso03>0.15) continue;
+        //if(IsoTh==1 && pfIso03>0.15) continue;
 
         //Electron CutBased and HEEP ID 2015-2016, https://twiki.cern.ch/twiki/bin/viewauth/CMS/EgammaIDRecipesRun2
         bool isPassVeto = (*VetoIdDecisions)[elRef];
@@ -157,8 +233,129 @@ std::vector<pat::Electron> ElectronAnalyzer::FillElectronVector(const edm::Event
     return Vect;
 }
 
-/*
 
+float ElectronAnalyzer::GetDoubleElectronTriggerSF(pat::Electron& el1, pat::Electron& el2) { //obsolete!
+    if(!isEleTriggerFile) return 1.;
+    float pt1=el1.pt(), pt2=el2.pt();
+    float eta1(fabs(el1.eta())), eta2(fabs(el2.eta()));
+    if(pt1>=EleTriggerPtMax) pt1=EleTriggerPtMax-1.;
+    if(pt2>=EleTriggerPtMax) pt2=EleTriggerPtMax-1.;
+    
+    float effDATAHighEle1 = EleTriggerDATAHighLeg->GetBinContent(EleTriggerDATAHighLeg->FindBin(pt1, eta1));
+    float effDATALowEle2 = EleTriggerDATALowLeg->GetBinContent(EleTriggerDATALowLeg->FindBin(pt2, eta2));
+    float effDATAHighEle2 = EleTriggerDATAHighLeg->GetBinContent(EleTriggerDATAHighLeg->FindBin(pt2, eta2));
+    float effDATALowEle1 = EleTriggerDATALowLeg->GetBinContent(EleTriggerDATALowLeg->FindBin(pt1, eta1));
+    
+    float effMCHighEle1 = EleTriggerMCHighLeg->GetBinContent(EleTriggerMCHighLeg->FindBin(pt1, eta1));
+    float effMCLowEle2 = EleTriggerMCLowLeg->GetBinContent(EleTriggerMCLowLeg->FindBin(pt2, eta2));
+    float effMCHighEle2 = EleTriggerMCHighLeg->GetBinContent(EleTriggerMCHighLeg->FindBin(pt2, eta2));
+    float effMCLowEle1 = EleTriggerMCLowLeg->GetBinContent(EleTriggerMCLowLeg->FindBin(pt1, eta1));
+    
+    float effDATA = effDATAHighEle1*effDATALowEle2 + effDATALowEle1*effDATAHighEle2 - effDATAHighEle1*effDATAHighEle2;
+    float effMC = effMCHighEle1*effMCLowEle2 + effMCLowEle1*effMCHighEle2 - effMCHighEle1*effMCHighEle2;
+    return effDATA/effMC;
+}
+
+float ElectronAnalyzer::GetElectronRecoEffSF(pat::Electron& el) {
+    if(!isEleRecoEffFile) return 1.;
+    double pt = std::min( std::max( ElectronRecoEff->GetYaxis()->GetXmin(), el.pt() ) , ElectronRecoEff->GetYaxis()->GetXmax() - 0.000001 );
+    double abseta = std::min( ElectronRecoEff->GetXaxis()->GetXmax() - 0.000001 , fabs(el.eta()) );
+    return ElectronRecoEff->GetBinContent(ElectronRecoEff->FindBin(abseta, pt));
+}
+
+float ElectronAnalyzer::GetElectronRecoEffSFError(pat::Electron& el) {
+    if(!isEleRecoEffFile) return 1.;
+    double pt = std::min( std::max( ElectronRecoEff->GetYaxis()->GetXmin(), el.pt() ) , ElectronRecoEff->GetYaxis()->GetXmax() - 0.000001 );
+    double abseta = std::min( ElectronRecoEff->GetXaxis()->GetXmax() - 0.000001 , fabs(el.eta()) );
+    return ElectronRecoEff->GetBinError(ElectronRecoEff->FindBin(abseta, pt));
+}
+
+float ElectronAnalyzer::GetElectronIdSFVeto(pat::Electron& el) {
+    if(!isEleVetoIdFile) return 1.;
+    double pt = std::min( std::max( ElectronIdVeto->GetYaxis()->GetXmin(), el.pt() ) , ElectronIdVeto->GetYaxis()->GetXmax() - 0.000001 );
+    double abseta = std::min( ElectronIdVeto->GetXaxis()->GetXmax() - 0.000001 , fabs(el.eta()) );
+    return ElectronIdVeto->GetBinContent(ElectronIdVeto->FindBin(abseta, pt));
+}
+
+float ElectronAnalyzer::GetElectronIdSFVetoError(pat::Electron& el) {
+    if(!isEleVetoIdFile) return 1.;
+    double pt = std::min( std::max( ElectronIdVeto->GetYaxis()->GetXmin(), el.pt() ) , ElectronIdVeto->GetYaxis()->GetXmax() - 0.000001 );
+    double abseta = std::min( ElectronIdVeto->GetXaxis()->GetXmax() - 0.000001 , fabs(el.eta()) );
+    return ElectronIdVeto->GetBinError(ElectronIdVeto->FindBin(abseta, pt));
+}
+
+float ElectronAnalyzer::GetElectronIdSFLoose(pat::Electron& el) {
+    if(!isEleLooseIdFile) return 1.;
+    double pt = std::min( std::max( ElectronIdLoose->GetYaxis()->GetXmin(), el.pt() ) , ElectronIdLoose->GetYaxis()->GetXmax() - 0.000001 );
+    double abseta = std::min( ElectronIdLoose->GetXaxis()->GetXmax() - 0.000001 , fabs(el.eta()) );
+    return ElectronIdLoose->GetBinContent(ElectronIdLoose->FindBin(abseta, pt));
+}
+
+float ElectronAnalyzer::GetElectronIdSFLooseError(pat::Electron& el) {
+    if(!isEleLooseIdFile) return 1.;
+    double pt = std::min( std::max( ElectronIdLoose->GetYaxis()->GetXmin(), el.pt() ) , ElectronIdLoose->GetYaxis()->GetXmax() - 0.000001 );
+    double abseta = std::min( ElectronIdLoose->GetXaxis()->GetXmax() - 0.000001 , fabs(el.eta()) );
+    return ElectronIdLoose->GetBinError(ElectronIdLoose->FindBin(abseta, pt));
+}
+
+float ElectronAnalyzer::GetElectronIdSFMedium(pat::Electron& el) {
+    if(!isEleMediumIdFile) return 1.;
+    double pt = std::min( std::max( ElectronIdMedium->GetYaxis()->GetXmin(), el.pt() ) , ElectronIdMedium->GetYaxis()->GetXmax() - 0.000001 );
+    double abseta = std::min( ElectronIdMedium->GetXaxis()->GetXmax() - 0.000001 , fabs(el.eta()) );
+    return ElectronIdMedium->GetBinContent(ElectronIdMedium->FindBin(abseta, pt));
+}
+
+float ElectronAnalyzer::GetElectronIdSFMediumError(pat::Electron& el) {
+    if(!isEleMediumIdFile) return 1.;
+    double pt = std::min( std::max( ElectronIdMedium->GetYaxis()->GetXmin(), el.pt() ) , ElectronIdMedium->GetYaxis()->GetXmax() - 0.000001 );
+    double abseta = std::min( ElectronIdMedium->GetXaxis()->GetXmax() - 0.000001 , fabs(el.eta()) );
+    return ElectronIdMedium->GetBinError(ElectronIdMedium->FindBin(abseta, pt));
+}
+
+float ElectronAnalyzer::GetElectronIdSFTight(pat::Electron& el) {
+    if(!isEleTightIdFile) return 1.;
+    double pt = std::min( std::max( ElectronIdTight->GetYaxis()->GetXmin(), el.pt() ) , ElectronIdTight->GetYaxis()->GetXmax() - 0.000001 );
+    double abseta = std::min( ElectronIdTight->GetXaxis()->GetXmax() - 0.000001 , fabs(el.eta()) );
+    return ElectronIdTight->GetBinContent(ElectronIdTight->FindBin(abseta, pt));
+}
+
+float ElectronAnalyzer::GetElectronIdSFTightError(pat::Electron& el) {
+    if(!isEleTightIdFile) return 1.;
+    double pt = std::min( std::max( ElectronIdTight->GetYaxis()->GetXmin(), el.pt() ) , ElectronIdTight->GetYaxis()->GetXmax() - 0.000001 );
+    double abseta = std::min( ElectronIdTight->GetXaxis()->GetXmax() - 0.000001 , fabs(el.eta()) );
+    return ElectronIdTight->GetBinError(ElectronIdTight->FindBin(abseta, pt));
+}
+
+float ElectronAnalyzer::GetElectronIdSFMVATrigMedium(pat::Electron& el) {
+    if(!isEleMVATrigMediumIdFile) return 1.;
+    double pt = std::min( std::max( ElectronIdMVATrigMedium->GetYaxis()->GetXmin(), el.pt() ) , ElectronIdMVATrigMedium->GetYaxis()->GetXmax() - 0.000001 );
+    double abseta = std::min( ElectronIdMVATrigMedium->GetXaxis()->GetXmax() - 0.000001 , fabs(el.eta()) );
+    return ElectronIdMVATrigMedium->GetBinContent(ElectronIdMVATrigMedium->FindBin(abseta, pt));
+}
+
+float ElectronAnalyzer::GetElectronIdSFMVATrigMediumError(pat::Electron& el) {
+    if(!isEleMVATrigMediumIdFile) return 1.;
+    double pt = std::min( std::max( ElectronIdMVATrigMedium->GetYaxis()->GetXmin(), el.pt() ) , ElectronIdMVATrigMedium->GetYaxis()->GetXmax() - 0.000001 );
+    double abseta = std::min( ElectronIdMVATrigMedium->GetXaxis()->GetXmax() - 0.000001 , fabs(el.eta()) );
+    return ElectronIdMVATrigMedium->GetBinError(ElectronIdMVATrigMedium->FindBin(abseta, pt));
+}
+
+float ElectronAnalyzer::GetElectronIdSFMVATrigTight(pat::Electron& el) {
+    if(!isEleMVATrigTightIdFile) return 1.;
+    double pt = std::min( std::max( ElectronIdMVATrigTight->GetYaxis()->GetXmin(), el.pt() ) , ElectronIdMVATrigTight->GetYaxis()->GetXmax() - 0.000001 );
+    double abseta = std::min( ElectronIdMVATrigTight->GetXaxis()->GetXmax() - 0.000001 , fabs(el.eta()) );
+    return ElectronIdMVATrigTight->GetBinContent(ElectronIdMVATrigTight->FindBin(abseta, pt));
+}
+
+float ElectronAnalyzer::GetElectronIdSFMVATrigTightError(pat::Electron& el) {
+    if(!isEleMVATrigTightIdFile) return 1.;
+    double pt = std::min( std::max( ElectronIdMVATrigTight->GetYaxis()->GetXmin(), el.pt() ) , ElectronIdMVATrigTight->GetYaxis()->GetXmax() - 0.000001 );
+    double abseta = std::min( ElectronIdMVATrigTight->GetXaxis()->GetXmax() - 0.000001 , fabs(el.eta()) );
+    return ElectronIdMVATrigTight->GetBinError(ElectronIdMVATrigTight->FindBin(abseta, pt));
+}
+
+
+/*
 //// Obsolete Electron ID for Run1
 
 // Electron Cut-based Quality ID: see https://twiki.cern.ch/twiki/bin/view/CMS/EgammaCutBasedIdentification#Electron_ID_Working_Points
@@ -228,8 +425,6 @@ bool ElectronAnalyzer::IsLooseElectron(pat::Electron& el, const reco::Vertex* ve
     return false;
 }
 
-
-
 bool ElectronAnalyzer::IsLooseMVAElectron(pat::Electron& el) {
     //if(el.gsfTrack()->hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS)>0) return false;
     float mva=el.electronID("mvaTrigV0");
@@ -270,57 +465,6 @@ bool ElectronAnalyzer::IsTightMVAElectron(pat::Electron& el) {
     return true;
 }
 
-*/
-
-float ElectronAnalyzer::GetDoubleElectronTriggerSF(pat::Electron& el1, pat::Electron& el2) {
-    if(!isEleTriggerFile) return 1.;
-    float pt1=el1.pt(), pt2=el2.pt();
-    float eta1(fabs(el1.eta())), eta2(fabs(el2.eta()));
-    if(pt1>=EleTriggerPtMax) pt1=EleTriggerPtMax-1.;
-    if(pt2>=EleTriggerPtMax) pt2=EleTriggerPtMax-1.;
-    
-    float effDATAHighEle1 = EleTriggerDATAHighLeg->GetBinContent(EleTriggerDATAHighLeg->FindBin(pt1, eta1));
-    float effDATALowEle2 = EleTriggerDATALowLeg->GetBinContent(EleTriggerDATALowLeg->FindBin(pt2, eta2));
-    float effDATAHighEle2 = EleTriggerDATAHighLeg->GetBinContent(EleTriggerDATAHighLeg->FindBin(pt2, eta2));
-    float effDATALowEle1 = EleTriggerDATALowLeg->GetBinContent(EleTriggerDATALowLeg->FindBin(pt1, eta1));
-    
-    float effMCHighEle1 = EleTriggerMCHighLeg->GetBinContent(EleTriggerMCHighLeg->FindBin(pt1, eta1));
-    float effMCLowEle2 = EleTriggerMCLowLeg->GetBinContent(EleTriggerMCLowLeg->FindBin(pt2, eta2));
-    float effMCHighEle2 = EleTriggerMCHighLeg->GetBinContent(EleTriggerMCHighLeg->FindBin(pt2, eta2));
-    float effMCLowEle1 = EleTriggerMCLowLeg->GetBinContent(EleTriggerMCLowLeg->FindBin(pt1, eta1));
-    
-    float effDATA = effDATAHighEle1*effDATALowEle2 + effDATALowEle1*effDATAHighEle2 - effDATAHighEle1*effDATAHighEle2;
-    float effMC = effMCHighEle1*effMCLowEle2 + effMCLowEle1*effMCHighEle2 - effMCHighEle1*effMCHighEle2;
-    return effDATA/effMC;
-}
-
-float ElectronAnalyzer::GetElectronIdSF(pat::Electron& el) {
-    if(!isEleEfficiencyFile) return 1.;
-    float pt(el.pt()), eta(fabs(el.eta()));
-    if(pt>=EleEfficiencyPtMax) pt=EleEfficiencyPtMax-1.;
-    return ElectronId->GetBinContent(ElectronId->FindBin(eta, pt));
-}
-
-float ElectronAnalyzer::GetElectronIdSFError(pat::Electron& el) {
-    if(!isEleEfficiencyFile) return 1.;
-    float pt(el.pt()), eta(fabs(el.eta()));
-    if(pt>=EleEfficiencyPtMax) pt=EleEfficiencyPtMax-1.;
-    return ElectronId->GetBinError(ElectronId->FindBin(eta, pt));
-}
-
-float ElectronAnalyzer::GetElectronIsoSF(pat::Electron& el) {
-    if(!isEleEfficiencyFile) return 1.;
-    float pt(el.pt()), eta(fabs(el.eta()));
-    if(pt>=EleEfficiencyPtMax) pt=EleEfficiencyPtMax-1.;
-    return ElectronIso->GetBinContent(ElectronIso->FindBin(eta, pt));
-}
-
-float ElectronAnalyzer::GetElectronIsoSFError(pat::Electron& el) {
-    if(!isEleEfficiencyFile) return 1.;
-    float pt(el.pt()), eta(fabs(el.eta()));
-    if(pt>=EleEfficiencyPtMax) pt=EleEfficiencyPtMax-1.;
-    return ElectronIso->GetBinError(ElectronIso->FindBin(eta, pt));
-}
 
 // https://twiki.cern.ch/twiki/bin/view/Main/EGammaScaleFactors2012#2012_8_TeV_data_53X
 float ElectronAnalyzer::GetLooseElectronSF(pat::Electron& el) {
@@ -371,4 +515,4 @@ float ElectronAnalyzer::GetLooseElectronSF(pat::Electron& el) {
     return 1.;
 }
 
-
+*/

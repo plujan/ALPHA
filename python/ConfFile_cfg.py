@@ -21,7 +21,7 @@ process.TFileService = cms.Service("TFileService",
     closeFileFast = cms.untracked.bool(True)
 )
 
-#electrons first attempt
+#electrons upstream modules
 process.load("Configuration.StandardSequences.GeometryRecoDB_cff")
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 from Configuration.AlCa.GlobalTag import GlobalTag
@@ -35,7 +35,7 @@ my_id_modules = ['RecoEgamma.ElectronIdentification.Identification.cutBasedElect
 for idmod in my_id_modules:
     setupAllVIDIdsInModule(process,idmod,setupVIDElectronSelection)
 
-
+#muons upstream modules
 process.cleanedMuons = cms.EDProducer("PATMuonCleanerBySegments",
     src = cms.InputTag("slimmedMuons"),#("calibratedMuons"),
     preselection = cms.string("track.isNonnull"),
@@ -63,10 +63,17 @@ process.ntuple = cms.EDAnalyzer('Ntuple',
         eleMVANonTrigTightIdMap = cms.InputTag("egmGsfElectronIDs:mvaEleID-Spring15-25ns-nonTrig-V1-wp80"),
         eleMVATrigMediumIdMap = cms.InputTag("egmGsfElectronIDs:mvaEleID-Spring15-25ns-Trig-V1-wp90"),
         eleMVATrigTightIdMap = cms.InputTag("egmGsfElectronIDs:mvaEleID-Spring15-25ns-Trig-V1-wp80"),
+        eleVetoIdFileName = cms.string('%s/src/Analysis/ALPHA/data/CutBasedID_VetoWP_76X_18Feb.txt_SF2D.root' % os.environ['CMSSW_BASE']),
+        eleLooseIdFileName = cms.string('%s/src/Analysis/ALPHA/data/CutBasedID_LooseWP_76X_18Feb.txt_SF2D.root' % os.environ['CMSSW_BASE']),
+        eleMediumIdFileName = cms.string('%s/src/Analysis/ALPHA/data/CutBasedID_MediumWP_76X_18Feb.txt_SF2D.root' % os.environ['CMSSW_BASE']),
+        eleTightIdFileName = cms.string('%s/src/Analysis/ALPHA/data/CutBasedID_TightWP_76X_18Feb.txt_SF2D.root' % os.environ['CMSSW_BASE']),
+        eleMVATrigMediumIdFileName = cms.string('%s/src/Analysis/ALPHA/data/ScaleFactor_GsfElectronToRECO_passingTrigWP90.txt.egamma_SF2D.root' % os.environ['CMSSW_BASE']),
+        eleMVATrigTightIdFileName = cms.string('%s/src/Analysis/ALPHA/data/ScaleFactor_GsfElectronToRECO_passingTrigWP80.txt.egamma_SF2D.root' % os.environ['CMSSW_BASE']),
+        eleRecoEffFileName = cms.string('%s/src/Analysis/ALPHA/data/eleRECO.txt.egamma_SF2D.root' % os.environ['CMSSW_BASE']),
         electron1id = cms.int32(1), # 0: veto, 1: loose, 2: medium, 3: tight, 4: HEEP, 5: MVA medium nonTrig, 6: MVA tight nonTrig, 7: MVA medium Trig, 8: MVA tight Trig
         electron2id = cms.int32(1),
-        electron1iso = cms.int32(1), # 0: veto, 1: standard
-        electron2iso = cms.int32(1),
+        #electron1iso = cms.int32(1), # 0: veto, 1: standard
+        #electron2iso = cms.int32(1),
         electron1pt = cms.double(20.),
         electron2pt = cms.double(10.),
     ),
