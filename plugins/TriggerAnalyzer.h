@@ -4,6 +4,9 @@
 #include <iostream>
 #include <cmath>
 #include "FWCore/Framework/interface/Event.h"
+#include "FWCore/ParameterSet/interface/ParameterSet.h"
+#include "FWCore/Framework/interface/EDConsumerBase.h"
+#include "FWCore/Framework/interface/ConsumesCollector.h"
 #include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
 #include "FWCore/Common/interface/TriggerNames.h"
 #include "DataFormats/Common/interface/TriggerResults.h"
@@ -16,14 +19,15 @@
 
 class TriggerAnalyzer {
     public:
-        TriggerAnalyzer();
+        TriggerAnalyzer(edm::ParameterSet&, edm::ConsumesCollector&&);
         ~TriggerAnalyzer();
         
         virtual int FillTriggerBitmap(const edm::Event&, std::vector<std::string>);
-
       
     private:
     
+        edm::EDGetTokenT<edm::TriggerResults> TriggerToken;
+        std::vector<std::string> TriggerList;
 };
 
 

@@ -15,6 +15,7 @@ PileupAnalyzer::PileupAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&&
     
     // PU reweighting
     LumiWeights=new edm::LumiReWeighting(MCFileName, DataFileName, MCName, DataName);
+    std::cout << std::endl;
 }
 
 PileupAnalyzer::~PileupAnalyzer() {
