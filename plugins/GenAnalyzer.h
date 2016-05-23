@@ -4,6 +4,9 @@
 #include <iostream>
 #include <cmath>
 #include "FWCore/Framework/interface/Event.h"
+#include "FWCore/ParameterSet/interface/ParameterSet.h"
+#include "FWCore/Framework/interface/EDConsumerBase.h"
+#include "FWCore/Framework/interface/ConsumesCollector.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticleFwd.h"
 #include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
@@ -19,8 +22,9 @@
 
 class GenAnalyzer {
     public:
-        GenAnalyzer();
+        GenAnalyzer(edm::ParameterSet&, edm::ConsumesCollector&&);
         ~GenAnalyzer();
+        virtual std::vector<reco::GenParticle> FillGenVector(const edm::Event&);
         //virtual float GetDYWeight(const edm::Event&);
         virtual float GetPUWeight(const edm::Event&);
     //    virtual float GetPDFWeight(const edm::Event&);
@@ -28,6 +32,7 @@ class GenAnalyzer {
 
       
     private:
+        edm::EDGetTokenT<std::vector<reco::GenParticle> > GenToken;
         /*
         bool isDYFile;
         int npMax;

@@ -44,9 +44,8 @@ process.cleanedMuons = cms.EDProducer("PATMuonCleanerBySegments",
 )
 
 process.ntuple = cms.EDAnalyzer('Ntuple',
-    triggerSet = cms.PSet(
-        trigger = cms.InputTag("TriggerResults"),
-        paths = cms.vstring('HLT_Mu45_eta2p1_v', 'HLT_Mu50_v2', 'HLT_IsoMu20_v', 'HLT_Mu27_TkMu8_v', 'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v', 'HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v', 'HLT_Ele105_CaloIdVT_GsfTrkIdT_v', 'HLT_Ele23_WPLoose_Gsf_v', 'HLT_Ele27_WPLoose_Gsf_v', 'HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v', 'HLT_DoubleEle33_CaloIdL_v'),
+    genSet = cms.PSet(
+        genparticles = cms.InputTag("packedGenParticles"),
     ),
     pileupSet = cms.PSet(
         pileup = cms.InputTag("slimmedAddPileupInfo"),
@@ -54,6 +53,10 @@ process.ntuple = cms.EDAnalyzer('Ntuple',
         mcFileName = cms.string('%s/src/Analysis/ALPHA/data/MC_True.root' % os.environ['CMSSW_BASE']),
         dataName = cms.string('pileup'),
         mcName = cms.string('S10'),
+    ),
+    triggerSet = cms.PSet(
+        trigger = cms.InputTag("TriggerResults"),
+        paths = cms.vstring('HLT_Mu45_eta2p1_v', 'HLT_Mu50_v2', 'HLT_IsoMu20_v', 'HLT_Mu27_TkMu8_v', 'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v', 'HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v', 'HLT_Ele105_CaloIdVT_GsfTrkIdT_v', 'HLT_Ele23_WPLoose_Gsf_v', 'HLT_Ele27_WPLoose_Gsf_v', 'HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v', 'HLT_DoubleEle33_CaloIdL_v'),
     ),
     electronSet = cms.PSet(
         electrons = cms.InputTag("slimmedElectrons"),
