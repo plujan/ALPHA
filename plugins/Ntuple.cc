@@ -30,8 +30,10 @@
 // constructors and destructor
 //
 Ntuple::Ntuple(const edm::ParameterSet& iConfig):
-    TriggerPSet(iConfig.getParameter<edm::ParameterSet>("triggerSet")),
+
+    GenPSet(iConfig.getParameter<edm::ParameterSet>("genSet")),
     PileupPSet(iConfig.getParameter<edm::ParameterSet>("pileupSet")),
+    TriggerPSet(iConfig.getParameter<edm::ParameterSet>("triggerSet")),
     ElectronPSet(iConfig.getParameter<edm::ParameterSet>("electronSet")),
     MuonPSet(iConfig.getParameter<edm::ParameterSet>("muonSet")),
     PhotonPSet(iConfig.getParameter<edm::ParameterSet>("photonSet")),
@@ -46,7 +48,7 @@ Ntuple::Ntuple(const edm::ParameterSet& iConfig):
     usesResource("TFileService");
     
     // Initialize Objects
-    theGenAnalyzer=new GenAnalyzer();
+    theGenAnalyzer=new GenAnalyzer(GenPSet, consumesCollector());
     thePileupAnalyzer=new PileupAnalyzer(PileupPSet, consumesCollector());
     theTriggerAnalyzer=new TriggerAnalyzer(TriggerPSet, consumesCollector());
     theElectronAnalyzer=new ElectronAnalyzer(ElectronPSet, consumesCollector());
@@ -96,6 +98,8 @@ void Ntuple::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     for(int i = 0; i < WriteNLeptons; i++) ObjectsFormat::ResetLeptonType(Leptons[i]);
     for(int i = 0; i < WriteNJets; i++) ObjectsFormat::ResetJetType(Jets[i]);
     ObjectsFormat::ResetMEtType(MEt);
+    
+    // Gen Particles
     
     // Electrons
     std::vector<pat::Electron> ElecVect=theElectronAnalyzer->FillElectronVector(iEvent);

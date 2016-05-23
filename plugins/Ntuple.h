@@ -128,8 +128,9 @@ class Ntuple : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
         virtual void endJob() override;
 
         // ----------member data ---------------------------
-        edm::ParameterSet TriggerPSet;
+        edm::ParameterSet GenPSet;
         edm::ParameterSet PileupPSet;
+        edm::ParameterSet TriggerPSet;
         edm::ParameterSet ElectronPSet;
         edm::ParameterSet MuonPSet;
         edm::ParameterSet PhotonPSet;
