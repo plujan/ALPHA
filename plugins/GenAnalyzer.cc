@@ -1,7 +1,9 @@
 #include "GenAnalyzer.h"
 
 
-GenAnalyzer::GenAnalyzer() {
+GenAnalyzer::GenAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl):
+    GenToken(CColl.consumes<std::vector<reco::GenParticle> >(PSet.getParameter<edm::InputTag>("genparticles")))
+{
     /*
     Sample=sample;
     isDYFile=false;
@@ -26,17 +28,39 @@ GenAnalyzer::GenAnalyzer() {
     */
     
     // PU reweighting
-    LumiWeights=new edm::LumiReWeighting("data/MC_True.root", "data/Prod6.root", "S10", "pileup");
+//    LumiWeights=new edm::LumiReWeighting("data/MC_True.root", "data/Prod6.root", "S10", "pileup");
     
-    std::cout << " - GenAnalyzer initialized" << std::endl;
+    std::cout << " --- GenAnalyzer initialization ---" << std::endl;
+    std::cout << std::endl;
 }
 
 GenAnalyzer::~GenAnalyzer() {
-    delete LumiWeights;
+//    delete LumiWeights;
     /*
     DYFile->Close();
     */
 }
+
+
+
+std::vector<reco::GenParticle> GenAnalyzer::FillGenVector(const edm::Event& iEvent) {
+    bool isMC(!iEvent.isRealData());
+    std::vector<reco::GenParticle> Vect;
+    if(isMC) return Vect;
+    // Declare and open collection
+    edm::Handle<std::vector<reco::GenParticle> > GenCollection;
+    iEvent.getByToken(GenToken, GenCollection);
+    // Loop on Gen Particles collection
+    for(std::vector<reco::GenParticle>::const_iterator it=GenCollection->begin(); it!=GenCollection->end(); ++it) {
+        std::cout << it->pdgId() << "  " << it->pt() << "  " << it->eta() << "  " << it->phi() << "  " << it->mass() << std::endl;
+        reco::GenParticle gen = *it;
+        Vect.push_back(gen); // Fill vector
+    }
+    std::cout << "\n\n\n" << std::endl;
+    return Vect;
+}
+
+
 
 
 // ---------- PILEUP ----------
