@@ -100,13 +100,13 @@ void Ntuple::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     ObjectsFormat::ResetMEtType(MEt);
     
     // Gen Particles
-    
+    std::vector<reco::GenParticle> GenPVect = theGenAnalyzer->FillGenVector(iEvent);
     // Electrons
-    std::vector<pat::Electron> ElecVect=theElectronAnalyzer->FillElectronVector(iEvent);
+    std::vector<pat::Electron> ElecVect = theElectronAnalyzer->FillElectronVector(iEvent);
     // Muons
-    std::vector<pat::Muon> MuonVect=theMuonAnalyzer->FillMuonVector(iEvent);
+    std::vector<pat::Muon> MuonVect = theMuonAnalyzer->FillMuonVector(iEvent);
     // Jets
-    std::vector<pat::Jet> JetsVect=theJetAnalyzer->FillJetVector(iEvent);
+    std::vector<pat::Jet> JetsVect = theJetAnalyzer->FillJetVector(iEvent);
     // Missing Energy
     pat::MET MET = theJetAnalyzer->FillMetVector(iEvent);
     
