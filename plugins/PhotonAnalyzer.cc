@@ -121,7 +121,7 @@ std::vector<pat::Photon> PhotonAnalyzer::FillPhotonVector(const edm::Event& iEve
         if(IdTh==4 && !isPassMVANonTrigMedium) continue;
 
         //Fill user float
-        ph.addUserFloat("PFIso", pfIso);
+        ph.addUserFloat("pfIso", pfIso);
         ph.addUserInt("isLoose", isPassLoose ? 1 : 0);
         ph.addUserInt("isMedium", isPassMedium ? 1 : 0);
         ph.addUserInt("isTight", isPassTight ? 1 : 0);
