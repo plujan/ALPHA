@@ -118,12 +118,8 @@ process.ntuple = cms.EDAnalyzer('Ntuple',
         phoMediumIdFileName = cms.string('%s/src/Analysis/ALPHA/data/Mediumnumbers.txt.egamma_SF2D.root' % os.environ['CMSSW_BASE']),
         phoTightIdFileName = cms.string('%s/src/Analysis/ALPHA/data/Tightnumbers.txt.egamma_SF2D.root' % os.environ['CMSSW_BASE']),
         phoMVANonTrigMediumIdFileName = cms.string('%s/src/Analysis/ALPHA/data/MVAnumbers.txt.egamma_SF2D.root' % os.environ['CMSSW_BASE']),
-        photon1id = cms.int32(1), # 1: loose, 2: medium, 3: tight, 4:MVA NonTrig medium
-        photon2id = cms.int32(1),
-        #photon1iso = cms.int32(0),
-        #photon2iso = cms.int32(0),
-        photon1pt = cms.double(20.),
-        photon2pt = cms.double(10.),
+        photonid = cms.int32(1), # 1: loose, 2: medium, 3: tight, 4:MVA NonTrig medium
+        photonpt = cms.double(20.),
     ),
     jetSet = cms.PSet(
         jets = cms.InputTag("slimmedJetsAK8"), #selectedPatJetsAK8PFCHSPrunedPacked
@@ -142,7 +138,7 @@ process.ntuple = cms.EDAnalyzer('Ntuple',
     writeNMuons = cms.int32(0),
     writeNLeptons = cms.int32(2),
     writeNJets = cms.int32(2),
-    writeNPhotons = cms.int32(2),
+    writeNPhotons = cms.int32(1),
     verbose  = cms.bool(True),
 )
 
