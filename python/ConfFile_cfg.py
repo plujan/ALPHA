@@ -11,7 +11,8 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 # input
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
-        'file:/lustre/cmswork/pazzini/CMSSW_8_0_4/src/2455D4FC-A5F0-E511-88AC-0025905A48C0.root'
+#        'file:/lustre/cmswork/pazzini/CMSSW_8_0_4/src/2455D4FC-A5F0-E511-88AC-0025905A48C0.root'
+        '/store/user/lbenato/BulkGraviton_ZZ_ZlepZhad_narrow_M800_13TeV-madgraph_MINIAOD_10000ev/BulkGravToZZToZlepZhad_narrow_M-800_13TeV-madgraph_PRIVATE-MC/BulkGraviton_ZZ_ZlepZhad_narrow_M800_13TeV-madgraph_MINIAOD_10000ev/160515_095125/0000/BulkGraviton_ZZ_ZlepZhad_narrow_M800_13TeV-madgraph_MINIAOD_1.root'
     )
 )
 
@@ -28,12 +29,19 @@ from Configuration.AlCa.GlobalTag import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run2_mc', '')
 from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
 switchOnVIDElectronIdProducer(process, DataFormat.MiniAOD)
-my_id_modules = ['RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Spring15_25ns_V1_cff',
+ele_id_modules = ['RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Spring15_25ns_V1_cff',
                  'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Spring15_25ns_nonTrig_V1_cff',
                  'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Spring15_25ns_Trig_V1_cff',
                  'RecoEgamma.ElectronIdentification.Identification.heepElectronID_HEEPV60_cff']
-for idmod in my_id_modules:
-    setupAllVIDIdsInModule(process,idmod,setupVIDElectronSelection)
+for ele_idmod in ele_id_modules:
+    setupAllVIDIdsInModule(process,ele_idmod,setupVIDElectronSelection)
+
+#photons upstream modules
+switchOnVIDPhotonIdProducer(process, DataFormat.MiniAOD)
+ph_id_modules = ['RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_Spring15_25ns_V1_cff',
+                'RecoEgamma.PhotonIdentification.Identification.mvaPhotonID_Spring15_25ns_nonTrig_V2_cff']
+for ph_idmod in ph_id_modules:
+    setupAllVIDIdsInModule(process,ph_idmod,setupVIDPhotonSelection)
 
 #muons upstream modules
 process.cleanedMuons = cms.EDProducer("PATMuonCleanerBySegments",
@@ -102,10 +110,14 @@ process.ntuple = cms.EDAnalyzer('Ntuple',
     photonSet = cms.PSet(
         photons = cms.InputTag("slimmedPhotons"),
         vertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
-        photon1id = cms.int32(1), # 0: veto, 1: loose, 2: medium, 3: tight
-        photon2id = cms.int32(1),
-        photon1iso = cms.int32(0),
-        photon2iso = cms.int32(0),
+#        phoLooseIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-loose"),
+#        phoMediumIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-medium"),
+#        phoTightIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-tight"),
+#        phoMVANonTrigMediumIdMap = cms.InputTag("egmPhotonIDs:mvaPhoID-Spring15-25ns-nonTrig-V2-wp90"),
+        photon1id = cms.int32(0), # 0: dummy true flag, 1: loose, 2: medium, 3: tight, 4:MVA NonTrig medium
+        photon2id = cms.int32(0),
+        #photon1iso = cms.int32(0),
+        #photon2iso = cms.int32(0),
         photon1pt = cms.double(20.),
         photon2pt = cms.double(10.),
     ),
@@ -126,6 +138,7 @@ process.ntuple = cms.EDAnalyzer('Ntuple',
     writeNMuons = cms.int32(0),
     writeNLeptons = cms.int32(2),
     writeNJets = cms.int32(2),
+    writeNPhotons = cms.int32(0),
     verbose  = cms.bool(True),
 )
 

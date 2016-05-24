@@ -22,13 +22,17 @@ class PhotonAnalyzer {
         PhotonAnalyzer(edm::ParameterSet&, edm::ConsumesCollector&&);
         ~PhotonAnalyzer();
         virtual std::vector<pat::Photon> FillPhotonVector(const edm::Event&);
-        virtual bool isLoosePhoton(pat::Photon&, const reco::Vertex*);
+        //virtual bool isLoosePhoton(pat::Photon&, const reco::Vertex*);
       
     private:
       
         edm::EDGetTokenT<std::vector<pat::Photon> > PhotonToken;
         edm::EDGetTokenT<reco::VertexCollection> VertexToken;
-        int Photon1Id, Photon2Id, Photon1Iso, Photon2Iso;
+	//edm::EDGetTokenT<edm::ValueMap<bool>> PhoLooseIdMapToken;
+	//edm::EDGetTokenT<edm::ValueMap<bool>> PhoMediumIdMapToken;
+	//edm::EDGetTokenT<edm::ValueMap<bool>> PhoTightIdMapToken;
+	//edm::EDGetTokenT<edm::ValueMap<bool>> PhoMVANonTrigMediumIdMapToken;
+        int Photon1Id, Photon2Id;//, Photon1Iso, Photon2Iso;
         float Photon1Pt, Photon2Pt;
     
 };

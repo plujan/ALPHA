@@ -209,8 +209,6 @@ std::vector<pat::Electron> ElectronAnalyzer::FillElectronVector(const edm::Event
         if(IdTh==6 && !isPassMVANonTrigTight) continue;
         if(IdTh==7 && !isPassMVATrigMedium) continue;
         if(IdTh==8 && !isPassMVATrigTight) continue;
-
-        ++elIdx;
         
         // Fill userFloat
         el.addUserFloat("pfIso03", pfIso03);
@@ -227,6 +225,9 @@ std::vector<pat::Electron> ElectronAnalyzer::FillElectronVector(const edm::Event
         el.addUserInt("isMVANonTrigTight", isPassMVANonTrigTight ? 1 : 0);
         el.addUserInt("isMVATrigMedium", isPassMVATrigMedium ? 1 : 0);
         el.addUserInt("isMVATrigTight", isPassMVATrigTight ? 1 : 0);
+
+        ++elIdx;
+
         // Fill vector
         Vect.push_back(el);
     }
