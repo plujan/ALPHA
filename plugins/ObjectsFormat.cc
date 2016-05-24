@@ -138,6 +138,47 @@ void ObjectsFormat::ResetPhotonType(PhotonType& I) {
 std::string ObjectsFormat::ListPhotonType() {return "pt/F:eta/F:phi/F:mass/F:energy/F:charge/I:pdgId/I:pfIso/F:dz/F:isLoose/O:isMedium/O:isTight/O:isMVANonTrigMedium/O:isMatched/O";}
 
 
+//********************//
+//       Taus         // 
+//********************//
+
+void ObjectsFormat::FillTauType(TauType& I, const pat::Tau* R, bool isMC) {
+    if(!R) return;
+    I.pt          = R->pt();
+    I.eta         = R->eta();
+    I.phi         = R->phi();
+    I.mass        = R->mass();
+    I.energy      = R->energy();
+    I.charge      = R->charge();
+    I.pdgId       = R->pdgId();
+    I.pfIso       = R->hasUserFloat("pfIso") ? R->userFloat("pfIso") : -1.;
+    I.dz          = R->hasUserFloat("dz") ? R->userFloat("dz") : 0.;
+    I.isLoose     = R->hasUserInt("isLoose") ? R->userInt("isLoose") : false;
+    I.isMedium    = R->hasUserInt("isMedium") ? R->userInt("isMedium") : false;
+    I.isTight     = R->hasUserInt("isTight") ? R->userInt("isTight") : false;
+    if(isMC) I.isMatched = false;//(Utilities::FindMotherId(dynamic_cast<const reco::Candidate*>(R->genLepton()))==23);
+}
+
+
+void ObjectsFormat::ResetTauType(TauType& I) {
+    I.pt          = -1.;
+    I.eta         = -9.;
+    I.phi         = -9.;
+    I.mass        = -1.;
+    I.energy      = -1.;
+    I.charge      = 0;
+    I.pdgId       = 0;
+    I.pfIso       = -1.;
+    I.dz          = -99.;
+    I.isLoose     = false;
+    I.isMedium    = false;
+    I.isTight     = false;
+    I.isMatched   = false;
+}
+
+std::string ObjectsFormat::ListTauType() {return "pt/F:eta/F:phi/F:mass/F:energy/F:charge/I:pdgId/I:pfIso/F:dz/F:isLoose/O:isMedium/O:isTight/O:isMatched/O";}
+
+
 //*******************//
 //        Jets       //
 //*******************//

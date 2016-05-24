@@ -121,6 +121,17 @@ process.ntuple = cms.EDAnalyzer('Ntuple',
         photonid = cms.int32(1), # 1: loose, 2: medium, 3: tight, 4:MVA NonTrig medium
         photonpt = cms.double(20.),
     ),
+    tauSet = cms.PSet(
+        taus = cms.InputTag("slimmedTaus"),
+        vertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
+        taupt = cms.double(20.),
+        taueta = cms.double(9999.),
+        tauIdByDecayMode = cms.int32(0),# 0: not set, 1: old, 2: new
+        tauIdByDeltaBetaIso = cms.int32(0),# 0: not set, 1: loose, 2: medium, 3: tight
+        tauIdByMVAIso = cms.int32(0),# 0: not set, 1: V loose, 2: loose, 3: medium, 4: tight, 5: V tight
+        tauIdByMuonRejection = cms.int32(0),# 0: not set, 1: loose, 2: tight
+        tauIdByElectronRejection = cms.int32(0),# 0: not set, 1: V loose, 2: loose, 3: medium, 4: tight
+    ),
     jetSet = cms.PSet(
         jets = cms.InputTag("slimmedJetsAK8"), #selectedPatJetsAK8PFCHSPrunedPacked
         jetid = cms.int32(1), # 0: no selection, 1: loose, 2: medium, 3: tight
@@ -139,6 +150,7 @@ process.ntuple = cms.EDAnalyzer('Ntuple',
     writeNLeptons = cms.int32(2),
     writeNJets = cms.int32(2),
     writeNPhotons = cms.int32(1),
+    writeNTaus = cms.int32(1),
     verbose  = cms.bool(True),
 )
 

@@ -50,6 +50,23 @@ PhotonType(): pt(-1.), eta(-9.), phi(-9.), mass(-1.), energy(-1.), charge(0), pd
     bool isMatched;
 };
 
+struct TauType {
+TauType(): pt(-1.), eta(-9.), phi(-9.), mass(-1.), energy(-1.), charge(0), pdgId(0), pfIso(-1.), dz(-99.), isLoose(false), isMedium(false), isTight(false), isMatched(false) {}
+    float pt;
+    float eta;
+    float phi;
+    float mass;
+    float energy;
+    int charge;
+    int pdgId;
+    float pfIso;
+    float dz;
+    bool isLoose;
+    bool isMedium;
+    bool isTight;
+    bool isMatched;
+};
+
 
 struct JetType {
     JetType(): pt(-1.), eta(-9.), phi(-9.), mass(-1.), energy(-1.), ptRaw(-1.), ptUnc(-1.), dPhi_met(-1.), dPhi_jet1(-1.), puId(-1.), CSV(-99.), CSVR(-99.), chf(-1.), nhf(-1.), phf(-1.), elf(-1.), muf(-1.), chm(-1), npr(-1), flavour(0), mother(0), isLoose(false), isMedium(false), isTight(false), isCSVL(false), isCSVM(false), isCSVT(false), isMatched(false) {}
