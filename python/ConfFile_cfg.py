@@ -124,9 +124,13 @@ process.ntuple = cms.EDAnalyzer('Ntuple',
     tauSet = cms.PSet(
         taus = cms.InputTag("slimmedTaus"),
         vertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
-        tauid = cms.int32(1), # 1: loose
         taupt = cms.double(20.),
         taueta = cms.double(9999.),
+        tauIdByDecayMode = cms.int32(0),# 0: not set, 1: old, 2: new
+        tauIdByDeltaBetaIso = cms.int32(0),# 0: not set, 1: loose, 2: medium, 3: tight
+        tauIdByMVAIso = cms.int32(0),# 0: not set, 1: V loose, 2: loose, 3: medium, 4: tight, 5: V tight
+        tauIdByMuonRejection = cms.int32(0),# 0: not set, 1: loose, 2: tight
+        tauIdByElectronRejection = cms.int32(0),# 0: not set, 1: V loose, 2: loose, 3: medium, 4: tight
     ),
     jetSet = cms.PSet(
         jets = cms.InputTag("slimmedJetsAK8"), #selectedPatJetsAK8PFCHSPrunedPacked
