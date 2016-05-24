@@ -4,7 +4,8 @@ TauAnalyzer::TauAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl
     TauToken(CColl.consumes<std::vector<pat::Tau> >(PSet.getParameter<edm::InputTag>("taus"))),
     VertexToken(CColl.consumes<reco::VertexCollection>(PSet.getParameter<edm::InputTag>("vertices"))),
     TauId(PSet.getParameter<int>("tauid")),
-    TauPt(PSet.getParameter<double>("taupt"))
+    TauPt(PSet.getParameter<double>("taupt")),
+    TauEta(PSet.getParameter<double>("taueta"))
 
 {
 
@@ -23,7 +24,7 @@ TauAnalyzer::~TauAnalyzer() {
 std::vector<pat::Tau> TauAnalyzer::FillTauVector(const edm::Event& iEvent) {
     //bool isMC(!iEvent.isRealData());
     int IdTh(TauId);
-    float PtTh(TauPt);
+    float PtTh(TauPt), EtaTh(TauEta);
     std::vector<pat::Tau> Vect;
     // Declare and open collection
     edm::Handle<std::vector<pat::Tau> > TauCollection;
@@ -37,7 +38,7 @@ std::vector<pat::Tau> TauAnalyzer::FillTauVector(const edm::Event& iEvent) {
     for(std::vector<pat::Tau>::const_iterator it=TauCollection->begin(); it!=TauCollection->end(); ++it) {
         pat::Tau tau=*it;
         // Pt and eta
-        if(tau.pt()<PtTh || fabs(tau.eta())>2.5) continue;
+        if(tau.pt()<PtTh || fabs(tau.eta())>EtaTh) continue;
         float pfIso = ( tau.chargedHadronIso() + std::max(tau.neutralHadronIso() + tau.photonIso() - 0.5*tau.puChargedHadronIso(), 0.) ) / tau.pt();
 
         //Tau CutBased and HEEP ID 2015-2016, https://twiki.cern.ch/twiki/bin/viewauth/CMS/EgammaIDRecipesRun2  
