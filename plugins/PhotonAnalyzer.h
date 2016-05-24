@@ -36,10 +36,10 @@ class PhotonAnalyzer {
       
         edm::EDGetTokenT<std::vector<pat::Photon> > PhotonToken;
         edm::EDGetTokenT<reco::VertexCollection> VertexToken;
-	//edm::EDGetTokenT<edm::ValueMap<bool>> PhoLooseIdMapToken;
-	//edm::EDGetTokenT<edm::ValueMap<bool>> PhoMediumIdMapToken;
-	//edm::EDGetTokenT<edm::ValueMap<bool>> PhoTightIdMapToken;
-	//edm::EDGetTokenT<edm::ValueMap<bool>> PhoMVANonTrigMediumIdMapToken;
+	edm::EDGetTokenT<edm::ValueMap<bool>> PhoLooseIdMapToken;
+	edm::EDGetTokenT<edm::ValueMap<bool>> PhoMediumIdMapToken;
+	edm::EDGetTokenT<edm::ValueMap<bool>> PhoTightIdMapToken;
+	edm::EDGetTokenT<edm::ValueMap<bool>> PhoMVANonTrigMediumIdMapToken;
 	std::string PhoLooseIdFileName;
 	std::string PhoMediumIdFileName;
 	std::string PhoTightIdFileName;
