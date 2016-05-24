@@ -6,12 +6,12 @@ process = cms.Process("ALPHA")
 process.load("FWCore.MessageService.MessageLogger_cfi")
 process.MessageLogger.cerr.threshold = 'ERROR'
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
 
 # input
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
-        'file:/lustre/cmswork/pazzini/CMSSW_8_0_4/src/2455D4FC-A5F0-E511-88AC-0025905A48C0.root'
+        'file:/lustre/cmswork/zucchett/CMSSW_8_0_5/src/00F0B3DC-211B-E611-A6A0-001E67248A39.root'
     )
 )
 
@@ -45,7 +45,7 @@ process.cleanedMuons = cms.EDProducer("PATMuonCleanerBySegments",
 
 process.ntuple = cms.EDAnalyzer('Ntuple',
     genSet = cms.PSet(
-        genparticles = cms.InputTag("packedGenParticles"),
+        genparticles = cms.InputTag("prunedGenParticles"),
     ),
     pileupSet = cms.PSet(
         pileup = cms.InputTag("slimmedAddPileupInfo"),
