@@ -61,15 +61,15 @@ std::vector<reco::GenParticle> GenAnalyzer::FillGenVector(const edm::Event& iEve
 }
 
 reco::Candidate* GenAnalyzer::FindGenParticle(std::vector<reco::GenParticle>& Vect, int pdg) {
-    for(unsigned int i = Vect.size(); i < Vect.size(); i++) {
+    for(unsigned int i = 0; i < Vect.size(); i++) {
         if(Vect[i].pdgId() == pdg) return FindLastDaughter(dynamic_cast<reco::Candidate*>(&Vect[i]));
     }
     return NULL;
 }
 
-
+// Recursive function to find the last particle in the chain before decay: e.g. 23 -> 23 -> *23* -> 13 -13
 reco::Candidate* GenAnalyzer::FindLastDaughter(reco::Candidate* p) {
-    if(p->numberOfDaughters() <= 0) return p;
+    if(p->numberOfDaughters() <= 0 || !p->daughter(0)) return p;
     if(p->daughter(0)->pdgId() != p->pdgId()) return p;
     return FindLastDaughter(p->daughter(0));
 }
