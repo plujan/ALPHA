@@ -42,6 +42,7 @@ Ntuple::Ntuple(const edm::ParameterSet& iConfig):
     WriteNMuons(iConfig.getParameter<int>("writeNMuons")),
     WriteNLeptons(iConfig.getParameter<int>("writeNLeptons")),
     WriteNJets(iConfig.getParameter<int>("writeNJets")),
+    WriteNPhotons(iConfig.getParameter<int>("writeNPhotons")),
     Verbose(iConfig.getParameter<bool>("verbose"))
 {
     //now do what ever initialization is needed
@@ -97,6 +98,7 @@ void Ntuple::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     for(int i = 0; i < WriteNMuons; i++) ObjectsFormat::ResetLeptonType(Muons[i]);
     for(int i = 0; i < WriteNLeptons; i++) ObjectsFormat::ResetLeptonType(Leptons[i]);
     for(int i = 0; i < WriteNJets; i++) ObjectsFormat::ResetJetType(Jets[i]);
+    for(int i = 0; i < WriteNPhotons; i++) ObjectsFormat::ResetPhotonType(Photons[i]);
     ObjectsFormat::ResetMEtType(MEt);
     
     // Gen Particles
@@ -107,6 +109,8 @@ void Ntuple::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     std::vector<pat::Muon> MuonVect = theMuonAnalyzer->FillMuonVector(iEvent);
     // Jets
     std::vector<pat::Jet> JetsVect = theJetAnalyzer->FillJetVector(iEvent);
+    // Photons
+    std::vector<pat::Photon> PhotonVect = thePhotonAnalyzer->FillPhotonVector(iEvent);
     // Missing Energy
     pat::MET MET = theJetAnalyzer->FillMetVector(iEvent);
     
@@ -131,6 +135,7 @@ void Ntuple::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         for(unsigned int i = 0; i < MuonVect.size(); i++) std::cout << "  muon     [" << i << "]\tpt: " << MuonVect[i].pt() << "\teta: " << MuonVect[i].eta() << "\tphi: " << MuonVect[i].phi() << std::endl;
         std::cout << "number of AK4 jets:  " << JetsVect.size() << std::endl;
         for(unsigned int i = 0; i < JetsVect.size(); i++) std::cout << "  AK4 jet  [" << i << "]\tpt: " << JetsVect[i].pt() << "\teta: " << JetsVect[i].eta() << "\tphi: " << JetsVect[i].phi() << std::endl;
+        for(unsigned int i = 0; i < PhotonVect.size(); i++) std::cout << "  photon  [" << i << "]\tpt: " << PhotonVect[i].pt() << "\teta: " << PhotonVect[i].eta() << "\tphi: " << PhotonVect[i].phi() << std::endl;
         std::cout << "Missing energy:      " << MET.pt() << std::endl;
     }
     
@@ -145,6 +150,7 @@ void Ntuple::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         for(unsigned int i = 0; i < Leptons.size() && i < MuonVect.size(); i++) ObjectsFormat::FillMuonType(Leptons[i], &MuonVect[i], isMC);
     }
     for(unsigned int i = 0; i < Jets.size() && i < JetsVect.size(); i++) ObjectsFormat::FillJetType(Jets[i], &JetsVect[i], isMC);
+    for(unsigned int i = 0; i < Photons.size() && i < PhotonVect.size(); i++) ObjectsFormat::FillPhotonType(Photons[i], &PhotonVect[i], isMC);
     ObjectsFormat::FillMEtType(MEt, &MET, isMC);
     
     
@@ -242,6 +248,7 @@ void Ntuple::beginJob() {
     for(int i = 0; i < WriteNMuons; i++) Muons.push_back( LeptonType() );
     for(int i = 0; i < WriteNLeptons; i++) Leptons.push_back( LeptonType() );
     for(int i = 0; i < WriteNJets; i++) Jets.push_back( JetType() );
+    for(int i = 0; i < WriteNPhotons; i++) Photons.push_back( PhotonType() );
     
     // Create Tree and set Branches
     tree=fs->make<TTree>("tree", "tree");
@@ -255,6 +262,7 @@ void Ntuple::beginJob() {
     for(int i = 0; i < WriteNMuons; i++) tree->Branch(("Muon"+std::to_string(i+1)).c_str(), &(Muons[i]), ObjectsFormat::ListLeptonType().c_str());
     for(int i = 0; i < WriteNLeptons; i++) tree->Branch(("Lepton"+std::to_string(i+1)).c_str(), &(Leptons[i]), ObjectsFormat::ListLeptonType().c_str());
     for(int i = 0; i < WriteNJets; i++) tree->Branch(("Jet"+std::to_string(i+1)).c_str(), &(Jets[i]), ObjectsFormat::ListJetType().c_str());
+    for(int i = 0; i < WriteNPhotons; i++) tree->Branch(("Photon"+std::to_string(i+1)).c_str(), &(Photons[i]), ObjectsFormat::ListPhotonType().c_str());
     tree->Branch("MEt", &MEt, ObjectsFormat::ListMEtType().c_str());
     
 }
