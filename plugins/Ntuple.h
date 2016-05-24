@@ -99,6 +99,7 @@
 #include "ElectronAnalyzer.h"
 #include "MuonAnalyzer.h"
 #include "PhotonAnalyzer.h"
+#include "TauAnalyzer.h"
 #include "JetAnalyzer.h"
 //#include "BTagInterface.h"
 
@@ -134,8 +135,9 @@ class Ntuple : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
         edm::ParameterSet ElectronPSet;
         edm::ParameterSet MuonPSet;
         edm::ParameterSet PhotonPSet;
+        edm::ParameterSet TauPSet;
         edm::ParameterSet JetPSet;
-        int WriteNElectrons, WriteNMuons, WriteNLeptons, WriteNJets, WriteNPhotons;
+        int WriteNElectrons, WriteNMuons, WriteNLeptons, WriteNJets, WriteNPhotons, WriteNTaus;
         bool Verbose;
 
         GenAnalyzer* theGenAnalyzer;
@@ -144,6 +146,7 @@ class Ntuple : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
         ElectronAnalyzer* theElectronAnalyzer;
         MuonAnalyzer* theMuonAnalyzer;
         PhotonAnalyzer* thePhotonAnalyzer;
+        TauAnalyzer* theTauAnalyzer;
         JetAnalyzer* theJetAnalyzer;
         //BTagInterface* theBTagInterface;
         
@@ -158,6 +161,7 @@ class Ntuple : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
         std::vector<LeptonType> Leptons;
         std::vector<JetType> Jets;
         std::vector<PhotonType> Photons;
+        std::vector<TauType> Taus;
         MEtType MEt;
 };
 
