@@ -44,8 +44,8 @@ class PhotonAnalyzer {
 	std::string PhoMediumIdFileName;
 	std::string PhoTightIdFileName;
 	std::string PhoMVANonTrigMediumIdFileName;
-        int Photon1Id, Photon2Id;//, Photon1Iso, Photon2Iso;
-        float Photon1Pt, Photon2Pt;
+        int PhotonId;
+        float PhotonPt;
 	bool isPhoLooseIdFile, isPhoMediumIdFile, isPhoTightIdFile, isPhoMVANonTrigMediumIdFile;
         TFile* PhoLooseIdFile;
         TFile* PhoMediumIdFile;

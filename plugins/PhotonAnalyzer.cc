@@ -11,20 +11,16 @@ PhotonAnalyzer::PhotonAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&&
     PhoMediumIdFileName(PSet.getParameter<std::string>("phoMediumIdFileName")),
     PhoTightIdFileName(PSet.getParameter<std::string>("phoTightIdFileName")),
     PhoMVANonTrigMediumIdFileName(PSet.getParameter<std::string>("phoMVANonTrigMediumIdFileName")),
-    Photon1Id(PSet.getParameter<int>("photon1id")),
-    Photon2Id(PSet.getParameter<int>("photon2id")),
-    //Photon1Iso(PSet.getParameter<int>("photon1iso")),
-    //Photon2Iso(PSet.getParameter<int>("photon2iso")),
-    Photon1Pt(PSet.getParameter<double>("photon1pt")),
-    Photon2Pt(PSet.getParameter<double>("photon2pt"))
+    PhotonId(PSet.getParameter<int>("photonid")),
+    PhotonPt(PSet.getParameter<double>("photonpt"))
+
 {
 
     isPhoLooseIdFile = isPhoMediumIdFile = isPhoTightIdFile = isPhoMVANonTrigMediumIdFile = false;
   
     std::cout << " - PhotonAnalyzer initialized:" << std::endl;
-    std::cout << "Id  :\t" << Photon1Id << "\t" << Photon2Id << std::endl;
-    //std::cout << "Iso :\t" << Photon1Iso << "\t" << Photon2Iso << std::endl;
-    std::cout << "pT  :\t" << Photon1Pt << "\t" << Photon2Pt << std::endl;
+    std::cout << "Id  :\t" << PhotonId << std::endl;
+    std::cout << "pT  :\t" << PhotonPt << std::endl;
 
     PhoLooseIdFile=new TFile(PhoLooseIdFileName.c_str(), "READ");
     if(!PhoLooseIdFile->IsZombie()) {
@@ -78,9 +74,9 @@ PhotonAnalyzer::~PhotonAnalyzer() {
 
 
 std::vector<pat::Photon> PhotonAnalyzer::FillPhotonVector(const edm::Event& iEvent) {
-    bool isMC(!iEvent.isRealData());
-    int IdTh(Photon1Id);//, IsoTh(Photon1Iso);
-    float PtTh(Photon1Pt);
+    //bool isMC(!iEvent.isRealData());
+    int IdTh(PhotonId);
+    float PtTh(PhotonPt);
     std::vector<pat::Photon> Vect;
     // Declare and open collection
     edm::Handle<std::vector<pat::Photon> > PhoCollection;
@@ -107,11 +103,6 @@ std::vector<pat::Photon> PhotonAnalyzer::FillPhotonVector(const edm::Event& iEve
 
     // Loop on Photon collection
     for(std::vector<pat::Photon>::const_iterator it=PhoCollection->begin(); it!=PhoCollection->end(); ++it) {
-        if(Vect.size()>0) {
-            IdTh=Photon2Id;
-            //IsoTh=Photon2Iso;
-            PtTh=Photon2Pt;
-        }
         pat::Photon ph=*it;
 	pat::PhotonRef phRef(PhoCollection,phIdx);
         // Pt and eta
