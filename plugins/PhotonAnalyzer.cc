@@ -7,6 +7,10 @@ PhotonAnalyzer::PhotonAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&&
     //PhoMediumIdMapToken(CColl.consumes<edm::ValueMap<bool>>(PSet.getParameter<edm::InputTag>("phoMediumIdMap"))),
     //PhoTightIdMapToken(CColl.consumes<edm::ValueMap<bool>>(PSet.getParameter<edm::InputTag>("phoTightIdMap"))),
     //PhoMVANonTrigMediumIdMapToken(CColl.consumes<edm::ValueMap<bool>>(PSet.getParameter<edm::InputTag>("phoMVANonTrigMediumIdMap"))),
+    PhoLooseIdFileName(PSet.getParameter<std::string>("phoLooseIdFileName")),
+    PhoMediumIdFileName(PSet.getParameter<std::string>("phoMediumIdFileName")),
+    PhoTightIdFileName(PSet.getParameter<std::string>("phoTightIdFileName")),
+    PhoMVANonTrigMediumIdFileName(PSet.getParameter<std::string>("phoMVANonTrigMediumIdFileName")),
     Photon1Id(PSet.getParameter<int>("photon1id")),
     Photon2Id(PSet.getParameter<int>("photon2id")),
     //Photon1Iso(PSet.getParameter<int>("photon1iso")),
@@ -14,18 +18,62 @@ PhotonAnalyzer::PhotonAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&&
     Photon1Pt(PSet.getParameter<double>("photon1pt")),
     Photon2Pt(PSet.getParameter<double>("photon2pt"))
 {
+
+    isPhoLooseIdFile = isPhoMediumIdFile = isPhoTightIdFile = isPhoMVANonTrigMediumIdFile = false;
   
     std::cout << " - PhotonAnalyzer initialized:" << std::endl;
     std::cout << "Id  :\t" << Photon1Id << "\t" << Photon2Id << std::endl;
     //std::cout << "Iso :\t" << Photon1Iso << "\t" << Photon2Iso << std::endl;
     std::cout << "pT  :\t" << Photon1Pt << "\t" << Photon2Pt << std::endl;
+
+    PhoLooseIdFile=new TFile(PhoLooseIdFileName.c_str(), "READ");
+    if(!PhoLooseIdFile->IsZombie()) {
+      PhotonIdLoose=(TH2F*)PhoLooseIdFile->Get("EGamma_SF2D");
+      isPhoLooseIdFile=true;
+    }
+    else {
+      throw cms::Exception("PhotonAnalyzer", "No PhoLooseId Weight File");
+      return;
+    }
+
+    PhoMediumIdFile=new TFile(PhoMediumIdFileName.c_str(), "READ");
+    if(!PhoMediumIdFile->IsZombie()) {
+      PhotonIdMedium=(TH2F*)PhoMediumIdFile->Get("EGamma_SF2D");
+      isPhoMediumIdFile=true;
+    }
+    else {
+      throw cms::Exception("PhotonAnalyzer", "No PhoMediumId Weight File");
+      return;
+    }
+
+    PhoTightIdFile=new TFile(PhoTightIdFileName.c_str(), "READ");
+    if(!PhoTightIdFile->IsZombie()) {
+      PhotonIdTight=(TH2F*)PhoTightIdFile->Get("EGamma_SF2D");
+      isPhoTightIdFile=true;
+    }
+    else {
+      throw cms::Exception("PhotonAnalyzer", "No PhoTightId Weight File");
+      return;
+    }
+
+    PhoMVANonTrigMediumIdFile=new TFile(PhoMVANonTrigMediumIdFileName.c_str(), "READ");
+    if(!PhoMVANonTrigMediumIdFile->IsZombie()) {
+      PhotonIdMVANonTrigMedium=(TH2F*)PhoMVANonTrigMediumIdFile->Get("EGamma_SF2D");
+      isPhoMVANonTrigMediumIdFile=true;
+    }
+    else {
+      throw cms::Exception("PhotonAnalyzer", "No PhoMVANonTrigMediumId Weight File");
+      return;
+    }
+
 }
 
 PhotonAnalyzer::~PhotonAnalyzer() {
-
+  PhoLooseIdFile->Close();
+  PhoMediumIdFile->Close();
+  PhoTightIdFile->Close();
+  PhoMVANonTrigMediumIdFile->Close();
 }
-
-
 
 
 
@@ -101,8 +149,64 @@ std::vector<pat::Photon> PhotonAnalyzer::FillPhotonVector(const edm::Event& iEve
     return Vect;
 }
 
+float PhotonAnalyzer::GetPhotonIdSFLoose(pat::Photon& el) {
+  if(!isPhoLooseIdFile) return 1.;
+  double pt = std::min( std::max( PhotonIdLoose->GetYaxis()->GetXmin(), el.pt() ) , PhotonIdLoose->GetYaxis()->GetXmax() - 0.000001 );
+  double abseta = std::min( PhotonIdLoose->GetXaxis()->GetXmax() - 0.000001 , fabs(el.eta()) );
+  return PhotonIdLoose->GetBinContent(PhotonIdLoose->FindBin(abseta, pt));
+}
+
+float PhotonAnalyzer::GetPhotonIdSFLooseError(pat::Photon& el) {
+  if(!isPhoLooseIdFile) return 1.;
+  double pt = std::min( std::max( PhotonIdLoose->GetYaxis()->GetXmin(), el.pt() ) , PhotonIdLoose->GetYaxis()->GetXmax() - 0.000001 );
+  double abseta = std::min( PhotonIdLoose->GetXaxis()->GetXmax() - 0.000001 , fabs(el.eta()) );
+  return PhotonIdLoose->GetBinError(PhotonIdLoose->FindBin(abseta, pt));
+}
+
+float PhotonAnalyzer::GetPhotonIdSFMedium(pat::Photon& el) {
+  if(!isPhoMediumIdFile) return 1.;
+  double pt = std::min( std::max( PhotonIdMedium->GetYaxis()->GetXmin(), el.pt() ) , PhotonIdMedium->GetYaxis()->GetXmax() - 0.000001 );
+  double abseta = std::min( PhotonIdMedium->GetXaxis()->GetXmax() - 0.000001 , fabs(el.eta()) );
+  return PhotonIdMedium->GetBinContent(PhotonIdMedium->FindBin(abseta, pt));
+}
+
+float PhotonAnalyzer::GetPhotonIdSFMediumError(pat::Photon& el) {
+  if(!isPhoMediumIdFile) return 1.;
+  double pt = std::min( std::max( PhotonIdMedium->GetYaxis()->GetXmin(), el.pt() ) , PhotonIdMedium->GetYaxis()->GetXmax() - 0.000001 );
+  double abseta = std::min( PhotonIdMedium->GetXaxis()->GetXmax() - 0.000001 , fabs(el.eta()) );
+  return PhotonIdMedium->GetBinError(PhotonIdMedium->FindBin(abseta, pt));
+}
+
+float PhotonAnalyzer::GetPhotonIdSFTight(pat::Photon& el) {
+  if(!isPhoTightIdFile) return 1.;
+  double pt = std::min( std::max( PhotonIdTight->GetYaxis()->GetXmin(), el.pt() ) , PhotonIdTight->GetYaxis()->GetXmax() - 0.000001 );
+  double abseta = std::min( PhotonIdTight->GetXaxis()->GetXmax() - 0.000001 , fabs(el.eta()) );
+  return PhotonIdTight->GetBinContent(PhotonIdTight->FindBin(abseta, pt));
+}
+
+float PhotonAnalyzer::GetPhotonIdSFTightError(pat::Photon& el) {
+  if(!isPhoTightIdFile) return 1.;
+  double pt = std::min( std::max( PhotonIdTight->GetYaxis()->GetXmin(), el.pt() ) , PhotonIdTight->GetYaxis()->GetXmax() - 0.000001 );
+  double abseta = std::min( PhotonIdTight->GetXaxis()->GetXmax() - 0.000001 , fabs(el.eta()) );
+  return PhotonIdTight->GetBinError(PhotonIdTight->FindBin(abseta, pt));
+}
+
+float PhotonAnalyzer::GetPhotonIdSFMVANonTrigMedium(pat::Photon& el) {
+  if(!isPhoMVANonTrigMediumIdFile) return 1.;
+  double pt = std::min( std::max( PhotonIdMVANonTrigMedium->GetYaxis()->GetXmin(), el.pt() ) , PhotonIdMVANonTrigMedium->GetYaxis()->GetXmax() - 0.000001 );
+  double abseta = std::min( PhotonIdMVANonTrigMedium->GetXaxis()->GetXmax() - 0.000001 , fabs(el.eta()) );
+  return PhotonIdMVANonTrigMedium->GetBinContent(PhotonIdMVANonTrigMedium->FindBin(abseta, pt));
+}
+
+float PhotonAnalyzer::GetPhotonIdSFMVANonTrigMediumError(pat::Photon& el) {
+  if(!isPhoMVANonTrigMediumIdFile) return 1.;
+  double pt = std::min( std::max( PhotonIdMVANonTrigMedium->GetYaxis()->GetXmin(), el.pt() ) , PhotonIdMVANonTrigMedium->GetYaxis()->GetXmax() - 0.000001 );
+  double abseta = std::min( PhotonIdMVANonTrigMedium->GetXaxis()->GetXmax() - 0.000001 , fabs(el.eta()) );
+  return PhotonIdMVANonTrigMedium->GetBinError(PhotonIdMVANonTrigMedium->FindBin(abseta, pt));
+}
+
+
+
 /*bool PhotonAnalyzer::isLoosePhoton(pat::Photon& el, const reco::Vertex* vertex) {
     return true;
 }*/
-
-

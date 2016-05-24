@@ -28,7 +28,7 @@ ElectronAnalyzer::ElectronAnalyzer(const edm::ParameterSet& PSet, edm::ConsumesC
     Electron1Pt(PSet.getParameter<double>("electron1pt")),
     Electron2Pt(PSet.getParameter<double>("electron2pt"))
 {
-    isEleVetoIdFile = isEleLooseIdFile = isEleMediumIdFile = isEleTightIdFile = isEleRecoEffFile = isEleTriggerFile=false;
+    isEleVetoIdFile = isEleLooseIdFile = isEleMediumIdFile = isEleTightIdFile = isEleRecoEffFile = isEleMVATrigMediumIdFile = isEleMVATrigTightIdFile = isEleTriggerFile = false;
     
     // AN-13-022, obsolete!!
     // Electron trigger, obsolete!!!
