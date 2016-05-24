@@ -46,21 +46,33 @@ GenAnalyzer::~GenAnalyzer() {
 std::vector<reco::GenParticle> GenAnalyzer::FillGenVector(const edm::Event& iEvent) {
     bool isMC(!iEvent.isRealData());
     std::vector<reco::GenParticle> Vect;
-    if(isMC) return Vect;
+    if(!isMC) return Vect;
     // Declare and open collection
     edm::Handle<std::vector<reco::GenParticle> > GenCollection;
     iEvent.getByToken(GenToken, GenCollection);
     // Loop on Gen Particles collection
-    for(std::vector<reco::GenParticle>::const_iterator it=GenCollection->begin(); it!=GenCollection->end(); ++it) {
-        std::cout << it->pdgId() << "  " << it->pt() << "  " << it->eta() << "  " << it->phi() << "  " << it->mass() << std::endl;
-        reco::GenParticle gen = *it;
-        Vect.push_back(gen); // Fill vector
+    for(std::vector<reco::GenParticle>::const_iterator it = GenCollection->begin(); it != GenCollection->end(); ++it) {Vect.push_back(*it); // Fill vector
+//        std::cout << it->pdgId() << "  " << it->status() << "  " << it->pt() << "  " << it->eta() << "  " << it->phi() << "  " << it->mass() << std::endl;
+//        if(it->numberOfDaughters()>0) std::cout << "  " << it->daughter(0)->pdgId() << "  " << it->daughter(0)->status() << "  " << it->daughter(0)->pt() << std::endl;
+//        if(it->numberOfDaughters()>1) std::cout << "  " << it->daughter(1)->pdgId() << "  " << it->daughter(1)->status() << "  " << it->daughter(1)->pt() << std::endl;
     }
-    std::cout << "\n\n\n" << std::endl;
+//    std::cout << "\n\n\n" << std::endl;
     return Vect;
 }
 
+reco::Candidate* GenAnalyzer::FindGenParticle(std::vector<reco::GenParticle>& Vect, int pdg) {
+    for(unsigned int i = Vect.size(); i < Vect.size(); i++) {
+        if(Vect[i].pdgId() == pdg) return FindLastDaughter(dynamic_cast<reco::Candidate*>(&Vect[i]));
+    }
+    return NULL;
+}
 
+
+reco::Candidate* GenAnalyzer::FindLastDaughter(reco::Candidate* p) {
+    if(p->numberOfDaughters() <= 0) return p;
+    if(p->daughter(0)->pdgId() != p->pdgId()) return p;
+    return FindLastDaughter(p->daughter(0));
+}
 
 
 // ---------- PILEUP ----------

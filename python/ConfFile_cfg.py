@@ -6,13 +6,13 @@ process = cms.Process("ALPHA")
 process.load("FWCore.MessageService.MessageLogger_cfi")
 process.MessageLogger.cerr.threshold = 'ERROR'
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
 
 # input
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
-#        'file:/lustre/cmswork/pazzini/CMSSW_8_0_4/src/2455D4FC-A5F0-E511-88AC-0025905A48C0.root'
-        '/store/user/lbenato/BulkGraviton_ZZ_ZlepZhad_narrow_M800_13TeV-madgraph_MINIAOD_10000ev/BulkGravToZZToZlepZhad_narrow_M-800_13TeV-madgraph_PRIVATE-MC/BulkGraviton_ZZ_ZlepZhad_narrow_M800_13TeV-madgraph_MINIAOD_10000ev/160515_095125/0000/BulkGraviton_ZZ_ZlepZhad_narrow_M800_13TeV-madgraph_MINIAOD_1.root'
+        'file:/lustre/cmswork/zucchett/CMSSW_8_0_5/src/00F0B3DC-211B-E611-A6A0-001E67248A39.root'
+#        '/store/user/lbenato/BulkGraviton_ZZ_ZlepZhad_narrow_M800_13TeV-madgraph_MINIAOD_10000ev/BulkGravToZZToZlepZhad_narrow_M-800_13TeV-madgraph_PRIVATE-MC/BulkGraviton_ZZ_ZlepZhad_narrow_M800_13TeV-madgraph_MINIAOD_10000ev/160515_095125/0000/BulkGraviton_ZZ_ZlepZhad_narrow_M800_13TeV-madgraph_MINIAOD_1.root'
     )
 )
 
@@ -53,7 +53,7 @@ process.cleanedMuons = cms.EDProducer("PATMuonCleanerBySegments",
 
 process.ntuple = cms.EDAnalyzer('Ntuple',
     genSet = cms.PSet(
-        genparticles = cms.InputTag("packedGenParticles"),
+        genparticles = cms.InputTag("prunedGenParticles"),
     ),
     pileupSet = cms.PSet(
         pileup = cms.InputTag("slimmedAddPileupInfo"),
@@ -130,7 +130,7 @@ process.ntuple = cms.EDAnalyzer('Ntuple',
         jet1btag = cms.int32(0), # 0: no selection, 1: loose, 2: medium, 3: tight
         jet2btag = cms.int32(0),
         met = cms.InputTag("slimmedMETs"),
-        metRecoil = cms.bool(True),
+        metRecoil = cms.bool(False),
         metRecoilMC = cms.string('%s/src/Analysis/ALPHA/data/recoilfit_gjetsMC_Zu1_pf_v5.root' % os.environ['CMSSW_BASE']),
         metRecoilData = cms.string('%s/src/Analysis/ALPHA/data/recoilfit_gjetsData_Zu1_pf_v5.root' % os.environ['CMSSW_BASE']),
     ),
