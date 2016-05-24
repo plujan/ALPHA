@@ -101,8 +101,9 @@ void Ntuple::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     for(int i = 0; i < WriteNPhotons; i++) ObjectsFormat::ResetPhotonType(Photons[i]);
     ObjectsFormat::ResetMEtType(MEt);
     
-    // Gen Particles
-    std::vector<reco::GenParticle> GenPVect = theGenAnalyzer->FillGenVector(iEvent);
+    
+    // Trigger
+    int TrigBit = theTriggerAnalyzer->FillTriggerBitmap(iEvent);
     // Electrons
     std::vector<pat::Electron> ElecVect = theElectronAnalyzer->FillElectronVector(iEvent);
     // Muons
@@ -115,15 +116,17 @@ void Ntuple::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     pat::MET MET = theJetAnalyzer->FillMetVector(iEvent);
     
     
+    // Gen Particles
+    std::vector<reco::GenParticle> GenPVect = theGenAnalyzer->FillGenVector(iEvent);
+    // Gen candidates
+    reco::Candidate* theGenZ = theGenAnalyzer->FindGenParticle(GenPVect, 23);
+    if(theGenZ) std::cout << "  genZ: " << theGenZ->mass() << std::endl;
+    
     // PU weight
     PUWeight = thePileupAnalyzer->GetPUWeight(iEvent);
     EventWeight *= PUWeight;
     
-    // Trigger
-    std::vector<std::string> TrigNames;
-    TrigNames.push_back("HLT_Mu17_Mu8");
-    TrigNames.push_back("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL");
-    int TrigBit=theTriggerAnalyzer->FillTriggerBitmap(iEvent, TrigNames);
+    
     
     
     // ---------- Print Summary ----------
