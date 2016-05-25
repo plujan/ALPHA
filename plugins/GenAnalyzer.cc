@@ -3,7 +3,7 @@
 
 GenAnalyzer::GenAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl):
     GenToken(CColl.consumes<GenEventInfoProduct>(PSet.getParameter<edm::InputTag>("genProduct"))),
-    LHEToken(CColl.consumes<LHEEventProduct>(PSet.getParameter<edm::InputTag>("lheProduct"))),
+    LheToken(CColl.consumes<LHEEventProduct>(PSet.getParameter<edm::InputTag>("lheProduct"))),
     GenParticlesToken(CColl.consumes<std::vector<reco::GenParticle> >(PSet.getParameter<edm::InputTag>("genParticles")))
 {
     /*
@@ -45,18 +45,30 @@ GenAnalyzer::~GenAnalyzer() {
 
 // ---------- GEN WEIGHTS ----------
 
-
+std::map<std::string, float> GenAnalyzer::FillWeightsMap(const edm::Event& iEvent) {
+    std::map<std::string, float> Weights;
+    Weights["event"] = 1.;
+    if(iEvent.isRealData()) return Weights;
+    // Declare and open collection
+    edm::Handle<GenEventInfoProduct> GenEventCollection;
+    iEvent.getByToken(GenToken, GenEventCollection);
+    // Declare and open collection
+    edm::Handle<LHEEventProduct> LheEventCollection;
+    iEvent.getByToken(LheToken, LheEventCollection);
+    
+    Weights["event"] = fabs(LheEventCollection.product()->originalXWGTUP()) / LheEventCollection.product()->originalXWGTUP();
+    return Weights;
+}
 
 
 // ---------- GEN PARTICLES ----------
 
 std::vector<reco::GenParticle> GenAnalyzer::FillGenVector(const edm::Event& iEvent) {
-    bool isMC(!iEvent.isRealData());
     std::vector<reco::GenParticle> Vect;
-    if(!isMC) return Vect;
+    if(iEvent.isRealData()) return Vect;
     // Declare and open collection
     edm::Handle<std::vector<reco::GenParticle> > GenCollection;
-    iEvent.getByToken(GenToken, GenCollection);
+    iEvent.getByToken(GenParticlesToken, GenCollection);
     // Loop on Gen Particles collection
     for(std::vector<reco::GenParticle>::const_iterator it = GenCollection->begin(); it != GenCollection->end(); ++it) {Vect.push_back(*it); // Fill vector
 //        std::cout << it->pdgId() << "  " << it->status() << "  " << it->pt() << "  " << it->eta() << "  " << it->phi() << "  " << it->mass() << std::endl;
