@@ -143,6 +143,17 @@ process.ntuple = cms.EDAnalyzer('Ntuple',
         muon1pt = cms.double(20.),
         muon2pt = cms.double(10.),
     ),
+    tauSet = cms.PSet(
+        taus = cms.InputTag("slimmedTaus"),
+        vertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
+        taupt = cms.double(20.),
+        taueta = cms.double(9999.),
+        tauIdByDecayMode = cms.int32(0),# 0: not set, 1: old, 2: new
+        tauIdByDeltaBetaIso = cms.int32(0),# 0: not set, 1: loose, 2: medium, 3: tight
+        tauIdByMVAIso = cms.int32(0),# 0: not set, 1: V loose, 2: loose, 3: medium, 4: tight, 5: V tight
+        tauIdByMuonRejection = cms.int32(0),# 0: not set, 1: loose, 2: tight
+        tauIdByElectronRejection = cms.int32(0),# 0: not set, 1: V loose, 2: loose, 3: medium, 4: tight
+    ),
     photonSet = cms.PSet(
         photons = cms.InputTag("slimmedPhotons"),
         vertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
@@ -156,17 +167,6 @@ process.ntuple = cms.EDAnalyzer('Ntuple',
         phoMVANonTrigMediumIdFileName = cms.string('%s/src/Analysis/ALPHA/data/MVAnumbers.txt.egamma_SF2D.root' % os.environ['CMSSW_BASE']),
         photonid = cms.int32(1), # 1: loose, 2: medium, 3: tight, 4:MVA NonTrig medium
         photonpt = cms.double(20.),
-    ),
-    tauSet = cms.PSet(
-        taus = cms.InputTag("slimmedTaus"),
-        vertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
-        taupt = cms.double(20.),
-        taueta = cms.double(9999.),
-        tauIdByDecayMode = cms.int32(0),# 0: not set, 1: old, 2: new
-        tauIdByDeltaBetaIso = cms.int32(0),# 0: not set, 1: loose, 2: medium, 3: tight
-        tauIdByMVAIso = cms.int32(0),# 0: not set, 1: V loose, 2: loose, 3: medium, 4: tight, 5: V tight
-        tauIdByMuonRejection = cms.int32(0),# 0: not set, 1: loose, 2: tight
-        tauIdByElectronRejection = cms.int32(0),# 0: not set, 1: V loose, 2: loose, 3: medium, 4: tight
     ),
     jetSet = cms.PSet(
         jets = cms.InputTag("slimmedJetsAK8"), #selectedPatJetsAK8PFCHSPrunedPacked
@@ -183,11 +183,10 @@ process.ntuple = cms.EDAnalyzer('Ntuple',
     ),
     writeNElectrons = cms.int32(0),
     writeNMuons = cms.int32(0),
-    writeNTaus = cms.int32(0),
     writeNLeptons = cms.int32(2),
-    writeNJets = cms.int32(2),
+    writeNTaus = cms.int32(0),
     writeNPhotons = cms.int32(1),
-    writeNTaus = cms.int32(1),
+    writeNJets = cms.int32(2),
     verbose  = cms.bool(True),
 )
 

@@ -26,16 +26,15 @@ TauAnalyzer::~TauAnalyzer() {
 
 std::vector<pat::Tau> TauAnalyzer::FillTauVector(const edm::Event& iEvent) {
     //bool isMC(!iEvent.isRealData());
-    int IdTh(TauId);
     float PtTh(TauPt), EtaTh(TauEta);
     std::vector<pat::Tau> Vect;
     // Declare and open collection
     edm::Handle<std::vector<pat::Tau> > TauCollection;
     iEvent.getByToken(TauToken, TauCollection);
         
-    edm::Handle<reco::VertexCollection> PVCollection;
-    iEvent.getByToken(VertexToken, PVCollection);
-    const reco::Vertex* vertex=&PVCollection->front();
+    //edm::Handle<reco::VertexCollection> PVCollection;
+    //iEvent.getByToken(VertexToken, PVCollection);
+    //const reco::Vertex* vertex=&PVCollection->front();
     
     // Loop on Tau collection
     for(std::vector<pat::Tau>::const_iterator it=TauCollection->begin(); it!=TauCollection->end(); ++it) {

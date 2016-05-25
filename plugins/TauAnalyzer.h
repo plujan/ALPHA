@@ -28,7 +28,7 @@ class TauAnalyzer {
         edm::EDGetTokenT<std::vector<pat::Tau> > TauToken;
         edm::EDGetTokenT<reco::VertexCollection> VertexToken;
         float TauPt, TauEta;
-	int TauIdByDecayMode, TauIdByDeltaBetaIso, TauIdByMVAIso, TauIdByMuonRejection, TauIdByElectronRejection;
+	      int TauIdByDecayMode, TauIdByDeltaBetaIso, TauIdByMVAIso, TauIdByMuonRejection, TauIdByElectronRejection;
 };
 
 
