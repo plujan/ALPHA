@@ -53,7 +53,9 @@ process.cleanedMuons = cms.EDProducer("PATMuonCleanerBySegments",
 
 process.ntuple = cms.EDAnalyzer('Ntuple',
     genSet = cms.PSet(
-        genparticles = cms.InputTag("prunedGenParticles"),
+        genProduct = cms.InputTag("generator"),
+        lheProduct = cms.InputTag("externalLHEProducer"),
+        genParticles = cms.InputTag("prunedGenParticles"),
     ),
     pileupSet = cms.PSet(
         pileup = cms.InputTag("slimmedAddPileupInfo"),
