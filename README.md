@@ -4,8 +4,8 @@ A Light Post-Heppy Analyzer
 ## Git instructions
 In your working area, first set up the CMSSW release:
 ```bash
-cmsrel CMSSW_8_0_4
-cd CMSSW_8_0_4/src/
+cmsrel CMSSW_8_0_5
+cd CMSSW_8_0_5/src/
 cmsenv
 mkdir Analysis
 cd Analysis
