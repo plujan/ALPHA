@@ -4,7 +4,8 @@
 GenAnalyzer::GenAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl):
     GenToken(CColl.consumes<GenEventInfoProduct>(PSet.getParameter<edm::InputTag>("genProduct"))),
     LheToken(CColl.consumes<LHEEventProduct>(PSet.getParameter<edm::InputTag>("lheProduct"))),
-    GenParticlesToken(CColl.consumes<std::vector<reco::GenParticle> >(PSet.getParameter<edm::InputTag>("genParticles")))
+    GenParticlesToken(CColl.consumes<std::vector<reco::GenParticle> >(PSet.getParameter<edm::InputTag>("genParticles"))),
+    ParticleList(PSet.getParameter<std::vector<int> >("pdgId"))
 {
     /*
     Sample=sample;
@@ -70,10 +71,13 @@ std::vector<reco::GenParticle> GenAnalyzer::FillGenVector(const edm::Event& iEve
     edm::Handle<std::vector<reco::GenParticle> > GenCollection;
     iEvent.getByToken(GenParticlesToken, GenCollection);
     // Loop on Gen Particles collection
-    for(std::vector<reco::GenParticle>::const_iterator it = GenCollection->begin(); it != GenCollection->end(); ++it) {Vect.push_back(*it); // Fill vector
+    for(std::vector<reco::GenParticle>::const_iterator it = GenCollection->begin(); it != GenCollection->end(); ++it) {
 //        std::cout << it->pdgId() << "  " << it->status() << "  " << it->pt() << "  " << it->eta() << "  " << it->phi() << "  " << it->mass() << std::endl;
 //        if(it->numberOfDaughters()>0) std::cout << "  " << it->daughter(0)->pdgId() << "  " << it->daughter(0)->status() << "  " << it->daughter(0)->pt() << std::endl;
 //        if(it->numberOfDaughters()>1) std::cout << "  " << it->daughter(1)->pdgId() << "  " << it->daughter(1)->status() << "  " << it->daughter(1)->pt() << std::endl;
+        for(unsigned int i = 0; i < ParticleList.size(); i++) {
+            if(abs(it->pdgId()) == ParticleList[i]) Vect.push_back(*it); // Fill vector
+        }
     }
 //    std::cout << "\n\n\n" << std::endl;
     return Vect;

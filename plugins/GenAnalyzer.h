@@ -38,6 +38,7 @@ class GenAnalyzer {
         edm::EDGetTokenT<GenEventInfoProduct> GenToken;
         edm::EDGetTokenT<LHEEventProduct> LheToken;
         edm::EDGetTokenT<std::vector<reco::GenParticle> > GenParticlesToken;
+        std::vector<int> ParticleList;
         /*
         bool isDYFile;
         int npMax;
