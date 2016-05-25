@@ -223,6 +223,7 @@ process.seq = cms.Sequence(
     process.HLTFilter *
     process.primaryVertexFilter *
     process.egmGsfElectronIDSequence *
+    process.egmPhotonIDSequence *
     process.cleanedMuons *
     process.ntuple
 )
