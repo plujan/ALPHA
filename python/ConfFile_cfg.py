@@ -36,6 +36,15 @@ process.HLTFilter = cms.EDFilter("HLTHighLevel",
     throw = cms.bool(False)    # throw exception on unknown path names
 )
 
+# Primary vertex
+import RecoVertex.PrimaryVertexProducer.OfflinePrimaryVertices_cfi
+process.primaryVertexFilter = cms.EDFilter("GoodVertexFilter",
+    vertexCollection = cms.InputTag('offlineSlimmedPrimaryVertices'),
+    minimumNDOF = cms.uint32(4) ,
+    maxAbsZ = cms.double(24), 
+    maxd0 = cms.double(2) 
+)
+
 
 #-----------------------#
 #        OBJECTS        #
@@ -185,6 +194,7 @@ process.ntuple = cms.EDAnalyzer('Ntuple',
 
 process.seq = cms.Sequence(
     process.HLTFilter *
+    process.primaryVertexFilter *
     process.egmGsfElectronIDSequence *
     process.cleanedMuons *
     process.ntuple
