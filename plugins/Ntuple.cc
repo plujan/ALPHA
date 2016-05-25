@@ -102,8 +102,6 @@ void Ntuple::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     ObjectsFormat::ResetMEtType(MEt);
     
     
-    // Trigger
-    int TrigBit = theTriggerAnalyzer->FillTriggerBitmap(iEvent);
     // Electrons
     std::vector<pat::Electron> ElecVect = theElectronAnalyzer->FillElectronVector(iEvent);
     // Muons
@@ -115,7 +113,9 @@ void Ntuple::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     // Missing Energy
     pat::MET MET = theJetAnalyzer->FillMetVector(iEvent);
     
-    
+    // Gen weights
+    std::map<std::string, float> GenWeight = theGenAnalyzer->FillWeightsMap(iEvent);
+    EventWeight *= GenWeight["event"];
     // Gen Particles
     std::vector<reco::GenParticle> GenPVect = theGenAnalyzer->FillGenVector(iEvent);
     // Gen candidates
@@ -126,7 +126,9 @@ void Ntuple::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     PUWeight = thePileupAnalyzer->GetPUWeight(iEvent);
     EventWeight *= PUWeight;
     
-    
+    // Trigger
+    std::map<std::string, bool> TriggerMap = theTriggerAnalyzer->FillTriggerMap(iEvent);
+    EventWeight *= TriggerWeight;
     
     
     // ---------- Print Summary ----------

@@ -19,7 +19,8 @@ TriggerAnalyzer::~TriggerAnalyzer() {
 
 // ---------- TRIGGER ----------
 
-int TriggerAnalyzer::FillTriggerBitmap(const edm::Event& iEvent) {
+std::map<std::string, bool> TriggerAnalyzer::FillTriggerMap(const edm::Event& iEvent) {
+    std::map<std::string, bool> Map;
     unsigned int n = TriggerList.size();
     std::vector<bool> Fired(n);
 
@@ -27,17 +28,15 @@ int TriggerAnalyzer::FillTriggerBitmap(const edm::Event& iEvent) {
     iEvent.getByToken(TriggerToken, hltTriggerResults);
     const edm::TriggerNames& trigNames = iEvent.triggerNames(*hltTriggerResults);
     // Get Trigger index
-    for(unsigned int i=0, in=trigNames.size(); i<in; i++) {
-        for(unsigned int j=0; j<n; j++) {
-            if(trigNames.triggerName(i).find(TriggerList[j]) != std::string::npos) {
-                unsigned int index = trigNames.triggerIndex(trigNames.triggerName(i));
-                Fired[j] = hltTriggerResults->accept(index);
+    for(unsigned int i = 0; i < n; i++) {
+        Map[TriggerList[i]] = false;
+        for(unsigned int j=0, in=trigNames.size(); j < in; j++) {
+            if(trigNames.triggerName(j).find(TriggerList[i]) != std::string::npos) {
+                unsigned int index = trigNames.triggerIndex(trigNames.triggerName(j));
+                if(hltTriggerResults->accept(index)) Map[TriggerList[i]] = true;
             }
         }
     }
-    
-    int bitmap(0);
-    for(unsigned int j=0; j<n; j++) bitmap+=pow(2, j);
-    return bitmap;
+    return Map;
 }
 
