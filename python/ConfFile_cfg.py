@@ -146,20 +146,27 @@ process.ntuple = cms.EDAnalyzer('Ntuple',
     photonSet = cms.PSet(
         photons = cms.InputTag("slimmedPhotons"),
         vertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
-#        phoLooseIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-loose"),
-#        phoMediumIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-medium"),
-#        phoTightIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-tight"),
-#        phoMVANonTrigMediumIdMap = cms.InputTag("egmPhotonIDs:mvaPhoID-Spring15-25ns-nonTrig-V2-wp90"),
+        phoLooseIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-loose"),
+        phoMediumIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-medium"),
+        phoTightIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-tight"),
+        phoMVANonTrigMediumIdMap = cms.InputTag("egmPhotonIDs:mvaPhoID-Spring15-25ns-nonTrig-V2-wp90"),
         phoLooseIdFileName = cms.string('%s/src/Analysis/ALPHA/data/Loosenumbers.txt.egamma_SF2D.root' % os.environ['CMSSW_BASE']),
         phoMediumIdFileName = cms.string('%s/src/Analysis/ALPHA/data/Mediumnumbers.txt.egamma_SF2D.root' % os.environ['CMSSW_BASE']),
         phoTightIdFileName = cms.string('%s/src/Analysis/ALPHA/data/Tightnumbers.txt.egamma_SF2D.root' % os.environ['CMSSW_BASE']),
         phoMVANonTrigMediumIdFileName = cms.string('%s/src/Analysis/ALPHA/data/MVAnumbers.txt.egamma_SF2D.root' % os.environ['CMSSW_BASE']),
-        photon1id = cms.int32(0), # 0: dummy true flag, 1: loose, 2: medium, 3: tight, 4:MVA NonTrig medium
-        photon2id = cms.int32(0),
-        #photon1iso = cms.int32(0),
-        #photon2iso = cms.int32(0),
-        photon1pt = cms.double(20.),
-        photon2pt = cms.double(10.),
+        photonid = cms.int32(1), # 1: loose, 2: medium, 3: tight, 4:MVA NonTrig medium
+        photonpt = cms.double(20.),
+    ),
+    tauSet = cms.PSet(
+        taus = cms.InputTag("slimmedTaus"),
+        vertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
+        taupt = cms.double(20.),
+        taueta = cms.double(9999.),
+        tauIdByDecayMode = cms.int32(0),# 0: not set, 1: old, 2: new
+        tauIdByDeltaBetaIso = cms.int32(0),# 0: not set, 1: loose, 2: medium, 3: tight
+        tauIdByMVAIso = cms.int32(0),# 0: not set, 1: V loose, 2: loose, 3: medium, 4: tight, 5: V tight
+        tauIdByMuonRejection = cms.int32(0),# 0: not set, 1: loose, 2: tight
+        tauIdByElectronRejection = cms.int32(0),# 0: not set, 1: V loose, 2: loose, 3: medium, 4: tight
     ),
     jetSet = cms.PSet(
         jets = cms.InputTag("slimmedJetsAK8"), #selectedPatJetsAK8PFCHSPrunedPacked
@@ -179,7 +186,8 @@ process.ntuple = cms.EDAnalyzer('Ntuple',
     writeNTaus = cms.int32(0),
     writeNLeptons = cms.int32(2),
     writeNJets = cms.int32(2),
-    writeNPhotons = cms.int32(0),
+    writeNPhotons = cms.int32(1),
+    writeNTaus = cms.int32(1),
     verbose  = cms.bool(True),
 )
 

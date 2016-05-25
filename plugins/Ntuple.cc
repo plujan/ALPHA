@@ -37,6 +37,7 @@ Ntuple::Ntuple(const edm::ParameterSet& iConfig):
     ElectronPSet(iConfig.getParameter<edm::ParameterSet>("electronSet")),
     MuonPSet(iConfig.getParameter<edm::ParameterSet>("muonSet")),
     PhotonPSet(iConfig.getParameter<edm::ParameterSet>("photonSet")),
+    TauPSet(iConfig.getParameter<edm::ParameterSet>("tauSet")),
     JetPSet(iConfig.getParameter<edm::ParameterSet>("jetSet")),
     WriteNElectrons(iConfig.getParameter<int>("writeNElectrons")),
     WriteNMuons(iConfig.getParameter<int>("writeNMuons")),
@@ -44,6 +45,7 @@ Ntuple::Ntuple(const edm::ParameterSet& iConfig):
     WriteNLeptons(iConfig.getParameter<int>("writeNLeptons")),
     WriteNJets(iConfig.getParameter<int>("writeNJets")),
     WriteNPhotons(iConfig.getParameter<int>("writeNPhotons")),
+    WriteNTaus(iConfig.getParameter<int>("writeNTaus")),
     Verbose(iConfig.getParameter<bool>("verbose"))
 {
     //now do what ever initialization is needed
@@ -56,6 +58,7 @@ Ntuple::Ntuple(const edm::ParameterSet& iConfig):
     theElectronAnalyzer=new ElectronAnalyzer(ElectronPSet, consumesCollector());
     theMuonAnalyzer=new MuonAnalyzer(MuonPSet, consumesCollector());
     thePhotonAnalyzer=new PhotonAnalyzer(PhotonPSet, consumesCollector());
+    theTauAnalyzer=new TauAnalyzer(TauPSet, consumesCollector());
     theJetAnalyzer=new JetAnalyzer(JetPSet, consumesCollector());
     //theBTagAnalyzer=new BTagAnalyzer(BTagAlgo);
     
@@ -75,6 +78,7 @@ Ntuple::~Ntuple() {
     delete theElectronAnalyzer;
     delete theMuonAnalyzer;
     delete thePhotonAnalyzer;
+    delete theTauAnalyzer;
     delete theJetAnalyzer;
     //delete theBTagAnalyzer;
     
@@ -101,6 +105,7 @@ void Ntuple::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     for(int i = 0; i < WriteNLeptons; i++) ObjectsFormat::ResetLeptonType(Leptons[i]);
     for(int i = 0; i < WriteNJets; i++) ObjectsFormat::ResetJetType(Jets[i]);
     for(int i = 0; i < WriteNPhotons; i++) ObjectsFormat::ResetPhotonType(Photons[i]);
+    for(int i = 0; i < WriteNTaus; i++) ObjectsFormat::ResetTauType(Taus[i]);
     ObjectsFormat::ResetMEtType(MEt);
     
     
@@ -114,6 +119,8 @@ void Ntuple::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     std::vector<pat::Jet> JetsVect = theJetAnalyzer->FillJetVector(iEvent);
     // Photons
     std::vector<pat::Photon> PhotonVect = thePhotonAnalyzer->FillPhotonVector(iEvent);
+    // Taus
+    std::vector<pat::Tau> TauVect = theTauAnalyzer->FillTauVector(iEvent);
     // Missing Energy
     pat::MET MET = theJetAnalyzer->FillMetVector(iEvent);
     
@@ -144,6 +151,7 @@ void Ntuple::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         std::cout << "number of AK4 jets:  " << JetsVect.size() << std::endl;
         for(unsigned int i = 0; i < JetsVect.size(); i++) std::cout << "  AK4 jet  [" << i << "]\tpt: " << JetsVect[i].pt() << "\teta: " << JetsVect[i].eta() << "\tphi: " << JetsVect[i].phi() << std::endl;
         for(unsigned int i = 0; i < PhotonVect.size(); i++) std::cout << "  photon  [" << i << "]\tpt: " << PhotonVect[i].pt() << "\teta: " << PhotonVect[i].eta() << "\tphi: " << PhotonVect[i].phi() << std::endl;
+        for(unsigned int i = 0; i < TauVect.size(); i++) std::cout << "  tau  [" << i << "]\tpt: " << TauVect[i].pt() << "\teta: " << TauVect[i].eta() << "\tphi: " << TauVect[i].phi() << std::endl;
         std::cout << "Missing energy:      " << MET.pt() << std::endl;
     }
     
@@ -159,6 +167,7 @@ void Ntuple::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     }
     for(unsigned int i = 0; i < Jets.size() && i < JetsVect.size(); i++) ObjectsFormat::FillJetType(Jets[i], &JetsVect[i], isMC);
     for(unsigned int i = 0; i < Photons.size() && i < PhotonVect.size(); i++) ObjectsFormat::FillPhotonType(Photons[i], &PhotonVect[i], isMC);
+    for(unsigned int i = 0; i < Taus.size() && i < TauVect.size(); i++) ObjectsFormat::FillTauType(Taus[i], &TauVect[i], isMC);
     ObjectsFormat::FillMEtType(MEt, &MET, isMC);
     
     
@@ -259,6 +268,7 @@ void Ntuple::beginJob() {
     for(int i = 0; i < WriteNLeptons; i++) Leptons.push_back( LeptonType() );
     for(int i = 0; i < WriteNJets; i++) Jets.push_back( JetType() );
     for(int i = 0; i < WriteNPhotons; i++) Photons.push_back( PhotonType() );
+    for(int i = 0; i < WriteNTaus; i++) Taus.push_back( TauType() );
     
     // Create Tree and set Branches
     tree=fs->make<TTree>("tree", "tree");
@@ -274,6 +284,7 @@ void Ntuple::beginJob() {
     for(int i = 0; i < WriteNLeptons; i++) tree->Branch(("Lepton"+std::to_string(i+1)).c_str(), &(Leptons[i]), ObjectsFormat::ListLeptonType().c_str());
     for(int i = 0; i < WriteNJets; i++) tree->Branch(("Jet"+std::to_string(i+1)).c_str(), &(Jets[i]), ObjectsFormat::ListJetType().c_str());
     for(int i = 0; i < WriteNPhotons; i++) tree->Branch(("Photon"+std::to_string(i+1)).c_str(), &(Photons[i]), ObjectsFormat::ListPhotonType().c_str());
+    for(int i = 0; i < WriteNTaus; i++) tree->Branch(("Tau"+std::to_string(i+1)).c_str(), &(Taus[i]), ObjectsFormat::ListTauType().c_str());
     tree->Branch("MEt", &MEt, ObjectsFormat::ListMEtType().c_str());
     
 }
