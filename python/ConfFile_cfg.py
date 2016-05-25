@@ -22,6 +22,25 @@ process.TFileService = cms.Service("TFileService",
     closeFileFast = cms.untracked.bool(True)
 )
 
+#-----------------------#
+#        FILTERS        #
+#-----------------------#
+
+# Trigger filter
+import HLTrigger.HLTfilters.hltHighLevel_cfi
+process.HLTFilter = cms.EDFilter("HLTHighLevel",
+    TriggerResultsTag = cms.InputTag("TriggerResults", "", "HLT"),
+    HLTPaths = cms.vstring('HLT_Mu45_eta2p1_v*', 'HLT_Mu50_v*', 'HLT_IsoMu20_v*', 'HLT_Mu27_TkMu8_v*', 'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v*', 'HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v*', 'HLT_Ele105_CaloIdVT_GsfTrkIdT_v*', 'HLT_Ele23_WPLoose_Gsf_v*', 'HLT_Ele27_WPLoose_Gsf_v*', 'HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*', 'HLT_DoubleEle33_CaloIdL_v*'),
+    eventSetupPathsKey = cms.string(''), # not empty => use read paths from AlCaRecoTriggerBitsRcd via this key
+    andOr = cms.bool(True),    # how to deal with multiple triggers: True (OR) accept if ANY is true, False (AND) accept if ALL are true
+    throw = cms.bool(False)    # throw exception on unknown path names
+)
+
+
+#-----------------------#
+#        OBJECTS        #
+#-----------------------#
+
 #electrons upstream modules
 process.load("Configuration.StandardSequences.GeometryRecoDB_cff")
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
@@ -51,6 +70,11 @@ process.cleanedMuons = cms.EDProducer("PATMuonCleanerBySegments",
     fractionOfSharedSegments = cms.double(0.499)
 )
 
+
+#-----------------------#
+#        NTUPLE         #
+#-----------------------#
+
 process.ntuple = cms.EDAnalyzer('Ntuple',
     genSet = cms.PSet(
         genProduct = cms.InputTag("generator"),
@@ -67,7 +91,7 @@ process.ntuple = cms.EDAnalyzer('Ntuple',
     ),
     triggerSet = cms.PSet(
         trigger = cms.InputTag("TriggerResults"),
-        paths = cms.vstring('HLT_Mu45_eta2p1_v', 'HLT_Mu50_v2', 'HLT_IsoMu20_v', 'HLT_Mu27_TkMu8_v', 'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v', 'HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v', 'HLT_Ele105_CaloIdVT_GsfTrkIdT_v', 'HLT_Ele23_WPLoose_Gsf_v', 'HLT_Ele27_WPLoose_Gsf_v', 'HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v', 'HLT_DoubleEle33_CaloIdL_v'),
+        paths = cms.vstring('HLT_Mu45_eta2p1_v', 'HLT_Mu50_v', 'HLT_IsoMu20_v', 'HLT_Mu27_TkMu8_v', 'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v', 'HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v', 'HLT_Ele105_CaloIdVT_GsfTrkIdT_v', 'HLT_Ele23_WPLoose_Gsf_v', 'HLT_Ele27_WPLoose_Gsf_v', 'HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v', 'HLT_DoubleEle33_CaloIdL_v'),
     ),
     electronSet = cms.PSet(
         electrons = cms.InputTag("slimmedElectrons"),
@@ -159,6 +183,11 @@ process.ntuple = cms.EDAnalyzer('Ntuple',
 #  )
 #)
 
-process.seq = cms.Sequence(process.egmGsfElectronIDSequence * process.cleanedMuons * process.ntuple)
-#process.seq = cms.Sequence(process.cleanedMuons * process.ntuple)
+process.seq = cms.Sequence(
+    process.HLTFilter *
+    process.egmGsfElectronIDSequence *
+    process.cleanedMuons *
+    process.ntuple
+)
+
 process.p = cms.Path(process.seq)
