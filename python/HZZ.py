@@ -103,7 +103,7 @@ process.cleanedMuons = cms.EDProducer("PATMuonCleanerBySegments",
 #        NTUPLE         #
 #-----------------------#
 
-process.ntuple = cms.EDAnalyzer('Ntuple',
+process.ntuple = cms.EDAnalyzer('HZZ',
     genSet = cms.PSet(
         genProduct = cms.InputTag("generator"),
         lheProduct = cms.InputTag("externalLHEProducer"),
@@ -204,7 +204,7 @@ process.ntuple = cms.EDAnalyzer('Ntuple',
     writeNMuons = cms.int32(0),
     writeNLeptons = cms.int32(2),
     writeNTaus = cms.int32(0),
-    writeNPhotons = cms.int32(1),
+    writeNPhotons = cms.int32(0),
     writeNJets = cms.int32(2),
     verbose  = cms.bool(True),
 )
