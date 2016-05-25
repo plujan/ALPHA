@@ -2,7 +2,10 @@
 
 
 GenAnalyzer::GenAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl):
-    GenToken(CColl.consumes<std::vector<reco::GenParticle> >(PSet.getParameter<edm::InputTag>("genparticles")))
+    GenToken(CColl.consumes<GenEventInfoProduct>(PSet.getParameter<edm::InputTag>("genProduct"))),
+    LheToken(CColl.consumes<LHEEventProduct>(PSet.getParameter<edm::InputTag>("lheProduct"))),
+    GenParticlesToken(CColl.consumes<std::vector<reco::GenParticle> >(PSet.getParameter<edm::InputTag>("genParticles"))),
+    ParticleList(PSet.getParameter<std::vector<int> >("pdgId"))
 {
     /*
     Sample=sample;
@@ -41,20 +44,40 @@ GenAnalyzer::~GenAnalyzer() {
     */
 }
 
+// ---------- GEN WEIGHTS ----------
 
+std::map<std::string, float> GenAnalyzer::FillWeightsMap(const edm::Event& iEvent) {
+    std::map<std::string, float> Weights;
+    Weights["event"] = 1.;
+    if(iEvent.isRealData()) return Weights;
+    // Declare and open collection
+    edm::Handle<GenEventInfoProduct> GenEventCollection;
+    iEvent.getByToken(GenToken, GenEventCollection);
+    // Declare and open collection
+    edm::Handle<LHEEventProduct> LheEventCollection;
+    iEvent.getByToken(LheToken, LheEventCollection);
+    
+    Weights["event"] = fabs(LheEventCollection.product()->originalXWGTUP()) / LheEventCollection.product()->originalXWGTUP();
+    return Weights;
+}
+
+
+// ---------- GEN PARTICLES ----------
 
 std::vector<reco::GenParticle> GenAnalyzer::FillGenVector(const edm::Event& iEvent) {
-    bool isMC(!iEvent.isRealData());
     std::vector<reco::GenParticle> Vect;
-    if(!isMC) return Vect;
+    if(iEvent.isRealData()) return Vect;
     // Declare and open collection
     edm::Handle<std::vector<reco::GenParticle> > GenCollection;
-    iEvent.getByToken(GenToken, GenCollection);
+    iEvent.getByToken(GenParticlesToken, GenCollection);
     // Loop on Gen Particles collection
-    for(std::vector<reco::GenParticle>::const_iterator it = GenCollection->begin(); it != GenCollection->end(); ++it) {Vect.push_back(*it); // Fill vector
+    for(std::vector<reco::GenParticle>::const_iterator it = GenCollection->begin(); it != GenCollection->end(); ++it) {
 //        std::cout << it->pdgId() << "  " << it->status() << "  " << it->pt() << "  " << it->eta() << "  " << it->phi() << "  " << it->mass() << std::endl;
 //        if(it->numberOfDaughters()>0) std::cout << "  " << it->daughter(0)->pdgId() << "  " << it->daughter(0)->status() << "  " << it->daughter(0)->pt() << std::endl;
 //        if(it->numberOfDaughters()>1) std::cout << "  " << it->daughter(1)->pdgId() << "  " << it->daughter(1)->status() << "  " << it->daughter(1)->pt() << std::endl;
+        for(unsigned int i = 0; i < ParticleList.size(); i++) {
+            if(abs(it->pdgId()) == ParticleList[i]) Vect.push_back(*it); // Fill vector
+        }
     }
 //    std::cout << "\n\n\n" << std::endl;
     return Vect;
@@ -73,6 +96,9 @@ reco::Candidate* GenAnalyzer::FindLastDaughter(reco::Candidate* p) {
     if(p->daughter(0)->pdgId() != p->pdgId()) return p;
     return FindLastDaughter(p->daughter(0));
 }
+
+
+
 
 
 // ---------- PILEUP ----------

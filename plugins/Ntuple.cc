@@ -41,6 +41,7 @@ Ntuple::Ntuple(const edm::ParameterSet& iConfig):
     JetPSet(iConfig.getParameter<edm::ParameterSet>("jetSet")),
     WriteNElectrons(iConfig.getParameter<int>("writeNElectrons")),
     WriteNMuons(iConfig.getParameter<int>("writeNMuons")),
+    WriteNTaus(iConfig.getParameter<int>("writeNTaus")),
     WriteNLeptons(iConfig.getParameter<int>("writeNLeptons")),
     WriteNJets(iConfig.getParameter<int>("writeNJets")),
     WriteNPhotons(iConfig.getParameter<int>("writeNPhotons")),
@@ -100,6 +101,7 @@ void Ntuple::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     // Initialize types
     for(int i = 0; i < WriteNElectrons; i++) ObjectsFormat::ResetLeptonType(Electrons[i]);
     for(int i = 0; i < WriteNMuons; i++) ObjectsFormat::ResetLeptonType(Muons[i]);
+    for(int i = 0; i < WriteNTaus; i++) ObjectsFormat::ResetLeptonType(Taus[i]);
     for(int i = 0; i < WriteNLeptons; i++) ObjectsFormat::ResetLeptonType(Leptons[i]);
     for(int i = 0; i < WriteNJets; i++) ObjectsFormat::ResetJetType(Jets[i]);
     for(int i = 0; i < WriteNPhotons; i++) ObjectsFormat::ResetPhotonType(Photons[i]);
@@ -107,12 +109,12 @@ void Ntuple::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     ObjectsFormat::ResetMEtType(MEt);
     
     
-    // Trigger
-    int TrigBit = theTriggerAnalyzer->FillTriggerBitmap(iEvent);
     // Electrons
     std::vector<pat::Electron> ElecVect = theElectronAnalyzer->FillElectronVector(iEvent);
     // Muons
     std::vector<pat::Muon> MuonVect = theMuonAnalyzer->FillMuonVector(iEvent);
+    // Muons
+    std::vector<pat::Tau> TauVect = theTauAnalyzer->FillTauVector(iEvent);
     // Jets
     std::vector<pat::Jet> JetsVect = theJetAnalyzer->FillJetVector(iEvent);
     // Photons
@@ -122,23 +124,26 @@ void Ntuple::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     // Missing Energy
     pat::MET MET = theJetAnalyzer->FillMetVector(iEvent);
     
-    
+    // Gen weights
+    std::map<std::string, float> GenWeight = theGenAnalyzer->FillWeightsMap(iEvent);
+    EventWeight *= GenWeight["event"];
     // Gen Particles
     std::vector<reco::GenParticle> GenPVect = theGenAnalyzer->FillGenVector(iEvent);
     // Gen candidates
     reco::Candidate* theGenZ = theGenAnalyzer->FindGenParticle(GenPVect, 23);
-    if(theGenZ) std::cout << "  genZ: " << theGenZ->mass() << std::endl;
     
     // PU weight
     PUWeight = thePileupAnalyzer->GetPUWeight(iEvent);
     EventWeight *= PUWeight;
     
-    
+    // Trigger
+    std::map<std::string, bool> TriggerMap = theTriggerAnalyzer->FillTriggerMap(iEvent);
+    EventWeight *= TriggerWeight;
     
     
     // ---------- Print Summary ----------
     if(Verbose) {
-        std::cout << " --- Event n. " << iEvent.id().event() << ", lumi " << iEvent.luminosityBlock() << ", run " << iEvent.id().run() << ", PU weight " << PUWeight << std::endl;
+        std::cout << " --- Event n. " << iEvent.id().event() << ", lumi " << iEvent.luminosityBlock() << ", run " << iEvent.id().run() << ", weight " << EventWeight << std::endl;
         std::cout << "number of electrons: " << ElecVect.size() << std::endl;
         for(unsigned int i = 0; i < ElecVect.size(); i++) std::cout << "  electron [" << i << "]\tpt: " << ElecVect[i].pt() << "\teta: " << ElecVect[i].eta() << "\tphi: " << ElecVect[i].phi() << std::endl;
         std::cout << "number of muons:     " << MuonVect.size() << std::endl;
@@ -200,6 +205,7 @@ void Ntuple::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     AddFourMomenta addP4;
     addP4.set(theZ);
     if(theZ.mass()<50.) {if(Verbose) std::cout << " - Z off-shell" << std::endl; return;}
+    if(Verbose) std::cout << "Z candidate mass:    " << theZ.mass() << ", generated: " << (theGenZ ? theGenZ->mass() : -1.) << std::endl;
 //    
 //    // Lepton and Trigger SF
 //    if(isMC) {
@@ -258,6 +264,7 @@ void Ntuple::beginJob() {
     // Object objects are created only one in the begin job. The reference passed to the branch has to be the same
     for(int i = 0; i < WriteNElectrons; i++) Electrons.push_back( LeptonType() );
     for(int i = 0; i < WriteNMuons; i++) Muons.push_back( LeptonType() );
+    for(int i = 0; i < WriteNTaus; i++) Taus.push_back( LeptonType() );
     for(int i = 0; i < WriteNLeptons; i++) Leptons.push_back( LeptonType() );
     for(int i = 0; i < WriteNJets; i++) Jets.push_back( JetType() );
     for(int i = 0; i < WriteNPhotons; i++) Photons.push_back( PhotonType() );
@@ -273,6 +280,7 @@ void Ntuple::beginJob() {
     // Set Branches for objects
     for(int i = 0; i < WriteNElectrons; i++) tree->Branch(("Electron"+std::to_string(i+1)).c_str(), &(Electrons[i]), ObjectsFormat::ListLeptonType().c_str());
     for(int i = 0; i < WriteNMuons; i++) tree->Branch(("Muon"+std::to_string(i+1)).c_str(), &(Muons[i]), ObjectsFormat::ListLeptonType().c_str());
+    for(int i = 0; i < WriteNTaus; i++) tree->Branch(("Tau"+std::to_string(i+1)).c_str(), &(Taus[i]), ObjectsFormat::ListLeptonType().c_str());
     for(int i = 0; i < WriteNLeptons; i++) tree->Branch(("Lepton"+std::to_string(i+1)).c_str(), &(Leptons[i]), ObjectsFormat::ListLeptonType().c_str());
     for(int i = 0; i < WriteNJets; i++) tree->Branch(("Jet"+std::to_string(i+1)).c_str(), &(Jets[i]), ObjectsFormat::ListJetType().c_str());
     for(int i = 0; i < WriteNPhotons; i++) tree->Branch(("Photon"+std::to_string(i+1)).c_str(), &(Photons[i]), ObjectsFormat::ListPhotonType().c_str());
