@@ -2,7 +2,9 @@
 
 
 GenAnalyzer::GenAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl):
-    GenToken(CColl.consumes<std::vector<reco::GenParticle> >(PSet.getParameter<edm::InputTag>("genparticles")))
+    GenToken(CColl.consumes<GenEventInfoProduct>(PSet.getParameter<edm::InputTag>("genProduct"))),
+    LHEToken(CColl.consumes<LHEEventProduct>(PSet.getParameter<edm::InputTag>("lheProduct"))),
+    GenParticlesToken(CColl.consumes<std::vector<reco::GenParticle> >(PSet.getParameter<edm::InputTag>("genParticles")))
 {
     /*
     Sample=sample;
@@ -41,7 +43,12 @@ GenAnalyzer::~GenAnalyzer() {
     */
 }
 
+// ---------- GEN WEIGHTS ----------
 
+
+
+
+// ---------- GEN PARTICLES ----------
 
 std::vector<reco::GenParticle> GenAnalyzer::FillGenVector(const edm::Event& iEvent) {
     bool isMC(!iEvent.isRealData());
@@ -73,6 +80,9 @@ reco::Candidate* GenAnalyzer::FindLastDaughter(reco::Candidate* p) {
     if(p->daughter(0)->pdgId() != p->pdgId()) return p;
     return FindLastDaughter(p->daughter(0));
 }
+
+
+
 
 
 // ---------- PILEUP ----------
