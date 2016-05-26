@@ -118,7 +118,7 @@ process.ntuple = cms.EDAnalyzer('Ntuple',
         mcName = cms.string('S10'),
     ),
     triggerSet = cms.PSet(
-        trigger = cms.InputTag("TriggerResults"),
+        trigger = cms.InputTag("TriggerResults", "", "HLT"),
         paths = cms.vstring('HLT_Mu45_eta2p1_v', 'HLT_Mu50_v', 'HLT_IsoMu20_v', 'HLT_Mu27_TkMu8_v', 'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v', 'HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v', 'HLT_Ele105_CaloIdVT_GsfTrkIdT_v', 'HLT_Ele23_WPLoose_Gsf_v', 'HLT_Ele27_WPLoose_Gsf_v', 'HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v', 'HLT_DoubleEle33_CaloIdL_v'),
     ),
     electronSet = cms.PSet(
