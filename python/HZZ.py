@@ -13,8 +13,8 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
 # input
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
-        'file:/lustre/cmswork/zucchett/CMSSW_8_0_5/src/00F0B3DC-211B-E611-A6A0-001E67248A39.root'
-#        '/store/user/lbenato/BulkGraviton_ZZ_ZlepZhad_narrow_M800_13TeV-madgraph_MINIAOD_10000ev/BulkGravToZZToZlepZhad_narrow_M-800_13TeV-madgraph_PRIVATE-MC/BulkGraviton_ZZ_ZlepZhad_narrow_M800_13TeV-madgraph_MINIAOD_10000ev/160515_095125/0000/BulkGraviton_ZZ_ZlepZhad_narrow_M800_13TeV-madgraph_MINIAOD_1.root'
+#        'file:/lustre/cmswork/zucchett/CMSSW_8_0_5/src/00F0B3DC-211B-E611-A6A0-001E67248A39.root'
+        '/store/user/lbenato/BulkGraviton_ZZ_ZlepZhad_narrow_M800_13TeV-madgraph_MINIAOD_10000ev/BulkGravToZZToZlepZhad_narrow_M-800_13TeV-madgraph_PRIVATE-MC/BulkGraviton_ZZ_ZlepZhad_narrow_M800_13TeV-madgraph_MINIAOD_10000ev/160515_095125/0000/BulkGraviton_ZZ_ZlepZhad_narrow_M800_13TeV-madgraph_MINIAOD_1.root'
     )
 )
 
@@ -118,7 +118,7 @@ process.ntuple = cms.EDAnalyzer('HZZ',
         mcName = cms.string('S10'),
     ),
     triggerSet = cms.PSet(
-        trigger = cms.InputTag("TriggerResults"),
+        trigger = cms.InputTag("TriggerResults", "", "HLT"),
         paths = cms.vstring('HLT_Mu45_eta2p1_v', 'HLT_Mu50_v', 'HLT_IsoMu20_v', 'HLT_Mu27_TkMu8_v', 'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v', 'HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v', 'HLT_Ele105_CaloIdVT_GsfTrkIdT_v', 'HLT_Ele23_WPLoose_Gsf_v', 'HLT_Ele27_WPLoose_Gsf_v', 'HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v', 'HLT_DoubleEle33_CaloIdL_v'),
     ),
     electronSet = cms.PSet(
@@ -220,7 +220,7 @@ process.ntuple = cms.EDAnalyzer('HZZ',
 #)
 
 process.seq = cms.Sequence(
-    process.HLTFilter *
+#    process.HLTFilter *
     process.primaryVertexFilter *
     process.egmGsfElectronIDSequence *
     process.egmPhotonIDSequence *
