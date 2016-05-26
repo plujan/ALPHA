@@ -27,6 +27,9 @@ std::map<std::string, bool> TriggerAnalyzer::FillTriggerMap(const edm::Event& iE
     edm::Handle<edm::TriggerResults> hltTriggerResults;
     iEvent.getByToken(TriggerToken, hltTriggerResults);
     const edm::TriggerNames& trigNames = iEvent.triggerNames(*hltTriggerResults);
+    
+    //for(unsigned int j=0, in=trigNames.size(); j < in; j++) std::cout << trigNames.triggerName(j) << std::endl;
+    
     // Get Trigger index
     for(unsigned int i = 0; i < n; i++) {
         Map[TriggerList[i]] = false;
