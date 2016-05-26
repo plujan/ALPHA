@@ -188,8 +188,8 @@ process.ntuple = cms.EDAnalyzer('Ntuple',
         photonpt = cms.double(20.),
     ),
     jetSet = cms.PSet(
-        jets = cms.InputTag("slimmedJetsAK8"), #selectedPatJetsAK8PFCHSPrunedPacked
-        jetid = cms.int32(1), # 0: no selection, 1: loose, 2: medium, 3: tight
+        jets = cms.InputTag("slimmedJets"), #selectedPatJetsAK8PFCHSPrunedPacked
+        jetid = cms.int32(1), # 0: no selection, 1: loose, 2: tight, 3: tight lepton veto
         jet1pt = cms.double(20.),
         jet2pt = cms.double(20.),
         btag = cms.string("combinedSecondaryVertexBJetTags"),

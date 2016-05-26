@@ -128,6 +128,7 @@ std::vector<pat::Muon> MuonAnalyzer::FillMuonVector(const edm::Event& iEvent) {
         if(IsoTh==1 && pfIso04>0.25) continue;
         if(IsoTh==2 && pfIso04>0.15) continue;
         // Muon Quality ID 2015-2016: see https://twiki.cern.ch/twiki/bin/view/CMS/SWGuideMuonIdRun2
+        if(IdTh==0 && !IsCustomTracker(mu, vertex)) continue;
         if(IdTh==1 && !mu.isLooseMuon()) continue;
         if(IdTh==2 && !mu.isMediumMuon()) continue;
         if(IdTh==3 && !mu.isTightMuon(*vertex)) continue;

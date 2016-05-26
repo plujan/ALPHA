@@ -39,8 +39,9 @@ class JetAnalyzer {
         virtual float GetResolutionErrorUp(float);
         virtual float GetResolutionErrorDown(float);
         virtual bool isLooseJet(pat::Jet&);
-        virtual bool isMediumJet(pat::Jet&);
+        //virtual bool isMediumJet(pat::Jet&);
         virtual bool isTightJet(pat::Jet&);
+        virtual bool isTightLepVetoJet(pat::Jet&);
       
     private:
     
