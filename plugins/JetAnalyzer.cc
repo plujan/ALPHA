@@ -85,10 +85,15 @@ std::vector<pat::Jet> JetAnalyzer::FillJetVector(const edm::Event& iEvent) {
         // Pt and eta cut
         if(jet.pt()<PtTh || fabs(jet.eta())>2.4) continue;
         // Quality cut
-        //if(JetId==1 && !isLooseJet(jet)) continue;
+        if(JetId==1 && !isLooseJet(jet)) continue;
+        if(JetId==2 && !isTightJet(jet)) continue;
+        if(JetId==3 && !isTightLepVetoJet(jet)) continue;
         // b-tagging
         if(BTagTh==1 && jet.bDiscriminator(BTag)<BTagTh) continue;
         // Fill jet scale uncertainty
+        jet.addUserInt("isLoose", isLooseJet(jet) ? 1 : 0);
+        jet.addUserInt("isTight", isTightJet(jet) ? 1 : 0);
+        jet.addUserInt("isTightLepVeto", isTightLepVetoJet(jet) ? 1 : 0);
         jet.addUserFloat("JESUncertainty", jet.pt()*GetScaleUncertainty(jet));
         Vect.push_back(jet); // Fill vector
     }
@@ -187,18 +192,64 @@ float JetAnalyzer::GetResolutionErrorDown(float eta) {
     return -1.;
 }
 
-// PFJet Quality ID: see https://twiki.cern.ch/twiki/bin/view/CMS/JetID
+// PFJet Quality ID 2015-2016: see https://twiki.cern.ch/twiki/bin/viewauth/CMS/JetID#Recommendations_for_13_TeV_data
 bool JetAnalyzer::isLooseJet(pat::Jet& jet) {
-    if(jet.neutralHadronEnergyFraction()>0.99) return false;
-    if(jet.neutralEmEnergyFraction()>0.99) return false;
-    if(jet.numberOfDaughters()<=1) return false;
-    if(fabs(jet.eta())<2.4) {
-      if(jet.chargedHadronEnergyFraction()<=0.) return false;
-      if(jet.chargedEmEnergyFraction()>0.99) return false;
-      if(jet.chargedMultiplicity()<=0) return false;
+    if(fabs(jet.eta())<=3.){
+        if(jet.neutralHadronEnergyFraction()>=0.99) return false;
+        if(jet.neutralEmEnergyFraction()>=0.99) return false;
+        if(jet.numberOfDaughters()<=1) return false;
+        if(fabs(jet.eta())<=2.4) {
+          if(jet.chargedHadronEnergyFraction()<=0.) return false;
+          if(jet.chargedEmEnergyFraction()>=0.99) return false;
+          if(jet.chargedMultiplicity()<=0) return false;
+        }
+    }
+    else{
+        if(jet.neutralEmEnergyFraction()>=0.90) return false;
+	if(jet.neutralMultiplicity()<=10) return false;
     }
     return true;
 }
+
+bool JetAnalyzer::isTightJet(pat::Jet& jet) {
+    if(fabs(jet.eta())<=3.){
+        if(jet.neutralHadronEnergyFraction()>=0.90) return false;
+        if(jet.neutralEmEnergyFraction()>=0.90) return false;
+        if(jet.numberOfDaughters()<=1) return false;
+        if(fabs(jet.eta())<=2.4) {
+          if(jet.chargedHadronEnergyFraction()<=0.) return false;
+          if(jet.chargedEmEnergyFraction()>=0.99) return false;
+          if(jet.chargedMultiplicity()<=0) return false;
+        }
+    }
+    else{
+        if(jet.neutralEmEnergyFraction()>=0.90) return false;
+	if(jet.neutralMultiplicity()<=10) return false;
+    }
+    return true;
+}
+
+bool JetAnalyzer::isTightLepVetoJet(pat::Jet& jet) {
+    if(fabs(jet.eta())<=3.){
+        if(jet.neutralHadronEnergyFraction()>=0.90) return false;
+        if(jet.neutralEmEnergyFraction()>=0.90) return false;
+        if(jet.numberOfDaughters()<=1) return false;
+        if(jet.muonEnergyFraction()>=0.8) return false;
+        if(fabs(jet.eta())<=2.4) {
+          if(jet.chargedHadronEnergyFraction()<=0.) return false;
+          if(jet.chargedEmEnergyFraction()>=0.90) return false;
+          if(jet.chargedMultiplicity()<=0) return false;
+        }
+    }
+    else{
+        if(jet.neutralEmEnergyFraction()>=0.90) return false;
+	if(jet.neutralMultiplicity()<=10) return false;
+    }
+    return true;
+}
+
+
+/*
 bool JetAnalyzer::isMediumJet(pat::Jet& jet) {
     if(jet.neutralHadronEnergyFraction()>0.95) return false;
     if(jet.neutralEmEnergyFraction()>0.95) return false;
@@ -222,6 +273,6 @@ bool JetAnalyzer::isTightJet(pat::Jet& jet) {
     return true;
 }
 
-
+*/
 
 

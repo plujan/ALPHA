@@ -244,9 +244,10 @@ void ObjectsFormat::FillJetType(JetType& I, const pat::Jet* R, bool isMC) {
     I.npr         = R->chargedMultiplicity() + R->neutralMultiplicity();
     I.flavour     = R->partonFlavour();
     if(isMC && R->genParton()) I.mother = false;//Utilities::FindMotherId(dynamic_cast<const reco::Candidate*>(R->genParton()));
-    I.isLoose     = false;
+    I.isLoose     = R->hasUserInt("isLoose") ? R->userInt("isLoose") : false;
     I.isMedium    = false;
-    I.isTight     = false;
+    I.isTight     = R->hasUserInt("isTight") ? R->userInt("isTight") : false;
+    I.isTightLepVeto     = R->hasUserInt("isTightLepVeto") ? R->userInt("isTightLepVeto") : false;
     I.isCSVL      = false;//IsBTagged(Tagger, 1, I.CSV);
     I.isCSVM      = false;//IsBTagged(Tagger, 2, I.CSV);
     I.isCSVT      = false;//IsBTagged(Tagger, 3, I.CSV);
@@ -278,13 +279,14 @@ void ObjectsFormat::ResetJetType(JetType& I) {
     I.isLoose     = false;
     I.isMedium    = false;
     I.isTight     = false;
+    I.isTightLepVeto     = false;
     I.isCSVL      = false;
     I.isCSVM      = false;
     I.isCSVT      = false;
     I.isMatched   = false;
 }
 
-std::string ObjectsFormat::ListJetType() {return "pt/F:eta/F:phi/F:mass/F:energy/F:ptRaw/F:ptUnc/F:dPhi_met/F:dPhi_jet1/F:puId/F:CSV/F:CSVR/F:chf/F:nhf/F:phf/F:elf/F:muf/F:chm/I:npr/I:flavour/I:mother/I:isLoose/O:isMedium/O:isTight/O:isCSVL/O:isCSVM/O:isCSVT/O:isMatched/O";}
+std::string ObjectsFormat::ListJetType() {return "pt/F:eta/F:phi/F:mass/F:energy/F:ptRaw/F:ptUnc/F:dPhi_met/F:dPhi_jet1/F:puId/F:CSV/F:CSVR/F:chf/F:nhf/F:phf/F:elf/F:muf/F:chm/I:npr/I:flavour/I:mother/I:isLoose/O:isMedium/O:isTight/O:isTightLepVeto/O:isCSVL/O:isCSVM/O:isCSVT/O:isMatched/O";}
 
 
 
