@@ -9,6 +9,7 @@ JetAnalyzer::JetAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl
     JetId(PSet.getParameter<int>("jetid")),
     Jet1Pt(PSet.getParameter<double>("jet1pt")),
     Jet2Pt(PSet.getParameter<double>("jet2pt")),
+    JetEta(PSet.getParameter<double>("jeteta")),
     BTag(PSet.getParameter<std::string>("btag")),
     Jet1BTag(PSet.getParameter<int>("jet1btag")),
     Jet2BTag(PSet.getParameter<int>("jet2btag")),
@@ -36,6 +37,7 @@ JetAnalyzer::JetAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl
     std::cout << " --- JetAnalyzer initialization ---" << std::endl;
     std::cout << "  jet Id            :\t" << JetId << std::endl;
     std::cout << "  jet pT [1, 2]     :\t" << Jet1Pt << "\t" << Jet2Pt << std::endl;
+    std::cout << "  jet eta           :\t" << JetEta << std::endl;
     std::cout << "  b-tagging algo    :\t" << BTag << std::endl;
     std::cout << "  b-tag cut [1, 2]  :\t" << Jet1BTag << "\t" << Jet2BTag << std::endl;
     std::cout << "  apply recoil corr :\t" << (UseRecoil ? "YES" : "NO") << std::endl;
@@ -56,7 +58,7 @@ JetAnalyzer::~JetAnalyzer() {
 std::vector<pat::Jet> JetAnalyzer::FillJetVector(const edm::Event& iEvent) {
     bool isMC(!iEvent.isRealData());
     int BTagTh(Jet1BTag);
-    float PtTh(Jet1Pt);
+    float PtTh(Jet1Pt), EtaTh(JetEta);
     std::vector<pat::Jet> Vect;
     // Declare and open collection
     edm::Handle<std::vector<pat::Jet> > PFJetsCollection;
@@ -83,7 +85,7 @@ std::vector<pat::Jet> JetAnalyzer::FillJetVector(const edm::Event& iEvent) {
             }
         }
         // Pt and eta cut
-        if(jet.pt()<PtTh || fabs(jet.eta())>2.4) continue;
+        if(jet.pt()<PtTh || fabs(jet.eta())>EtaTh) continue;
         // Quality cut
         if(JetId==1 && !isLooseJet(jet)) continue;
         if(JetId==2 && !isTightJet(jet)) continue;
