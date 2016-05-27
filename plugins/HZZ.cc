@@ -44,6 +44,7 @@ HZZ::HZZ(const edm::ParameterSet& iConfig):
     WriteNTaus(iConfig.getParameter<int>("writeNTaus")),
     WriteNPhotons(iConfig.getParameter<int>("writeNPhotons")),
     WriteNJets(iConfig.getParameter<int>("writeNJets")),
+    HistFile(iConfig.getParameter<std::string>("histFile")),
     Verbose(iConfig.getParameter<bool>("verbose"))
 {
     //now do what ever initialization is needed
@@ -59,6 +60,43 @@ HZZ::HZZ(const edm::ParameterSet& iConfig):
     thePhotonAnalyzer=new PhotonAnalyzer(PhotonPSet, consumesCollector());
     theJetAnalyzer=new JetAnalyzer(JetPSet, consumesCollector());
     //theBTagAnalyzer=new BTagAnalyzer(BTagAlgo);
+    
+    
+    // ---------- Plots Initialization ----------
+    TFileDirectory allDir=fs->mkdir("All/");
+    TFileDirectory genDir=fs->mkdir("Gen/");
+    TFileDirectory eleDir=fs->mkdir("Electrons/");
+    TFileDirectory muoDir=fs->mkdir("Muons/");
+    TFileDirectory jetDir=fs->mkdir("Jets/");
+    TFileDirectory kinDir=fs->mkdir("Kin/");
+    
+    // Make TH1F
+    std::vector<std::string> nLabels={"Trigger", "Lep #geq 2", "Z cand ", "Jets #geq 2", "Z mass ", "bJets #geq 1", "bJets #geq 2", "h mass ", "#slash{E}_{T}", "Final"};
+    
+    int nbins;
+    float min, max;
+    std::string name, title, opt;
+    
+    ifstream histFile(HistFile);
+    if(!histFile.is_open()) {
+        throw cms::Exception("HZZ Analyzer", HistFile + " file not found");
+    }
+    while(histFile >> name >> title >> nbins >> min >> max >> opt) {
+        if(name.find('#')==std::string::npos) {
+            while(title.find("~")!=std::string::npos) title=title.replace(title.find("~"), 1, " "); // Remove ~
+            if(name.substr(0, 2)=="a_") Hist[name] = allDir.make<TH1F>(name.c_str(), title.c_str(), nbins, min, max); //.substr(2)
+            if(name.substr(0, 2)=="g_") Hist[name] = genDir.make<TH1F>(name.c_str(), title.c_str(), nbins, min, max);
+            if(name.substr(0, 2)=="e_") Hist[name] = eleDir.make<TH1F>(name.c_str(), title.c_str(), nbins, min, max);
+            if(name.substr(0, 2)=="m_") Hist[name] = muoDir.make<TH1F>(name.c_str(), title.c_str(), nbins, min, max);
+            if(name.substr(0, 2)=="j_") Hist[name] = jetDir.make<TH1F>(name.c_str(), title.c_str(), nbins, min, max);
+            if(name.substr(0, 2)=="k_") Hist[name] = kinDir.make<TH1F>(name.c_str(), title.c_str(), nbins, min, max);
+            Hist[name]->Sumw2();
+            Hist[name]->SetOption(opt.c_str());
+            // Particular histograms
+            if(name=="a_nEvents" || name=="e_nEvents" || name=="m_nEvents") for(unsigned int i=0; i<nLabels.size(); i++) Hist[name]->GetXaxis()->SetBinLabel(i+1, nLabels[i].c_str());
+        }
+    }
+    histFile.close();
     
     std::cout << "---------- STARTING ----------" << std::endl;
 }
@@ -94,7 +132,8 @@ void HZZ::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     LumiNumber = iEvent.luminosityBlock();
     RunNumber = iEvent.id().run();
     
-    float EventWeight(1.), PUWeight(1.), TriggerWeight(1.), LeptonWeight(1.);
+    EventWeight = PUWeight = TriggerWeight = LeptonWeight = 1.;
+    
     AddFourMomenta addP4;
     
     // Initialize types
@@ -140,6 +179,10 @@ void HZZ::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     std::map<std::string, bool> TriggerMap = theTriggerAnalyzer->FillTriggerMap(iEvent);
     EventWeight *= TriggerWeight;
     
+    
+    Hist["a_nEvents"]->Fill(1., EventWeight);
+    Hist["e_nEvents"]->Fill(1., EventWeight);
+    Hist["m_nEvents"]->Fill(1., EventWeight);
     
     // ---------- Do analysis selections ----------
     
@@ -292,6 +335,10 @@ void HZZ::beginJob() {
     tree->Branch("EventNumber", &EventNumber, "EventNumber/L");
     tree->Branch("LumiNumber", &LumiNumber, "LumiNumber/L");
     tree->Branch("RunNumber", &RunNumber, "RunNumber/L");
+    tree->Branch("EventWeight", &EventWeight, "EventWeight/F");
+    tree->Branch("PUWeight", &PUWeight, "PUWeight/F");
+    tree->Branch("TriggerWeight", &TriggerWeight, "TriggerWeight/F");
+    tree->Branch("LeptonWeight", &LeptonWeight, "LeptonWeight/F");
     
     // Set Branches for objects
     for(int i = 0; i < WriteNElectrons; i++) tree->Branch(("Electron"+std::to_string(i+1)).c_str(), &(Electrons[i]), ObjectsFormat::ListLeptonType().c_str());

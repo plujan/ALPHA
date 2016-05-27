@@ -139,6 +139,7 @@ class HZZ : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
         edm::ParameterSet PhotonPSet;
         edm::ParameterSet JetPSet;
         int WriteNElectrons, WriteNMuons, WriteNLeptons, WriteNTaus, WriteNPhotons, WriteNJets;
+        std::string HistFile;
         bool Verbose;
 
         GenAnalyzer* theGenAnalyzer;
@@ -151,10 +152,13 @@ class HZZ : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
         JetAnalyzer* theJetAnalyzer;
         //BTagInterface* theBTagInterface;
         
+        std::map<std::string, TH1F*> Hist;
+        
         edm::Service<TFileService> fs;
         TTree* tree;
         bool isMC;
         long int EventNumber, RunNumber, LumiNumber;
+        float EventWeight, PUWeight, TriggerWeight, LeptonWeight;
         
         //
         std::vector<LeptonType> Electrons;
