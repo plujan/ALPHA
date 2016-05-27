@@ -67,14 +67,14 @@ def main():
     
     if options.requestNumber != '':
         request=str(options.requestNumber)
-        print request
+        #print request
         url='https://cmsweb.cern.ch/phedex/datasvc/json/prod/subscriptions?request='+request+'&node='+site_name
         transf_list=get_dataset_info(url)
         get_transf_files(transf_list)
 
     if options.datasetName != '':
         ds=str(options.datasetName)
-        print ds
+        #print ds
         url='https://cmsweb.cern.ch/phedex/datasvc/json/prod/subscriptions?dataset='+ds+'&node='+site_name
         transf_list=get_dataset_info(url)
         get_transf_files(transf_list)
