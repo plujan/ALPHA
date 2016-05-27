@@ -343,6 +343,9 @@ void HZZ::beginJob() {
     tree->Branch("TriggerWeight", &TriggerWeight, "TriggerWeight/F");
     tree->Branch("LeptonWeight", &LeptonWeight, "LeptonWeight/F");
     
+    // Set trigger branches
+    for(auto it = TriggerMap.begin(); it != TriggerMap.end(); it++) tree->Branch(it->first.c_str(), &(it->second), (it->first+"/O").c_str());
+    
     // Set Branches for objects
     for(int i = 0; i < WriteNElectrons; i++) tree->Branch(("Electron"+std::to_string(i+1)).c_str(), &(Electrons[i]), ObjectsFormat::ListLeptonType().c_str());
     for(int i = 0; i < WriteNMuons; i++) tree->Branch(("Muon"+std::to_string(i+1)).c_str(), &(Muons[i]), ObjectsFormat::ListLeptonType().c_str());
