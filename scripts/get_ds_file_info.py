@@ -5,6 +5,7 @@ import time
 import datetime
 import urllib
 #import urllib2
+import subprocess
 
 ########## OPTIONS ##########
 
@@ -14,6 +15,8 @@ parser = optparse.OptionParser(usage)
 parser.add_option('-n', '--requestNumber',action='store', type='string', dest='requestNumber', default='')
 parser.add_option('-f', '--fileName',     action='store', type='string', dest='fileName',      default='')
 parser.add_option('-d', '--datasetName',  action='store', type='string', dest='datasetName',   default='')
+parser.add_option('-q', '--queryDAS',     action='store_true',           dest='queryDAS',   default=False)
+
 (options, args) = parser.parse_args()
 
 
@@ -58,12 +61,23 @@ def get_transf_files(transf_list):
             for j in range (0, len(data_repl["phedex"]["block"][i]["file"])): 
                 file_name=data_repl["phedex"]["block"][i]["file"][j]["name"]
                 f.write(file_name+'\n')
+        
+        if options.queryDAS:
+            proc = subprocess.Popen('python das_client.py --query=\"dataset dataset=%s | grep dataset.nevents\" --limit=0'%ds_name, stdout=subprocess.PIPE, shell=True)
+            (nevents, err) = proc.communicate()
+            f.write(nevents+'\n')
+            
         f.write('\n')
+    pass
+
     f.close()
     print "filelist saved in ",'/tmp/dataset_files_'+tt
 
 
 def main():
+    
+    if options.queryDAS:
+        os.system('voms-proxy-init --voms cms')
     
     if options.requestNumber != '':
         request=str(options.requestNumber)
