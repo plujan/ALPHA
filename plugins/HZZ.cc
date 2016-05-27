@@ -105,6 +105,8 @@ void HZZ::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     for(int i = 0; i < WriteNPhotons; i++) ObjectsFormat::ResetPhotonType(Photons[i]);
     for(int i = 0; i < WriteNJets; i++) ObjectsFormat::ResetJetType(Jets[i]);
     ObjectsFormat::ResetMEtType(MEt);
+    ObjectsFormat::ResetCandidateType(ZLep);
+    ObjectsFormat::ResetCandidateType(ZHad);
     
     
     // Electrons
@@ -137,6 +139,9 @@ void HZZ::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     EventWeight *= TriggerWeight;
     
     
+    // ---------- Do analysis selections ----------
+
+
     // ---------- Print Summary ----------
     if(Verbose) {
         std::cout << " --- Event n. " << iEvent.id().event() << ", lumi " << iEvent.luminosityBlock() << ", run " << iEvent.id().run() << ", weight " << EventWeight << std::endl;
@@ -152,9 +157,7 @@ void HZZ::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         for(unsigned int i = 0; i < JetsVect.size(); i++) std::cout << "  AK4 jet  [" << i << "]\tpt: " << JetsVect[i].pt() << "\teta: " << JetsVect[i].eta() << "\tphi: " << JetsVect[i].phi() << std::endl;
         std::cout << "Missing energy:      " << MET.pt() << std::endl;
     }
-    
-    // ---------- Do analysis selections ----------
-    // ...
+
     
     // ---------- Fill objects ----------
     if(ElecVect.size() > MuonVect.size()) {
@@ -191,19 +194,23 @@ void HZZ::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     if(l1<0 || l2<0) {if(Verbose) std::cout << " - No OS SF leptons" << std::endl; return;}
 
     // Reconstruct Z candidate
-    pat::CompositeCandidate theZ;
+    pat::CompositeCandidate theZLep;
+    pat::CompositeCandidate theZHad;
     if(isZtoMM) {
-        theZ.addDaughter(MuonVect.at(l1));
-        theZ.addDaughter(MuonVect.at(l2));
+        theZLep.addDaughter(MuonVect.at(l1));
+        theZLep.addDaughter(MuonVect.at(l2));
     }
     else {
-        theZ.addDaughter(ElecVect.at(l1));
-        theZ.addDaughter(ElecVect.at(l2));
+        theZLep.addDaughter(ElecVect.at(l1));
+        theZLep.addDaughter(ElecVect.at(l2));
     }
     AddFourMomenta addP4;
-    addP4.set(theZ);
-    if(theZ.mass()<50.) {if(Verbose) std::cout << " - Z off-shell" << std::endl; return;}
-    if(Verbose) std::cout << "Z candidate mass:    " << theZ.mass() << ", generated: " << (theGenZ ? theGenZ->mass() : -1.) << std::endl;
+    addP4.set(theZLep);
+
+    ObjectsFormat::FillCandidateType(ZLep, &theZLep, isMC);
+
+    if(theZLep.mass()<50.) {if(Verbose) std::cout << " - Z off-shell" << std::endl; return;}
+    if(Verbose) std::cout << "Z candidate mass:    " << theZLep.mass() << ", generated: " << (theGenZ ? theGenZ->mass() : -1.) << std::endl;
 //    
 //    // Lepton and Trigger SF
 //    if(isMC) {
@@ -226,7 +233,7 @@ void HZZ::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
 //    EventWeight*=LeptonWeight;
 //    
 //    if(Verbose) {
-//        std::cout << "\tReconstructed Z candidate from " << (isZtoMM ? "muons" : "electrons") << " " << l1 << " and " << l2 << " with mass: " << theZ.mass() << std::endl;
+//        std::cout << "\tReconstructed Z candidate from " << (isZtoMM ? "muons" : "electrons") << " " << l1 << " and " << l2 << " with mass: " << theZLep.mass() << std::endl;
 //    }
 //    
 //    // FatJet
@@ -238,7 +245,7 @@ void HZZ::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
 //    //double subjet0Bdisc = subjet->bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags");
 //    
 //    
-//    theJetAnalyzer->ApplyRecoilCorrections(MET, &MET.genMET()->p4(), &theZ.p4(), 0);
+//    theJetAnalyzer->ApplyRecoilCorrections(MET, &MET.genMET()->p4(), &theZLep.p4(), 0);
 
     tree->Fill();
 
@@ -283,6 +290,8 @@ void HZZ::beginJob() {
     for(int i = 0; i < WriteNPhotons; i++) tree->Branch(("Photon"+std::to_string(i+1)).c_str(), &(Photons[i]), ObjectsFormat::ListPhotonType().c_str());
     for(int i = 0; i < WriteNJets; i++) tree->Branch(("Jet"+std::to_string(i+1)).c_str(), &(Jets[i]), ObjectsFormat::ListJetType().c_str());
     tree->Branch("MEt", &MEt, ObjectsFormat::ListMEtType().c_str());
+    tree->Branch("ZLep", &ZLep, ObjectsFormat::ListCandidateType().c_str());
+    tree->Branch("ZHad", &ZHad, ObjectsFormat::ListCandidateType().c_str());
     
 }
 
