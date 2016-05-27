@@ -19,10 +19,7 @@ TriggerAnalyzer::~TriggerAnalyzer() {
 
 // ---------- TRIGGER ----------
 
-std::map<std::string, bool> TriggerAnalyzer::FillTriggerMap(const edm::Event& iEvent) {
-    std::map<std::string, bool> Map;
-    unsigned int n = TriggerList.size();
-    std::vector<bool> Fired(n);
+void TriggerAnalyzer::FillTriggerMap(const edm::Event& iEvent, std::map<std::string, bool>& Map) {
 
     edm::Handle<edm::TriggerResults> hltTriggerResults;
     iEvent.getByToken(TriggerToken, hltTriggerResults);
@@ -31,7 +28,7 @@ std::map<std::string, bool> TriggerAnalyzer::FillTriggerMap(const edm::Event& iE
     //for(unsigned int j=0, in=trigNames.size(); j < in; j++) std::cout << trigNames.triggerName(j) << std::endl;
     
     // Get Trigger index
-    for(unsigned int i = 0; i < n; i++) {
+    for(unsigned int i = 0; i < TriggerList.size(); i++) {
         Map[TriggerList[i]] = false;
         for(unsigned int j=0, in=trigNames.size(); j < in; j++) {
             if(trigNames.triggerName(j).find(TriggerList[i]) != std::string::npos) {
@@ -40,6 +37,5 @@ std::map<std::string, bool> TriggerAnalyzer::FillTriggerMap(const edm::Event& iE
             }
         }
     }
-    return Map;
 }
 

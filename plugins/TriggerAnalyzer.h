@@ -22,7 +22,7 @@ class TriggerAnalyzer {
         TriggerAnalyzer(edm::ParameterSet&, edm::ConsumesCollector&&);
         ~TriggerAnalyzer();
         
-        virtual std::map<std::string, bool> FillTriggerMap(const edm::Event&);
+        virtual void FillTriggerMap(const edm::Event&, std::map<std::string, bool>&);
       
     private:
     

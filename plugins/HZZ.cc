@@ -61,6 +61,9 @@ HZZ::HZZ(const edm::ParameterSet& iConfig):
     theJetAnalyzer=new JetAnalyzer(JetPSet, consumesCollector());
     //theBTagAnalyzer=new BTagAnalyzer(BTagAlgo);
     
+    std::vector<std::string> TriggerList(TriggerPSet.getParameter<std::vector<std::string> >("paths"));
+    for(unsigned int i = 0; i < TriggerList.size(); i++) TriggerMap[ TriggerList[i] ] = false;
+    
     
     // ---------- Plots Initialization ----------
     TFileDirectory allDir=fs->mkdir("All/");
@@ -176,7 +179,7 @@ void HZZ::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     EventWeight *= PUWeight;
     
     // Trigger
-    std::map<std::string, bool> TriggerMap = theTriggerAnalyzer->FillTriggerMap(iEvent);
+    theTriggerAnalyzer->FillTriggerMap(iEvent, TriggerMap);
     EventWeight *= TriggerWeight;
     
     
