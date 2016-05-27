@@ -30,7 +30,6 @@
 // constructors and destructor
 //
 HZZ::HZZ(const edm::ParameterSet& iConfig):
-
     GenPSet(iConfig.getParameter<edm::ParameterSet>("genSet")),
     PileupPSet(iConfig.getParameter<edm::ParameterSet>("pileupSet")),
     TriggerPSet(iConfig.getParameter<edm::ParameterSet>("triggerSet")),
@@ -96,6 +95,7 @@ void HZZ::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     RunNumber = iEvent.id().run();
     
     float EventWeight(1.), PUWeight(1.), TriggerWeight(1.), LeptonWeight(1.);
+    AddFourMomenta addP4;
     
     // Initialize types
     for(int i = 0; i < WriteNElectrons; i++) ObjectsFormat::ResetLeptonType(Electrons[i]);
@@ -105,8 +105,8 @@ void HZZ::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     for(int i = 0; i < WriteNPhotons; i++) ObjectsFormat::ResetPhotonType(Photons[i]);
     for(int i = 0; i < WriteNJets; i++) ObjectsFormat::ResetJetType(Jets[i]);
     ObjectsFormat::ResetMEtType(MEt);
-    ObjectsFormat::ResetCandidateType(ZLep);
-    ObjectsFormat::ResetCandidateType(ZHad);
+    ObjectsFormat::ResetCandidateType(Z2);
+    ObjectsFormat::ResetCandidateType(Z1);
     
     
     // Electrons
@@ -119,6 +119,8 @@ void HZZ::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     std::vector<pat::Photon> PhotonVect = thePhotonAnalyzer->FillPhotonVector(iEvent);
     // Jets
     std::vector<pat::Jet> JetsVect = theJetAnalyzer->FillJetVector(iEvent);
+    theJetAnalyzer->CleanJetsFromMuons(JetsVect, MuonVect);
+    theJetAnalyzer->CleanJetsFromElectrons(JetsVect, ElecVect);
     // Missing Energy
     pat::MET MET = theJetAnalyzer->FillMetVector(iEvent);
     
@@ -140,7 +142,55 @@ void HZZ::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     
     
     // ---------- Do analysis selections ----------
+    
+    // ---------- Z TO LEPTONS ----------
+    bool isZtoMM(false), isZtoEE(false);
+    
+    if(MuonVect.size()>=2 && ElecVect.size()>=2) {
+        if(MuonVect.at(0).pt() > ElecVect.at(0).pt()) isZtoMM=true;
+        else isZtoEE=true;
+    }
+    else if(ElecVect.size()>=2) isZtoEE=true;
+    else if(MuonVect.size()>=2) isZtoMM=true;
+    else {if(Verbose) std::cout << " - No Iso SF OS Leptons" << std::endl; return;}
+    
+    // AZh lepton choice
+//    int l1(0), l2(-1);
+//    if(isZtoEE) {
+//        for(unsigned int i=1; i<ElecVect.size(); i++) if(l2<0 && ElecVect.at(i).charge()!=ElecVect.at(l1).charge()) l2=i;
+//    }
+//    else if(isZtoMM) {
+//        for(unsigned int i=1; i<MuonVect.size(); i++) if(l2<0 && MuonVect.at(i).charge()!=MuonVect.at(l1).charge()) l2=i;
+//    }
+//    if(l1<0 || l2<0) {if(Verbose) std::cout << " - No OS SF leptons" << std::endl; return;}
 
+    // Reconstruct Z candidate
+    pat::CompositeCandidate theZ2;
+    if(isZtoMM) {
+        theZ2.addDaughter(MuonVect.at(0));
+        theZ2.addDaughter(MuonVect.at(1));
+    }
+    else {
+        theZ2.addDaughter(ElecVect.at(0));
+        theZ2.addDaughter(ElecVect.at(1));
+    }
+    addP4.set(theZ2);
+    
+    // ---------- Z TO HADRONS ----------
+    pat::CompositeCandidate theZ1;
+    
+    if(JetsVect.size() < 2) {if(Verbose) std::cout << " - N jets < 2" << std::endl;} // return;}
+    else {
+        theZ1.addDaughter(JetsVect.at(0));
+        theZ1.addDaughter(JetsVect.at(1));
+        addP4.set(theZ1);
+    }
+    
+    // Global candidate
+    pat::CompositeCandidate theX;
+    theX.addDaughter(theZ1);
+    theX.addDaughter(theZ2);
+    addP4.set(theX);
 
     // ---------- Print Summary ----------
     if(Verbose) {
@@ -156,61 +206,22 @@ void HZZ::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         std::cout << "number of AK4 jets:  " << JetsVect.size() << std::endl;
         for(unsigned int i = 0; i < JetsVect.size(); i++) std::cout << "  AK4 jet  [" << i << "]\tpt: " << JetsVect[i].pt() << "\teta: " << JetsVect[i].eta() << "\tphi: " << JetsVect[i].phi() << std::endl;
         std::cout << "Missing energy:      " << MET.pt() << std::endl;
+        std::cout << "Z leptonic mass:     " << theZ2.mass() << ", generated: " << (theGenZ ? theGenZ->mass() : -1.) << std::endl;
+        std::cout << "Z hadronic mass:     " << theZ1.mass() << std::endl;
+        std::cout << "X candidate mass:    " << theX.mass() << std::endl;
     }
 
     
     // ---------- Fill objects ----------
-    if(ElecVect.size() > MuonVect.size()) {
-        for(unsigned int i = 0; i < Leptons.size() && i < ElecVect.size(); i++) ObjectsFormat::FillElectronType(Leptons[i], &ElecVect[i], isMC);
-    }
-    else {
-        for(unsigned int i = 0; i < Leptons.size() && i < MuonVect.size(); i++) ObjectsFormat::FillMuonType(Leptons[i], &MuonVect[i], isMC);
-    }
+    if(isZtoEE) for(unsigned int i = 0; i < Leptons.size() && i < ElecVect.size(); i++) ObjectsFormat::FillElectronType(Leptons[i], &ElecVect[i], isMC);
+    else for(unsigned int i = 0; i < Leptons.size() && i < MuonVect.size(); i++) ObjectsFormat::FillMuonType(Leptons[i], &MuonVect[i], isMC);
     for(unsigned int i = 0; i < Taus.size() && i < TauVect.size(); i++) ObjectsFormat::FillTauType(Taus[i], &TauVect[i], isMC);
     for(unsigned int i = 0; i < Photons.size() && i < PhotonVect.size(); i++) ObjectsFormat::FillPhotonType(Photons[i], &PhotonVect[i], isMC);
     for(unsigned int i = 0; i < Jets.size() && i < JetsVect.size(); i++) ObjectsFormat::FillJetType(Jets[i], &JetsVect[i], isMC);
     ObjectsFormat::FillMEtType(MEt, &MET, isMC);
-    
-    
-    
-    // ---------- Z TO LEPTONS ----------
-    bool isZtoMM(false), isZtoEE(false);
-    int l1(0), l2(-1);
-    
-    if(MuonVect.size()>=2 && ElecVect.size()>=2) {
-        if(MuonVect.at(0).pt() > ElecVect.at(0).pt()) {isZtoMM=true; isZtoEE=false;}
-        else {isZtoMM=false; isZtoEE=true;}
-    }
-    else if(ElecVect.size()>=2) {isZtoMM=false; isZtoEE=true;}
-    else if(MuonVect.size()>=2) {isZtoMM=true; isZtoEE=false;}
-    else {if(Verbose) std::cout << " - No Iso SF OS Leptons" << std::endl; return;}
-
-    if(isZtoEE) {
-        for(unsigned int i=1; i<ElecVect.size(); i++) if(l2<0 && ElecVect.at(i).charge()!=ElecVect.at(l1).charge()) l2=i;
-    }
-    else {
-        for(unsigned int i=1; i<MuonVect.size(); i++) if(l2<0 && MuonVect.at(i).charge()!=MuonVect.at(l1).charge()) l2=i;
-    }
-    if(l1<0 || l2<0) {if(Verbose) std::cout << " - No OS SF leptons" << std::endl; return;}
-
-    // Reconstruct Z candidate
-    pat::CompositeCandidate theZLep;
-    pat::CompositeCandidate theZHad;
-    if(isZtoMM) {
-        theZLep.addDaughter(MuonVect.at(l1));
-        theZLep.addDaughter(MuonVect.at(l2));
-    }
-    else {
-        theZLep.addDaughter(ElecVect.at(l1));
-        theZLep.addDaughter(ElecVect.at(l2));
-    }
-    AddFourMomenta addP4;
-    addP4.set(theZLep);
-
-    ObjectsFormat::FillCandidateType(ZLep, &theZLep, isMC);
-
-    if(theZLep.mass()<50.) {if(Verbose) std::cout << " - Z off-shell" << std::endl; return;}
-    if(Verbose) std::cout << "Z candidate mass:    " << theZLep.mass() << ", generated: " << (theGenZ ? theGenZ->mass() : -1.) << std::endl;
+    ObjectsFormat::FillCandidateType(Z2, &theZ2, isMC);
+    ObjectsFormat::FillCandidateType(Z1, &theZ1, isMC);
+    ObjectsFormat::FillCandidateType(X, &theX, isMC);
 //    
 //    // Lepton and Trigger SF
 //    if(isMC) {
@@ -233,7 +244,7 @@ void HZZ::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
 //    EventWeight*=LeptonWeight;
 //    
 //    if(Verbose) {
-//        std::cout << "\tReconstructed Z candidate from " << (isZtoMM ? "muons" : "electrons") << " " << l1 << " and " << l2 << " with mass: " << theZLep.mass() << std::endl;
+//        std::cout << "\tReconstructed Z candidate from " << (isZtoMM ? "muons" : "electrons") << " " << l1 << " and " << l2 << " with mass: " << theZ2.mass() << std::endl;
 //    }
 //    
 //    // FatJet
@@ -245,7 +256,7 @@ void HZZ::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
 //    //double subjet0Bdisc = subjet->bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags");
 //    
 //    
-//    theJetAnalyzer->ApplyRecoilCorrections(MET, &MET.genMET()->p4(), &theZLep.p4(), 0);
+//    theJetAnalyzer->ApplyRecoilCorrections(MET, &MET.genMET()->p4(), &theZ2.p4(), 0);
 
     tree->Fill();
 
@@ -290,9 +301,9 @@ void HZZ::beginJob() {
     for(int i = 0; i < WriteNPhotons; i++) tree->Branch(("Photon"+std::to_string(i+1)).c_str(), &(Photons[i]), ObjectsFormat::ListPhotonType().c_str());
     for(int i = 0; i < WriteNJets; i++) tree->Branch(("Jet"+std::to_string(i+1)).c_str(), &(Jets[i]), ObjectsFormat::ListJetType().c_str());
     tree->Branch("MEt", &MEt, ObjectsFormat::ListMEtType().c_str());
-    tree->Branch("ZLep", &ZLep, ObjectsFormat::ListCandidateType().c_str());
-    tree->Branch("ZHad", &ZHad, ObjectsFormat::ListCandidateType().c_str());
-    
+    tree->Branch("Z2", &Z2, ObjectsFormat::ListCandidateType().c_str());
+    tree->Branch("Z1", &Z1, ObjectsFormat::ListCandidateType().c_str());
+    tree->Branch("X", &X, ObjectsFormat::ListCandidateType().c_str());
 }
 
 // ------------ method called once each job just after ending the event loop  ------------

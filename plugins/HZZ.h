@@ -164,8 +164,9 @@ class HZZ : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
         std::vector<PhotonType> Photons;
         std::vector<JetType> Jets;
         MEtType MEt;
-        CandidateType ZLep;
-        CandidateType ZHad;
+        CandidateType Z1;
+        CandidateType Z2;
+        CandidateType X;
 };
 
 #endif

@@ -10,6 +10,8 @@
 #include "FWCore/Framework/interface/ConsumesCollector.h"
 #include "DataFormats/PatCandidates/interface/Jet.h"
 #include "DataFormats/PatCandidates/interface/MET.h"
+#include "DataFormats/PatCandidates/interface/Muon.h"
+#include "DataFormats/PatCandidates/interface/Electron.h"
 #include "DataFormats/JetReco/interface/GenJetCollection.h"
 #include "DataFormats/JetReco/interface/PFJetCollection.h"
 #include "DataFormats/Candidate/interface/CandidateFwd.h"
@@ -32,6 +34,8 @@ class JetAnalyzer {
         JetAnalyzer(edm::ParameterSet&, edm::ConsumesCollector&&);
         ~JetAnalyzer();
         virtual std::vector<pat::Jet> FillJetVector(const edm::Event&);
+        virtual void CleanJetsFromMuons(std::vector<pat::Jet>&, std::vector<pat::Muon>&);
+        virtual void CleanJetsFromElectrons(std::vector<pat::Jet>&, std::vector<pat::Electron>&);
         virtual pat::MET FillMetVector(const edm::Event&);
         virtual void ApplyRecoilCorrections(pat::MET&, const reco::Candidate::LorentzVector*, const reco::Candidate::LorentzVector*, int);
         virtual float GetScaleUncertainty(pat::Jet&);
