@@ -166,6 +166,7 @@ class HZZ : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
         MEtType MEt;
         CandidateType Z1;
         CandidateType Z2;
+        CandidateType X;
 };
 
 #endif
