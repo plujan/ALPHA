@@ -13,8 +13,8 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
 # input
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
-        'file:/lustre/cmswork/zucchett/CMSSW_8_0_5/src/00F0B3DC-211B-E611-A6A0-001E67248A39.root'
-#        '/store/user/lbenato/BulkGraviton_ZZ_ZlepZhad_narrow_M800_13TeV-madgraph_MINIAOD_10000ev/BulkGravToZZToZlepZhad_narrow_M-800_13TeV-madgraph_PRIVATE-MC/BulkGraviton_ZZ_ZlepZhad_narrow_M800_13TeV-madgraph_MINIAOD_10000ev/160515_095125/0000/BulkGraviton_ZZ_ZlepZhad_narrow_M800_13TeV-madgraph_MINIAOD_1.root'
+#        'file:/lustre/cmswork/zucchett/CMSSW_8_0_5/src/00F0B3DC-211B-E611-A6A0-001E67248A39.root'
+        '/store/user/lbenato/BulkGraviton_ZZ_ZlepZhad_narrow_M800_13TeV-madgraph_MINIAOD_10000ev/BulkGravToZZToZlepZhad_narrow_M-800_13TeV-madgraph_PRIVATE-MC/BulkGraviton_ZZ_ZlepZhad_narrow_M800_13TeV-madgraph_MINIAOD_10000ev/160515_095125/0000/BulkGraviton_ZZ_ZlepZhad_narrow_M800_13TeV-madgraph_MINIAOD_1.root'
     )
 )
 
@@ -167,7 +167,7 @@ process.ntuple = cms.EDAnalyzer('Ntuple',
         vertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
         taupt = cms.double(20.),
         taueta = cms.double(9999.),
-        tauIdByDecayMode = cms.int32(0),# 0: not set, 1: old, 2: new
+        tauIdByDecayMode = cms.int32(1),# 0: not set, 1: old, 2: new
         tauIdByDeltaBetaIso = cms.int32(0),# 0: not set, 1: loose, 2: medium, 3: tight
         tauIdByMVAIso = cms.int32(0),# 0: not set, 1: V loose, 2: loose, 3: medium, 4: tight, 5: V tight
         tauIdByMuonRejection = cms.int32(0),# 0: not set, 1: loose, 2: tight
@@ -189,9 +189,10 @@ process.ntuple = cms.EDAnalyzer('Ntuple',
     ),
     jetSet = cms.PSet(
         jets = cms.InputTag("slimmedJets"), #selectedPatJetsAK8PFCHSPrunedPacked
-        jetid = cms.int32(1), # 0: no selection, 1: loose, 2: tight, 3: tight lepton veto
+        jetid = cms.int32(0), # 0: no selection, 1: loose, 2: tight, 3: tight lepton veto
         jet1pt = cms.double(20.),
         jet2pt = cms.double(20.),
+        jeteta = cms.double(2.4),
         btag = cms.string("combinedSecondaryVertexBJetTags"),
         jet1btag = cms.int32(0), # 0: no selection, 1: loose, 2: medium, 3: tight
         jet2btag = cms.int32(0),

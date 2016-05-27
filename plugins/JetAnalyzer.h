@@ -48,7 +48,7 @@ class JetAnalyzer {
         edm::EDGetTokenT<std::vector<pat::Jet> > JetToken;
         edm::EDGetTokenT<std::vector<pat::MET> > MetToken;
         int JetId;
-        float Jet1Pt, Jet2Pt;
+        float Jet1Pt, Jet2Pt, JetEta;
         std::string BTag;
         int Jet1BTag, Jet2BTag;
         bool UseRecoil;
