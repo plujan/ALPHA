@@ -414,6 +414,7 @@ std::string ObjectsFormat::ListMEtFullType() {return "pt/F:eta/F:phi/F:sign/F:pt
 
 void ObjectsFormat::FillCandidateType(CandidateType& I, pat::CompositeCandidate* R, bool isMC) {
   if(!R) return;
+  if(R->numberOfDaughters() == 0) return;
   I.pt          = R->pt();
   I.eta         = R->eta();
   I.phi         = R->phi();
