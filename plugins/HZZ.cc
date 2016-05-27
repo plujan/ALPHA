@@ -119,6 +119,8 @@ void HZZ::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     std::vector<pat::Photon> PhotonVect = thePhotonAnalyzer->FillPhotonVector(iEvent);
     // Jets
     std::vector<pat::Jet> JetsVect = theJetAnalyzer->FillJetVector(iEvent);
+    theJetAnalyzer->CleanJetsFromMuons(JetsVect, MuonVect);
+    theJetAnalyzer->CleanJetsFromElectrons(JetsVect, ElecVect);
     // Missing Energy
     pat::MET MET = theJetAnalyzer->FillMetVector(iEvent);
     

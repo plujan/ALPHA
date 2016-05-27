@@ -111,6 +111,13 @@ void JetAnalyzer::CleanJetsFromMuons(std::vector<pat::Jet>& Jets, std::vector<pa
     }
 }
 
+void JetAnalyzer::CleanJetsFromElectrons(std::vector<pat::Jet>& Jets, std::vector<pat::Electron>& Electrons) {
+    for(unsigned int j = 0; j < Jets.size(); j++) {
+        for(unsigned int m = 0; m < Electrons.size(); m++) {
+            if(deltaR(Jets[j], Electrons[m]) < 0.4) Jets.erase(Jets.begin() + j);
+        }
+    }
+}
 
 
 pat::MET JetAnalyzer::FillMetVector(const edm::Event& iEvent) {
