@@ -20,12 +20,12 @@ JetAnalyzer::JetAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl
   
     isJESFile=false;
     
-    JESFile=new TFile("data/JESUncertainty.root", "READ");
-    JESFile->cd();
-    if(!JESFile->IsZombie()) {
-      hist=(TH2F*)JESFile->Get("test/AK5PFchs");
-      isJESFile=true;
-    }
+//    JESFile=new TFile("data/JESUncertainty.root", "READ");
+//    JESFile->cd();
+//    if(!JESFile->IsZombie()) {
+//      hist=(TH2F*)JESFile->Get("test/AK5PFchs");
+//      isJESFile=true;
+//    }
     
     // Recoil Corrector
     recoilCorr = new RecoilCorrector(RecoilMCFile);
@@ -47,7 +47,7 @@ JetAnalyzer::JetAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl
 }
 
 JetAnalyzer::~JetAnalyzer() {
-    JESFile->Close();
+//    JESFile->Close();
     delete recoilCorr;
 }
 
