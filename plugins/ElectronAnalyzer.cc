@@ -32,15 +32,15 @@ ElectronAnalyzer::ElectronAnalyzer(const edm::ParameterSet& PSet, edm::ConsumesC
     
     // AN-13-022, obsolete!!
     // Electron trigger, obsolete!!!
-    EleTriggerFile=new TFile("data/DETrigger.root", "READ");
-    if(!EleTriggerFile->IsZombie()) {
-        EleTriggerDATAHighLeg=(TH2F*)EleTriggerFile->Get("test/DATA_Ele17Leg");
-        EleTriggerDATALowLeg=(TH2F*)EleTriggerFile->Get("test/DATA_Ele8Leg");
-        EleTriggerMCHighLeg=(TH2F*)EleTriggerFile->Get("test/MC_Ele17Leg");
-        EleTriggerMCLowLeg=(TH2F*)EleTriggerFile->Get("test/MC_Ele8Leg");
-        isEleTriggerFile=true;
-    }
-    else std::cout << " - ElectronAnalyzer Warning: No EleTrigger Weight File" << std::endl;
+//    EleTriggerFile=new TFile("data/DETrigger.root", "READ");
+//    if(!EleTriggerFile->IsZombie()) {
+//        EleTriggerDATAHighLeg=(TH2F*)EleTriggerFile->Get("test/DATA_Ele17Leg");
+//        EleTriggerDATALowLeg=(TH2F*)EleTriggerFile->Get("test/DATA_Ele8Leg");
+//        EleTriggerMCHighLeg=(TH2F*)EleTriggerFile->Get("test/MC_Ele17Leg");
+//        EleTriggerMCLowLeg=(TH2F*)EleTriggerFile->Get("test/MC_Ele8Leg");
+//        isEleTriggerFile=true;
+//    }
+//    else std::cout << " - ElectronAnalyzer Warning: No EleTrigger Weight File" << std::endl;
     
 
     // Electron reco SF 2015-2016
@@ -122,7 +122,7 @@ ElectronAnalyzer::ElectronAnalyzer(const edm::ParameterSet& PSet, edm::ConsumesC
 }
 
 ElectronAnalyzer::~ElectronAnalyzer() {
-    EleTriggerFile->Close();
+//    EleTriggerFile->Close();
     EleVetoIdFile->Close();
     EleLooseIdFile->Close();
     EleMediumIdFile->Close();
