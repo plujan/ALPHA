@@ -3,7 +3,7 @@
 # step 0: execute script with PhedEx request number
 #python2.6 filelists/get_ds_file_info.py -n 669099 > query.txt
 #python2.6 scripts/get_ds_file_info.py -d "/*/*RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2*/MINIAOD*" > query.txt # for MC
-#python2.6 scripts/get_ds_file_info.py -d "/*/Run2016B*/MINIAOD" > query.txt # for Data
+python2.6 scripts/get_ds_file_info.py -d "/*/Run2016B*/MINIAOD" > query.txt # for Data
 
 # step 1: get name of the temporary file
 tmpname=$(cat query.txt | awk '{print $4}' | sed -e 's/to//g')

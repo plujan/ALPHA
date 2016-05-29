@@ -4,13 +4,29 @@ import commands
 import math, time
 import sys
 from Analysis.ALPHA.samples import samples
-
+print samples
 ########## FILELIST ##########
 
-filelists   = [ 
-    'DummySample-1', 
-    'DummySample-2',
-    ]
+filelists = [ 
+    'SingleMuonRun2016B-PromptReco-v1', 
+    'SingleMuonRun2016B-PromptReco-v2',
+    'DoubleEGRun2016B-PromptReco-v1',
+    'DoubleEGRun2016B-PromptReco-v2',
+]
+
+#filelists = [ 
+#    'DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0_ext1-v1',
+#    # Signal
+##    'BulkGravToZZToZlepZhad_narrow_M-1000_13TeV-madgraph_PRIVATE-MC_v0-v1',
+##    'BulkGravToZZToZlepZhad_narrow_M-1200_13TeV-madgraph_PRIVATE-MC_v0-v1',
+##    'BulkGravToZZToZlepZhad_narrow_M-1600_13TeV-madgraph_PRIVATE-MC_v0-v1',
+##    'BulkGravToZZToZlepZhad_narrow_M-1800_13TeV-madgraph_PRIVATE-MC_v0-v1',
+##    'BulkGravToZZToZlepZhad_narrow_M-2000_13TeV-madgraph_PRIVATE-MC_v0-v1',
+##    'BulkGravToZZToZlepZhad_narrow_M-3000_13TeV-madgraph_PRIVATE-MC_v0-v1',
+##    'BulkGravToZZToZlepZhad_narrow_M-3500_13TeV-madgraph_PRIVATE-MC_v0-v1',
+##    'BulkGravToZZToZlepZhad_narrow_M-4000_13TeV-madgraph_PRIVATE-MC_v0-v1',
+##    'BulkGravToZZToZlepZhad_narrow_M-4500_13TeV-madgraph_PRIVATE-MC_v0-v1',
+#]
 
 ########## DO NOT TOUCH BELOW THIS POINT ##########
 
@@ -20,11 +36,11 @@ import optparse
 usage = 'usage: %prog [options]'
 parser = optparse.OptionParser(usage)
 parser.add_option('-b', '--base',         action='store', type='string', dest='base',         default='$CMSSW_BASE/src/Analysis/ALPHA/')
-parser.add_option('-o', '--output',       action='store', type='string', dest='output',       default='out')
-parser.add_option('-c', '--cfg',          action='store', type='string', dest='cfg',          default='python/ConfFile_cfg.py')
+parser.add_option('-o', '--output',       action='store', type='string', dest='output',       default='output')
+parser.add_option('-c', '--cfg',          action='store', type='string', dest='cfg',          default='python/HZZ_cfg.py')
 parser.add_option('-q', '--queue',        action='store', type='string', dest='queue',        default='local-cms-short')
 parser.add_option('-m', '--maxlsftime',   action='store', type='int',    dest='maxlsftime',   default=5)
-parser.add_option('-e', '--eventspersec', action='store', type='int',    dest='eventspersec', default=5)
+parser.add_option('-e', '--eventspersec', action='store', type='int',    dest='eventspersec', default=100)
 (options, args) = parser.parse_args()
 
 print
@@ -54,8 +70,10 @@ os.system('mkdir '+options.output)
 
 ########## LOOP ON FILELISTS ##########
 for l in filelists:
-    if not l in samples: continue
-    file=open(os.path.expandvars(options.base+'filelists/'+l+'.list'),'r')
+    if not l in samples:
+      print l
+      continue
+    file=open(os.path.expandvars(options.base+'filelists/Spring16/'+l+'.txt'),'r')
     filelist = file.readlines()
     splitting= max(int(float(samples[l]['nevents'])/(options.maxlsftime*3600*options.eventspersec)),1)
     njobs    = int(len(filelist)/splitting)+1
@@ -89,7 +107,7 @@ for l in filelists:
             fout.write('eval `scram runtime -sh`\n')
             fout.write('ls\n')
             fout.write('echo "running"\n')
-            fout.write('cmsRun '+options.base+options.cfg+' inputFiles='+lsubfold+'/list.txt\n')
+            fout.write('cmsRun '+options.base+options.cfg+' inputFiles='+options.base+lsubfold+'/list.txt\n')
             #fout.write('cmsRun '+options.base+options.cfg+' outputFile_clear outputFile='+outname+'.root inputFiles_clear inputFiles_load='+lsubfold+'/list.txt\n')
             fout.write('exit $?\n') 
             fout.write('echo ""\n')
