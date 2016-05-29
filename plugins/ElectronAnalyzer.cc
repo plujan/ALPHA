@@ -115,10 +115,17 @@ ElectronAnalyzer::ElectronAnalyzer(const edm::ParameterSet& PSet, edm::ConsumesC
       return;
     }
     
-    std::cout << " - ElectronAnalyzer initialized:" << std::endl;
-    std::cout << "Id  :\t" << Electron1Id << "\t" << Electron2Id << std::endl;
-    //std::cout << "Iso :\t" << Electron1Iso << "\t" << Electron2Iso << std::endl;
-    std::cout << "pT  :\t" << Electron1Pt << "\t" << Electron2Pt << std::endl;
+    std::cout << " --- ElectronAnalyzer initialization ---" << std::endl;
+    std::cout << "  jet Id [1, 2]     :\t" << Electron1Id << "\t" << Electron2Id << std::endl;
+    std::cout << "  jet pT [1, 2]     :\t" << Electron1Pt << "\t" << Electron2Pt << std::endl;
+    std::cout << "  veto Id file      :\t" << EleVetoIdFileName << std::endl;
+    std::cout << "  loose Id file     :\t" << EleLooseIdFileName << std::endl;
+    std::cout << "  medium Id file    :\t" << EleMediumIdFileName << std::endl;
+    std::cout << "  tight Id file     :\t" << EleTightIdFileName << std::endl;
+    std::cout << "  mva medium Id file:\t" << EleMVATrigMediumIdFileName << std::endl;
+    std::cout << "  mva tight Id file :\t" << EleMVATrigTightIdFileName << std::endl;
+    std::cout << "  reco eff file     :\t" << EleRecoEffFileName << std::endl;
+    std::cout << std::endl;
 }
 
 ElectronAnalyzer::~ElectronAnalyzer() {
