@@ -104,17 +104,19 @@ std::vector<pat::Jet> JetAnalyzer::FillJetVector(const edm::Event& iEvent) {
 
 
 void JetAnalyzer::CleanJetsFromMuons(std::vector<pat::Jet>& Jets, std::vector<pat::Muon>& Muons) {
-    for(unsigned int j = 0; j < Jets.size(); j++) {
-        for(unsigned int m = 0; m < Muons.size(); m++) {
+    for(unsigned int m = 0; m < Muons.size(); m++) {
+        for(unsigned int j = 0; j < Jets.size(); ) {
             if(deltaR(Jets[j], Muons[m]) < 0.4) Jets.erase(Jets.begin() + j);
+            else j++;
         }
     }
 }
 
 void JetAnalyzer::CleanJetsFromElectrons(std::vector<pat::Jet>& Jets, std::vector<pat::Electron>& Electrons) {
-    for(unsigned int j = 0; j < Jets.size(); j++) {
-        for(unsigned int m = 0; m < Electrons.size(); m++) {
-            if(deltaR(Jets[j], Electrons[m]) < 0.4) Jets.erase(Jets.begin() + j);
+    for(unsigned int e = 0; e < Electrons.size(); e++) {
+        for(unsigned int j = 0; j < Jets.size(); ) {
+            if(deltaR(Jets[j], Electrons[e]) < 0.4) Jets.erase(Jets.begin() + j);
+            else j++;
         }
     }
 }
