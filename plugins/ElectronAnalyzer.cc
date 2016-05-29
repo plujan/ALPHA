@@ -32,15 +32,15 @@ ElectronAnalyzer::ElectronAnalyzer(const edm::ParameterSet& PSet, edm::ConsumesC
     
     // AN-13-022, obsolete!!
     // Electron trigger, obsolete!!!
-    EleTriggerFile=new TFile("data/DETrigger.root", "READ");
-    if(!EleTriggerFile->IsZombie()) {
-        EleTriggerDATAHighLeg=(TH2F*)EleTriggerFile->Get("test/DATA_Ele17Leg");
-        EleTriggerDATALowLeg=(TH2F*)EleTriggerFile->Get("test/DATA_Ele8Leg");
-        EleTriggerMCHighLeg=(TH2F*)EleTriggerFile->Get("test/MC_Ele17Leg");
-        EleTriggerMCLowLeg=(TH2F*)EleTriggerFile->Get("test/MC_Ele8Leg");
-        isEleTriggerFile=true;
-    }
-    else std::cout << " - ElectronAnalyzer Warning: No EleTrigger Weight File" << std::endl;
+//    EleTriggerFile=new TFile("data/DETrigger.root", "READ");
+//    if(!EleTriggerFile->IsZombie()) {
+//        EleTriggerDATAHighLeg=(TH2F*)EleTriggerFile->Get("test/DATA_Ele17Leg");
+//        EleTriggerDATALowLeg=(TH2F*)EleTriggerFile->Get("test/DATA_Ele8Leg");
+//        EleTriggerMCHighLeg=(TH2F*)EleTriggerFile->Get("test/MC_Ele17Leg");
+//        EleTriggerMCLowLeg=(TH2F*)EleTriggerFile->Get("test/MC_Ele8Leg");
+//        isEleTriggerFile=true;
+//    }
+//    else std::cout << " - ElectronAnalyzer Warning: No EleTrigger Weight File" << std::endl;
     
 
     // Electron reco SF 2015-2016
@@ -115,14 +115,21 @@ ElectronAnalyzer::ElectronAnalyzer(const edm::ParameterSet& PSet, edm::ConsumesC
       return;
     }
     
-    std::cout << " - ElectronAnalyzer initialized:" << std::endl;
-    std::cout << "Id  :\t" << Electron1Id << "\t" << Electron2Id << std::endl;
-    //std::cout << "Iso :\t" << Electron1Iso << "\t" << Electron2Iso << std::endl;
-    std::cout << "pT  :\t" << Electron1Pt << "\t" << Electron2Pt << std::endl;
+    std::cout << " --- ElectronAnalyzer initialization ---" << std::endl;
+    std::cout << "  jet Id [1, 2]     :\t" << Electron1Id << "\t" << Electron2Id << std::endl;
+    std::cout << "  jet pT [1, 2]     :\t" << Electron1Pt << "\t" << Electron2Pt << std::endl;
+    std::cout << "  veto Id file      :\t" << EleVetoIdFileName << std::endl;
+    std::cout << "  loose Id file     :\t" << EleLooseIdFileName << std::endl;
+    std::cout << "  medium Id file    :\t" << EleMediumIdFileName << std::endl;
+    std::cout << "  tight Id file     :\t" << EleTightIdFileName << std::endl;
+    std::cout << "  mva medium Id file:\t" << EleMVATrigMediumIdFileName << std::endl;
+    std::cout << "  mva tight Id file :\t" << EleMVATrigTightIdFileName << std::endl;
+    std::cout << "  reco eff file     :\t" << EleRecoEffFileName << std::endl;
+    std::cout << std::endl;
 }
 
 ElectronAnalyzer::~ElectronAnalyzer() {
-    EleTriggerFile->Close();
+//    EleTriggerFile->Close();
     EleVetoIdFile->Close();
     EleLooseIdFile->Close();
     EleMediumIdFile->Close();

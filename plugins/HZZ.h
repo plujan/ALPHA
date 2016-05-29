@@ -151,12 +151,13 @@ class HZZ : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
         PhotonAnalyzer* thePhotonAnalyzer;
         JetAnalyzer* theJetAnalyzer;
         //BTagInterface* theBTagInterface;
-        
+        std::map<std::string, bool> TriggerMap;
         std::map<std::string, TH1F*> Hist;
+        
         
         edm::Service<TFileService> fs;
         TTree* tree;
-        bool isMC;
+        bool isMC, isZtoEE, isZtoMM;
         long int EventNumber, RunNumber, LumiNumber;
         float EventWeight, PUWeight, TriggerWeight, LeptonWeight;
         

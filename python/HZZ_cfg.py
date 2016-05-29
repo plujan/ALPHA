@@ -1,23 +1,35 @@
 import FWCore.ParameterSet.Config as cms
+from FWCore.ParameterSet.VarParsing import VarParsing
 import os
 
-isMC = True
+options = VarParsing ('analysis')
+options.parseArguments()
 
 process = cms.Process("ALPHA")
 
 process.load("FWCore.MessageService.MessageLogger_cfi")
 process.MessageLogger.cerr.threshold = 'ERROR'
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 # input
-process.source = cms.Source("PoolSource",
-    fileNames = cms.untracked.vstring(
-#        'file:/lustre/cmswork/zucchett/CMSSW_8_0_5/src/00F0B3DC-211B-E611-A6A0-001E67248A39.root'
-        '/store/user/lbenato/BulkGraviton_ZZ_ZlepZhad_narrow_M800_13TeV-madgraph_MINIAOD_10000ev/BulkGravToZZToZlepZhad_narrow_M-800_13TeV-madgraph_PRIVATE-MC/BulkGraviton_ZZ_ZlepZhad_narrow_M800_13TeV-madgraph_MINIAOD_10000ev/160515_095125/0000/BulkGraviton_ZZ_ZlepZhad_narrow_M800_13TeV-madgraph_MINIAOD_1.root'
-#        'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/PromptReco-v1/000/273/013/00000/C09E75A4-3519-E611-8BA9-02163E014476.root',
+# default: if no filelist from command line, run on specified samples
+
+if len(options.inputFiles) == 0:
+    process.source = cms.Source("PoolSource",
+        fileNames = cms.untracked.vstring(
+    #        'file:/lustre/cmswork/zucchett/CMSSW_8_0_5/src/00F0B3DC-211B-E611-A6A0-001E67248A39.root'
+            '/store/user/lbenato/BulkGraviton_ZZ_ZlepZhad_narrow_M800_13TeV-madgraph_MINIAOD_10000ev/BulkGravToZZToZlepZhad_narrow_M-800_13TeV-madgraph_PRIVATE-MC/BulkGraviton_ZZ_ZlepZhad_narrow_M800_13TeV-madgraph_MINIAOD_10000ev/160515_095125/0000/BulkGraviton_ZZ_ZlepZhad_narrow_M800_13TeV-madgraph_MINIAOD_1.root'
+    #        'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/PromptReco-v1/000/273/013/00000/C09E75A4-3519-E611-8BA9-02163E014476.root', # SingleMuon
+    #        'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/DoubleEG/MINIAOD/PromptReco-v2/000/273/725/00000/72118358-B620-E611-9C76-02163E012211.root', # DoubleEle
+#            'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/PromptReco-v1/000/273/013/00000/C09E75A4-3519-E611-8BA9-02163E014476.root', # DEBUG
+        )
     )
-)
+# production: read externally provided filelist
+else:
+    filelist = open(options.inputFiles[0], 'r').readlines()
+    process.source = cms.Source ("PoolSource", fileNames = cms.untracked.vstring(filelist) )
+
 
 #output
 process.TFileService = cms.Service("TFileService",
@@ -25,13 +37,18 @@ process.TFileService = cms.Service("TFileService",
     closeFileFast = cms.untracked.bool(True)
 )
 
+# Determine whether we are running on data or MC
+isData = ('/store/data/' in process.source.fileNames[0])
+print "Running on", ("data" if isData else "MC")
+#isData = False
+
 #-----------------------#
 #        FILTERS        #
 #-----------------------#
 
 # JSON filter
 import FWCore.PythonUtilities.LumiList as LumiList
-if not isMC:
+if isData:
     process.source.lumisToProcess = LumiList.LumiList(filename = '%s/src/Analysis/ALPHA/data/JSON/Cert_271036-273730_13TeV_PromptReco_Collisions16_JSON.txt' % os.environ['CMSSW_BASE']).getVLuminosityBlockRange()
 
 # Trigger filter
@@ -50,7 +67,7 @@ process.HLTFilter = cms.EDFilter("HLTHighLevel",
         'HLT_Ele23_WPLoose_Gsf_v*',
         'HLT_Ele27_WPLoose_Gsf_v*',
         'HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*',
-        'HLT_DoubleEle33_CaloIdL_v*'
+        'HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_v*'
     ),
     eventSetupPathsKey = cms.string(''), # not empty => use read paths from AlCaRecoTriggerBitsRcd via this key
     andOr = cms.bool(True),    # how to deal with multiple triggers: True (OR) accept if ANY is true, False (AND) accept if ALL are true
@@ -121,7 +138,7 @@ process.ntuple = cms.EDAnalyzer('HZZ',
     ),
     triggerSet = cms.PSet(
         trigger = cms.InputTag("TriggerResults", "", "HLT"),
-        paths = cms.vstring('HLT_Mu45_eta2p1_v', 'HLT_Mu50_v', 'HLT_IsoMu20_v', 'HLT_IsoMu24_v', 'HLT_Mu27_TkMu8_v', 'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v', 'HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v', 'HLT_Ele105_CaloIdVT_GsfTrkIdT_v', 'HLT_Ele23_WPLoose_Gsf_v', 'HLT_Ele27_WPLoose_Gsf_v', 'HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v', 'HLT_DoubleEle33_CaloIdL_v'),
+        paths = cms.vstring('HLT_Mu45_eta2p1_v', 'HLT_Mu50_v', 'HLT_IsoMu20_v', 'HLT_IsoMu24_v', 'HLT_Mu27_TkMu8_v', 'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v', 'HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v', 'HLT_Ele105_CaloIdVT_GsfTrkIdT_v', 'HLT_Ele23_WPLoose_Gsf_v', 'HLT_Ele27_WPLoose_Gsf_v', 'HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v', 'HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_v'),
     ),
     electronSet = cms.PSet(
         electrons = cms.InputTag("slimmedElectrons"),
@@ -210,7 +227,7 @@ process.ntuple = cms.EDAnalyzer('HZZ',
     writeNPhotons = cms.int32(0),
     writeNJets = cms.int32(2),
     histFile = cms.string('%s/src/Analysis/ALPHA/data/HistList.dat' % os.environ['CMSSW_BASE']),
-    verbose  = cms.bool(True),
+    verbose  = cms.bool(False),
 )
 
 
@@ -223,13 +240,22 @@ process.ntuple = cms.EDAnalyzer('HZZ',
 #  )
 #)
 
-process.seq = cms.Sequence(
-    process.HLTFilter *
-    process.primaryVertexFilter *
-    process.egmGsfElectronIDSequence *
-    process.egmPhotonIDSequence *
-    process.cleanedMuons *
-    process.ntuple
-)
+if isData:
+    process.seq = cms.Sequence(
+        process.HLTFilter *
+        process.primaryVertexFilter *
+        process.egmGsfElectronIDSequence *
+        process.egmPhotonIDSequence *
+        process.cleanedMuons *
+        process.ntuple
+    )
+else:
+    process.seq = cms.Sequence(
+        process.primaryVertexFilter *
+        process.egmGsfElectronIDSequence *
+        process.egmPhotonIDSequence *
+        process.cleanedMuons *
+        process.ntuple
+    )
 
 process.p = cms.Path(process.seq)

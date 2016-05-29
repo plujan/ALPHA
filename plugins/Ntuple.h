@@ -150,6 +150,7 @@ class Ntuple : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
         PhotonAnalyzer* thePhotonAnalyzer;
         JetAnalyzer* theJetAnalyzer;
         //BTagInterface* theBTagInterface;
+        std::map<std::string, bool> TriggerMap;
         
         edm::Service<TFileService> fs;
         TTree* tree;
