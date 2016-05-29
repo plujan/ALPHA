@@ -190,7 +190,7 @@ void HZZ::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     // ---------- Do analysis selections ----------
     
     // ---------- Z TO LEPTONS ----------
-    bool isZtoMM(false), isZtoEE(false);
+    isZtoEE = isZtoMM = false;
     
     if(MuonVect.size()>=2 && ElecVect.size()>=2) {
         if(MuonVect.at(0).pt() > ElecVect.at(0).pt()) isZtoMM=true;
@@ -345,6 +345,10 @@ void HZZ::beginJob() {
     
     // Set trigger branches
     for(auto it = TriggerMap.begin(); it != TriggerMap.end(); it++) tree->Branch(it->first.c_str(), &(it->second), (it->first+"/O").c_str());
+    
+    // Analysis variables
+    tree->Branch("isZtoEE", &isZtoEE, "isZtoEE/O");
+    tree->Branch("isZtoMM", &isZtoMM, "isZtoMM/O");
     
     // Set Branches for objects
     for(int i = 0; i < WriteNElectrons; i++) tree->Branch(("Electron"+std::to_string(i+1)).c_str(), &(Electrons[i]), ObjectsFormat::ListLeptonType().c_str());

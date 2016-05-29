@@ -157,7 +157,7 @@ class HZZ : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
         
         edm::Service<TFileService> fs;
         TTree* tree;
-        bool isMC;
+        bool isMC, isZtoEE, isZtoMM;
         long int EventNumber, RunNumber, LumiNumber;
         float EventWeight, PUWeight, TriggerWeight, LeptonWeight;
         
