@@ -97,11 +97,30 @@ reco::Candidate* GenAnalyzer::FindLastDaughter(reco::Candidate* p) {
     return FindLastDaughter(p->daughter(0));
 }
 
+reco::GenParticle* GenAnalyzer::FindGenParticleGen(std::vector<reco::GenParticle>& Vect, int pdg1, int pdg2, int pdg3, int pdg4, int pdg5) {
+    for(unsigned int i = 0; i < Vect.size(); i++) {
+      if( (fabs(Vect[i].pdgId()) == pdg1) || (fabs(Vect[i].pdgId()) == pdg2) || (fabs(Vect[i].pdgId()) == pdg3) || (fabs(Vect[i].pdgId()) == pdg4) || (fabs(Vect[i].pdgId()) == pdg5) ) return FindLastDaughterGen(&Vect[i]);
+    }
+    return NULL;
+}
+
+// Recursive function to find the last particle in the chain before decay: e.g. 23 -> 23 -> *23* -> 13 -13
+reco::GenParticle* GenAnalyzer::FindLastDaughterGen(reco::GenParticle* p) {
+    if(p->numberOfDaughters() <= 0 || !p->daughter(0)) return p;
+    if(p->daughter(0)->pdgId() != p->pdgId()) return p;
+    return FindLastDaughterGen( dynamic_cast<reco::GenParticle*>( p->daughter(0) ));
+}
+
+const reco::Candidate* GenAnalyzer::FindMother(reco::GenParticle* p) {
+  int pId = p->pdgId();
+  const reco::Candidate* mom = p->mother();
+  while (mom != 0 && mom->pdgId() == pId)
+    mom = mom->mother();
+  return mom;
+}
 
 
-
-
-// ---------- PILEUP ----------
+// ---------- Pileup ----------
 
 float GenAnalyzer::GetPUWeight(const edm::Event& iEvent) {
   //  int nPT(0);
