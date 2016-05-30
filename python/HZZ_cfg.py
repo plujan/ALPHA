@@ -127,7 +127,7 @@ process.ntuple = cms.EDAnalyzer('HZZ',
         genProduct = cms.InputTag("generator"),
         lheProduct = cms.InputTag("externalLHEProducer"),
         genParticles = cms.InputTag("prunedGenParticles"),
-        pdgId = cms.vint32(1, 2, 3, 4, 5, 6, 11, 12, 13, 14, 15, 16, 21, 23, 24, 25, 1000022, 9100000, 9000001, 9000002, 9100012, 9100022, 9900032, 1023),
+        pdgId = cms.vint32(1, 2, 3, 4, 5, 6, 11, 12, 13, 14, 15, 16, 21, 23, 24, 25, 39, 1000022, 9100000, 9000001, 9000002, 9100012, 9100022, 9900032, 1023),
     ),
     pileupSet = cms.PSet(
         pileup = cms.InputTag("slimmedAddPileupInfo"),
@@ -227,7 +227,7 @@ process.ntuple = cms.EDAnalyzer('HZZ',
     writeNPhotons = cms.int32(0),
     writeNJets = cms.int32(2),
     histFile = cms.string('%s/src/Analysis/ALPHA/data/HistList.dat' % os.environ['CMSSW_BASE']),
-    verbose  = cms.bool(False),
+    verbose  = cms.bool(True),
 )
 
 
