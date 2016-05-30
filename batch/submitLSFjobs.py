@@ -3,8 +3,8 @@ import os, re
 import commands
 import math, time
 import sys
-from Analysis.ALPHA.samples import samples
-print samples
+from Analysis.ALPHA.samples import sample
+
 ########## FILELIST ##########
 
 filelists = [ 
@@ -12,10 +12,7 @@ filelists = [
     'SingleMuonRun2016B-PromptReco-v2',
     'DoubleEGRun2016B-PromptReco-v1',
     'DoubleEGRun2016B-PromptReco-v2',
-]
-
-#filelists = [ 
-#    'DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0_ext1-v1',
+    'DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0_ext1-v1',
 #    # Signal
 ##    'BulkGravToZZToZlepZhad_narrow_M-1000_13TeV-madgraph_PRIVATE-MC_v0-v1',
 ##    'BulkGravToZZToZlepZhad_narrow_M-1200_13TeV-madgraph_PRIVATE-MC_v0-v1',
@@ -70,12 +67,12 @@ os.system('mkdir '+options.output)
 
 ########## LOOP ON FILELISTS ##########
 for l in filelists:
-    if not l in samples:
-      print l
-      continue
+    if not l in sample:
+        print l
+        continue
     file=open(os.path.expandvars(options.base+'filelists/Spring16/'+l+'.txt'),'r')
     filelist = file.readlines()
-    splitting= max(int(float(samples[l]['nevents'])/(options.maxlsftime*3600*options.eventspersec)),1)
+    splitting= max(int(float(sample[l]['nevents'])/(options.maxlsftime*3600*options.eventspersec)),1)
     njobs    = int(len(filelist)/splitting)+1
     sublists = [filelist[i:i+njobs] for i in range(0, len(filelist), njobs)]
     print '\nSplitting',l,'in',len(sublists),'chunk(s) of approximately',njobs,'files each'
