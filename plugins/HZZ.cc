@@ -180,33 +180,25 @@ void HZZ::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     double GenZLepMass = 0.;
     double GenZHadMass = 0.;
     double GenXMass = 0.;
-    bool isGenZZLep = false;
-    bool isGenZZHad = false;
-    if(theGenLep!=NULL){
+    bool isGenZZ = false;
+    if(theGenLep!=NULL && theGenHad!=NULL){
         const reco::Candidate* theGenZLep = theGenAnalyzer->FindMother(theGenLep);
-        if(theGenLep!=NULL && theGenZLep!=NULL && theGenZLep->pdgId()==23){
+        const reco::Candidate* theGenZHad = theGenAnalyzer->FindMother(theGenHad);
+        if(theGenZLep!=NULL && theGenZLep->pdgId()==23 && theGenZHad!=NULL && theGenZHad->pdgId()==23){
             Hist["g_ZLepMass"]->Fill(theGenZLep->mass(), EventWeight);
             Hist["g_ZLepPt"]->Fill(theGenZLep->pt(), EventWeight);
             Hist["g_LepPt"]->Fill(theGenLep->pt(), EventWeight);
             GenZLepMass = theGenZLep->mass();
-            isGenZZLep = true;
-	}
-    }
-
-    if(theGenHad!=NULL){
-        const reco::Candidate* theGenZHad = theGenAnalyzer->FindMother(theGenHad);
-        if(theGenHad!=NULL && theGenZHad!=NULL && theGenZHad->pdgId()==23){
             Hist["g_ZHadMass"]->Fill(theGenZHad->mass(), EventWeight);
             Hist["g_ZHadPt"]->Fill(theGenZHad->pt(), EventWeight);
             Hist["g_HadPt"]->Fill(theGenHad->pt(), EventWeight);
             GenZHadMass = theGenZHad->mass();
-            isGenZZHad = true;
+            isGenZZ = true;
 	}
-
     }
 
     reco::Candidate* theGenX = theGenAnalyzer->FindGenParticle(GenPVect, 39);
-    if(theGenX!=NULL && theGenLep!=NULL && theGenHad!=NULL && isGenZZHad && isGenZZLep){
+    if(theGenX!=NULL && theGenLep!=NULL && theGenHad!=NULL && isGenZZ){
         Hist["g_XMass"]->Fill(theGenX->mass(), EventWeight);
         Hist["g_XPt"]->Fill(theGenX->pt(), EventWeight);
         GenXMass = theGenX->mass();
