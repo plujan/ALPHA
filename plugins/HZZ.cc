@@ -187,11 +187,10 @@ void HZZ::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         if(theGenLep!=NULL && theGenZLep!=NULL && theGenZLep->pdgId()==23){
             Hist["g_ZLepMass"]->Fill(theGenZLep->mass(), EventWeight);
             Hist["g_ZLepPt"]->Fill(theGenZLep->pt(), EventWeight);
+            Hist["g_LepPt"]->Fill(theGenLep->pt(), EventWeight);
             GenZLepMass = theGenZLep->mass();
             isGenZZLep = true;
 	}
-        if(theGenLep!=NULL && theGenZLep!=NULL && theGenZLep->pdgId()==39 && Verbose) std::cout << "Leptons coming from graviton!" << std::endl;
-        if(theGenLep!=NULL && theGenZLep!=NULL && Verbose) std::cout << "Leptons coming from " << theGenZLep->pdgId()  << "!" << std::endl;
     }
 
     if(theGenHad!=NULL){
@@ -199,17 +198,17 @@ void HZZ::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         if(theGenHad!=NULL && theGenZHad!=NULL && theGenZHad->pdgId()==23){
             Hist["g_ZHadMass"]->Fill(theGenZHad->mass(), EventWeight);
             Hist["g_ZHadPt"]->Fill(theGenZHad->pt(), EventWeight);
+            Hist["g_HadPt"]->Fill(theGenHad->pt(), EventWeight);
             GenZHadMass = theGenZHad->mass();
             isGenZZHad = true;
 	}
-        if(theGenHad!=NULL && theGenZHad!=NULL && theGenZHad->pdgId()==39 && Verbose) std::cout << "Quarks coming from graviton!" << std::endl;
-        if(theGenHad!=NULL && theGenZHad!=NULL && Verbose) std::cout << "Quarks coming from " << theGenZHad->pdgId()  << "!" << std::endl;
 
     }
 
     reco::Candidate* theGenX = theGenAnalyzer->FindGenParticle(GenPVect, 39);
     if(theGenX!=NULL && theGenLep!=NULL && theGenHad!=NULL && isGenZZHad && isGenZZLep){
         Hist["g_XMass"]->Fill(theGenX->mass(), EventWeight);
+        Hist["g_XPt"]->Fill(theGenX->pt(), EventWeight);
         GenXMass = theGenX->mass();
     }
 
