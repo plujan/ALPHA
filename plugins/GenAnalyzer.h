@@ -28,6 +28,9 @@ class GenAnalyzer {
         virtual std::vector<reco::GenParticle> FillGenVector(const edm::Event&);
         virtual reco::Candidate* FindGenParticle(std::vector<reco::GenParticle>&, int);
         virtual reco::Candidate* FindLastDaughter(reco::Candidate*);
+        virtual reco::GenParticle* FindGenParticleGen(std::vector<reco::GenParticle>&, int, int, int, int, int);
+        virtual reco::GenParticle* FindLastDaughterGen(reco::GenParticle*);
+        virtual const reco::Candidate* FindMother(reco::GenParticle*);
         //virtual float GetDYWeight(const edm::Event&);
         virtual float GetPUWeight(const edm::Event&);
     //    virtual float GetPDFWeight(const edm::Event&);

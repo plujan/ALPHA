@@ -172,9 +172,47 @@ void HZZ::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     // Gen Particles
     std::vector<reco::GenParticle> GenPVect = theGenAnalyzer->FillGenVector(iEvent);
     // Gen candidates
-    reco::Candidate* theGenZ = theGenAnalyzer->FindGenParticle(GenPVect, 23);
-    
-    // PU weight
+    //reco::Candidate* theGenZ = theGenAnalyzer->FindGenParticle(GenPVect, 23);
+    reco::GenParticle* theGenLep = theGenAnalyzer->FindGenParticleGen(GenPVect, 11,13,0,0,0);
+    reco::GenParticle* theGenHad = theGenAnalyzer->FindGenParticleGen(GenPVect, 1,2,3,4,5);
+
+    //Gen level plots and candidates
+    double GenZLepMass = 0.;
+    double GenZHadMass = 0.;
+    double GenXMass = 0.;
+    bool isGenZZLep = false;
+    bool isGenZZHad = false;
+    if(theGenLep!=NULL){
+        const reco::Candidate* theGenZLep = theGenAnalyzer->FindMother(theGenLep);
+        if(theGenLep!=NULL && theGenZLep!=NULL && theGenZLep->pdgId()==23){
+            Hist["g_ZLepMass"]->Fill(theGenZLep->mass(), EventWeight);
+            Hist["g_ZLepPt"]->Fill(theGenZLep->pt(), EventWeight);
+            Hist["g_LepPt"]->Fill(theGenLep->pt(), EventWeight);
+            GenZLepMass = theGenZLep->mass();
+            isGenZZLep = true;
+	}
+    }
+
+    if(theGenHad!=NULL){
+        const reco::Candidate* theGenZHad = theGenAnalyzer->FindMother(theGenHad);
+        if(theGenHad!=NULL && theGenZHad!=NULL && theGenZHad->pdgId()==23){
+            Hist["g_ZHadMass"]->Fill(theGenZHad->mass(), EventWeight);
+            Hist["g_ZHadPt"]->Fill(theGenZHad->pt(), EventWeight);
+            Hist["g_HadPt"]->Fill(theGenHad->pt(), EventWeight);
+            GenZHadMass = theGenZHad->mass();
+            isGenZZHad = true;
+	}
+
+    }
+
+    reco::Candidate* theGenX = theGenAnalyzer->FindGenParticle(GenPVect, 39);
+    if(theGenX!=NULL && theGenLep!=NULL && theGenHad!=NULL && isGenZZHad && isGenZZLep){
+        Hist["g_XMass"]->Fill(theGenX->mass(), EventWeight);
+        Hist["g_XPt"]->Fill(theGenX->pt(), EventWeight);
+        GenXMass = theGenX->mass();
+    }
+
+    // Pu weight
     PUWeight = thePileupAnalyzer->GetPUWeight(iEvent);
     EventWeight *= PUWeight;
     
@@ -252,9 +290,9 @@ void HZZ::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         std::cout << "number of AK4 jets:  " << JetsVect.size() << std::endl;
         for(unsigned int i = 0; i < JetsVect.size(); i++) std::cout << "  AK4 jet  [" << i << "]\tpt: " << JetsVect[i].pt() << "\teta: " << JetsVect[i].eta() << "\tphi: " << JetsVect[i].phi() << std::endl;
         std::cout << "Missing energy:      " << MET.pt() << std::endl;
-        std::cout << "Z leptonic mass:     " << theZ2.mass() << ", generated: " << (theGenZ ? theGenZ->mass() : -1.) << std::endl;
-        std::cout << "Z hadronic mass:     " << theZ1.mass() << std::endl;
-        std::cout << "X candidate mass:    " << theX.mass() << std::endl;
+        std::cout << "Z leptonic mass:     " << theZ2.mass() << ", generated: " << GenZLepMass << std::endl;
+        std::cout << "Z hadronic mass:     " << theZ1.mass() << ", generated: " << GenZHadMass << std::endl;
+        std::cout << "X candidate mass:    " << theX.mass() << ", generated: " << GenXMass << std::endl;
     }
 
     
