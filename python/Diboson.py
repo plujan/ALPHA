@@ -10,7 +10,7 @@ process = cms.Process("ALPHA")
 process.load("FWCore.MessageService.MessageLogger_cfi")
 process.MessageLogger.cerr.threshold = 'ERROR'
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 # input
 # default: if no filelist from command line, run on specified samples
@@ -30,12 +30,18 @@ else:
     filelist = open(options.inputFiles[0], 'r').readlines()
     process.source = cms.Source ("PoolSource", fileNames = cms.untracked.vstring(filelist) )
 
-
 #output
-process.TFileService = cms.Service("TFileService",
-    fileName = cms.string("output.root"),
-    closeFileFast = cms.untracked.bool(True)
-)
+if len(options.outputFile) == 0:
+    process.TFileService = cms.Service("TFileService",
+        fileName = cms.string("deleteme.root"),
+        closeFileFast = cms.untracked.bool(True)
+    )
+#read output file name
+else:
+    process.TFileService = cms.Service("TFileService",
+        fileName = cms.string(options.outputFile),
+        closeFileFast = cms.untracked.bool(True)
+    )
 
 # Determine whether we are running on data or MC
 isData = ('/store/data/' in process.source.fileNames[0])
