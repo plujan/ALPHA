@@ -130,7 +130,7 @@ Diboson::~Diboson() {
 
 // ------------ method called for each event  ------------
 void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
-    isMC = iEvent.isRealData();
+    isMC = !iEvent.isRealData();
     EventNumber = iEvent.id().event();
     LumiNumber = iEvent.luminosityBlock();
     RunNumber = iEvent.id().run();
