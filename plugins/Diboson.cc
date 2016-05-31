@@ -1,9 +1,9 @@
 // -*- C++ -*-
 //
-// Package:    Analysis/VZ
-// Class:      VZ
+// Package:    Analysis/Diboson
+// Class:      Diboson
 // 
-/**\class VZ VZ.cc Analysis/VZ/plugins/VZ.cc
+/**\class Diboson Diboson.cc Analysis/Diboson/plugins/Diboson.cc
 
  Description: [one line class summary]
 
@@ -16,7 +16,7 @@
 //
 //
 
-#include "VZ.h"
+#include "Diboson.h"
 
 //
 // constants, enums and typedefs
@@ -29,7 +29,7 @@
 //
 // constructors and destructor
 //
-VZ::VZ(const edm::ParameterSet& iConfig):
+Diboson::Diboson(const edm::ParameterSet& iConfig):
     GenPSet(iConfig.getParameter<edm::ParameterSet>("genSet")),
     PileupPSet(iConfig.getParameter<edm::ParameterSet>("pileupSet")),
     TriggerPSet(iConfig.getParameter<edm::ParameterSet>("triggerSet")),
@@ -82,7 +82,7 @@ VZ::VZ(const edm::ParameterSet& iConfig):
     
     ifstream histFile(HistFile);
     if(!histFile.is_open()) {
-        throw cms::Exception("VZ Analyzer", HistFile + " file not found");
+        throw cms::Exception("Diboson Analyzer", HistFile + " file not found");
     }
     while(histFile >> name >> title >> nbins >> min >> max >> opt) {
         if(name.find('#')==std::string::npos) {
@@ -105,7 +105,7 @@ VZ::VZ(const edm::ParameterSet& iConfig):
 }
 
 
-VZ::~VZ() {
+Diboson::~Diboson() {
     // do anything here that needs to be done at desctruction time
     // (e.g. close files, deallocate resources etc.)
     std::cout << "---------- ENDING  ----------" << std::endl;
@@ -129,7 +129,7 @@ VZ::~VZ() {
 //
 
 // ------------ method called for each event  ------------
-void VZ::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
+void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     isMC = iEvent.isRealData();
     EventNumber = iEvent.id().event();
     LumiNumber = iEvent.luminosityBlock();
@@ -359,7 +359,7 @@ void VZ::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
 
 
 // ------------ method called once each job just before starting event loop  ------------
-void VZ::beginJob() {
+void Diboson::beginJob() {
     
     // Object objects are created only one in the begin job. The reference passed to the branch has to be the same
     for(int i = 0; i < WriteNElectrons; i++) Electrons.push_back( LeptonType() );
@@ -402,11 +402,11 @@ void VZ::beginJob() {
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
-void VZ::endJob() {
+void Diboson::endJob() {
 }
 
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
-void VZ::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
+void Diboson::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
     //The following says we do not know what parameters are allowed so do no validation
     // Please change this to state exactly what you do use, even if it is no parameters
     edm::ParameterSetDescription desc;
@@ -415,4 +415,4 @@ void VZ::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
 }
 
 //define this as a plug-in
-DEFINE_FWK_MODULE(VZ);
+DEFINE_FWK_MODULE(Diboson);

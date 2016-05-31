@@ -16,8 +16,8 @@
 //
 //
 
-#ifndef VZ_H
-#define VZ_H
+#ifndef DIBOSON_H
+#define DIBOSON_H
 
 // system include files
 #include <memory>
@@ -116,10 +116,10 @@
 // constructor "usesResource("TFileService");"
 // This will improve performance in multithreaded jobs.
 
-class VZ : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
+class Diboson : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
     public:
-        explicit VZ(const edm::ParameterSet&);
-        ~VZ();
+        explicit Diboson(const edm::ParameterSet&);
+        ~Diboson();
 
         static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
 

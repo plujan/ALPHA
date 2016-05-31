@@ -122,7 +122,7 @@ process.cleanedMuons = cms.EDProducer("PATMuonCleanerBySegments",
 #        NTUPLE         #
 #-----------------------#
 
-process.ntuple = cms.EDAnalyzer('VZ',
+process.ntuple = cms.EDAnalyzer('Diboson',
     genSet = cms.PSet(
         genProduct = cms.InputTag("generator"),
         lheProduct = cms.InputTag("externalLHEProducer"),
@@ -211,7 +211,7 @@ process.ntuple = cms.EDAnalyzer('VZ',
         jetid = cms.int32(1), # 0: no selection, 1: loose, 2: medium, 3: tight
         jet1pt = cms.double(30.),
         jet2pt = cms.double(30.),
-        jeteta = cms.double(4.7),
+        jeteta = cms.double(5),
         btag = cms.string("combinedSecondaryVertexBJetTags"),
         jet1btag = cms.int32(0), # 0: no selection, 1: loose, 2: medium, 3: tight
         jet2btag = cms.int32(0),
@@ -227,7 +227,7 @@ process.ntuple = cms.EDAnalyzer('VZ',
     writeNPhotons = cms.int32(0),
     writeNJets = cms.int32(2),
     histFile = cms.string('%s/src/Analysis/ALPHA/data/HistList.dat' % os.environ['CMSSW_BASE']),
-    verbose  = cms.bool(True),
+    verbose  = cms.bool(False),
 )
 
 
