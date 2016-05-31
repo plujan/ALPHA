@@ -90,33 +90,45 @@ reco::Candidate* GenAnalyzer::FindGenParticle(std::vector<reco::GenParticle>& Ve
     return NULL;
 }
 
-// Recursive function to find the last particle in the chain before decay: e.g. 23 -> 23 -> *23* -> 13 -13
+// Recursive function to find the last particle in the chain before decay: e.g. 23 -> 23 -> *23* -> 13 -13. Returns a reco Candidate
 reco::Candidate* GenAnalyzer::FindLastDaughter(reco::Candidate* p) {
     if(p->numberOfDaughters() <= 0 || !p->daughter(0)) return p;
     if(p->daughter(0)->pdgId() != p->pdgId()) return p;
     return FindLastDaughter(p->daughter(0));
 }
 
-reco::GenParticle* GenAnalyzer::FindGenParticleGen(std::vector<reco::GenParticle>& Vect, int pdg1, int pdg2, int pdg3, int pdg4, int pdg5) {
+reco::GenParticle* GenAnalyzer::FindGenParticleGenByIds(std::vector<reco::GenParticle>& Vect, std::vector<int> pdgs) {
     for(unsigned int i = 0; i < Vect.size(); i++) {
-      if( (fabs(Vect[i].pdgId()) == pdg1) || (fabs(Vect[i].pdgId()) == pdg2) || (fabs(Vect[i].pdgId()) == pdg3) || (fabs(Vect[i].pdgId()) == pdg4) || (fabs(Vect[i].pdgId()) == pdg5) ) return FindLastDaughterGen(&Vect[i]);
+      for(unsigned int j=0; j<pdgs.size();j++){
+
+	if( fabs(Vect[i].pdgId()) == pdgs[j] ) return FindLastDaughterGen(&Vect[i]);
+      }
     }
     return NULL;
 }
 
-// Recursive function to find the last particle in the chain before decay: e.g. 23 -> 23 -> *23* -> 13 -13
+// Recursive function to find the last particle in the chain before decay: e.g. 23 -> 23 -> *23* -> 13 -13.  Returns a GenParticle
 reco::GenParticle* GenAnalyzer::FindLastDaughterGen(reco::GenParticle* p) {
     if(p->numberOfDaughters() <= 0 || !p->daughter(0)) return p;
     if(p->daughter(0)->pdgId() != p->pdgId()) return p;
     return FindLastDaughterGen( dynamic_cast<reco::GenParticle*>( p->daughter(0) ));
 }
 
+// Some particles radiate other particles with the same pdgId but a different status. Method to find a mother with different pdgId
 const reco::Candidate* GenAnalyzer::FindMother(reco::GenParticle* p) {
-  int pId = p->pdgId();
-  const reco::Candidate* mom = p->mother();
-  while (mom != 0 && mom->pdgId() == pId)
-    mom = mom->mother();
-  return mom;
+    int pId = p->pdgId();
+    const reco::Candidate* mom = p->mother();
+    while (mom != 0 && mom->pdgId() == pId)
+        mom = mom->mother();
+    return mom;
+}
+
+// In Pythia 8, final state heavy bosons with kinematical info enclosed have status 62.
+reco::Candidate* GenAnalyzer::FindGenParticleByIdAndStatus(std::vector<reco::GenParticle>& Vect, int pdg, int stat) {
+    for(unsigned int i = 0; i < Vect.size(); i++) {
+      if( (fabs(Vect[i].pdgId()) == pdg) && (Vect[i].status() == stat) ) return dynamic_cast<reco::Candidate*>(&Vect[i]);
+    }
+    return NULL;
 }
 
 
