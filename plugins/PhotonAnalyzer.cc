@@ -17,10 +17,6 @@ PhotonAnalyzer::PhotonAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&&
 {
 
     isPhoLooseIdFile = isPhoMediumIdFile = isPhoTightIdFile = isPhoMVANonTrigMediumIdFile = false;
-  
-    std::cout << " - PhotonAnalyzer initialized:" << std::endl;
-    std::cout << "Id  :\t" << PhotonId << std::endl;
-    std::cout << "pT  :\t" << PhotonPt << std::endl;
 
     PhoLooseIdFile=new TFile(PhoLooseIdFileName.c_str(), "READ");
     if(!PhoLooseIdFile->IsZombie()) {
@@ -61,7 +57,12 @@ PhotonAnalyzer::PhotonAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&&
       throw cms::Exception("PhotonAnalyzer", "No PhoMVANonTrigMediumId Weight File");
       return;
     }
-
+    
+    
+    std::cout << " --- PhotonAnalyzer initialization ---" << std::endl;
+    std::cout << "  photon pT            :\t" << PhotonPt << std::endl;
+    std::cout << "  photon id            :\t" << PhotonId << std::endl;
+    std::cout << std::endl;
 }
 
 PhotonAnalyzer::~PhotonAnalyzer() {
