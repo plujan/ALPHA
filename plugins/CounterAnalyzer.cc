@@ -3,12 +3,11 @@
 
 
 CounterAnalyzer::CounterAnalyzer(const edm::ParameterSet& iConfig):
-    LheToken(consumes<edm::InputTag>(iConfig.getParameter<edm::InputTag>("lheProduct")))
+    LheToken(consumes<LHEEventProduct>(iConfig.getParameter<edm::InputTag>("lheProduct")))
 {
     //now do what ever initialization is needed
     usesResource("TFileService");
-    TFileDirectory dir = fs->mkdir("Counter/");
-    Hist = dir.make<TH1F>("Counter", "Event Counter", 1, 0., 1.);
+    Hist = fs->make<TH1F>("c_nEvents", "Event Counter", 1, 0., 1.);
     Hist->Sumw2();
     
     std::cout << " --- CounterAnalyzer initialization ---" << std::endl;
