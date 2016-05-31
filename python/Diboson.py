@@ -10,7 +10,7 @@ process = cms.Process("ALPHA")
 process.load("FWCore.MessageService.MessageLogger_cfi")
 process.MessageLogger.cerr.threshold = 'ERROR'
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
 
 # input
 # default: if no filelist from command line, run on specified samples
@@ -33,7 +33,7 @@ else:
 
 #output
 process.TFileService = cms.Service("TFileService",
-    fileName = cms.string("deleteme.root"),
+    fileName = cms.string("output.root"),
     closeFileFast = cms.untracked.bool(True)
 )
 
@@ -161,8 +161,6 @@ process.ntuple = cms.EDAnalyzer('Diboson',
         eleRecoEffFileName = cms.string('%s/src/Analysis/ALPHA/data/eleRECO.txt.egamma_SF2D.root' % os.environ['CMSSW_BASE']),
         electron1id = cms.int32(1), # 0: veto, 1: loose, 2: medium, 3: tight, 4: HEEP, 5: MVA medium nonTrig, 6: MVA tight nonTrig, 7: MVA medium Trig, 8: MVA tight Trig
         electron2id = cms.int32(1),
-        #electron1iso = cms.int32(1), # 0: veto, 1: standard
-        #electron2iso = cms.int32(1),
         electron1pt = cms.double(20.),
         electron2pt = cms.double(10.),
     ),
