@@ -13,7 +13,7 @@ TauAnalyzer::TauAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl
 
 {
 
-    std::cout << " --- JetAnalyzer initialization ---" << std::endl;
+    std::cout << " --- TauAnalyzer initialization ---" << std::endl;
     std::cout << "  tau pT            :\t" << TauPt << std::endl;
     std::cout << "  tau eta           :\t" << TauEta << std::endl;
     std::cout << std::endl;
