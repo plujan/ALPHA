@@ -86,9 +86,9 @@ std::vector<pat::Photon> PhotonAnalyzer::FillPhotonVector(const edm::Event& iEve
     //edm::Handle<std::vector<pat::Conversion> > EleConv;
     //iEvent.getByToken(edm::InputTag("patConversions"), EleConv);
     
-    edm::Handle<reco::VertexCollection> PVCollection;
-    iEvent.getByToken(VertexToken, PVCollection);
-    const reco::Vertex* vertex=&PVCollection->front();
+    //edm::Handle<reco::VertexCollection> PVCollection;
+    //iEvent.getByToken(VertexToken, PVCollection);
+    //const reco::Vertex* vertex=&PVCollection->front();
     
 
     //value map for ID 2015-2016
