@@ -63,7 +63,7 @@ def get_transf_files(transf_list):
                 f.write(file_name+'\n')
         
         if options.queryDAS:
-            proc = subprocess.Popen('python das_client.py --query=\"dataset dataset=%s | grep dataset.nevents\" --limit=0'%ds_name, stdout=subprocess.PIPE, shell=True)
+            proc = subprocess.Popen('python batch/das_client.py --query=\"dataset dataset=%s | grep dataset.nevents\" --limit=0'%ds_name, stdout=subprocess.PIPE, shell=True)
             (nevents, err) = proc.communicate()
             f.write(nevents+'\n')
             

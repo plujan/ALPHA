@@ -4,6 +4,10 @@ import multiprocessing
 import commands
 import math, time
 import sys
+from ROOT import TFile, TH1, TH1F
+from Analysis.ALPHA.samples import sample
+
+LUMI        = 589.3 # in pb-1
 
 ########## DO NOT TOUCH BELOW THIS POINT ##########
 
@@ -24,6 +28,17 @@ jobs = []
 
 def hadd(name):
     os.system('hadd '+name+'.root '+name+'/*/*.root')
+    # Add weight
+    file = TFile(name+'.root', "UPDATE")
+    tree = file.Get("ntuple/tree")
+    if 'Run2016' in name: weight = 1.
+    else:
+        nevents = file.Get("counter/c_nEvents").GetBinContent(1)
+        xs = sample[name]['xsec'] * sample[name]['kfactor']
+        weight = LUMI * xs / nevents
+    tree.SetWeight(weight)
+    tree.AutoSave()
+    file.Close()
 pass
 
 

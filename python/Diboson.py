@@ -10,7 +10,7 @@ process = cms.Process("ALPHA")
 process.load("FWCore.MessageService.MessageLogger_cfi")
 process.MessageLogger.cerr.threshold = 'ERROR'
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
 
 # input
 # default: if no filelist from command line, run on specified samples
@@ -33,7 +33,7 @@ else:
 
 #output
 process.TFileService = cms.Service("TFileService",
-    fileName = cms.string("deleteme.root"),
+    fileName = cms.string("output.root"),
     closeFileFast = cms.untracked.bool(True)
 )
 
@@ -51,6 +51,11 @@ import FWCore.PythonUtilities.LumiList as LumiList
 if isData:
     process.source.lumisToProcess = LumiList.LumiList(filename = '%s/src/Analysis/ALPHA/data/JSON/Cert_271036-273730_13TeV_PromptReco_Collisions16_JSON.txt' % os.environ['CMSSW_BASE']).getVLuminosityBlockRange()
 
+
+process.counter = cms.EDAnalyzer('CounterAnalyzer',
+    lheProduct = cms.InputTag("externalLHEProducer"),
+)
+
 # Trigger filter
 import HLTrigger.HLTfilters.hltHighLevel_cfi
 process.HLTFilter = cms.EDFilter("HLTHighLevel",
@@ -67,7 +72,13 @@ process.HLTFilter = cms.EDFilter("HLTHighLevel",
         'HLT_Ele23_WPLoose_Gsf_v*',
         'HLT_Ele27_WPLoose_Gsf_v*',
         'HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*',
-        'HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_v*'
+        'HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_v*',
+        'HLT_PFMETNoMu90_PFMHTNoMu90_IDTight_v*',
+        'HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v*',
+        'HLT_PFMETNoMu90_JetIdCleaned_PFMHTNoMu90_IDTight_v*',
+        'HLT_PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight_v*',
+        'HLT_PFMET120_BTagCSV_p067_v*',
+        'HLT_PFMET170_NoiseCleaned_v*'
     ),
     eventSetupPathsKey = cms.string(''), # not empty => use read paths from AlCaRecoTriggerBitsRcd via this key
     andOr = cms.bool(True),    # how to deal with multiple triggers: True (OR) accept if ANY is true, False (AND) accept if ALL are true
@@ -122,7 +133,7 @@ process.cleanedMuons = cms.EDProducer("PATMuonCleanerBySegments",
 #        NTUPLE         #
 #-----------------------#
 
-process.ntuple = cms.EDAnalyzer('VZ',
+process.ntuple = cms.EDAnalyzer('Diboson',
     genSet = cms.PSet(
         genProduct = cms.InputTag("generator"),
         lheProduct = cms.InputTag("externalLHEProducer"),
@@ -138,7 +149,7 @@ process.ntuple = cms.EDAnalyzer('VZ',
     ),
     triggerSet = cms.PSet(
         trigger = cms.InputTag("TriggerResults", "", "HLT"),
-        paths = cms.vstring('HLT_Mu45_eta2p1_v', 'HLT_Mu50_v', 'HLT_IsoMu20_v', 'HLT_IsoMu24_v', 'HLT_Mu27_TkMu8_v', 'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v', 'HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v', 'HLT_Ele105_CaloIdVT_GsfTrkIdT_v', 'HLT_Ele23_WPLoose_Gsf_v', 'HLT_Ele27_WPLoose_Gsf_v', 'HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v', 'HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_v'),
+        paths = cms.vstring('HLT_Mu45_eta2p1_v', 'HLT_Mu50_v', 'HLT_IsoMu20_v', 'HLT_IsoMu24_v', 'HLT_Mu27_TkMu8_v', 'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v', 'HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v', 'HLT_Ele105_CaloIdVT_GsfTrkIdT_v', 'HLT_Ele23_WPLoose_Gsf_v', 'HLT_Ele27_WPLoose_Gsf_v', 'HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v', 'HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_v', 'HLT_PFMETNoMu90_PFMHTNoMu90_IDTight_v', 'HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v', 'HLT_PFMETNoMu90_JetIdCleaned_PFMHTNoMu90_IDTight_v', 'HLT_PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight_v', 'HLT_PFMET120_BTagCSV_p067_v', 'HLT_PFMET170_NoiseCleaned_v'),
     ),
     electronSet = cms.PSet(
         electrons = cms.InputTag("slimmedElectrons"),
@@ -161,8 +172,6 @@ process.ntuple = cms.EDAnalyzer('VZ',
         eleRecoEffFileName = cms.string('%s/src/Analysis/ALPHA/data/eleRECO.txt.egamma_SF2D.root' % os.environ['CMSSW_BASE']),
         electron1id = cms.int32(1), # 0: veto, 1: loose, 2: medium, 3: tight, 4: HEEP, 5: MVA medium nonTrig, 6: MVA tight nonTrig, 7: MVA medium Trig, 8: MVA tight Trig
         electron2id = cms.int32(1),
-        #electron1iso = cms.int32(1), # 0: veto, 1: standard
-        #electron2iso = cms.int32(1),
         electron1pt = cms.double(20.),
         electron2pt = cms.double(10.),
     ),
@@ -211,7 +220,7 @@ process.ntuple = cms.EDAnalyzer('VZ',
         jetid = cms.int32(1), # 0: no selection, 1: loose, 2: medium, 3: tight
         jet1pt = cms.double(30.),
         jet2pt = cms.double(30.),
-        jeteta = cms.double(4.7),
+        jeteta = cms.double(2.5),
         btag = cms.string("combinedSecondaryVertexBJetTags"),
         jet1btag = cms.int32(0), # 0: no selection, 1: loose, 2: medium, 3: tight
         jet2btag = cms.int32(0),
@@ -227,7 +236,7 @@ process.ntuple = cms.EDAnalyzer('VZ',
     writeNPhotons = cms.int32(0),
     writeNJets = cms.int32(2),
     histFile = cms.string('%s/src/Analysis/ALPHA/data/HistList.dat' % os.environ['CMSSW_BASE']),
-    verbose  = cms.bool(True),
+    verbose  = cms.bool(False),
 )
 
 
@@ -242,6 +251,7 @@ process.ntuple = cms.EDAnalyzer('VZ',
 
 if isData:
     process.seq = cms.Sequence(
+        process.counter *
         process.HLTFilter *
         process.primaryVertexFilter *
         process.egmGsfElectronIDSequence *
@@ -251,6 +261,7 @@ if isData:
     )
 else:
     process.seq = cms.Sequence(
+        process.counter *
         process.primaryVertexFilter *
         process.egmGsfElectronIDSequence *
         process.egmPhotonIDSequence *
