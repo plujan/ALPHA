@@ -147,8 +147,8 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     for(int i = 0; i < WriteNPhotons; i++) ObjectsFormat::ResetPhotonType(Photons[i]);
     for(int i = 0; i < WriteNJets; i++) ObjectsFormat::ResetJetType(Jets[i]);
     ObjectsFormat::ResetMEtType(MEt);
-    ObjectsFormat::ResetCandidateType(Z2);
-    ObjectsFormat::ResetCandidateType(Z1);
+    ObjectsFormat::ResetCandidateType(V);
+    ObjectsFormat::ResetCandidateType(H);
     
     
     // Electrons
@@ -249,31 +249,31 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
 //    if(l1<0 || l2<0) {if(Verbose) std::cout << " - No OS SF leptons" << std::endl; return;}
 
     // Reconstruct Z candidate
-    pat::CompositeCandidate theZ2;
+    pat::CompositeCandidate theV;
     if(isZtoMM) {
-        theZ2.addDaughter(MuonVect.at(0));
-        theZ2.addDaughter(MuonVect.at(1));
+        theV.addDaughter(MuonVect.at(0));
+        theV.addDaughter(MuonVect.at(1));
     }
     else {
-        theZ2.addDaughter(ElecVect.at(0));
-        theZ2.addDaughter(ElecVect.at(1));
+        theV.addDaughter(ElecVect.at(0));
+        theV.addDaughter(ElecVect.at(1));
     }
-    addP4.set(theZ2);
+    addP4.set(theV);
     
     // ---------- Z TO HADRONS ----------
-    pat::CompositeCandidate theZ1;
+    pat::CompositeCandidate theH;
     
     if(JetsVect.size() < 2) {if(Verbose) std::cout << " - N jets < 2" << std::endl;} // return;}
     else {
-        theZ1.addDaughter(JetsVect.at(0));
-        theZ1.addDaughter(JetsVect.at(1));
-        addP4.set(theZ1);
+        theH.addDaughter(JetsVect.at(0));
+        theH.addDaughter(JetsVect.at(1));
+        addP4.set(theH);
     }
     
     // Global candidate
     pat::CompositeCandidate theX;
-    theX.addDaughter(theZ1);
-    theX.addDaughter(theZ2);
+    theX.addDaughter(theH);
+    theX.addDaughter(theV);
     addP4.set(theX);
 
     // ---------- Print Summary ----------
@@ -290,8 +290,8 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         std::cout << "number of AK4 jets:  " << JetsVect.size() << std::endl;
         for(unsigned int i = 0; i < JetsVect.size(); i++) std::cout << "  AK4 jet  [" << i << "]\tpt: " << JetsVect[i].pt() << "\teta: " << JetsVect[i].eta() << "\tphi: " << JetsVect[i].phi() << std::endl;
         std::cout << "Missing energy:      " << MET.pt() << std::endl;
-        std::cout << "Z leptonic mass:     " << theZ2.mass() << ", generated: " << GenZLepMass << std::endl;
-        std::cout << "Z hadronic mass:     " << theZ1.mass() << ", generated: " << GenZHadMass << std::endl;
+        std::cout << "Z leptonic mass:     " << theV.mass() << ", generated: " << GenZLepMass << std::endl;
+        std::cout << "Z hadronic mass:     " << theH.mass() << ", generated: " << GenZHadMass << std::endl;
         std::cout << "X candidate mass:    " << theX.mass() << ", generated: " << GenXMass << std::endl;
     }
 
@@ -303,8 +303,8 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     for(unsigned int i = 0; i < Photons.size() && i < PhotonVect.size(); i++) ObjectsFormat::FillPhotonType(Photons[i], &PhotonVect[i], isMC);
     for(unsigned int i = 0; i < Jets.size() && i < JetsVect.size(); i++) ObjectsFormat::FillJetType(Jets[i], &JetsVect[i], isMC);
     ObjectsFormat::FillMEtType(MEt, &MET, isMC);
-    ObjectsFormat::FillCandidateType(Z2, &theZ2, isMC);
-    ObjectsFormat::FillCandidateType(Z1, &theZ1, isMC);
+    ObjectsFormat::FillCandidateType(V, &theV, isMC);
+    ObjectsFormat::FillCandidateType(H, &theH, isMC);
     ObjectsFormat::FillCandidateType(X, &theX, isMC);
 //    
 //    // Lepton and Trigger SF
@@ -328,7 +328,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
 //    EventWeight*=LeptonWeight;
 //    
 //    if(Verbose) {
-//        std::cout << "\tReconstructed Z candidate from " << (isZtoMM ? "muons" : "electrons") << " " << l1 << " and " << l2 << " with mass: " << theZ2.mass() << std::endl;
+//        std::cout << "\tReconstructed Z candidate from " << (isZtoMM ? "muons" : "electrons") << " " << l1 << " and " << l2 << " with mass: " << theV.mass() << std::endl;
 //    }
 //    
 //    // FatJet
@@ -340,7 +340,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
 //    //double subjet0Bdisc = subjet->bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags");
 //    
 //    
-//    theJetAnalyzer->ApplyRecoilCorrections(MET, &MET.genMET()->p4(), &theZ2.p4(), 0);
+//    theJetAnalyzer->ApplyRecoilCorrections(MET, &MET.genMET()->p4(), &theV.p4(), 0);
 
     tree->Fill();
 
@@ -396,8 +396,8 @@ void Diboson::beginJob() {
     for(int i = 0; i < WriteNPhotons; i++) tree->Branch(("Photon"+std::to_string(i+1)).c_str(), &(Photons[i]), ObjectsFormat::ListPhotonType().c_str());
     for(int i = 0; i < WriteNJets; i++) tree->Branch(("Jet"+std::to_string(i+1)).c_str(), &(Jets[i]), ObjectsFormat::ListJetType().c_str());
     tree->Branch("MEt", &MEt, ObjectsFormat::ListMEtType().c_str());
-    tree->Branch("Z2", &Z2, ObjectsFormat::ListCandidateType().c_str());
-    tree->Branch("Z1", &Z1, ObjectsFormat::ListCandidateType().c_str());
+    tree->Branch("V", &V, ObjectsFormat::ListCandidateType().c_str());
+    tree->Branch("H", &H, ObjectsFormat::ListCandidateType().c_str());
     tree->Branch("X", &X, ObjectsFormat::ListCandidateType().c_str());
 }
 
