@@ -1,9 +1,9 @@
 // -*- C++ -*-
 //
-// Package:    Analysis/HZZ
-// Class:      HZZ
+// Package:    Analysis/VZ
+// Class:      VZ
 // 
-/**\class HZZ HZZ.cc Analysis/HZZ/plugins/HZZ.cc
+/**\class VZ VZ.cc Analysis/VZ/plugins/VZ.cc
 
  Description: [one line class summary]
 
@@ -16,7 +16,7 @@
 //
 //
 
-#include "HZZ.h"
+#include "VZ.h"
 
 //
 // constants, enums and typedefs
@@ -29,7 +29,7 @@
 //
 // constructors and destructor
 //
-HZZ::HZZ(const edm::ParameterSet& iConfig):
+VZ::VZ(const edm::ParameterSet& iConfig):
     GenPSet(iConfig.getParameter<edm::ParameterSet>("genSet")),
     PileupPSet(iConfig.getParameter<edm::ParameterSet>("pileupSet")),
     TriggerPSet(iConfig.getParameter<edm::ParameterSet>("triggerSet")),
@@ -82,7 +82,7 @@ HZZ::HZZ(const edm::ParameterSet& iConfig):
     
     ifstream histFile(HistFile);
     if(!histFile.is_open()) {
-        throw cms::Exception("HZZ Analyzer", HistFile + " file not found");
+        throw cms::Exception("VZ Analyzer", HistFile + " file not found");
     }
     while(histFile >> name >> title >> nbins >> min >> max >> opt) {
         if(name.find('#')==std::string::npos) {
@@ -105,7 +105,7 @@ HZZ::HZZ(const edm::ParameterSet& iConfig):
 }
 
 
-HZZ::~HZZ() {
+VZ::~VZ() {
     // do anything here that needs to be done at desctruction time
     // (e.g. close files, deallocate resources etc.)
     std::cout << "---------- ENDING  ----------" << std::endl;
@@ -129,7 +129,7 @@ HZZ::~HZZ() {
 //
 
 // ------------ method called for each event  ------------
-void HZZ::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
+void VZ::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     isMC = iEvent.isRealData();
     EventNumber = iEvent.id().event();
     LumiNumber = iEvent.luminosityBlock();
@@ -173,8 +173,10 @@ void HZZ::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     std::vector<reco::GenParticle> GenPVect = theGenAnalyzer->FillGenVector(iEvent);
     // Gen candidates
     //reco::Candidate* theGenZ = theGenAnalyzer->FindGenParticle(GenPVect, 23);
-    reco::GenParticle* theGenLep = theGenAnalyzer->FindGenParticleGen(GenPVect, 11,13,0,0,0);
-    reco::GenParticle* theGenHad = theGenAnalyzer->FindGenParticleGen(GenPVect, 1,2,3,4,5);
+    std::vector<int> LepIds = {11,13};
+    std::vector<int> HadIds = {1,2,3,4,5};
+    reco::GenParticle* theGenLep = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, LepIds);
+    reco::GenParticle* theGenHad = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, HadIds);
 
     //Gen level plots and candidates
     double GenZLepMass = 0.;
@@ -192,17 +194,23 @@ void HZZ::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
             Hist["g_ZHadMass"]->Fill(theGenZHad->mass(), EventWeight);
             Hist["g_ZHadPt"]->Fill(theGenZHad->pt(), EventWeight);
             Hist["g_HadPt"]->Fill(theGenHad->pt(), EventWeight);
+            Hist["g_HadEta"]->Fill(theGenHad->eta(), EventWeight);
+            Hist["g_ZZDR"]->Fill(reco::deltaR(theGenZHad->eta(),theGenZHad->phi(),theGenZLep->eta(),theGenZLep->phi()), EventWeight);
+	    Hist["g_ZZDPhi"]->Fill(reco::deltaPhi(theGenZHad->phi(),theGenZLep->phi()), EventWeight);
+            Hist["g_LepHadDR"]->Fill(reco::deltaR(theGenHad->eta(),theGenHad->phi(),theGenLep->eta(),theGenLep->phi()), EventWeight);
             GenZHadMass = theGenZHad->mass();
             isGenZZ = true;
 	}
     }
 
-    reco::Candidate* theGenX = theGenAnalyzer->FindGenParticle(GenPVect, 39);
+    
+    reco::Candidate* theGenX = theGenAnalyzer->FindGenParticleByIdAndStatus(GenPVect, 39, 62);
     if(theGenX!=NULL && theGenLep!=NULL && theGenHad!=NULL && isGenZZ){
         Hist["g_XMass"]->Fill(theGenX->mass(), EventWeight);
         Hist["g_XPt"]->Fill(theGenX->pt(), EventWeight);
         GenXMass = theGenX->mass();
     }
+    
 
     // Pu weight
     PUWeight = thePileupAnalyzer->GetPUWeight(iEvent);
@@ -351,7 +359,7 @@ void HZZ::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
 
 
 // ------------ method called once each job just before starting event loop  ------------
-void HZZ::beginJob() {
+void VZ::beginJob() {
     
     // Object objects are created only one in the begin job. The reference passed to the branch has to be the same
     for(int i = 0; i < WriteNElectrons; i++) Electrons.push_back( LeptonType() );
@@ -394,11 +402,11 @@ void HZZ::beginJob() {
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
-void HZZ::endJob() {
+void VZ::endJob() {
 }
 
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
-void HZZ::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
+void VZ::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
     //The following says we do not know what parameters are allowed so do no validation
     // Please change this to state exactly what you do use, even if it is no parameters
     edm::ParameterSetDescription desc;
@@ -407,4 +415,4 @@ void HZZ::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
 }
 
 //define this as a plug-in
-DEFINE_FWK_MODULE(HZZ);
+DEFINE_FWK_MODULE(VZ);
