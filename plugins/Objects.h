@@ -2,7 +2,7 @@
 #define OBJECTS_H
 
 struct LeptonType {
-LeptonType(): pt(-1.), eta(-9.), phi(-9.), mass(-1.), energy(-1.), charge(0), pdgId(0), pfIso03(-1.), pfIso04(-1.), trkIso(-1.), miniIso(-1.), dxy(-99.), dz(-99.), dPhi_met(-1.), isElectron(false), isMuon(false), isVeto(false), isLoose(false), isMedium(false), isTight(false), isHEEP(false), isMVANonTrigMedium(false), isMVANonTrigTight(false), isMVATrigMedium(false), isMVATrigTight(false), isHighpt(false), isMatched(false) {}
+LeptonType(): pt(-1.), eta(-9.), phi(-9.), mass(-1.), energy(-1.), charge(0), pdgId(0), pfIso03(-1.), pfIso04(-1.), trkIso(-1.), miniIso(-1.), dxy(-99.), dz(-99.), ip3d(-99.), sip3d(-99.), nPixelHits(-1.), dPhi_met(-1.), isElectron(false), isMuon(false), isVeto(false), isLoose(false), isMedium(false), isTight(false), isHighpt(false), isMatched(false) {} // isHEEP(false), isMVANonTrigMedium(false), isMVANonTrigTight(false), isMVATrigMedium(false), isMVATrigTight(false)
     float pt;
     float eta;
     float phi;
@@ -16,6 +16,9 @@ LeptonType(): pt(-1.), eta(-9.), phi(-9.), mass(-1.), energy(-1.), charge(0), pd
     float miniIso;
     float dxy;
     float dz;
+    float ip3d;
+    float sip3d;
+    float nPixelHits;
     float dPhi_met;
     bool isElectron;
     bool isMuon;
@@ -23,11 +26,11 @@ LeptonType(): pt(-1.), eta(-9.), phi(-9.), mass(-1.), energy(-1.), charge(0), pd
     bool isLoose;
     bool isMedium;
     bool isTight;
-    bool isHEEP;
-    bool isMVANonTrigMedium;
-    bool isMVANonTrigTight;
-    bool isMVATrigMedium;
-    bool isMVATrigTight;
+//    bool isHEEP;
+//    bool isMVANonTrigMedium;
+//    bool isMVANonTrigTight;
+//    bool isMVATrigMedium;
+//    bool isMVATrigTight;
     bool isHighpt;
     bool isMatched;
 };

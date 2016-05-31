@@ -20,7 +20,9 @@ void ObjectsFormat::FillElectronType(LeptonType& I, const pat::Electron* R, bool
     I.miniIso     = R->hasUserFloat("miniIso") ? R->userFloat("miniIso") : -1.;
     I.dxy         = R->hasUserFloat("dxy") ? R->userFloat("dxy") : R->dB();
     I.dz          = R->hasUserFloat("dz") ? R->userFloat("dz") : 0.;
-    //I.sip3d       = R->dB(pat::Electron::PV3D)/R->edB(pat::Electron::PV3D);
+    I.ip3d        = R->dB(pat::Electron::PV3D);
+    I.sip3d       = R->dB(pat::Electron::PV3D)/R->edB(pat::Electron::PV3D);
+    I.nPixelHits  = R->gsfTrack()->hitPattern().numberOfValidPixelHits();
     I.dPhi_met    = R->hasUserFloat("dPhi_met") ? R->userFloat("dPhi_met") : -1.;
     I.isElectron  = true;
     I.isMuon      = false;
@@ -28,11 +30,11 @@ void ObjectsFormat::FillElectronType(LeptonType& I, const pat::Electron* R, bool
     I.isLoose     = R->hasUserInt("isLoose") ? R->userInt("isLoose") : false;
     I.isMedium    = R->hasUserInt("isMedium") ? R->userInt("isMedium") : false;
     I.isTight     = R->hasUserInt("isTight") ? R->userInt("isTight") : false;
-    I.isHEEP      = R->hasUserInt("isHEEP") ? R->userInt("isHEEP") : false;
-    I.isMVANonTrigMedium      = R->hasUserInt("isMVANonTrigMedium") ? R->userInt("isMVANonTrigMedium") : false;
-    I.isMVANonTrigTight      = R->hasUserInt("isMVANonTrigTight") ? R->userInt("isMVANonTrigTight") : false;
-    I.isMVATrigMedium      = R->hasUserInt("isMVATrigMedium") ? R->userInt("isMVATrigMedium") : false;
-    I.isMVATrigTight      = R->hasUserInt("isMVATrigTight") ? R->userInt("isMVATrigTight") : false;
+    I.isHighpt    = R->hasUserInt("isHEEP") ? R->userInt("isHEEP") : false;
+//    I.isMVANonTrigMedium      = R->hasUserInt("isMVANonTrigMedium") ? R->userInt("isMVANonTrigMedium") : false;
+//    I.isMVANonTrigTight      = R->hasUserInt("isMVANonTrigTight") ? R->userInt("isMVANonTrigTight") : false;
+//    I.isMVATrigMedium      = R->hasUserInt("isMVATrigMedium") ? R->userInt("isMVATrigMedium") : false;
+//    I.isMVATrigTight      = R->hasUserInt("isMVATrigTight") ? R->userInt("isMVATrigTight") : false;
     if(isMC && R->genLepton()) I.isMatched = false;//(Utilities::FindMotherId(dynamic_cast<const reco::Candidate*>(R->genLepton()))==23);
 }
 
@@ -51,7 +53,9 @@ void ObjectsFormat::FillMuonType(LeptonType& I, const pat::Muon* R, bool isMC) {
     I.miniIso     = R->hasUserFloat("miniIso") ? R->userFloat("miniIso") : -1.;
     I.dxy         = R->hasUserFloat("dxy") ? R->userFloat("dxy") : R->dB();
     I.dz          = R->hasUserFloat("dz") ? R->userFloat("dz") : 0.;
-    //I.sip3d       = R->dB(pat::Muon::PV3D)/R->edB(pat::Muon::PV3D);
+    I.ip3d        = R->dB(pat::Muon::PV3D);
+    I.sip3d       = R->dB(pat::Muon::PV3D)/R->edB(pat::Muon::PV3D);
+    I.nPixelHits  = R->innerTrack()->hitPattern().numberOfValidPixelHits();
     I.dPhi_met    = R->hasUserFloat("dPhi_met") ? R->userFloat("dPhi_met") : -1.;
     I.isElectron  = false;
     I.isMuon      = true;
@@ -77,6 +81,9 @@ void ObjectsFormat::ResetLeptonType(LeptonType& I) {
     I.miniIso     = -1.;
     I.dxy         = -99.;
     I.dz          = -99.;
+    I.ip3d        = -99.;
+    I.sip3d       = -99.;
+    I.nPixelHits  = -1.;
     I.dPhi_met    = -1.;
     I.isElectron  = false;
     I.isMuon      = false;
@@ -84,16 +91,15 @@ void ObjectsFormat::ResetLeptonType(LeptonType& I) {
     I.isLoose     = false;
     I.isMedium    = false;
     I.isTight     = false;
-    I.isHEEP     = false;
-    I.isMVANonTrigMedium = false;
-    I.isMVANonTrigTight = false;
-    I.isMVATrigMedium = false;
-    I.isMVATrigTight = false;
     I.isHighpt    = false;
+//    I.isMVANonTrigMedium = false;
+//    I.isMVANonTrigTight = false;
+//    I.isMVATrigMedium = false;
+//    I.isMVATrigTight = false;
     I.isMatched   = false;
 }
 
-std::string ObjectsFormat::ListLeptonType() {return "pt/F:eta/F:phi/F:mass/F:energy/F:charge/I:pdgId/I:pfIso03/F:pfIso04/F:trkIso/F:miniIso/F:dxy/F:dz/F:dPhi_met/F:isElectron/O:isMuon/O:isVeto/O:isLoose/O:isMedium/O:isTight/O:isHEEP/O:isMVANonTrigMedium/O:isMVANonTrigTight/O:isMVATrigMedium/O:isMVATrigTight/O:isHighpt/O:isMatched/O";}
+std::string ObjectsFormat::ListLeptonType() {return "pt/F:eta/F:phi/F:mass/F:energy/F:charge/I:pdgId/I:pfIso03/F:pfIso04/F:trkIso/F:miniIso/F:dxy/F:dz/F:ip3d/f:sip3d/F:dPhi_met/F:isElectron/O:isMuon/O:isVeto/O:isLoose/O:isMedium/O:isTight/O:isHighpt/O:isMatched/O";} // isHEEP/O:isMVANonTrigMedium/O:isMVANonTrigTight/O:isMVATrigMedium/O:isMVATrigTight/O:
 
 //********************//
 //    Photons         // 
