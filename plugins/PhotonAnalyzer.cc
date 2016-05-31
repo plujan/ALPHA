@@ -60,8 +60,8 @@ PhotonAnalyzer::PhotonAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&&
     
     
     std::cout << " --- PhotonAnalyzer initialization ---" << std::endl;
-    std::cout << "  photon pT            :\t" << PhotonPt << std::endl;
-    std::cout << "  photon id            :\t" << PhotonId << std::endl;
+    std::cout << "  photon pT         :\t" << PhotonPt << std::endl;
+    std::cout << "  photon id         :\t" << PhotonId << std::endl;
     std::cout << std::endl;
 }
 
