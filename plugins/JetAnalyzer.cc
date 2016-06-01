@@ -98,6 +98,18 @@ std::vector<pat::Jet> JetAnalyzer::FillJetVector(const edm::Event& iEvent) {
         jet.addUserInt("isTight", isTightJet(jet) ? 1 : 0);
         jet.addUserInt("isTightLepVeto", isTightLepVetoJet(jet) ? 1 : 0);
         jet.addUserFloat("JESUncertainty", jet.pt()*GetScaleUncertainty(jet));
+
+        // PUPPI soft drop mass for AK8 jets
+        if(jet.hasSubjets("SoftDropPuppi")){
+	    TLorentzVector puppiSoftdrop, puppiSoftdropSubjet;
+	    auto const & sdSubjetsPuppi = jet.subjets("SoftDropPuppi");
+            for ( auto const & it : sdSubjetsPuppi ) {
+                puppiSoftdropSubjet.SetPtEtaPhiM(it->pt(),it->eta(),it->phi(),it->mass());
+                puppiSoftdrop+=puppiSoftdropSubjet;
+            }
+            jet.addUserFloat("softdropPuppiMass", puppiSoftdrop.M());
+	}
+
         Vect.push_back(jet); // Fill vector
     }
     return Vect;
