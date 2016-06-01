@@ -38,12 +38,14 @@ Diboson::Diboson(const edm::ParameterSet& iConfig):
     TauPSet(iConfig.getParameter<edm::ParameterSet>("tauSet")),
     PhotonPSet(iConfig.getParameter<edm::ParameterSet>("photonSet")),
     JetPSet(iConfig.getParameter<edm::ParameterSet>("jetSet")),
+    FatJetPSet(iConfig.getParameter<edm::ParameterSet>("fatJetSet")),
     WriteNElectrons(iConfig.getParameter<int>("writeNElectrons")),
     WriteNMuons(iConfig.getParameter<int>("writeNMuons")),
     WriteNLeptons(iConfig.getParameter<int>("writeNLeptons")),
     WriteNTaus(iConfig.getParameter<int>("writeNTaus")),
     WriteNPhotons(iConfig.getParameter<int>("writeNPhotons")),
     WriteNJets(iConfig.getParameter<int>("writeNJets")),
+    WriteNFatJets(iConfig.getParameter<int>("writeNFatJets")),
     HistFile(iConfig.getParameter<std::string>("histFile")),
     Verbose(iConfig.getParameter<bool>("verbose"))
 {
@@ -59,6 +61,7 @@ Diboson::Diboson(const edm::ParameterSet& iConfig):
     theTauAnalyzer=new TauAnalyzer(TauPSet, consumesCollector());
     thePhotonAnalyzer=new PhotonAnalyzer(PhotonPSet, consumesCollector());
     theJetAnalyzer=new JetAnalyzer(JetPSet, consumesCollector());
+    theFatJetAnalyzer=new FatJetAnalyzer(FatJetPSet, consumesCollector());
     //theBTagAnalyzer=new BTagAnalyzer(BTagAlgo);
     
     std::vector<std::string> TriggerList(TriggerPSet.getParameter<std::vector<std::string> >("paths"));
@@ -119,6 +122,7 @@ Diboson::~Diboson() {
     delete theTauAnalyzer;
     delete thePhotonAnalyzer;
     delete theJetAnalyzer;
+    delete theFatJetAnalyzer;
     //delete theBTagAnalyzer;
     
 }
@@ -146,6 +150,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     for(int i = 0; i < WriteNTaus; i++) ObjectsFormat::ResetTauType(Taus[i]);
     for(int i = 0; i < WriteNPhotons; i++) ObjectsFormat::ResetPhotonType(Photons[i]);
     for(int i = 0; i < WriteNJets; i++) ObjectsFormat::ResetJetType(Jets[i]);
+    for(int i = 0; i < WriteNFatJets; i++) ObjectsFormat::ResetFatJetType(FatJets[i]);
     ObjectsFormat::ResetMEtType(MEt);
     ObjectsFormat::ResetCandidateType(V);
     ObjectsFormat::ResetCandidateType(H);
@@ -163,6 +168,10 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     std::vector<pat::Jet> JetsVect = theJetAnalyzer->FillJetVector(iEvent);
     theJetAnalyzer->CleanJetsFromMuons(JetsVect, MuonVect);
     theJetAnalyzer->CleanJetsFromElectrons(JetsVect, ElecVect);
+    // Fat Jets
+    std::vector<pat::Jet> FatJetsVect = theFatJetAnalyzer->FillFatJetVector(iEvent);
+    theFatJetAnalyzer->CleanFatJetsFromMuons(FatJetsVect, MuonVect);
+    theFatJetAnalyzer->CleanFatJetsFromElectrons(FatJetsVect, ElecVect);
     // Missing Energy
     pat::MET MET = theJetAnalyzer->FillMetVector(iEvent);
     
@@ -289,6 +298,8 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         for(unsigned int i = 0; i < PhotonVect.size(); i++) std::cout << "  photon  [" << i << "]\tpt: " << PhotonVect[i].pt() << "\teta: " << PhotonVect[i].eta() << "\tphi: " << PhotonVect[i].phi() << std::endl;
         std::cout << "number of AK4 jets:  " << JetsVect.size() << std::endl;
         for(unsigned int i = 0; i < JetsVect.size(); i++) std::cout << "  AK4 jet  [" << i << "]\tpt: " << JetsVect[i].pt() << "\teta: " << JetsVect[i].eta() << "\tphi: " << JetsVect[i].phi() << std::endl;
+        std::cout << "number of AK8 jets:  " << FatJetsVect.size() << std::endl;
+        for(unsigned int i = 0; i < FatJetsVect.size(); i++) std::cout << "  AK8 jet  [" << i << "]\tpt: " << FatJetsVect[i].pt() << "\teta: " << FatJetsVect[i].eta() << "\tphi: " << FatJetsVect[i].phi() << std::endl;
         std::cout << "Missing energy:      " << MET.pt() << std::endl;
         std::cout << "Z leptonic mass:     " << theV.mass() << ", generated: " << GenZLepMass << std::endl;
         std::cout << "Z hadronic mass:     " << theH.mass() << ", generated: " << GenZHadMass << std::endl;
@@ -302,6 +313,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     for(unsigned int i = 0; i < Taus.size() && i < TauVect.size(); i++) ObjectsFormat::FillTauType(Taus[i], &TauVect[i], isMC);
     for(unsigned int i = 0; i < Photons.size() && i < PhotonVect.size(); i++) ObjectsFormat::FillPhotonType(Photons[i], &PhotonVect[i], isMC);
     for(unsigned int i = 0; i < Jets.size() && i < JetsVect.size(); i++) ObjectsFormat::FillJetType(Jets[i], &JetsVect[i], isMC);
+    for(unsigned int i = 0; i < FatJets.size() && i < FatJetsVect.size(); i++) ObjectsFormat::FillFatJetType(FatJets[i], &FatJetsVect[i], isMC);
     ObjectsFormat::FillMEtType(MEt, &MET, isMC);
     ObjectsFormat::FillCandidateType(V, &theV, isMC);
     ObjectsFormat::FillCandidateType(H, &theH, isMC);
@@ -368,6 +380,7 @@ void Diboson::beginJob() {
     for(int i = 0; i < WriteNTaus; i++) Taus.push_back( TauType() );
     for(int i = 0; i < WriteNPhotons; i++) Photons.push_back( PhotonType() );
     for(int i = 0; i < WriteNJets; i++) Jets.push_back( JetType() );
+    for(int i = 0; i < WriteNFatJets; i++) FatJets.push_back( FatJetType() );
     
     
     // Create Tree and set Branches
@@ -395,6 +408,7 @@ void Diboson::beginJob() {
     for(int i = 0; i < WriteNTaus; i++) tree->Branch(("Tau"+std::to_string(i+1)).c_str(), &(Taus[i]), ObjectsFormat::ListTauType().c_str());
     for(int i = 0; i < WriteNPhotons; i++) tree->Branch(("Photon"+std::to_string(i+1)).c_str(), &(Photons[i]), ObjectsFormat::ListPhotonType().c_str());
     for(int i = 0; i < WriteNJets; i++) tree->Branch(("Jet"+std::to_string(i+1)).c_str(), &(Jets[i]), ObjectsFormat::ListJetType().c_str());
+    for(int i = 0; i < WriteNFatJets; i++) tree->Branch(("FatJet"+std::to_string(i+1)).c_str(), &(FatJets[i]), ObjectsFormat::ListFatJetType().c_str());
     tree->Branch("MEt", &MEt, ObjectsFormat::ListMEtType().c_str());
     tree->Branch("V", &V, ObjectsFormat::ListCandidateType().c_str());
     tree->Branch("H", &H, ObjectsFormat::ListCandidateType().c_str());
