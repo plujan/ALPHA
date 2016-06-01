@@ -271,12 +271,23 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     
     // ---------- Z TO HADRONS ----------
     pat::CompositeCandidate theH;
-    
+
+    // Resolved topology
     if(JetsVect.size() < 2) {if(Verbose) std::cout << " - N jets < 2" << std::endl;} // return;}
     else {
         theH.addDaughter(JetsVect.at(0));
         theH.addDaughter(JetsVect.at(1));
         addP4.set(theH);
+    }
+
+    // Boosted topology
+    if(FatJetsVect.size() < 1) {if(Verbose) std::cout << " - N fat jets < 1" << std::endl;}
+    else {
+      if(theH.pt()<FatJetsVect.at(0).pt()){
+        theH.clearDaughters();
+        theH.addDaughter(FatJetsVect.at(0));
+        addP4.set(theH);
+      }
     }
     
     // Global candidate
