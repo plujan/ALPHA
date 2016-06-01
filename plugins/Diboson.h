@@ -102,7 +102,6 @@
 #include "PhotonAnalyzer.h"
 #include "TauAnalyzer.h"
 #include "JetAnalyzer.h"
-#include "FatJetAnalyzer.h"
 //#include "BTagInterface.h"
 
 
@@ -152,7 +151,7 @@ class Diboson : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
         TauAnalyzer* theTauAnalyzer;
         PhotonAnalyzer* thePhotonAnalyzer;
         JetAnalyzer* theJetAnalyzer;
-        FatJetAnalyzer* theFatJetAnalyzer;
+        JetAnalyzer* theFatJetAnalyzer;
         //BTagInterface* theBTagInterface;
         std::map<std::string, bool> TriggerMap;
         std::map<std::string, TH1F*> Hist;
