@@ -359,26 +359,33 @@ void ObjectsFormat::FillFatJetType(FatJetType& I, const pat::Jet* R, bool isMC) 
     I.npr         = R->chargedMultiplicity() + R->neutralMultiplicity();
     I.flavour     = R->partonFlavour();
     if(isMC && R->genParton()) I.mother = false;//Utilities::FindMotherId(dynamic_cast<const reco::Candidate*>(R->genParton()));
-    I.softdropMass= R->userFloat("ak8PFJetsCHSSoftDropMass");
-    I.prunedMass  = R->userFloat("ak8PFJetsCHSPrunedMass");
-    I.puppiPt     = R->userFloat("ak8PFJetsPuppiValueMap:pt");
-    I.puppiEta    = R->userFloat("ak8PFJetsPuppiValueMap:eta");
-    I.puppiPhi    = R->userFloat("ak8PFJetsPuppiValueMap:phi");
-    I.puppiMass   = R->userFloat("ak8PFJetsPuppiValueMap:mass");
-    I.tau1        = R->userFloat("NjettinessAK8:tau1");
-    I.tau2        = R->userFloat("NjettinessAK8:tau2");
-    I.tau3        = R->userFloat("NjettinessAK8:tau3");
-    I.puppiTau1   = R->userFloat("ak8PFJetsPuppiValueMap:NjettinessAK8PuppiTau1");
-    I.puppiTau2   = R->userFloat("ak8PFJetsPuppiValueMap:NjettinessAK8PuppiTau2");
-    I.puppiTau3   = R->userFloat("ak8PFJetsPuppiValueMap:NjettinessAK8PuppiTau3");
     I.isLoose     = R->hasUserInt("isLoose") ? R->userInt("isLoose") : false;
     I.isMedium    = false;
     I.isTight     = R->hasUserInt("isTight") ? R->userInt("isTight") : false;
     I.isTightLepVeto     = R->hasUserInt("isTightLepVeto") ? R->userInt("isTightLepVeto") : false;
-    I.isCSVL      = false;//IsBTagged(Tagger, 1, I.CSV);
-    I.isCSVM      = false;//IsBTagged(Tagger, 2, I.CSV);
-    I.isCSVT      = false;//IsBTagged(Tagger, 3, I.CSV);
     I.isMatched   = (I.mother==25);
+    I.prunedMass            = R->hasUserFloat("ak8PFJetsCHSPrunedMass") ? R->userFloat("ak8PFJetsCHSPrunedMass") : -1.;
+    I.softdropMass          = R->hasUserFloat("ak8PFJetsCHSSoftDropMass") ? R->userFloat("ak8PFJetsCHSSoftDropMass") : -1.;
+    I.softdropPuppiMass     = R->hasUserFloat("ak8PFJetsCHSSoftDropMass") ? R->userFloat("ak8PFJetsCHSSoftDropMass") : -1.;
+    I.prunedMassCorr        = R->hasUserFloat("ak8PFJetsCHSPrunedMassCorr") ? R->userFloat("ak8PFJetsCHSPrunedMassCorr") : -1.;
+    I.softdropMassCorr      = R->hasUserFloat("ak8PFJetsCHSSoftDropMassCorr") ? R->userFloat("ak8PFJetsCHSSoftDropMassCorr") : -1.;
+    I.softdropPuppiMassCorr = R->hasUserFloat("ak8PFJetsCHSSoftDropMassCorr") ? R->userFloat("ak8PFJetsCHSSoftDropMassCorr") : -1.;
+    I.pt1         = R->subjets("SoftDrop").size() > 0 ? R->subjets("SoftDrop")[0]->pt() : -1.;
+    I.eta1        = R->subjets("SoftDrop").size() > 0 ? R->subjets("SoftDrop")[0]->eta() : -1.;
+    I.phi1        = R->subjets("SoftDrop").size() > 0 ? R->subjets("SoftDrop")[0]->phi() : -1.;
+    I.mass1       = R->subjets("SoftDrop").size() > 0 ? R->subjets("SoftDrop")[0]->mass() : -1.;
+    I.CSV1        = R->subjets("SoftDrop").size() > 0 ? R->subjets("SoftDrop")[0]->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") : -1.;
+    I.CSVR1       = R->subjets("SoftDrop").size() > 0 ? R->subjets("SoftDrop")[0]->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") : -1.;
+    I.flavour1    = R->subjets("SoftDrop").size() > 0 ? R->subjets("SoftDrop")[0]->hadronFlavour() : -1.;
+    I.pt2         = R->subjets("SoftDrop").size() > 1 ? R->subjets("SoftDrop")[1]->pt() : -1.;
+    I.eta2        = R->subjets("SoftDrop").size() > 1 ? R->subjets("SoftDrop")[1]->eta() : -1.;
+    I.phi2        = R->subjets("SoftDrop").size() > 1 ? R->subjets("SoftDrop")[1]->phi() : -1.;
+    I.mass2       = R->subjets("SoftDrop").size() > 1 ? R->subjets("SoftDrop")[1]->mass() : -1.;
+    I.CSV2        = R->subjets("SoftDrop").size() > 1 ? R->subjets("SoftDrop")[1]->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") : -1.;
+    I.CSVR2       = R->subjets("SoftDrop").size() > 1 ? R->subjets("SoftDrop")[1]->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") : -1.;
+    I.flavour2    = R->subjets("SoftDrop").size() > 1 ? R->subjets("SoftDrop")[1]->hadronFlavour() : -1.;
+    I.dR          = R->subjets("SoftDrop").size() > 1 ? deltaR(*R->subjets("SoftDrop")[0], *R->subjets("SoftDrop")[1]) : -1.;
+    I.tau21       = R->userFloat("NjettinessAK8:tau1") != 0 ? R->userFloat("NjettinessAK8:tau2")/R->userFloat("NjettinessAK8:tau1") : -1.;
 }
 
 void ObjectsFormat::ResetFatJetType(FatJetType& I) {
@@ -403,29 +410,37 @@ void ObjectsFormat::ResetFatJetType(FatJetType& I) {
     I.npr         = -1.;
     I.flavour     = 0;
     I.mother      = false;
-    I.softdropMass= -1.;
-    I.prunedMass  = -1.;
-    I.puppiPt     = -1.;
-    I.puppiEta    = -9.;
-    I.puppiPhi    = -9.;
-    I.puppiMass   = -1.;
-    I.tau1        = -1.;
-    I.tau2        = -1.;
-    I.tau3        = -1.;
-    I.puppiTau1   = -1.;
-    I.puppiTau2   = -1.;
-    I.puppiTau3   = -1.;
     I.isLoose     = false;
     I.isMedium    = false;
     I.isTight     = false;
     I.isTightLepVeto     = false;
-    I.isCSVL      = false;
-    I.isCSVM      = false;
-    I.isCSVT      = false;
     I.isMatched   = false;
+    I.prunedMass            = -1.;
+    I.softdropMass          = -1.;
+    I.softdropPuppiMass     = -1.;
+    I.prunedMassCorr        = -1.;
+    I.softdropMassCorr      = -1.;
+    I.softdropPuppiMassCorr = -1.;
+    I.pt1         = -1.;
+    I.eta1        = -9.;
+    I.phi1        = -9.;
+    I.mass1       = -1.;
+    I.CSV1        = -99.;
+    I.CSVR1       = -99.;
+    I.flavour1    = -1.;
+    I.pt2         = -1.;
+    I.eta2        = -9.;
+    I.phi2        = -9.;
+    I.mass2       = -1.;
+    I.CSV2        = -99.;
+    I.CSVR2       = -99.;
+    I.flavour2    = -1.;
+    I.dR          = -1.;
+    I.tau21       = -1.;
 }
 
-std::string ObjectsFormat::ListFatJetType() {return "pt/F:eta/F:phi/F:mass/F:energy/F:ptRaw/F:ptUnc/F:dPhi_met/F:dPhi_jet1/F:puId/F:CSV/F:CSVR/F:chf/F:nhf/F:phf/F:elf/F:muf/F:chm/I:npr/I:flavour/I:mother/I:softdropMass/F:prunedMass/F:puppiPt/F:puppiEta/F:puppiPhi/F:puppiMass/F:tau1/F:tau2/F:tau3/F:puppiTau1/F:puppiTau2/F:puppiTau3/F:isLoose/O:isMedium/O:isTight/O:isTightLepVeto/O:isCSVL/O:isCSVM/O:isCSVT/O:isMatched/O";}
+std::string ObjectsFormat::ListFatJetType() {return "pt/F:eta/F:phi/F:mass/F:energy/F:ptRaw/F:ptUnc/F:dPhi_met/F:dPhi_jet1/F:puId/F:CSV/F:CSVR/F:chf/F:nhf/F:phf/F:elf/F:muf/F:chm/I:npr/I:flavour/I:mother/I:isLoose/O:isMedium/O:isTight/O:isTightLepVeto/O:isCSVL/O:isCSVM/O:isCSVT/O:isMatched/O:prunedMass/F:softdropMass/F:softdropPuppiMass/F:prunedMassCorr/F:softdropMassCorr/F:softdropPuppiMassCorr/F:pt1/F:eta1/F:phi1/F:mass1/F:CSV1/F:CSVR1/F:flavour1/F:pt2/F:eta2/F:phi2/F:mass2/F:CSV2/F:CSVR2/F:flavour2/F:dR/F:tau21/F";}
+
 
 
 

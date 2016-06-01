@@ -28,10 +28,11 @@ JetAnalyzer::JetAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl
 //    }
     
     // Recoil Corrector
-    recoilCorr = new RecoilCorrector(RecoilMCFile);
-    recoilCorr->addDataFile(RecoilDataFile);
-    recoilCorr->addMCFile(RecoilMCFile);
-    
+    if(UseRecoil) {
+        recoilCorr = new RecoilCorrector(RecoilMCFile);
+        recoilCorr->addDataFile(RecoilDataFile);
+        recoilCorr->addMCFile(RecoilMCFile);
+    }
     
     
     std::cout << " --- JetAnalyzer initialization ---" << std::endl;
@@ -48,7 +49,7 @@ JetAnalyzer::JetAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl
 
 JetAnalyzer::~JetAnalyzer() {
 //    JESFile->Close();
-    delete recoilCorr;
+    if(UseRecoil) delete recoilCorr;
 }
 
 

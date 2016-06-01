@@ -93,7 +93,7 @@ Ntuple::~Ntuple() {
 
 // ------------ method called for each event  ------------
 void Ntuple::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
-    isMC = iEvent.isRealData();
+    isMC = !iEvent.isRealData();
     EventNumber = iEvent.id().event();
     LumiNumber = iEvent.luminosityBlock();
     RunNumber = iEvent.id().run();
@@ -225,8 +225,8 @@ void Ntuple::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
 //            LeptonWeight*=theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(l2));
 //        }
 //    }
-//    EventWeight*=TriggerWeight;
-//    EventWeight*=LeptonWeight;
+//    EventWeight *= TriggerWeight;
+    EventWeight *= LeptonWeight;
 //    
 //    if(Verbose) {
 //        std::cout << "\tReconstructed Z candidate from " << (isZtoMM ? "muons" : "electrons") << " " << l1 << " and " << l2 << " with mass: " << theZ.mass() << std::endl;

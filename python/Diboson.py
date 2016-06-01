@@ -31,17 +31,10 @@ else:
     process.source = cms.Source ("PoolSource", fileNames = cms.untracked.vstring(filelist) )
 
 #output
-if len(options.outputFile) == 0:
-    process.TFileService = cms.Service("TFileService",
-        fileName = cms.string("deleteme.root"),
-        closeFileFast = cms.untracked.bool(True)
-    )
-#read output file name
-else:
-    process.TFileService = cms.Service("TFileService",
-        fileName = cms.string(options.outputFile),
-        closeFileFast = cms.untracked.bool(True)
-    )
+process.TFileService = cms.Service("TFileService",
+    fileName = cms.string("output.root" if len(options.outputFile) == 0 else options.outputFile),
+    closeFileFast = cms.untracked.bool(True)
+)
 
 # Determine whether we are running on data or MC
 isData = ('/store/data/' in process.source.fileNames[0])
@@ -236,18 +229,18 @@ process.ntuple = cms.EDAnalyzer('Diboson',
         metRecoilData = cms.string('%s/src/Analysis/ALPHA/data/recoilfit_gjetsData_Zu1_pf_v5.root' % os.environ['CMSSW_BASE']),
     ),
     fatJetSet = cms.PSet(
-        fatJets = cms.InputTag("slimmedJetsAK8"),#("slimmedJetsAK8"), #selectedPatJetsAK8PFCHSPrunedPacked
-        fatjetid = cms.int32(1), # 0: no selection, 1: loose, 2: medium, 3: tight
-        fatjet1pt = cms.double(30.),
-        #jet2pt = cms.double(30.),
-        fatjeteta = cms.double(2.5),
+        jets = cms.InputTag("slimmedJetsAK8"),#("slimmedJetsAK8"), #selectedPatJetsAK8PFCHSPrunedPacked
+        jetid = cms.int32(1), # 0: no selection, 1: loose, 2: medium, 3: tight
+        jet1pt = cms.double(200.),
+        jet2pt = cms.double(200.),
+        jeteta = cms.double(2.5),
         btag = cms.string("combinedSecondaryVertexBJetTags"),
-        fatjet1btag = cms.int32(0), # 0: no selection, 1: loose, 2: medium, 3: tight
-        fatjet2btag = cms.int32(0),
-        #met = cms.InputTag("slimmedMETs"),
-        #metRecoil = cms.bool(False),
-        #metRecoilMC = cms.string('%s/src/Analysis/ALPHA/data/recoilfit_gjetsMC_Zu1_pf_v5.root' % os.environ['CMSSW_BASE']),
-        #metRecoilData = cms.string('%s/src/Analysis/ALPHA/data/recoilfit_gjetsData_Zu1_pf_v5.root' % os.environ['CMSSW_BASE']),
+        jet1btag = cms.int32(0), # 0: no selection, 1: loose, 2: medium, 3: tight
+        jet2btag = cms.int32(0),
+        met = cms.InputTag("slimmedMETs"),
+        metRecoil = cms.bool(False),
+        metRecoilMC = cms.string(''),
+        metRecoilData = cms.string(''),
     ),
     writeNElectrons = cms.int32(0),
     writeNMuons = cms.int32(0),

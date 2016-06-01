@@ -53,16 +53,16 @@ Diboson::Diboson(const edm::ParameterSet& iConfig):
     usesResource("TFileService");
     
     // Initialize Objects
-    theGenAnalyzer=new GenAnalyzer(GenPSet, consumesCollector());
-    thePileupAnalyzer=new PileupAnalyzer(PileupPSet, consumesCollector());
-    theTriggerAnalyzer=new TriggerAnalyzer(TriggerPSet, consumesCollector());
-    theElectronAnalyzer=new ElectronAnalyzer(ElectronPSet, consumesCollector());
-    theMuonAnalyzer=new MuonAnalyzer(MuonPSet, consumesCollector());
-    theTauAnalyzer=new TauAnalyzer(TauPSet, consumesCollector());
-    thePhotonAnalyzer=new PhotonAnalyzer(PhotonPSet, consumesCollector());
-    theJetAnalyzer=new JetAnalyzer(JetPSet, consumesCollector());
-    theFatJetAnalyzer=new FatJetAnalyzer(FatJetPSet, consumesCollector());
-    //theBTagAnalyzer=new BTagAnalyzer(BTagAlgo);
+    theGenAnalyzer      = new GenAnalyzer(GenPSet, consumesCollector());
+    thePileupAnalyzer   = new PileupAnalyzer(PileupPSet, consumesCollector());
+    theTriggerAnalyzer  = new TriggerAnalyzer(TriggerPSet, consumesCollector());
+    theElectronAnalyzer = new ElectronAnalyzer(ElectronPSet, consumesCollector());
+    theMuonAnalyzer     = new MuonAnalyzer(MuonPSet, consumesCollector());
+    theTauAnalyzer      = new TauAnalyzer(TauPSet, consumesCollector());
+    thePhotonAnalyzer   = new PhotonAnalyzer(PhotonPSet, consumesCollector());
+    theJetAnalyzer      = new JetAnalyzer(JetPSet, consumesCollector());
+    theFatJetAnalyzer   = new JetAnalyzer(FatJetPSet, consumesCollector());
+    //theBTagAnalyzer     = new BTagAnalyzer(BTagAlgo);
     
     std::vector<std::string> TriggerList(TriggerPSet.getParameter<std::vector<std::string> >("paths"));
     for(unsigned int i = 0; i < TriggerList.size(); i++) TriggerMap[ TriggerList[i] ] = false;
@@ -169,9 +169,9 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     theJetAnalyzer->CleanJetsFromMuons(JetsVect, MuonVect);
     theJetAnalyzer->CleanJetsFromElectrons(JetsVect, ElecVect);
     // Fat Jets
-    std::vector<pat::Jet> FatJetsVect = theFatJetAnalyzer->FillFatJetVector(iEvent);
-    theFatJetAnalyzer->CleanFatJetsFromMuons(FatJetsVect, MuonVect);
-    theFatJetAnalyzer->CleanFatJetsFromElectrons(FatJetsVect, ElecVect);
+    std::vector<pat::Jet> FatJetsVect = theFatJetAnalyzer->FillJetVector(iEvent);
+    theFatJetAnalyzer->CleanJetsFromMuons(FatJetsVect, MuonVect);
+    theFatJetAnalyzer->CleanJetsFromElectrons(FatJetsVect, ElecVect);
     // Missing Energy
     pat::MET MET = theJetAnalyzer->FillMetVector(iEvent);
     
