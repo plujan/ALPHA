@@ -127,6 +127,23 @@ process.cleanedMuons = cms.EDProducer("PATMuonCleanerBySegments",
     fractionOfSharedSegments = cms.double(0.499)
 )
 
+#quark gluon likelihood upstream modules
+qgDatabaseVersion = 'v2b' # check https://twiki.cern.ch/twiki/bin/viewauth/CMS/QGDataBaseVersion
+from CondCore.DBCommon.CondDBSetup_cfi import *
+QGPoolDBESSource = cms.ESSource("PoolDBESSource",
+      CondDBSetup,
+      toGet = cms.VPSet(),
+      connect = cms.string('frontier://FrontierProd/CMS_COND_PAT_000'),
+)
+for type in ['AK4PFchs','AK4PFchs_antib']:
+    QGPoolDBESSource.toGet.extend(cms.VPSet(cms.PSet(
+        record = cms.string('QGLikelihoodRcd'),
+        tag    = cms.string('QGLikelihoodObject_'+qgDatabaseVersion+'_'+type),
+        label  = cms.untracked.string('QGL_'+type)
+    )))
+process.load('RecoJets.JetProducers.QGTagger_cfi')
+process.QGTagger.srcJets = cms.InputTag('slimmedJets') # Could be reco::PFJetCollection or pat::JetCollection (both AOD and miniAOD)
+process.QGTagger.jetsLabel = cms.string('QGL_AK4PFchs') # Other options: see https://twiki.cern.ch/twiki/bin/viewauth/CMS/QGDataBaseVersion
 
 #-----------------------#
 #        NTUPLE         #
@@ -271,6 +288,7 @@ if isData:
         process.egmGsfElectronIDSequence *
         process.egmPhotonIDSequence *
         process.cleanedMuons *
+        process.QGTagger *
         process.ntuple
     )
 else:
@@ -280,6 +298,7 @@ else:
         process.egmGsfElectronIDSequence *
         process.egmPhotonIDSequence *
         process.cleanedMuons *
+        process.QGTagger *
         process.ntuple
     )
 

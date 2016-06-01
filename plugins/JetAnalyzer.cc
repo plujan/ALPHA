@@ -6,6 +6,7 @@
 JetAnalyzer::JetAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl):
     JetToken(CColl.consumes<std::vector<pat::Jet> >(PSet.getParameter<edm::InputTag>("jets"))),
     MetToken(CColl.consumes<std::vector<pat::MET> >(PSet.getParameter<edm::InputTag>("met"))),
+    QGToken(CColl.consumes<edm::ValueMap<float>>(edm::InputTag("QGTagger", "qgLikelihood"))),
     JetId(PSet.getParameter<int>("jetid")),
     Jet1Pt(PSet.getParameter<double>("jet1pt")),
     Jet2Pt(PSet.getParameter<double>("jet2pt")),
@@ -19,7 +20,7 @@ JetAnalyzer::JetAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl
 {
   
     isJESFile=false;
-    
+
 //    JESFile=new TFile("data/JESUncertainty.root", "READ");
 //    JESFile->cd();
 //    if(!JESFile->IsZombie()) {
@@ -64,6 +65,9 @@ std::vector<pat::Jet> JetAnalyzer::FillJetVector(const edm::Event& iEvent) {
     // Declare and open collection
     edm::Handle<std::vector<pat::Jet> > PFJetsCollection;
     iEvent.getByToken(JetToken, PFJetsCollection);
+    // Open QG value maps
+    edm::Handle<edm::ValueMap<float>> QGHandle;
+    iEvent.getByToken(QGToken, QGHandle);
     // Loop on Jet collection
     for(std::vector<pat::Jet>::const_iterator it=PFJetsCollection->begin(); it!=PFJetsCollection->end(); ++it) {
         if(Vect.size()>0) {
@@ -73,6 +77,7 @@ std::vector<pat::Jet> JetAnalyzer::FillJetVector(const edm::Event& iEvent) {
         pat::Jet jet=*it;
         int idx=it-PFJetsCollection->begin();
         jet.addUserInt("Index", idx);
+	pat::JetRef jetRef(PFJetsCollection, idx);
         // Jet Energy Smearing
         if(isMC) {
             const reco::GenJet* genJet=jet.genJet();
@@ -110,6 +115,11 @@ std::vector<pat::Jet> JetAnalyzer::FillJetVector(const edm::Event& iEvent) {
             jet.addUserFloat("softdropPuppiMass", puppiSoftdrop.M());
 	}
 
+        //QG tagger for AK4 jets
+        if(jet.nSubjetCollections()<=0){
+             jet.addUserFloat("QGLikelihood", (*QGHandle)[jetRef]);
+	}
+        
         Vect.push_back(jet); // Fill vector
     }
     return Vect;

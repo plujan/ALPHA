@@ -258,6 +258,7 @@ void ObjectsFormat::FillJetType(JetType& I, const pat::Jet* R, bool isMC) {
     I.isCSVM      = false;//IsBTagged(Tagger, 2, I.CSV);
     I.isCSVT      = false;//IsBTagged(Tagger, 3, I.CSV);
     I.isMatched   = (I.mother==25);
+    I.QGLikelihood = R->hasUserFloat("QGLikelihood") ? R->userFloat("QGLikelihood") : -1.;  
 }
 
 void ObjectsFormat::ResetJetType(JetType& I) {
@@ -290,9 +291,10 @@ void ObjectsFormat::ResetJetType(JetType& I) {
     I.isCSVM      = false;
     I.isCSVT      = false;
     I.isMatched   = false;
+    I.QGLikelihood = -1.;
 }
 
-std::string ObjectsFormat::ListJetType() {return "pt/F:eta/F:phi/F:mass/F:energy/F:ptRaw/F:ptUnc/F:dPhi_met/F:dPhi_jet1/F:puId/F:CSV/F:CSVR/F:chf/F:nhf/F:phf/F:elf/F:muf/F:chm/I:npr/I:flavour/I:mother/I:isLoose/O:isMedium/O:isTight/O:isTightLepVeto/O:isCSVL/O:isCSVM/O:isCSVT/O:isMatched/O";}
+std::string ObjectsFormat::ListJetType() {return "pt/F:eta/F:phi/F:mass/F:energy/F:ptRaw/F:ptUnc/F:dPhi_met/F:dPhi_jet1/F:puId/F:CSV/F:CSVR/F:chf/F:nhf/F:phf/F:elf/F:muf/F:chm/I:npr/I:flavour/I:mother/I:isLoose/O:isMedium/O:isTight/O:isTightLepVeto/O:isCSVL/O:isCSVM/O:isCSVT/O:isMatched/O:QGLikelihood/F";}
 
 //*******************//
 //     Fat Jet       //
