@@ -359,6 +359,18 @@ void ObjectsFormat::FillFatJetType(FatJetType& I, const pat::Jet* R, bool isMC) 
     I.npr         = R->chargedMultiplicity() + R->neutralMultiplicity();
     I.flavour     = R->partonFlavour();
     if(isMC && R->genParton()) I.mother = false;//Utilities::FindMotherId(dynamic_cast<const reco::Candidate*>(R->genParton()));
+    I.softdropMass= R->userFloat("ak8PFJetsCHSSoftDropMass");
+    I.prunedMass  = R->userFloat("ak8PFJetsCHSPrunedMass");
+    I.puppiPt     = R->userFloat("ak8PFJetsPuppiValueMap:pt");
+    I.puppiEta    = R->userFloat("ak8PFJetsPuppiValueMap:eta");
+    I.puppiPhi    = R->userFloat("ak8PFJetsPuppiValueMap:phi");
+    I.puppiMass   = R->userFloat("ak8PFJetsPuppiValueMap:mass");
+    I.tau1        = R->userFloat("NjettinessAK8:tau1");
+    I.tau2        = R->userFloat("NjettinessAK8:tau2");
+    I.tau3        = R->userFloat("NjettinessAK8:tau3");
+    I.puppiTau1   = R->userFloat("ak8PFJetsPuppiValueMap:NjettinessAK8PuppiTau1");
+    I.puppiTau2   = R->userFloat("ak8PFJetsPuppiValueMap:NjettinessAK8PuppiTau2");
+    I.puppiTau3   = R->userFloat("ak8PFJetsPuppiValueMap:NjettinessAK8PuppiTau3");
     I.isLoose     = R->hasUserInt("isLoose") ? R->userInt("isLoose") : false;
     I.isMedium    = false;
     I.isTight     = R->hasUserInt("isTight") ? R->userInt("isTight") : false;
@@ -391,6 +403,18 @@ void ObjectsFormat::ResetFatJetType(FatJetType& I) {
     I.npr         = -1.;
     I.flavour     = 0;
     I.mother      = false;
+    I.softdropMass= -1.;
+    I.prunedMass  = -1.;
+    I.puppiPt     = -1.;
+    I.puppiEta    = -9.;
+    I.puppiPhi    = -9.;
+    I.puppiMass   = -1.;
+    I.tau1        = -1.;
+    I.tau2        = -1.;
+    I.tau3        = -1.;
+    I.puppiTau1   = -1.;
+    I.puppiTau2   = -1.;
+    I.puppiTau3   = -1.;
     I.isLoose     = false;
     I.isMedium    = false;
     I.isTight     = false;
@@ -401,7 +425,7 @@ void ObjectsFormat::ResetFatJetType(FatJetType& I) {
     I.isMatched   = false;
 }
 
-std::string ObjectsFormat::ListFatJetType() {return "pt/F:eta/F:phi/F:mass/F:energy/F:ptRaw/F:ptUnc/F:dPhi_met/F:dPhi_jet1/F:puId/F:CSV/F:CSVR/F:chf/F:nhf/F:phf/F:elf/F:muf/F:chm/I:npr/I:flavour/I:mother/I:isLoose/O:isMedium/O:isTight/O:isTightLepVeto/O:isCSVL/O:isCSVM/O:isCSVT/O:isMatched/O";}
+std::string ObjectsFormat::ListFatJetType() {return "pt/F:eta/F:phi/F:mass/F:energy/F:ptRaw/F:ptUnc/F:dPhi_met/F:dPhi_jet1/F:puId/F:CSV/F:CSVR/F:chf/F:nhf/F:phf/F:elf/F:muf/F:chm/I:npr/I:flavour/I:mother/I:softdropMass/F:prunedMass/F:puppiPt/F:puppiEta/F:puppiPhi/F:puppiMass/F:tau1/F:tau2/F:tau3/F:puppiTau1/F:puppiTau2/F:puppiTau3/F:isLoose/O:isMedium/O:isTight/O:isTightLepVeto/O:isCSVL/O:isCSVM/O:isCSVT/O:isMatched/O";}
 
 
 
