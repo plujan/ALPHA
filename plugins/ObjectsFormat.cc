@@ -296,6 +296,152 @@ std::string ObjectsFormat::ListJetType() {return "pt/F:eta/F:phi/F:mass/F:energy
 
 
 
+void ObjectsFormat::FillFatJetType(FatJetType& I, const pat::Jet* R, bool isMC) {
+    if(!R) return;
+    I.pt          = R->pt();
+    I.eta         = R->eta();
+    I.phi         = R->phi();
+    I.mass        = R->mass();
+    I.energy      = R->energy();
+  //  if(isMC && R->genJet()) {
+  //    I.ptGenJ    = R->genJet()->pt();
+  //    I.etaGenJ   = R->genJet()->eta();
+  //    I.phiGenJ   = R->genJet()->phi();
+  //    I.massGenJ  = R->genJet()->mass();
+  //  }
+  //  if(isMC && R->genParton()) {
+  //    I.ptGen     = R->genParton()->pt();
+  //    I.etaGen    = R->genParton()->eta();
+  //    I.phiGen    = R->genParton()->phi();
+  //    I.massGen   = R->genParton()->mass();
+  //  }
+  //  if(isMC && R->genParton()) {
+  //    I.ptLhe     = R->userFloat("ptLhe");
+  //    I.etaLhe    = R->userFloat("etaLhe");
+  //    I.phiLhe    = R->userFloat("phiLhe");
+  //  }
+    I.ptRaw       = R->correctedJet(0).pt();
+    I.ptUnc       = R->userFloat("JESUncertainty");
+    I.dPhi_met    = R->hasUserFloat("dPhi_met") ? R->userFloat("dPhi_met") : -1.;
+    I.dPhi_jet1   = R->hasUserFloat("dPhi_jet1") ? R->userFloat("dPhi_jet1") : -1.;
+    I.puId        = -1.; //R->userFloat("pileupJetId:fullDiscriminant");
+    I.CSV         = R->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
+    I.CSVR        = R->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
+  //  I.CSVV1       = R->bDiscriminator("combinedSecondaryVertexV1BJetTags");
+  //  I.CSVSL       = R->bDiscriminator("combinedSecondaryVertexSoftPFLeptonV1BJetTags");
+  //  I.JPro        = R->bDiscriminator("jetProbabilityBJetTags"); // jetBProbabilityBJetTags
+  //  if(isMC) {
+  //    if(abs(R->partonFlavour())==5 || abs(R->partonFlavour())==4) {
+  //      I.LooseSF      = theBTagWeight->ReturnScaleFactor(1, R->pt(), R->eta());
+  //      I.MediumSF     = theBTagWeight->ReturnScaleFactor(2, R->pt(), R->eta());
+  //      I.TightSF      = theBTagWeight->ReturnScaleFactor(3, R->pt(), R->eta());
+  //      I.LooseSFa     = (1.-0.7*theBTagWeight->ReturnScaleFactor(1, R->pt(), R->eta()))/(1.-0.7);
+  //      I.MediumSFa    = (1.-0.6*theBTagWeight->ReturnScaleFactor(2, R->pt(), R->eta()))/(1.-0.6);
+  //      I.TightSFa     = (1.-0.5*theBTagWeight->ReturnScaleFactor(3, R->pt(), R->eta()))/(1.-0.5);
+  //    }
+  //    else {
+  //      I.LooseSF      = theBTagWeight->ReturnScaleFactorMistag(1, R->pt(), R->eta());
+  //      I.MediumSF     = theBTagWeight->ReturnScaleFactorMistag(2, R->pt(), R->eta());
+  //      I.TightSF      = theBTagWeight->ReturnScaleFactorMistag(3, R->pt(), R->eta());
+  //      I.LooseSFa     = (1.-1.e-1*theBTagWeight->ReturnScaleFactorMistag(1, R->pt(), R->eta()))/(1.-1.e-1);
+  //      I.MediumSFa    = (1.-1.e-2*theBTagWeight->ReturnScaleFactorMistag(2, R->pt(), R->eta()))/(1.-1.e-2);
+  //      I.TightSFa     = (1.-1.e-3*theBTagWeight->ReturnScaleFactorMistag(3, R->pt(), R->eta()))/(1.-1.e-3);
+  //    }
+  //  }
+    I.chf         = R->chargedHadronEnergyFraction();
+    I.nhf         = R->neutralHadronEnergyFraction();
+    I.phf         = R->neutralEmEnergyFraction();
+    I.elf         = R->chargedEmEnergyFraction();
+    I.muf         = R->muonEnergyFraction();
+    I.chm         = R->chargedHadronMultiplicity();
+    I.npr         = R->chargedMultiplicity() + R->neutralMultiplicity();
+    I.flavour     = R->partonFlavour();
+    if(isMC && R->genParton()) I.mother = false;//Utilities::FindMotherId(dynamic_cast<const reco::Candidate*>(R->genParton()));
+    I.isLoose     = R->hasUserInt("isLoose") ? R->userInt("isLoose") : false;
+    I.isMedium    = false;
+    I.isTight     = R->hasUserInt("isTight") ? R->userInt("isTight") : false;
+    I.isTightLepVeto     = R->hasUserInt("isTightLepVeto") ? R->userInt("isTightLepVeto") : false;
+    I.isMatched   = (I.mother==25);
+    I.prunedMass            = R->hasUserFloat("ak8PFJetsCHSPrunedMass") ? R->userFloat("ak8PFJetsCHSPrunedMass") : -1.;
+    I.softdropMass          = R->hasUserFloat("ak8PFJetsCHSSoftDropMass") ? R->userFloat("ak8PFJetsCHSSoftDropMass") : -1.;
+    I.softdropPuppiMass     = R->hasUserFloat("ak8PFJetsCHSSoftDropMass") ? R->userFloat("ak8PFJetsCHSSoftDropMass") : -1.;
+    I.prunedMassCorr        = R->hasUserFloat("ak8PFJetsCHSPrunedMassCorr") ? R->userFloat("ak8PFJetsCHSPrunedMassCorr") : -1.;
+    I.softdropMassCorr      = R->hasUserFloat("ak8PFJetsCHSSoftDropMassCorr") ? R->userFloat("ak8PFJetsCHSSoftDropMassCorr") : -1.;
+    I.softdropPuppiMassCorr = R->hasUserFloat("ak8PFJetsCHSSoftDropMassCorr") ? R->userFloat("ak8PFJetsCHSSoftDropMassCorr") : -1.;
+    I.pt1         = R->subjets("SoftDrop").size() > 0 ? R->subjets("SoftDrop")[0]->pt() : -1.;
+    I.eta1        = R->subjets("SoftDrop").size() > 0 ? R->subjets("SoftDrop")[0]->eta() : -1.;
+    I.phi1        = R->subjets("SoftDrop").size() > 0 ? R->subjets("SoftDrop")[0]->phi() : -1.;
+    I.mass1       = R->subjets("SoftDrop").size() > 0 ? R->subjets("SoftDrop")[0]->mass() : -1.;
+    I.CSV1        = R->subjets("SoftDrop").size() > 0 ? R->subjets("SoftDrop")[0]->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") : -1.;
+    I.CSVR1       = R->subjets("SoftDrop").size() > 0 ? R->subjets("SoftDrop")[0]->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") : -1.;
+    I.flavour1    = R->subjets("SoftDrop").size() > 0 ? R->subjets("SoftDrop")[0]->hadronFlavour() : -1.;
+    I.pt2         = R->subjets("SoftDrop").size() > 1 ? R->subjets("SoftDrop")[1]->pt() : -1.;
+    I.eta2        = R->subjets("SoftDrop").size() > 1 ? R->subjets("SoftDrop")[1]->eta() : -1.;
+    I.phi2        = R->subjets("SoftDrop").size() > 1 ? R->subjets("SoftDrop")[1]->phi() : -1.;
+    I.mass2       = R->subjets("SoftDrop").size() > 1 ? R->subjets("SoftDrop")[1]->mass() : -1.;
+    I.CSV2        = R->subjets("SoftDrop").size() > 1 ? R->subjets("SoftDrop")[1]->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") : -1.;
+    I.CSVR2       = R->subjets("SoftDrop").size() > 1 ? R->subjets("SoftDrop")[1]->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") : -1.;
+    I.flavour2    = R->subjets("SoftDrop").size() > 1 ? R->subjets("SoftDrop")[1]->hadronFlavour() : -1.;
+    I.dR          = R->subjets("SoftDrop").size() > 1 ? deltaR(*R->subjets("SoftDrop")[0], *R->subjets("SoftDrop")[1]) : -1.;
+    I.tau21       = R->userFloat("NjettinessAK8:tau1") != 0 ? R->userFloat("NjettinessAK8:tau2")/R->userFloat("NjettinessAK8:tau1") : -1.;
+}
+
+void ObjectsFormat::ResetFatJetType(FatJetType& I) {
+    I.pt          = -1.;
+    I.eta         = -9.;
+    I.phi         = -9.;
+    I.mass        = -1.;
+    I.energy      = -1.;
+    I.ptRaw       = -1.;
+    I.ptUnc       = -1.;
+    I.dPhi_met    = -1.;
+    I.dPhi_jet1   = -1.;
+    I.puId        = -1.;
+    I.CSV         = -99.;
+    I.CSVR        = -99.;
+    I.chf         = -1.;
+    I.nhf         = -1.;
+    I.phf         = -1.;
+    I.elf         = -1.;
+    I.muf         = -1.;
+    I.chm         = -1.;
+    I.npr         = -1.;
+    I.flavour     = 0;
+    I.mother      = false;
+    I.isLoose     = false;
+    I.isMedium    = false;
+    I.isTight     = false;
+    I.isTightLepVeto     = false;
+    I.isMatched   = false;
+    I.prunedMass            = -1.;
+    I.softdropMass          = -1.;
+    I.softdropPuppiMass     = -1.;
+    I.prunedMassCorr        = -1.;
+    I.softdropMassCorr      = -1.;
+    I.softdropPuppiMassCorr = -1.;
+    I.pt1         = -1.;
+    I.eta1        = -9.;
+    I.phi1        = -9.;
+    I.mass1       = -1.;
+    I.CSV1        = -99.;
+    I.CSVR1       = -99.;
+    I.flavour1    = -1.;
+    I.pt2         = -1.;
+    I.eta2        = -9.;
+    I.phi2        = -9.;
+    I.mass2       = -1.;
+    I.CSV2        = -99.;
+    I.CSVR2       = -99.;
+    I.flavour2    = -1.;
+    I.dR          = -1.;
+    I.tau21       = -1.;
+}
+
+std::string ObjectsFormat::ListFatJetType() {return "pt/F:eta/F:phi/F:mass/F:energy/F:ptRaw/F:ptUnc/F:dPhi_met/F:dPhi_jet1/F:puId/F:CSV/F:CSVR/F:chf/F:nhf/F:phf/F:elf/F:muf/F:chm/I:npr/I:flavour/I:mother/I:isLoose/O:isMedium/O:isTight/O:isTightLepVeto/O:isCSVL/O:isCSVM/O:isCSVT/O:isMatched/O:prunedMass/F:softdropMass/F:softdropPuppiMass/F:prunedMassCorr/F:softdropMassCorr/F:softdropPuppiMassCorr/F:pt1/F:eta1/F:phi1/F:mass1/F:CSV1/F:CSVR1/F:flavour1/F:pt2/F:eta2/F:phi2/F:mass2/F:CSV2/F:CSVR2/F:flavour2/F:dR/F:tau21/F";}
+
+
+
+
 //*******************//
 //  Missing energy   //
 //*******************//
