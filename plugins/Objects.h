@@ -104,51 +104,6 @@ struct JetType {
     bool isMatched;
 };
 
-struct FatJetType {
-FatJetType(): pt(-1.), eta(-9.), phi(-9.), mass(-1.), energy(-1.), ptRaw(-1.), ptUnc(-1.), dPhi_met(-1.), dPhi_jet1(-1.), puId(-1.), CSV(-99.), CSVR(-99.), chf(-1.), nhf(-1.), phf(-1.), elf(-1.), muf(-1.), chm(-1), npr(-1), flavour(0), mother(0), softdropMass(-1.), prunedMass(-1.), puppiPt(-1.), puppiEta(-9.), puppiPhi(-9.), puppiMass(-1.), tau1(-1.), tau2(-1.), tau3(-1.), puppiTau1(-1.), puppiTau2(-1.), puppiTau3(-1.), isLoose(false), isMedium(false), isTight(false), isTightLepVeto(false), isCSVL(false), isCSVM(false), isCSVT(false), isMatched(false) {}
-    float pt;
-    float eta;
-    float phi;
-    float mass;
-    float energy;
-    float ptRaw;
-    float ptUnc;
-    float dPhi_met;
-    float dPhi_jet1;
-    float puId;
-    float CSV;
-    float CSVR;
-    float chf;
-    float nhf;
-    float phf;
-    float elf;
-    float muf;
-    int chm;
-    int npr;
-    int flavour;
-    int mother;
-    float softdropMass;
-    float prunedMass;
-    float puppiPt;
-    float puppiEta;
-    float puppiPhi; 
-    float puppiMass;
-    float tau1;
-    float tau2;
-    float tau3;
-    float puppiTau1;
-    float puppiTau2;
-    float puppiTau3;
-    bool isLoose;
-    bool isMedium;
-    bool isTight;
-    bool isTightLepVeto;
-    bool isCSVL;
-    bool isCSVM;
-    bool isCSVT;
-    bool isMatched;
-};
-
 
 
 struct FatJetType {
