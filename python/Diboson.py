@@ -235,12 +235,27 @@ process.ntuple = cms.EDAnalyzer('Diboson',
         metRecoilMC = cms.string('%s/src/Analysis/ALPHA/data/recoilfit_gjetsMC_Zu1_pf_v5.root' % os.environ['CMSSW_BASE']),
         metRecoilData = cms.string('%s/src/Analysis/ALPHA/data/recoilfit_gjetsData_Zu1_pf_v5.root' % os.environ['CMSSW_BASE']),
     ),
+    fatJetSet = cms.PSet(
+        fatJets = cms.InputTag("slimmedJetsAK8"),#("slimmedJetsAK8"), #selectedPatJetsAK8PFCHSPrunedPacked
+        fatjetid = cms.int32(1), # 0: no selection, 1: loose, 2: medium, 3: tight
+        fatjet1pt = cms.double(30.),
+        #jet2pt = cms.double(30.),
+        fatjeteta = cms.double(2.5),
+        btag = cms.string("combinedSecondaryVertexBJetTags"),
+        fatjet1btag = cms.int32(0), # 0: no selection, 1: loose, 2: medium, 3: tight
+        fatjet2btag = cms.int32(0),
+        #met = cms.InputTag("slimmedMETs"),
+        #metRecoil = cms.bool(False),
+        #metRecoilMC = cms.string('%s/src/Analysis/ALPHA/data/recoilfit_gjetsMC_Zu1_pf_v5.root' % os.environ['CMSSW_BASE']),
+        #metRecoilData = cms.string('%s/src/Analysis/ALPHA/data/recoilfit_gjetsData_Zu1_pf_v5.root' % os.environ['CMSSW_BASE']),
+    ),
     writeNElectrons = cms.int32(0),
     writeNMuons = cms.int32(0),
     writeNLeptons = cms.int32(2),
     writeNTaus = cms.int32(0),
     writeNPhotons = cms.int32(0),
     writeNJets = cms.int32(2),
+    writeNFatJets = cms.int32(1),
     histFile = cms.string('%s/src/Analysis/ALPHA/data/HistList.dat' % os.environ['CMSSW_BASE']),
     verbose  = cms.bool(False),
 )

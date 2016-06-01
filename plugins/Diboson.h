@@ -102,6 +102,7 @@
 #include "PhotonAnalyzer.h"
 #include "TauAnalyzer.h"
 #include "JetAnalyzer.h"
+#include "FatJetAnalyzer.h"
 //#include "BTagInterface.h"
 
 
@@ -138,7 +139,8 @@ class Diboson : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
         edm::ParameterSet TauPSet;
         edm::ParameterSet PhotonPSet;
         edm::ParameterSet JetPSet;
-        int WriteNElectrons, WriteNMuons, WriteNLeptons, WriteNTaus, WriteNPhotons, WriteNJets;
+        edm::ParameterSet FatJetPSet;
+        int WriteNElectrons, WriteNMuons, WriteNLeptons, WriteNTaus, WriteNPhotons, WriteNJets, WriteNFatJets;
         std::string HistFile;
         bool Verbose;
 
@@ -150,6 +152,7 @@ class Diboson : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
         TauAnalyzer* theTauAnalyzer;
         PhotonAnalyzer* thePhotonAnalyzer;
         JetAnalyzer* theJetAnalyzer;
+        FatJetAnalyzer* theFatJetAnalyzer;
         //BTagInterface* theBTagInterface;
         std::map<std::string, bool> TriggerMap;
         std::map<std::string, TH1F*> Hist;
@@ -168,6 +171,7 @@ class Diboson : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
         std::vector<TauType> Taus;
         std::vector<PhotonType> Photons;
         std::vector<JetType> Jets;
+        std::vector<FatJetType> FatJets;
         MEtType MEt;
         CandidateType V;
         CandidateType H;
