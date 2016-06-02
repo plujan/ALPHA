@@ -69,13 +69,13 @@ sample = {
     },
     
     'WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_v0-v1' : {
-        'nevents' : 49877138,
+        'nevents' : 9908534,
         'xsec'    : 61526.7,
         'kfactor' : 1.,
     },
     
     'TTTo2L2Nu_13TeV-powheg_v0_ext1-v1' : {
-        'nevents' : 49877138,
+        'nevents' : 104607105,
         'xsec'    : 92.42,
         'kfactor' : 1.,
     },
