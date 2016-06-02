@@ -122,7 +122,8 @@ class Diboson : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
         ~Diboson();
 
         static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
-
+        virtual pat::CompositeCandidate createkW(reco::Candidate&, pat::MET&);
+        virtual pat::CompositeCandidate recoilMassFormula(pat::CompositeCandidate&, pat::MET&);
 
     private:
         virtual void beginJob() override;
@@ -159,7 +160,7 @@ class Diboson : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
         
         edm::Service<TFileService> fs;
         TTree* tree;
-        bool isMC, isZtoEE, isZtoMM;
+        bool isMC, isZtoEE, isZtoMM, isWtoEN, isWtoMN;
         long int EventNumber, RunNumber, LumiNumber;
         float EventWeight, PUWeight, TriggerWeight, LeptonWeight;
         
