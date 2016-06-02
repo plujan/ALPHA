@@ -237,7 +237,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     // ---------- Do analysis selections ----------
     
     // ---------- Z TO LEPTONS ----------
-    isZtoEE = isZtoMM = false;
+    isZtoEE = isZtoMM = isWtoEN = isWtoMN = false;
     
     if(MuonVect.size()>=2 && ElecVect.size()>=2) {
         if(MuonVect.at(0).pt() > ElecVect.at(0).pt()) isZtoMM=true;
@@ -245,8 +245,22 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     }
     else if(ElecVect.size()>=2) isZtoEE=true;
     else if(MuonVect.size()>=2) isZtoMM=true;
-    else {if(Verbose) std::cout << " - No Iso SF OS Leptons" << std::endl; return;}
+    //else {if(Verbose) std::cout << " - No Iso SF OS Leptons" << std::endl; return;}
+
+    // ---------- W TO LEPTON and NEUTRINO ----------
     
+    else if(MuonVect.size()==1 && ElecVect.size()==1) {
+        if(MuonVect.at(0).pt() > ElecVect.at(0).pt()) isWtoMN=true;
+        else isWtoEN=true;
+    }
+    else if(ElecVect.size()==1) isWtoEN=true;
+    else if(MuonVect.size()==1) isWtoMN=true;
+    //else {if(Verbose) std::cout << " - No W to Leptons" << std::endl; return;}
+
+    // ----------- Z TO NEUTRINOS ---------------
+
+    else { if(Verbose) std::cout << " - No Iso SF OS Leptons, No W to Leptons" << std::endl;}// return;}
+
     // AZh lepton choice
 //    int l1(0), l2(-1);
 //    if(isZtoEE) {
@@ -257,44 +271,105 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
 //    }
 //    if(l1<0 || l2<0) {if(Verbose) std::cout << " - No OS SF leptons" << std::endl; return;}
 
-    // Reconstruct Z candidate
+    // Reconstruct V candidate
     pat::CompositeCandidate theV;
     if(isZtoMM) {
         theV.addDaughter(MuonVect.at(0));
         theV.addDaughter(MuonVect.at(1));
+        addP4.set(theV);
     }
-    else {
+    else if(isZtoEE){
         theV.addDaughter(ElecVect.at(0));
         theV.addDaughter(ElecVect.at(1));
+        addP4.set(theV);
     }
-    addP4.set(theV);
+    else if(isWtoMN){
+	theV = createkW(MuonVect.at(0),MET);
+    }
+    else if(isWtoEN){
+	theV = createkW(ElecVect.at(0),MET);
+    }
+    else{
+    }
     
     // ---------- Z TO HADRONS ----------
     pat::CompositeCandidate theH;
 
+    /////////////////// Highest pT method ////////////////////
+    
     // Resolved topology
     if(JetsVect.size() < 2) {if(Verbose) std::cout << " - N jets < 2" << std::endl;} // return;}
     else {
         theH.addDaughter(JetsVect.at(0));
         theH.addDaughter(JetsVect.at(1));
         addP4.set(theH);
+	//std::cout << "resolved mass: " << theH.mass() << std::endl;
+        //if(theH.mass()<40 || theH.pt()<100) theH.clearDaughters();
+        Hist["a_HAK4Mass_HPt"]->Fill(theH.mass(), EventWeight);
     }
 
     // Boosted topology
     if(FatJetsVect.size() < 1) {if(Verbose) std::cout << " - N fat jets < 1" << std::endl;}
     else {
+      Hist["a_HAK8Mass_HPt"]->Fill(FatJetsVect.at(0).hasUserFloat("ak8PFJetsCHSSoftDropMass")?FatJetsVect.at(0).userFloat("ak8PFJetsCHSSoftDropMass"):FatJetsVect.at(0).mass(), EventWeight);
+      //std::cout << "merged mass: " << FatJetsVect.at(0).mass() << std::endl;
       if(theH.pt()<FatJetsVect.at(0).pt()){
         theH.clearDaughters();
         theH.addDaughter(FatJetsVect.at(0));
         addP4.set(theH);
+        //if(theH.mass()>180) theH.clearDaughters();
       }
     }
+    Hist["a_HMass_HPt"]->Fill(theH.mass(), EventWeight);
+    //std::cout << "chosen mass: " << theH.mass() << std::endl;
     
+    // Reset theH
+    theH.clearDaughters();
+
+    /////////////////// Prefer merged AK8 jet method ////////////////////
+    
+    // Boosted topology
+    //if(FatJetsVect.size() < 1) {if(Verbose) std::cout << " - N fat jets < 1" << std::endl;}
+
+    if(FatJetsVect.size() >= 1 && FatJetsVect.at(0).hasUserFloat("ak8PFJetsCHSPrunedMass") && FatJetsVect.at(0).userFloat("ak8PFJetsCHSPrunedMass")>30){
+      theH.addDaughter(FatJetsVect.at(0));
+      addP4.set(theH);
+      //std::cout << "merged mass: " << theH.mass() << std::endl;
+      Hist["a_HAK8Mass_PM"]->Fill(FatJetsVect.at(0).hasUserFloat("ak8PFJetsCHSSoftDropMass")?FatJetsVect.at(0).userFloat("ak8PFJetsCHSSoftDropMass"):FatJetsVect.at(0).mass(), EventWeight);
+    }
+
+    else{
+        // Resolved topology if we don't have the right AK8
+        if(JetsVect.size() < 2) {if(Verbose) std::cout << " - N fat jet <1 or with pruned mass < 30 GeV and N ak4 jets < 2, no H candidate" << std::endl;} // return;}
+        else {
+            theH.addDaughter(JetsVect.at(0));
+            theH.addDaughter(JetsVect.at(1));
+            addP4.set(theH);
+	    //std::cout << "resolved mass: " << theH.mass() << std::endl;
+            Hist["a_HAK4Mass_PM"]->Fill(theH.mass(), EventWeight);
+        }
+    }
+
+    Hist["a_HMass_PM"]->Fill(theH.mass(), EventWeight);
+    //std::cout << "chosen mass: " << theH.mass() << std::endl;
+    
+
     // Global candidate
     pat::CompositeCandidate theX;
-    theX.addDaughter(theH);
-    theX.addDaughter(theV);
-    addP4.set(theX);
+    if((isZtoEE || isZtoMM || isWtoEN || isWtoMN) && theH.numberOfDaughters()>0){
+        theX.addDaughter(theH);
+        theX.addDaughter(theV);
+        addP4.set(theX);
+    }
+
+    else if(theH.numberOfDaughters()>0){//if is Z to nu nu: apply recoil mass formula
+	theX = recoilMassFormula(theH,MET);
+    }
+
+    else{//no H, no X
+      if(Verbose) std::cout << "No H, no X" << std::endl;
+      return;
+    }
 
     // ---------- Print Summary ----------
     if(Verbose) {
@@ -312,7 +387,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         std::cout << "number of AK8 jets:  " << FatJetsVect.size() << std::endl;
         for(unsigned int i = 0; i < FatJetsVect.size(); i++) std::cout << "  AK8 jet  [" << i << "]\tpt: " << FatJetsVect[i].pt() << "\teta: " << FatJetsVect[i].eta() << "\tphi: " << FatJetsVect[i].phi() << std::endl;
         std::cout << "Missing energy:      " << MET.pt() << std::endl;
-        std::cout << "Z leptonic mass:     " << theV.mass() << ", generated: " << GenZLepMass << std::endl;
+        std::cout << "V leptonic mass:     " << theV.mass() << ", generated: " << GenZLepMass << std::endl;
         std::cout << "Z hadronic mass:     " << theH.mass() << ", generated: " << GenZHadMass << std::endl;
         std::cout << "X candidate mass:    " << theX.mass() << ", generated: " << GenXMass << std::endl;
     }
@@ -438,6 +513,64 @@ void Diboson::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
     desc.setUnknown();
     descriptions.addDefault(desc);
 }
+
+pat::CompositeCandidate Diboson::createkW(reco::Candidate& lep, pat::MET& met){
+    pat::CompositeCandidate thekW;
+    // W kinematical reconstruction
+    float pz = 0.;
+    float a = pow(80.4,2) - pow(lep.mass(),2) + 2.*lep.px()*met.px() + 2.*lep.py()*met.py();
+    float A = 4*( pow(lep.energy(),2) - pow(lep.pz(),2) );
+    float B = -4*a*lep.pz();
+    float C = 4*pow(lep.energy(),2) * (pow(met.px(),2)  + pow(met.py(),2)) - pow(a,2);
+    float D = pow(B,2) - 4*A*C;
+    // If there are real solutions, use the one with lowest pz                                            
+    if (D>=0){
+        float s1 = (-B+sqrt(D))/(2*A);
+        float s2 = (-B-sqrt(D))/(2*A);
+        if(fabs(s1)<fabs(s2)) pz=s1;
+        else pz=s2;
+    }
+    // Otherwise, use real part                                                                           
+    else{
+         pz = -B/(2*A);
+    }
+    reco::Particle::LorentzVector neutrino( met.px(), met.py(), pz, sqrt( pow(met.pt(),2)+pow(pz,2) ) );
+    reco::Particle::LorentzVector kW = lep.p4() + neutrino;
+    thekW.setP4(kW);
+    thekW.setCharge(lep.charge());
+    return thekW;
+}
+
+pat::CompositeCandidate Diboson::recoilMassFormula(pat::CompositeCandidate& H, pat::MET& met){
+    pat::CompositeCandidate X;
+    AddFourMomenta addP4;
+    X.addDaughter(H);
+    X.addDaughter(met);
+    addP4.set(X);
+    reco::Particle::LorentzVector metp4 = met.p4();
+    reco::Particle::LorentzVector Xp4;
+    metp4.SetPz(-H.pz());
+    Xp4 += metp4;
+    Xp4.SetPz(0);
+    float B = -2.*H.energy();
+    float C = pow(H.mass(),2) - pow(90.18,2);
+    float D = pow(B,2) - 4*1*C;
+    float mX;
+    if(D>0){
+        float s1 = (-B+sqrt(D))/2.;
+        float s2 = (-B-sqrt(D))/2.;
+        if(fabs(s1)>fabs(s2)) mX = s1;
+        else mX = s2;
+    }
+    else{
+        mX = -B/2.;
+    }
+    Xp4.SetE(sqrt(pow(mX,2) + pow(Xp4.Px(),2) + pow(Xp4.Py(),2) + pow(Xp4.Pz(),2)));
+    X.setP4(Xp4);
+    X.setCharge(0);
+    return X;
+}
+
 
 //define this as a plug-in
 DEFINE_FWK_MODULE(Diboson);
