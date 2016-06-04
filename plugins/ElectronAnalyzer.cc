@@ -241,6 +241,77 @@ std::vector<pat::Electron> ElectronAnalyzer::FillElectronVector(const edm::Event
     return Vect;
 }
 
+float ElectronAnalyzer::GetElectronIdSF(pat::Electron& el, int id) {
+    if(id==0 && isEleVetoIdFile){
+        double pt = std::min( std::max( ElectronIdVeto->GetYaxis()->GetXmin(), el.pt() ) , ElectronIdVeto->GetYaxis()->GetXmax() - 0.000001 );
+        double abseta = std::min( ElectronIdVeto->GetXaxis()->GetXmax() - 0.000001 , fabs(el.eta()) );
+        return ElectronIdVeto->GetBinContent(ElectronIdVeto->FindBin(abseta, pt));
+    }
+    if(id==1 && isEleLooseIdFile){
+        double pt = std::min( std::max( ElectronIdLoose->GetYaxis()->GetXmin(), el.pt() ) , ElectronIdLoose->GetYaxis()->GetXmax() - 0.000001 );
+        double abseta = std::min( ElectronIdLoose->GetXaxis()->GetXmax() - 0.000001 , fabs(el.eta()) );
+        return ElectronIdLoose->GetBinContent(ElectronIdLoose->FindBin(abseta, pt));
+    }
+    if(id==2 && isEleMediumIdFile){
+        double pt = std::min( std::max( ElectronIdMedium->GetYaxis()->GetXmin(), el.pt() ) , ElectronIdMedium->GetYaxis()->GetXmax() - 0.000001 );
+        double abseta = std::min( ElectronIdMedium->GetXaxis()->GetXmax() - 0.000001 , fabs(el.eta()) );
+        return ElectronIdMedium->GetBinError(ElectronIdMedium->FindBin(abseta, pt));
+    }
+    if(id==3 && isEleTightIdFile){
+        double pt = std::min( std::max( ElectronIdTight->GetYaxis()->GetXmin(), el.pt() ) , ElectronIdTight->GetYaxis()->GetXmax() - 0.000001 );
+        double abseta = std::min( ElectronIdTight->GetXaxis()->GetXmax() - 0.000001 , fabs(el.eta()) );
+        return ElectronIdTight->GetBinContent(ElectronIdTight->FindBin(abseta, pt));
+    }
+    if(id==7 && isEleMVATrigMediumIdFile){
+        double pt = std::min( std::max( ElectronIdMVATrigMedium->GetYaxis()->GetXmin(), el.pt() ) , ElectronIdMVATrigMedium->GetYaxis()->GetXmax() - 0.000001 );
+        double abseta = std::min( ElectronIdMVATrigMedium->GetXaxis()->GetXmax() - 0.000001 , fabs(el.eta()) );
+        return ElectronIdMVATrigMedium->GetBinContent(ElectronIdMVATrigMedium->FindBin(abseta, pt));
+    }
+    if(id==8 && isEleMVATrigTightIdFile){
+        double pt = std::min( std::max( ElectronIdMVATrigTight->GetYaxis()->GetXmin(), el.pt() ) , ElectronIdMVATrigTight->GetYaxis()->GetXmax() - 0.000001 );
+        double abseta = std::min( ElectronIdMVATrigTight->GetXaxis()->GetXmax() - 0.000001 , fabs(el.eta()) );
+        return ElectronIdMVATrigTight->GetBinContent(ElectronIdMVATrigTight->FindBin(abseta, pt));
+    }
+    else{
+        return 1.;
+    }
+}
+
+float ElectronAnalyzer::GetElectronIdSFError(pat::Electron& el, int id) {
+    if(id==0 && isEleVetoIdFile){
+        double pt = std::min( std::max( ElectronIdVeto->GetYaxis()->GetXmin(), el.pt() ) , ElectronIdVeto->GetYaxis()->GetXmax() - 0.000001 );
+        double abseta = std::min( ElectronIdVeto->GetXaxis()->GetXmax() - 0.000001 , fabs(el.eta()) );
+        return ElectronIdVeto->GetBinError(ElectronIdVeto->FindBin(abseta, pt));
+    }
+    if(id==1 && isEleLooseIdFile){
+        double pt = std::min( std::max( ElectronIdLoose->GetYaxis()->GetXmin(), el.pt() ) , ElectronIdLoose->GetYaxis()->GetXmax() - 0.000001 );
+        double abseta = std::min( ElectronIdLoose->GetXaxis()->GetXmax() - 0.000001 , fabs(el.eta()) );
+        return ElectronIdLoose->GetBinError(ElectronIdLoose->FindBin(abseta, pt));
+    }
+    if(id==2 && isEleMediumIdFile){
+        double pt = std::min( std::max( ElectronIdMedium->GetYaxis()->GetXmin(), el.pt() ) , ElectronIdMedium->GetYaxis()->GetXmax() - 0.000001 );
+        double abseta = std::min( ElectronIdMedium->GetXaxis()->GetXmax() - 0.000001 , fabs(el.eta()) );
+        return ElectronIdMedium->GetBinError(ElectronIdMedium->FindBin(abseta, pt));
+    }
+    if(id==3 && isEleTightIdFile){
+        double pt = std::min( std::max( ElectronIdTight->GetYaxis()->GetXmin(), el.pt() ) , ElectronIdTight->GetYaxis()->GetXmax() - 0.000001 );
+        double abseta = std::min( ElectronIdTight->GetXaxis()->GetXmax() - 0.000001 , fabs(el.eta()) );
+        return ElectronIdTight->GetBinError(ElectronIdTight->FindBin(abseta, pt));
+    }
+    if(id==7 && isEleMVATrigMediumIdFile){
+        double pt = std::min( std::max( ElectronIdMVATrigMedium->GetYaxis()->GetXmin(), el.pt() ) , ElectronIdMVATrigMedium->GetYaxis()->GetXmax() - 0.000001 );
+        double abseta = std::min( ElectronIdMVATrigMedium->GetXaxis()->GetXmax() - 0.000001 , fabs(el.eta()) );
+        return ElectronIdMVATrigMedium->GetBinError(ElectronIdMVATrigMedium->FindBin(abseta, pt));
+    }
+    if(id==8 && isEleMVATrigTightIdFile){
+        double pt = std::min( std::max( ElectronIdMVATrigTight->GetYaxis()->GetXmin(), el.pt() ) , ElectronIdMVATrigTight->GetYaxis()->GetXmax() - 0.000001 );
+        double abseta = std::min( ElectronIdMVATrigTight->GetXaxis()->GetXmax() - 0.000001 , fabs(el.eta()) );
+        return ElectronIdMVATrigTight->GetBinError(ElectronIdMVATrigTight->FindBin(abseta, pt));
+    }
+    else{
+        return 1.;
+    }
+}
 
 float ElectronAnalyzer::GetDoubleElectronTriggerSF(pat::Electron& el1, pat::Electron& el2) { //obsolete!
     if(!isEleTriggerFile) return 1.;
@@ -278,92 +349,8 @@ float ElectronAnalyzer::GetElectronRecoEffSFError(pat::Electron& el) {
     return ElectronRecoEff->GetBinError(ElectronRecoEff->FindBin(abseta, pt));
 }
 
-float ElectronAnalyzer::GetElectronIdSFVeto(pat::Electron& el) {
-    if(!isEleVetoIdFile) return 1.;
-    double pt = std::min( std::max( ElectronIdVeto->GetYaxis()->GetXmin(), el.pt() ) , ElectronIdVeto->GetYaxis()->GetXmax() - 0.000001 );
-    double abseta = std::min( ElectronIdVeto->GetXaxis()->GetXmax() - 0.000001 , fabs(el.eta()) );
-    return ElectronIdVeto->GetBinContent(ElectronIdVeto->FindBin(abseta, pt));
-}
-
-float ElectronAnalyzer::GetElectronIdSFVetoError(pat::Electron& el) {
-    if(!isEleVetoIdFile) return 1.;
-    double pt = std::min( std::max( ElectronIdVeto->GetYaxis()->GetXmin(), el.pt() ) , ElectronIdVeto->GetYaxis()->GetXmax() - 0.000001 );
-    double abseta = std::min( ElectronIdVeto->GetXaxis()->GetXmax() - 0.000001 , fabs(el.eta()) );
-    return ElectronIdVeto->GetBinError(ElectronIdVeto->FindBin(abseta, pt));
-}
-
-float ElectronAnalyzer::GetElectronIdSFLoose(pat::Electron& el) {
-    if(!isEleLooseIdFile) return 1.;
-    double pt = std::min( std::max( ElectronIdLoose->GetYaxis()->GetXmin(), el.pt() ) , ElectronIdLoose->GetYaxis()->GetXmax() - 0.000001 );
-    double abseta = std::min( ElectronIdLoose->GetXaxis()->GetXmax() - 0.000001 , fabs(el.eta()) );
-    return ElectronIdLoose->GetBinContent(ElectronIdLoose->FindBin(abseta, pt));
-}
-
-float ElectronAnalyzer::GetElectronIdSFLooseError(pat::Electron& el) {
-    if(!isEleLooseIdFile) return 1.;
-    double pt = std::min( std::max( ElectronIdLoose->GetYaxis()->GetXmin(), el.pt() ) , ElectronIdLoose->GetYaxis()->GetXmax() - 0.000001 );
-    double abseta = std::min( ElectronIdLoose->GetXaxis()->GetXmax() - 0.000001 , fabs(el.eta()) );
-    return ElectronIdLoose->GetBinError(ElectronIdLoose->FindBin(abseta, pt));
-}
-
-float ElectronAnalyzer::GetElectronIdSFMedium(pat::Electron& el) {
-    if(!isEleMediumIdFile) return 1.;
-    double pt = std::min( std::max( ElectronIdMedium->GetYaxis()->GetXmin(), el.pt() ) , ElectronIdMedium->GetYaxis()->GetXmax() - 0.000001 );
-    double abseta = std::min( ElectronIdMedium->GetXaxis()->GetXmax() - 0.000001 , fabs(el.eta()) );
-    return ElectronIdMedium->GetBinContent(ElectronIdMedium->FindBin(abseta, pt));
-}
-
-float ElectronAnalyzer::GetElectronIdSFMediumError(pat::Electron& el) {
-    if(!isEleMediumIdFile) return 1.;
-    double pt = std::min( std::max( ElectronIdMedium->GetYaxis()->GetXmin(), el.pt() ) , ElectronIdMedium->GetYaxis()->GetXmax() - 0.000001 );
-    double abseta = std::min( ElectronIdMedium->GetXaxis()->GetXmax() - 0.000001 , fabs(el.eta()) );
-    return ElectronIdMedium->GetBinError(ElectronIdMedium->FindBin(abseta, pt));
-}
-
-float ElectronAnalyzer::GetElectronIdSFTight(pat::Electron& el) {
-    if(!isEleTightIdFile) return 1.;
-    double pt = std::min( std::max( ElectronIdTight->GetYaxis()->GetXmin(), el.pt() ) , ElectronIdTight->GetYaxis()->GetXmax() - 0.000001 );
-    double abseta = std::min( ElectronIdTight->GetXaxis()->GetXmax() - 0.000001 , fabs(el.eta()) );
-    return ElectronIdTight->GetBinContent(ElectronIdTight->FindBin(abseta, pt));
-}
-
-float ElectronAnalyzer::GetElectronIdSFTightError(pat::Electron& el) {
-    if(!isEleTightIdFile) return 1.;
-    double pt = std::min( std::max( ElectronIdTight->GetYaxis()->GetXmin(), el.pt() ) , ElectronIdTight->GetYaxis()->GetXmax() - 0.000001 );
-    double abseta = std::min( ElectronIdTight->GetXaxis()->GetXmax() - 0.000001 , fabs(el.eta()) );
-    return ElectronIdTight->GetBinError(ElectronIdTight->FindBin(abseta, pt));
-}
-
-float ElectronAnalyzer::GetElectronIdSFMVATrigMedium(pat::Electron& el) {
-    if(!isEleMVATrigMediumIdFile) return 1.;
-    double pt = std::min( std::max( ElectronIdMVATrigMedium->GetYaxis()->GetXmin(), el.pt() ) , ElectronIdMVATrigMedium->GetYaxis()->GetXmax() - 0.000001 );
-    double abseta = std::min( ElectronIdMVATrigMedium->GetXaxis()->GetXmax() - 0.000001 , fabs(el.eta()) );
-    return ElectronIdMVATrigMedium->GetBinContent(ElectronIdMVATrigMedium->FindBin(abseta, pt));
-}
-
-float ElectronAnalyzer::GetElectronIdSFMVATrigMediumError(pat::Electron& el) {
-    if(!isEleMVATrigMediumIdFile) return 1.;
-    double pt = std::min( std::max( ElectronIdMVATrigMedium->GetYaxis()->GetXmin(), el.pt() ) , ElectronIdMVATrigMedium->GetYaxis()->GetXmax() - 0.000001 );
-    double abseta = std::min( ElectronIdMVATrigMedium->GetXaxis()->GetXmax() - 0.000001 , fabs(el.eta()) );
-    return ElectronIdMVATrigMedium->GetBinError(ElectronIdMVATrigMedium->FindBin(abseta, pt));
-}
-
-float ElectronAnalyzer::GetElectronIdSFMVATrigTight(pat::Electron& el) {
-    if(!isEleMVATrigTightIdFile) return 1.;
-    double pt = std::min( std::max( ElectronIdMVATrigTight->GetYaxis()->GetXmin(), el.pt() ) , ElectronIdMVATrigTight->GetYaxis()->GetXmax() - 0.000001 );
-    double abseta = std::min( ElectronIdMVATrigTight->GetXaxis()->GetXmax() - 0.000001 , fabs(el.eta()) );
-    return ElectronIdMVATrigTight->GetBinContent(ElectronIdMVATrigTight->FindBin(abseta, pt));
-}
-
-float ElectronAnalyzer::GetElectronIdSFMVATrigTightError(pat::Electron& el) {
-    if(!isEleMVATrigTightIdFile) return 1.;
-    double pt = std::min( std::max( ElectronIdMVATrigTight->GetYaxis()->GetXmin(), el.pt() ) , ElectronIdMVATrigTight->GetYaxis()->GetXmax() - 0.000001 );
-    double abseta = std::min( ElectronIdMVATrigTight->GetXaxis()->GetXmax() - 0.000001 , fabs(el.eta()) );
-    return ElectronIdMVATrigTight->GetBinError(ElectronIdMVATrigTight->FindBin(abseta, pt));
-}
-
-
 /*
+
 //// Obsolete Electron ID for Run1
 
 // Electron Cut-based Quality ID: see https://twiki.cern.ch/twiki/bin/view/CMS/EgammaCutBasedIdentification#Electron_ID_Working_Points
