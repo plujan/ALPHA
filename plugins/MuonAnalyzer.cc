@@ -125,7 +125,10 @@ std::vector<pat::Muon> MuonAnalyzer::FillMuonVector(const edm::Event& iEvent) {
         // Isolation
         float pfIso03 = (mu.pfIsolationR03().sumChargedHadronPt + std::max(mu.pfIsolationR03().sumNeutralHadronEt + mu.pfIsolationR03().sumPhotonEt - 0.5*mu.pfIsolationR03().sumPUPt, 0.) ) / mu.pt();
         float pfIso04 = (mu.pfIsolationR04().sumChargedHadronPt + std::max(mu.pfIsolationR04().sumNeutralHadronEt + mu.pfIsolationR04().sumPhotonEt - 0.5*mu.pfIsolationR04().sumPUPt, 0.) ) / mu.pt();
+	//uncorrect tracker iso
+        float trkIso = mu.trackIso();
         // Muon Isolation working point 2015-2016: see https://twiki.cern.ch/twiki/bin/view/CMS/SWGuideMuonIdRun2#Muon_Isolation
+        if(IsoTh==0 && mu.trackIso()>0.1) continue;
         if(IsoTh==1 && pfIso04>0.25) continue;
         if(IsoTh==2 && pfIso04>0.15) continue;
         // Muon Quality ID 2015-2016: see https://twiki.cern.ch/twiki/bin/view/CMS/SWGuideMuonIdRun2
@@ -135,6 +138,7 @@ std::vector<pat::Muon> MuonAnalyzer::FillMuonVector(const edm::Event& iEvent) {
         if(IdTh==3 && !mu.isTightMuon(*vertex)) continue;
         if(IdTh==4 && !mu.isHighPtMuon(*vertex)) continue;
         // Add userFloat
+        mu.addUserFloat("trkIso", trkIso);
         mu.addUserFloat("pfIso03", pfIso03);
         mu.addUserFloat("pfIso04", pfIso04);
         mu.addUserFloat("dxy", mu.muonBestTrack()->dxy(vertex->position()));
@@ -167,7 +171,7 @@ bool MuonAnalyzer::IsTrackerHighPtMuon(pat::Muon& mu, const reco::Vertex* vertex
 
 
 std::string MuonAnalyzer::GetMuon1Id(pat::Muon& mu){
-    if(Muon1Id==0) return "isVeto";
+    if(Muon1Id==0) return "isTrackerHighPt";
     if(Muon1Id==1) return "isLoose";
     if(Muon1Id==2) return "isMedium";
     if(Muon1Id==3) return "isTight";
