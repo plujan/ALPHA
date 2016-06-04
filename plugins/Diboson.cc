@@ -278,6 +278,8 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
             theV.addDaughter(MuonVect.at(0));
             theV.addDaughter(MuonVect.at(1));
             addP4.set(theV);
+            MuonVect.at(0).addUserFloat("trkIso",theMuonAnalyzer->FixTrackerIsolation(MuonVect.at(0),MuonVect.at(1)).at(0));
+            MuonVect.at(1).addUserFloat("trkIso",theMuonAnalyzer->FixTrackerIsolation(MuonVect.at(0),MuonVect.at(1)).at(1));
         }
         else { if(Verbose) std::cout << " - No OS SF leptons" << std::endl; return;  }
     }
@@ -302,7 +304,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     pat::CompositeCandidate theH;
 
     /////////////////// Highest pT method ////////////////////
-    
+    /*
     // Resolved topology
     if(JetsVect.size() < 2) {if(Verbose) std::cout << " - N jets < 2" << std::endl;} // return;}
     else {
@@ -331,6 +333,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     
     // Reset theH
     theH.clearDaughters();
+    */
 
     /////////////////// Prefer merged AK8 jet method ////////////////////
     
@@ -413,13 +416,13 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         
     // Lepton and Trigger SF
     if(isMC) {
-      /*    if(isZtoEE) {
-            TriggerWeight*=theElectronAnalyzer->GetDoubleElectronTriggerSF(ElecVect.at(0), ElecVect.at(1));
-            LeptonWeight*=theElectronAnalyzer->GetElectronIdSF(ElecVect.at(0));
-            LeptonWeight*=theElectronAnalyzer->GetElectronIdSF(ElecVect.at(1));
-            LeptonWeight*=theElectronAnalyzer->GetElectronIsoSF(ElecVect.at(0));
-            LeptonWeight*=theElectronAnalyzer->GetElectronIsoSF(ElecVect.at(1));
-	    }*/
+          if(isZtoEE) {
+            //TriggerWeight*=theElectronAnalyzer->GetDoubleElectronTriggerSF(ElecVect.at(0), ElecVect.at(1));
+            LeptonWeight*=theElectronAnalyzer->GetElectronIdSF(ElecVect.at(0), ElectronPSet.getParameter<int>("electron1id"));
+            LeptonWeight*=theElectronAnalyzer->GetElectronIdSF(ElecVect.at(1), ElectronPSet.getParameter<int>("electron2id"));
+            LeptonWeight*=theElectronAnalyzer->GetElectronRecoEffSF(ElecVect.at(0));
+            LeptonWeight*=theElectronAnalyzer->GetElectronRecoEffSF(ElecVect.at(1));
+	    }
         if(isZtoMM) {
 	    //TriggerWeight*=theMuonAnalyzer->GetDoubleMuonTriggerSF(MuonVect.at(0), MuonVect.at(1));
             LeptonWeight*=theMuonAnalyzer->GetMuonIdSF(MuonVect.at(0), MuonPSet.getParameter<int>("muon1id"));
@@ -427,11 +430,11 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
             LeptonWeight*=theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(0), MuonPSet.getParameter<int>("muon1iso"));
             LeptonWeight*=theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(1), MuonPSet.getParameter<int>("muon2iso"));
         }
-	/* if(isWtoEN) {
-            TriggerWeight*=theElectronAnalyzer->GetDoubleElectronTriggerSF(ElecVect.at(0));
-            LeptonWeight*=theElectronAnalyzer->GetElectronIdSF(ElecVect.at(0));
-            LeptonWeight*=theElectronAnalyzer->GetElectronIsoSF(ElecVect.at(0));
-	    }*/
+        if(isWtoEN) {
+            //TriggerWeight*=theElectronAnalyzer->GetDoubleElectronTriggerSF(ElecVect.at(0));
+	    LeptonWeight*=theElectronAnalyzer->GetElectronIdSF(ElecVect.at(0), ElectronPSet.getParameter<int>("electron1id"));
+            LeptonWeight*=theElectronAnalyzer->GetElectronRecoEffSF(ElecVect.at(0));
+	    }
         if(isWtoMN) {
 	    //TriggerWeight*=theMuonAnalyzer->GetDoubleMuonTriggerSF(MuonVect.at(0));
             LeptonWeight*=theMuonAnalyzer->GetMuonIdSF(MuonVect.at(0), MuonPSet.getParameter<int>("muon1iso"));

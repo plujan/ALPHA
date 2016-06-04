@@ -77,7 +77,7 @@ MuonAnalyzer::MuonAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CCo
     MuonHighptFile=new TFile(MuonHighptFileName.c_str(), "READ");
     if(!MuonHighptFile->IsZombie()) {
         MuonIdHighpt=(TH2F*)MuonHighptFile->Get("HighPtID_PtEtaBins_Pt53/pTtuneP_abseta_ratio");
-        //MuonIsoHighpt=(TH2F*)MuonHighptFile->Get("tkRelIsoID_PtEtaBins_Pt53/pTtuneP_abseta_ratio");
+        MuonIsoHighpt=(TH2F*)MuonHighptFile->Get("tkRelIsoID_PtEtaBins_Pt53/pTtuneP_abseta_ratio");
         isMuonHighptFile=true;
     }
     else {
@@ -169,6 +169,27 @@ bool MuonAnalyzer::IsTrackerHighPtMuon(pat::Muon& mu, const reco::Vertex* vertex
     return true;
 }
 
+std::vector<float> MuonAnalyzer::FixTrackerIsolation(pat::Muon& mu1, pat::Muon& mu2){
+    std::vector<float> FixedTrackIso;
+    if(mu1.innerTrack().isNonnull() && mu2.innerTrack().isNonnull()){
+        if(deltaR(mu1,mu2)<0.3){
+	    FixedTrackIso.push_back(std::max(mu1.trackIso() - mu2.innerTrack()->pt(), 0.) / mu1.pt());
+	    FixedTrackIso.push_back(std::max(mu2.trackIso() - mu1.innerTrack()->pt(), 0.) / mu2.pt());
+            return FixedTrackIso;
+        }
+        else{
+            FixedTrackIso.push_back(mu1.trackIso());
+            FixedTrackIso.push_back(mu2.trackIso());
+            return FixedTrackIso;
+	}
+    }
+    else{
+        FixedTrackIso.push_back(-1.);
+        FixedTrackIso.push_back(-1.);
+        return FixedTrackIso;
+    }
+}
+
 
 std::string MuonAnalyzer::GetMuon1Id(pat::Muon& mu){
     if(Muon1Id==0) return "isTrackerHighPt";
@@ -181,26 +202,25 @@ std::string MuonAnalyzer::GetMuon1Id(pat::Muon& mu){
 
 //ID
 float MuonAnalyzer::GetMuonIdSF(pat::Muon& mu, int id) {
-    if(!isMuonIdFile || !isMuonHighptFile) return 1.;
     if(id==0){
         return 1.;
     }
-    if(id==1){
+    if(id==1 && isMuonIdFile){
         double pt = std::min( std::max( MuonIdLoose->GetXaxis()->GetXmin(), mu.pt() ) , MuonIdLoose->GetXaxis()->GetXmax() - 0.000001 );
         double abseta = std::min( MuonIdLoose->GetYaxis()->GetXmax() - 0.000001 , fabs(mu.eta()) );
         return MuonIdLoose->GetBinContent( MuonIdLoose->FindBin(pt,abseta) );
     }
-    if(id==2){
+    if(id==2 && isMuonIdFile){
         double pt = std::min( std::max( MuonIdMedium->GetXaxis()->GetXmin(), mu.pt() ) , MuonIdMedium->GetXaxis()->GetXmax() - 0.000001 );
         double abseta = std::min( MuonIdMedium->GetYaxis()->GetXmax() - 0.000001 , fabs(mu.eta()) );
         return MuonIdMedium->GetBinContent( MuonIdMedium->FindBin(pt,abseta) );
     }
-    if(id==3){
+    if(id==3 && isMuonIdFile){
         double pt = std::min( std::max( MuonIdTight->GetXaxis()->GetXmin(), mu.pt() ) , MuonIdTight->GetXaxis()->GetXmax() - 0.000001 );
         double abseta = std::min( MuonIdTight->GetYaxis()->GetXmax() - 0.000001 , fabs(mu.eta()) );
         return MuonIdTight->GetBinContent( MuonIdTight->FindBin(pt,abseta) );
     }
-    if(id==4){
+    if(id==4 && isMuonHighptFile){
         double pt = std::min( std::max( MuonIdHighpt->GetXaxis()->GetXmin(), mu.pt() ) , MuonIdHighpt->GetXaxis()->GetXmax() - 0.000001 );
         double abseta = std::min( MuonIdHighpt->GetYaxis()->GetXmax() - 0.000001 , fabs(mu.eta()) );
         return MuonIdHighpt->GetBinContent( MuonIdHighpt->FindBin(pt,abseta) );
@@ -209,26 +229,25 @@ float MuonAnalyzer::GetMuonIdSF(pat::Muon& mu, int id) {
 }
 
 float MuonAnalyzer::GetMuonIdSFError(pat::Muon& mu, int id) {
-    if(!isMuonIdFile || !isMuonHighptFile) return 1.;
     if(id==0){
         return 1.;
     }
-    if(id==1){
+    if(id==1 && isMuonIdFile){
         double pt = std::min( std::max( MuonIdLoose->GetXaxis()->GetXmin(), mu.pt() ) , MuonIdLoose->GetXaxis()->GetXmax() - 0.000001 );
         double abseta = std::min( MuonIdLoose->GetYaxis()->GetXmax() - 0.000001 , fabs(mu.eta()) );
         return MuonIdLoose->GetBinError( MuonIdLoose->FindBin(pt,abseta) );
     }
-    if(id==2){
+    if(id==2 && isMuonIdFile){
         double pt = std::min( std::max( MuonIdMedium->GetXaxis()->GetXmin(), mu.pt() ) , MuonIdMedium->GetXaxis()->GetXmax() - 0.000001 );
         double abseta = std::min( MuonIdMedium->GetYaxis()->GetXmax() - 0.000001 , fabs(mu.eta()) );
         return MuonIdMedium->GetBinError( MuonIdMedium->FindBin(pt,abseta) );
     }
-    if(id==3){
+    if(id==3 && isMuonIdFile){
         double pt = std::min( std::max( MuonIdTight->GetXaxis()->GetXmin(), mu.pt() ) , MuonIdTight->GetXaxis()->GetXmax() - 0.000001 );
         double abseta = std::min( MuonIdTight->GetYaxis()->GetXmax() - 0.000001 , fabs(mu.eta()) );
         return MuonIdTight->GetBinError( MuonIdTight->FindBin(pt,abseta) );
     }
-    if(id==4){
+    if(id==4 && isMuonHighptFile){
         double pt = std::min( std::max( MuonIdHighpt->GetXaxis()->GetXmin(), mu.pt() ) , MuonIdHighpt->GetXaxis()->GetXmax() - 0.000001 );
         double abseta = std::min( MuonIdHighpt->GetYaxis()->GetXmax() - 0.000001 , fabs(mu.eta()) );
         return MuonIdHighpt->GetBinError( MuonIdHighpt->FindBin(pt,abseta) );
@@ -238,13 +257,17 @@ float MuonAnalyzer::GetMuonIdSFError(pat::Muon& mu, int id) {
 
 //ISO
 float MuonAnalyzer::GetMuonIsoSF(pat::Muon& mu, int id) {
-    if(!isMuonIsoFile || !isMuonHighptFile) return 1.;
-    if(id==1){
+    if(id==0 && isMuonHighptFile){
+        double pt = std::min( std::max( MuonIsoHighpt->GetXaxis()->GetXmin(), mu.pt() ) , MuonIsoHighpt->GetXaxis()->GetXmax() - 0.000001 );
+        double abseta = std::min( MuonIsoHighpt->GetYaxis()->GetXmax() - 0.000001 , fabs(mu.eta()) );
+        return MuonIsoHighpt->GetBinContent( MuonIsoHighpt->FindBin(pt,abseta) );
+    }
+    if(id==1 && isMuonIsoFile){
         double pt = std::min( std::max( MuonIsoLoose->GetXaxis()->GetXmin(), mu.pt() ) , MuonIsoLoose->GetXaxis()->GetXmax() - 0.000001 );
         double abseta = std::min( MuonIsoLoose->GetYaxis()->GetXmax() - 0.000001 , fabs(mu.eta()) );
         return MuonIsoLoose->GetBinContent( MuonIsoLoose->FindBin(pt,abseta) );
     }
-    if(id==2){
+    if(id==2 && isMuonIsoFile){
         double pt = std::min( std::max( MuonIsoTight->GetXaxis()->GetXmin(), mu.pt() ) , MuonIsoTight->GetXaxis()->GetXmax() - 0.000001 );
         double abseta = std::min( MuonIsoTight->GetYaxis()->GetXmax() - 0.000001 , fabs(mu.eta()) );
         return MuonIsoTight->GetBinContent( MuonIsoTight->FindBin(pt,abseta) );
@@ -254,6 +277,11 @@ float MuonAnalyzer::GetMuonIsoSF(pat::Muon& mu, int id) {
 
 float MuonAnalyzer::GetMuonIsoSFError(pat::Muon& mu, int id) {
     if(!isMuonIsoFile || !isMuonHighptFile) return 1.;
+    if(id==0){
+        double pt = std::min( std::max( MuonIsoHighpt->GetXaxis()->GetXmin(), mu.pt() ) , MuonIsoHighpt->GetXaxis()->GetXmax() - 0.000001 );
+        double abseta = std::min( MuonIsoHighpt->GetYaxis()->GetXmax() - 0.000001 , fabs(mu.eta()) );
+        return MuonIsoHighpt->GetBinError( MuonIsoHighpt->FindBin(pt,abseta) );
+    }
     if(id==1){
         double pt = std::min( std::max( MuonIsoLoose->GetXaxis()->GetXmin(), mu.pt() ) , MuonIsoLoose->GetXaxis()->GetXmax() - 0.000001 );
         double abseta = std::min( MuonIsoLoose->GetYaxis()->GetXmax() - 0.000001 , fabs(mu.eta()) );
@@ -318,90 +346,3 @@ TH1F* MuonAnalyzer::ConvertTGraph(TGraphAsymmErrors* g) {
     }
     return h;
 }
-
-/*
-float MuonAnalyzer::GetMuonIdSFLoose(pat::Muon& mu) {
-    if(!isMuonIdFile) return 1.;
-    double pt = std::min( std::max( MuonIdLoose->GetXaxis()->GetXmin(), mu.pt() ) , MuonIdLoose->GetXaxis()->GetXmax() - 0.000001 );
-    double abseta = std::min( MuonIdLoose->GetYaxis()->GetXmax() - 0.000001 , fabs(mu.eta()) );
-    return MuonIdLoose->GetBinContent( MuonIdLoose->FindBin(pt,abseta) );
-}
-
-float MuonAnalyzer::GetMuonIdSFLooseError(pat::Muon& mu) {
-    if(!isMuonIdFile) return 1.;
-    double pt = std::min( std::max( MuonIdLoose->GetXaxis()->GetXmin(), mu.pt() ) , MuonIdLoose->GetXaxis()->GetXmax() - 0.000001 );
-    double abseta = std::min( MuonIdLoose->GetYaxis()->GetXmax() - 0.000001 , fabs(mu.eta()) );
-    return MuonIdLoose->GetBinError( MuonIdLoose->FindBin(pt,abseta) );
-}
-
-float MuonAnalyzer::GetMuonIdSFTight(pat::Muon& mu) {
-    if(!isMuonIdFile) return 1.;
-    double pt = std::min( std::max( MuonIdTight->GetXaxis()->GetXmin(), mu.pt() ) , MuonIdTight->GetXaxis()->GetXmax() - 0.000001 );
-    double abseta = std::min( MuonIdTight->GetYaxis()->GetXmax() - 0.000001 , fabs(mu.eta()) );
-    return MuonIdTight->GetBinContent( MuonIdTight->FindBin(pt,abseta) );
-}
-
-float MuonAnalyzer::GetMuonIdSFTightError(pat::Muon& mu) {
-    if(!isMuonIdFile) return 1.;
-    double pt = std::min( std::max( MuonIdTight->GetXaxis()->GetXmin(), mu.pt() ) , MuonIdTight->GetXaxis()->GetXmax() - 0.000001 );
-    double abseta = std::min( MuonIdTight->GetYaxis()->GetXmax() - 0.000001 , fabs(mu.eta()) );
-    return MuonIdTight->GetBinError( MuonIdTight->FindBin(pt,abseta) );
-}
-
-float MuonAnalyzer::GetMuonIdSFHighpt(pat::Muon& mu) {
-    if(!isMuonHighptFile) return 1.;
-    double pt = std::min( std::max( MuonIdHighpt->GetXaxis()->GetXmin(), mu.pt() ) , MuonIdHighpt->GetXaxis()->GetXmax() - 0.000001 );
-    double abseta = std::min( MuonIdHighpt->GetYaxis()->GetXmax() - 0.000001 , fabs(mu.eta()) );
-    return MuonIdHighpt->GetBinContent( MuonIdHighpt->FindBin(pt,abseta) );
-}
-
-float MuonAnalyzer::GetMuonIdSFHighptError(pat::Muon& mu) {
-    if(!isMuonHighptFile) return 1.;
-    double pt = std::min( std::max( MuonIdHighpt->GetXaxis()->GetXmin(), mu.pt() ) , MuonIdHighpt->GetXaxis()->GetXmax() - 0.000001 );
-    double abseta = std::min( MuonIdHighpt->GetYaxis()->GetXmax() - 0.000001 , fabs(mu.eta()) );
-    return MuonIdHighpt->GetBinError( MuonIdHighpt->FindBin(pt,abseta) );
-}
-
-float MuonAnalyzer::GetMuonIsoSFLoose(pat::Muon& mu) {
-    if(!isMuonIsoFile) return 1.;
-    double pt = std::min( std::max( MuonIsoLoose->GetXaxis()->GetXmin(), mu.pt() ) , MuonIsoLoose->GetXaxis()->GetXmax() - 0.000001 );
-    double abseta = std::min( MuonIsoLoose->GetYaxis()->GetXmax() - 0.000001 , fabs(mu.eta()) );
-    return MuonIsoLoose->GetBinContent( MuonIsoLoose->FindBin(pt,abseta) );
-}
-
-float MuonAnalyzer::GetMuonIsoSFLooseError(pat::Muon& mu) {
-    if(!isMuonIsoFile) return 1.;
-    double pt = std::min( std::max( MuonIsoLoose->GetXaxis()->GetXmin(), mu.pt() ) , MuonIsoLoose->GetXaxis()->GetXmax() - 0.000001 );
-    double abseta = std::min( MuonIsoLoose->GetYaxis()->GetXmax() - 0.000001 , fabs(mu.eta()) );
-    return MuonIsoLoose->GetBinError( MuonIsoLoose->FindBin(pt,abseta) );
-}
-
-float MuonAnalyzer::GetMuonIsoSFTight(pat::Muon& mu) {
-    if(!isMuonIsoFile) return 1.;
-    double pt = std::min( std::max( MuonIsoTight->GetXaxis()->GetXmin(), mu.pt() ) , MuonIsoTight->GetXaxis()->GetXmax() - 0.000001 );
-    double abseta = std::min( MuonIsoTight->GetYaxis()->GetXmax() - 0.000001 , fabs(mu.eta()) );
-    return MuonIsoTight->GetBinContent( MuonIsoTight->FindBin(pt,abseta) );
-}
-
-float MuonAnalyzer::GetMuonIsoSFTightError(pat::Muon& mu) {
-    if(!isMuonIsoFile) return 1.;
-    double pt = std::min( std::max( MuonIsoTight->GetXaxis()->GetXmin(), mu.pt() ) , MuonIsoTight->GetXaxis()->GetXmax() - 0.000001 );
-    double abseta = std::min( MuonIsoTight->GetYaxis()->GetXmax() - 0.000001 , fabs(mu.eta()) );
-    return MuonIsoTight->GetBinError( MuonIsoTight->FindBin(pt,abseta) );
-}
-
-float MuonAnalyzer::GetMuonIsoSFHighpt(pat::Muon& mu) {
-    if(!isMuonHighptFile) return 1.;
-    double pt = std::min( std::max( MuonIsoHighpt->GetXaxis()->GetXmin(), mu.pt() ) , MuonIsoHighpt->GetXaxis()->GetXmax() - 0.000001 );
-    double abseta = std::min( MuonIsoHighpt->GetYaxis()->GetXmax() - 0.000001 , fabs(mu.eta()) );
-    return MuonIsoHighpt->GetBinContent( MuonIsoHighpt->FindBin(pt,abseta) );
-}
-
-float MuonAnalyzer::GetMuonIsoSFHighptError(pat::Muon& mu) {
-    if(!isMuonHighptFile) return 1.;
-    double pt = std::min( std::max( MuonIsoHighpt->GetXaxis()->GetXmin(), mu.pt() ) , MuonIsoHighpt->GetXaxis()->GetXmax() - 0.000001 );
-    double abseta = std::min( MuonIsoHighpt->GetYaxis()->GetXmax() - 0.000001 , fabs(mu.eta()) );
-    return MuonIsoHighpt->GetBinError( MuonIsoHighpt->FindBin(pt,abseta) );
-}
-
- */

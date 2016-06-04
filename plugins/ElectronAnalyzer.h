@@ -30,18 +30,8 @@ class ElectronAnalyzer {
         virtual std::vector<pat::Electron> FillElectronVector(const edm::Event&);
         virtual float GetDoubleElectronTriggerSF(pat::Electron&, pat::Electron&);
         //virtual float GetLooseElectronSF(pat::Electron&);
-        virtual float GetElectronIdSFVeto(pat::Electron&);
-        virtual float GetElectronIdSFVetoError(pat::Electron&);
-        virtual float GetElectronIdSFLoose(pat::Electron&);
-        virtual float GetElectronIdSFLooseError(pat::Electron&);
-        virtual float GetElectronIdSFMedium(pat::Electron&);
-        virtual float GetElectronIdSFMediumError(pat::Electron&);
-        virtual float GetElectronIdSFTight(pat::Electron&);
-        virtual float GetElectronIdSFTightError(pat::Electron&);
-        virtual float GetElectronIdSFMVATrigMedium(pat::Electron&);
-        virtual float GetElectronIdSFMVATrigMediumError(pat::Electron&);
-        virtual float GetElectronIdSFMVATrigTight(pat::Electron&);
-        virtual float GetElectronIdSFMVATrigTightError(pat::Electron&);
+        virtual float GetElectronIdSF(pat::Electron&, int);
+        virtual float GetElectronIdSFError(pat::Electron&, int);
         virtual float GetElectronRecoEffSF(pat::Electron&);
         virtual float GetElectronRecoEffSFError(pat::Electron&);
       
