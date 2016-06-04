@@ -27,6 +27,7 @@ class MuonAnalyzer {
         ~MuonAnalyzer();
         virtual std::vector<pat::Muon> FillMuonVector(const edm::Event&);
         virtual bool IsTrackerHighPtMuon(pat::Muon&, const reco::Vertex*);
+        virtual std::vector<float> FixTrackerIsolation(pat::Muon&, pat::Muon&);
         virtual std::string GetMuon1Id(pat::Muon&);
         virtual float GetMuonIdSF(pat::Muon&, int);
         virtual float GetMuonIdSFError(pat::Muon&, int);
@@ -36,18 +37,6 @@ class MuonAnalyzer {
         virtual float GetDoubleMuonTriggerSFError(pat::Muon&, pat::Muon&);
         virtual float GetMuonTriggerSFIsoMu20(pat::Muon&);
         virtual float GetMuonTriggerSFErrorIsoMu20(pat::Muon&);
-        //virtual float GetMuonIdSFLoose(pat::Muon&);
-        //virtual float GetMuonIdSFLooseError(pat::Muon&);
-        //virtual float GetMuonIdSFTight(pat::Muon&);
-        //virtual float GetMuonIdSFTightError(pat::Muon&);
-        //virtual float GetMuonIdSFHighpt(pat::Muon&);
-        //virtual float GetMuonIdSFHighptError(pat::Muon&);
-        //virtual float GetMuonIsoSFLoose(pat::Muon&);
-        //virtual float GetMuonIsoSFLooseError(pat::Muon&);
-        //virtual float GetMuonIsoSFTight(pat::Muon&);
-        //virtual float GetMuonIsoSFTightError(pat::Muon&);
-        //virtual float GetMuonIsoSFHighpt(pat::Muon&);
-        //virtual float GetMuonIsoSFHighptError(pat::Muon&);
         virtual TH1F* ConvertTGraph(TGraphAsymmErrors*);
       
     private:
