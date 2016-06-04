@@ -425,7 +425,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
             LeptonWeight*=theMuonAnalyzer->GetMuonIdSF(MuonVect.at(0), MuonPSet.getParameter<int>("muon1id"));
             LeptonWeight*=theMuonAnalyzer->GetMuonIdSF(MuonVect.at(1), MuonPSet.getParameter<int>("muon2id"));
             LeptonWeight*=theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(0), MuonPSet.getParameter<int>("muon1iso"));
-            LeptonWeight*=theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(1), MuonPSet.getParameter<int>("muon2is0"));
+            LeptonWeight*=theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(1), MuonPSet.getParameter<int>("muon2iso"));
         }
 	/* if(isWtoEN) {
             TriggerWeight*=theElectronAnalyzer->GetDoubleElectronTriggerSF(ElecVect.at(0));
@@ -435,12 +435,11 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         if(isWtoMN) {
 	    //TriggerWeight*=theMuonAnalyzer->GetDoubleMuonTriggerSF(MuonVect.at(0));
             LeptonWeight*=theMuonAnalyzer->GetMuonIdSF(MuonVect.at(0), MuonPSet.getParameter<int>("muon1iso"));
-            LeptonWeight*=theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(0), MuonPSet.getParameter<int>("muon1is0"));
+            LeptonWeight*=theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(0), MuonPSet.getParameter<int>("muon1iso"));
         }
     }
     //EventWeight*=TriggerWeight;
     EventWeight*=LeptonWeight;
-    std::cout << "Lepton weight " << LeptonWeight << std::endl;    
 
 //    
 //    // Lepton and Trigger SF

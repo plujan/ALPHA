@@ -139,7 +139,7 @@ std::vector<pat::Muon> MuonAnalyzer::FillMuonVector(const edm::Event& iEvent) {
         mu.addUserFloat("pfIso04", pfIso04);
         mu.addUserFloat("dxy", mu.muonBestTrack()->dxy(vertex->position()));
         mu.addUserFloat("dz", mu.muonBestTrack()->dz(vertex->position()));
-        mu.addUserInt("isTrackerHighPtMuon", IsTrackerHighPtMuon(mu, vertex) ? 1 : 0);
+        mu.addUserInt("isTrackerHighPt", IsTrackerHighPtMuon(mu, vertex) ? 1 : 0);
         mu.addUserInt("isLoose", mu.isLooseMuon() ? 1 : 0);
         mu.addUserInt("isMedium", mu.isMediumMuon() ? 1 : 0);
         mu.addUserInt("isTight", mu.isTightMuon(*vertex) ? 1 : 0);
