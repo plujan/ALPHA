@@ -304,7 +304,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     pat::CompositeCandidate theH;
 
     /////////////////// Highest pT method ////////////////////
-    
+    /*
     // Resolved topology
     if(JetsVect.size() < 2) {if(Verbose) std::cout << " - N jets < 2" << std::endl;} // return;}
     else {
@@ -333,6 +333,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     
     // Reset theH
     theH.clearDaughters();
+    */
 
     /////////////////// Prefer merged AK8 jet method ////////////////////
     
