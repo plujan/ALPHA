@@ -19,7 +19,7 @@ parser.add_option("-b", "--batch", action="store_true", default=False, dest="bat
 if options.batch: gROOT.SetBatch(True)
 
 
-#pileupCalc.py -i ../JSON/Cert_246908-258750_13TeV_PromptReco_Collisions15_25ns_JSON.txt --inputLumiJSON ../JSON/pileup_latest.txt --calcMode true --minBiasXsec 69000 --maxPileupBin 50 --numPileupBins 50 PU_69000.root
+#pileupCalc.py -i data/JSON/Cert_271036-274240_13TeV_PromptReco_Collisions16_JSON.txt --inputLumiJSON data/JSON/pileup_latest.txt --calcMode true --minBiasXsec 69000 --maxPileupBin 50 --numPileupBins 50 PU_69000.root
 
 
 # https://raw.githubusercontent.com/cms-sw/cmssw/CMSSW_7_4_X/SimGeneral/MixingModule/python/mix_2015_25ns_Startup_PoissonOOTPU_cfi.py
