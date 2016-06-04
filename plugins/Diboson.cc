@@ -259,7 +259,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
 
     // ----------- Z TO NEUTRINOS ---------------
 
-    else { if(Verbose) std::cout << " - No Iso SF OS Leptons, No W to Leptons" << std::endl;}// return;}
+    else { if(Verbose) std::cout << " - No charged leptons" << std::endl;}// return;}
 
     // AZh lepton choice
 //    int l1(0), l2(-1);
@@ -274,14 +274,20 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     // Reconstruct V candidate
     pat::CompositeCandidate theV;
     if(isZtoMM) {
-        theV.addDaughter(MuonVect.at(0));
-        theV.addDaughter(MuonVect.at(1));
-        addP4.set(theV);
+        if(MuonVect.at(0).charge()*MuonVect.at(1).charge()<0){
+            theV.addDaughter(MuonVect.at(0));
+            theV.addDaughter(MuonVect.at(1));
+            addP4.set(theV);
+        }
+        else { if(Verbose) std::cout << " - No OS SF leptons" << std::endl; return;  }
     }
     else if(isZtoEE){
-        theV.addDaughter(ElecVect.at(0));
-        theV.addDaughter(ElecVect.at(1));
-        addP4.set(theV);
+        if(ElecVect.at(0).charge()*ElecVect.at(1).charge()<0){
+          theV.addDaughter(ElecVect.at(0));
+          theV.addDaughter(ElecVect.at(1));
+          addP4.set(theV);
+	}
+        else { if(Verbose) std::cout << " - No OS SF leptons" << std::endl; return;  }
     }
     else if(isWtoMN){
 	theV = createkW(MuonVect.at(0),MET);
@@ -289,7 +295,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     else if(isWtoEN){
 	theV = createkW(ElecVect.at(0),MET);
     }
-    else{
+    else{ //Z to nu nu
     }
     
     // ---------- Z TO HADRONS ----------
@@ -331,7 +337,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     // Boosted topology
     //if(FatJetsVect.size() < 1) {if(Verbose) std::cout << " - N fat jets < 1" << std::endl;}
 
-    if(FatJetsVect.size() >= 1 && FatJetsVect.at(0).hasUserFloat("ak8PFJetsCHSPrunedMass") && FatJetsVect.at(0).userFloat("ak8PFJetsCHSPrunedMass")>30){
+    if(FatJetsVect.size() >= 1 && FatJetsVect.at(0).hasUserFloat("ak8PFJetsSoftDropMass") && FatJetsVect.at(0).userFloat("ak8PFJetsSoftDropMass")>30){
       theH.addDaughter(FatJetsVect.at(0));
       addP4.set(theH);
       //std::cout << "merged mass: " << theH.mass() << std::endl;
@@ -404,6 +410,38 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     ObjectsFormat::FillCandidateType(V, &theV, isMC);
     ObjectsFormat::FillCandidateType(H, &theH, isMC);
     ObjectsFormat::FillCandidateType(X, &theX, isMC);
+        
+    // Lepton and Trigger SF
+    if(isMC) {
+      /*    if(isZtoEE) {
+            TriggerWeight*=theElectronAnalyzer->GetDoubleElectronTriggerSF(ElecVect.at(0), ElecVect.at(1));
+            LeptonWeight*=theElectronAnalyzer->GetElectronIdSF(ElecVect.at(0));
+            LeptonWeight*=theElectronAnalyzer->GetElectronIdSF(ElecVect.at(1));
+            LeptonWeight*=theElectronAnalyzer->GetElectronIsoSF(ElecVect.at(0));
+            LeptonWeight*=theElectronAnalyzer->GetElectronIsoSF(ElecVect.at(1));
+	    }*/
+        if(isZtoMM) {
+	    //TriggerWeight*=theMuonAnalyzer->GetDoubleMuonTriggerSF(MuonVect.at(0), MuonVect.at(1));
+            LeptonWeight*=theMuonAnalyzer->GetMuonIdSF(MuonVect.at(0), MuonPSet.getParameter<int>("muon1id"));
+            LeptonWeight*=theMuonAnalyzer->GetMuonIdSF(MuonVect.at(1), MuonPSet.getParameter<int>("muon2id"));
+            LeptonWeight*=theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(0), MuonPSet.getParameter<int>("muon1iso"));
+            LeptonWeight*=theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(1), MuonPSet.getParameter<int>("muon2is0"));
+        }
+	/* if(isWtoEN) {
+            TriggerWeight*=theElectronAnalyzer->GetDoubleElectronTriggerSF(ElecVect.at(0));
+            LeptonWeight*=theElectronAnalyzer->GetElectronIdSF(ElecVect.at(0));
+            LeptonWeight*=theElectronAnalyzer->GetElectronIsoSF(ElecVect.at(0));
+	    }*/
+        if(isWtoMN) {
+	    //TriggerWeight*=theMuonAnalyzer->GetDoubleMuonTriggerSF(MuonVect.at(0));
+            LeptonWeight*=theMuonAnalyzer->GetMuonIdSF(MuonVect.at(0), MuonPSet.getParameter<int>("muon1iso"));
+            LeptonWeight*=theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(0), MuonPSet.getParameter<int>("muon1is0"));
+        }
+    }
+    //EventWeight*=TriggerWeight;
+    EventWeight*=LeptonWeight;
+    std::cout << "Lepton weight " << LeptonWeight << std::endl;    
+
 //    
 //    // Lepton and Trigger SF
 //    if(isMC) {
