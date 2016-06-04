@@ -159,9 +159,9 @@ process.ntuple = cms.EDAnalyzer('Diboson',
     pileupSet = cms.PSet(
         pileup = cms.InputTag("slimmedAddPileupInfo"),
         dataFileName = cms.string('%s/src/Analysis/ALPHA/data/Prod6.root' % os.environ['CMSSW_BASE']),
-        mcFileName = cms.string('%s/src/Analysis/ALPHA/data/MC_True.root' % os.environ['CMSSW_BASE']),
+        mcFileName = cms.string('%s/src/Analysis/ALPHA/data/PU_MC.root' % os.environ['CMSSW_BASE']),
         dataName = cms.string('pileup'),
-        mcName = cms.string('S10'),
+        mcName = cms.string('2016_25ns_SpringMC_PUScenarioV1'),
     ),
     triggerSet = cms.PSet(
         trigger = cms.InputTag("TriggerResults", "", "HLT"),
