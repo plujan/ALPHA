@@ -48,7 +48,7 @@ print "Running on", ("data" if isData else "MC")
 # JSON filter
 import FWCore.PythonUtilities.LumiList as LumiList
 if isData:
-    process.source.lumisToProcess = LumiList.LumiList(filename = '%s/src/Analysis/ALPHA/data/JSON/Cert_271036-273730_13TeV_PromptReco_Collisions16_JSON.txt' % os.environ['CMSSW_BASE']).getVLuminosityBlockRange()
+    process.source.lumisToProcess = LumiList.LumiList(filename = '%s/src/Analysis/ALPHA/data/JSON/Cert_271036-274240_13TeV_PromptReco_Collisions16_JSON.txt' % os.environ['CMSSW_BASE']).getVLuminosityBlockRange()
 
 
 process.counter = cms.EDAnalyzer('CounterAnalyzer',
@@ -159,9 +159,9 @@ process.ntuple = cms.EDAnalyzer('Diboson',
     pileupSet = cms.PSet(
         pileup = cms.InputTag("slimmedAddPileupInfo"),
         dataFileName = cms.string('%s/src/Analysis/ALPHA/data/Prod6.root' % os.environ['CMSSW_BASE']),
-        mcFileName = cms.string('%s/src/Analysis/ALPHA/data/MC_True.root' % os.environ['CMSSW_BASE']),
+        mcFileName = cms.string('%s/src/Analysis/ALPHA/data/PU_MC.root' % os.environ['CMSSW_BASE']),
         dataName = cms.string('pileup'),
-        mcName = cms.string('S10'),
+        mcName = cms.string('2016_25ns_SpringMC_PUScenarioV1'),
     ),
     triggerSet = cms.PSet(
         trigger = cms.InputTag("TriggerResults", "", "HLT"),
