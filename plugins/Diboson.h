@@ -161,8 +161,9 @@ class Diboson : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
         edm::Service<TFileService> fs;
         TTree* tree;
         bool isMC, isZtoEE, isZtoMM, isWtoEN, isWtoMN, isZtoNN, isMerged, isResolved;
-        long int EventNumber, RunNumber, LumiNumber, nPV;
+        long int EventNumber, RunNumber, LumiNumber;
         float EventWeight, PUWeight, TriggerWeight, LeptonWeight;
+        float nPV, nElectrons, nMuons, nTaus, nPhotons, nJets, nFatJets;
         
         //
         std::vector<LeptonType> Electrons;
@@ -174,8 +175,8 @@ class Diboson : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
         std::vector<FatJetType> FatJets;
         MEtType MEt;
         CandidateType V;
-        CandidateType HMerged, HResolved;
-        CandidateType XMerged, XResolved;
+        CandidateType HMerged, HResolved, HResolvedHpt;
+        CandidateType XMerged, XResolved, XResolvedHpt;
 };
 
 #endif

@@ -3,6 +3,7 @@
 
 PileupAnalyzer::PileupAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl):
     PUToken(CColl.consumes<std::vector<PileupSummaryInfo> >(PSet.getParameter<edm::InputTag>("pileup"))),
+    PVToken(CColl.consumes<std::vector<reco::Vertex> >(PSet.getParameter<edm::InputTag>("vertices"))),
     DataFileName(PSet.getParameter<std::string>("dataFileName")),
     MCFileName(PSet.getParameter<std::string>("mcFileName")),
     DataName(PSet.getParameter<std::string>("dataName")),
@@ -30,12 +31,19 @@ float PileupAnalyzer::GetPUWeight(const edm::Event& iEvent) {
     // https://twiki.cern.ch/twiki/bin/view/CMS/SWGuideCMSDataAnalysisSchool2012PileupReweighting
     if(!iEvent.isRealData()) {
         edm::Handle<std::vector<PileupSummaryInfo> > PUInfo;
-        iEvent.getByLabel(edm::InputTag("slimmedAddPileupInfo"), PUInfo);
+        iEvent.getByToken(PUToken, PUInfo);
         for(std::vector<PileupSummaryInfo>::const_iterator pvi=PUInfo->begin(), pvn=PUInfo->end(); pvi!=pvn; ++pvi) {
             if(pvi->getBunchCrossing()==0) nPT=pvi->getTrueNumInteractions(); // getPU_NumInteractions();
         }
         return LumiWeights->weight( nPT );
     }
     return 1.;
+}
+
+
+float PileupAnalyzer::GetPV(const edm::Event& iEvent) {
+    edm::Handle<reco::VertexCollection> PVCollection;
+    iEvent.getByToken(PVToken, PVCollection);
+    return PVCollection->size();
 }
 
