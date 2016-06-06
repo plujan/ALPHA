@@ -77,7 +77,8 @@ Diboson::Diboson(const edm::ParameterSet& iConfig):
     TFileDirectory kinDir=fs->mkdir("Kin/");
     
     // Make TH1F
-    std::vector<std::string> nLabels={"Trigger", "Lep #geq 2", "Z cand ", "Jets #geq 2", "Z mass ", "bJets #geq 1", "bJets #geq 2", "h mass ", "#slash{E}_{T}", "Final"};
+    //    std::vector<std::string> nLabels={"Trigger", "Lep #geq 2", "Z cand ", "Jets #geq 2", "Z mass ", "bJets #geq 1", "bJets #geq 2", "h mass ", "#slash{E}_{T}", "Final"};
+    std::vector<std::string> nLabels={"All", "Z Lep", "H Merged", "H Resolved", "X Merged", "X Resolved", "..", "..", "..", ".."};
     
     int nbins;
     float min, max;
@@ -153,7 +154,8 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     for(int i = 0; i < WriteNFatJets; i++) ObjectsFormat::ResetFatJetType(FatJets[i]);
     ObjectsFormat::ResetMEtType(MEt);
     ObjectsFormat::ResetCandidateType(V);
-    ObjectsFormat::ResetCandidateType(H);
+    ObjectsFormat::ResetCandidateType(HMerged);
+    ObjectsFormat::ResetCandidateType(HResolved);
     
     
     // Electrons
@@ -166,12 +168,12 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     std::vector<pat::Photon> PhotonVect = thePhotonAnalyzer->FillPhotonVector(iEvent);
     // Jets
     std::vector<pat::Jet> JetsVect = theJetAnalyzer->FillJetVector(iEvent);
-    theJetAnalyzer->CleanJetsFromMuons(JetsVect, MuonVect);
-    theJetAnalyzer->CleanJetsFromElectrons(JetsVect, ElecVect);
+    theJetAnalyzer->CleanJetsFromMuons(JetsVect, MuonVect, 0.4);
+    theJetAnalyzer->CleanJetsFromElectrons(JetsVect, ElecVect, 0.4);
     // Fat Jets
     std::vector<pat::Jet> FatJetsVect = theFatJetAnalyzer->FillJetVector(iEvent);
-    theFatJetAnalyzer->CleanJetsFromMuons(FatJetsVect, MuonVect);
-    theFatJetAnalyzer->CleanJetsFromElectrons(FatJetsVect, ElecVect);
+    theFatJetAnalyzer->CleanJetsFromMuons(FatJetsVect, MuonVect, 1.);
+    theFatJetAnalyzer->CleanJetsFromElectrons(FatJetsVect, ElecVect, 1.);
     // Missing Energy
     pat::MET MET = theJetAnalyzer->FillMetVector(iEvent);
     
@@ -237,7 +239,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     // ---------- Do analysis selections ----------
     
     // ---------- Z TO LEPTONS ----------
-    isZtoEE = isZtoMM = isWtoEN = isWtoMN = false;
+    isZtoEE = isZtoMM = isWtoEN = isWtoMN = isZtoNN = false;
     
     if(MuonVect.size()>=2 && ElecVect.size()>=2) {
         if(MuonVect.at(0).pt() > ElecVect.at(0).pt()) isZtoMM=true;
@@ -278,6 +280,8 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
             theV.addDaughter(MuonVect.at(0));
             theV.addDaughter(MuonVect.at(1));
             addP4.set(theV);
+            Hist["a_nEvents"]->Fill(2., EventWeight);
+            Hist["m_nEvents"]->Fill(2., EventWeight);
 //            MuonVect.at(0).addUserFloat("trkIso",theMuonAnalyzer->FixTrackerIsolation(MuonVect.at(0),MuonVect.at(1)).at(0));
 //            MuonVect.at(1).addUserFloat("trkIso",theMuonAnalyzer->FixTrackerIsolation(MuonVect.at(0),MuonVect.at(1)).at(1));
         }
@@ -285,12 +289,19 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     }
     else if(isZtoEE){
         if(ElecVect.at(0).charge()*ElecVect.at(1).charge()<0){
-          theV.addDaughter(ElecVect.at(0));
-          theV.addDaughter(ElecVect.at(1));
-          addP4.set(theV);
+            theV.addDaughter(ElecVect.at(0));
+            theV.addDaughter(ElecVect.at(1));
+            addP4.set(theV);
+            Hist["a_nEvents"]->Fill(2., EventWeight);
+            Hist["e_nEvents"]->Fill(2., EventWeight);
         }
         else { if(Verbose) std::cout << " - No OS SF leptons" << std::endl; return;  }
     }
+    else{
+        if(Verbose) std::cout << "No dilepton!" << std::endl;
+        return;
+    }
+    /*
     else if(isWtoMN){
         theV = createkW(MuonVect.at(0), MET);
     }
@@ -300,12 +311,14 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     else {
         //Z to nu nu
     }
-    
+    */
     // ---------- Z TO HADRONS ----------
+    pat::CompositeCandidate theHMerged;
+    pat::CompositeCandidate theHResolved;
     pat::CompositeCandidate theH;
-
+    isMerged = isResolved = false;
     /////////////////// Highest pT method ////////////////////
-    /*
+    
     // Resolved topology
     if(JetsVect.size() < 2) {if(Verbose) std::cout << " - N jets < 2" << std::endl;} // return;}
     else {
@@ -314,64 +327,94 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         addP4.set(theH);
   //std::cout << "resolved mass: " << theH.mass() << std::endl;
         //if(theH.mass()<40 || theH.pt()<100) theH.clearDaughters();
-        Hist["a_HAK4Mass_HPt"]->Fill(theH.mass(), EventWeight);
+        //Hist["a_HAK4Mass_HPt"]->Fill(theH.mass(), EventWeight);
     }
 
     // Boosted topology
     if(FatJetsVect.size() < 1) {if(Verbose) std::cout << " - N fat jets < 1" << std::endl;}
     else {
-      Hist["a_HAK8Mass_HPt"]->Fill(FatJetsVect.at(0).hasUserFloat("ak8PFJetsCHSSoftDropMass")?FatJetsVect.at(0).userFloat("ak8PFJetsCHSSoftDropMass"):FatJetsVect.at(0).mass(), EventWeight);
+      //Hist["a_HAK8Mass_HPt"]->Fill(FatJetsVect.at(0).hasUserFloat("ak8PFJetsCHSSoftDropMass")?FatJetsVect.at(0).userFloat("ak8PFJetsCHSSoftDropMass"):FatJetsVect.at(0).mass(), EventWeight);
       //std::cout << "merged mass: " << FatJetsVect.at(0).mass() << std::endl;
       if(theH.pt()<FatJetsVect.at(0).pt()){
         theH.clearDaughters();
         theH.addDaughter(FatJetsVect.at(0));
         addP4.set(theH);
+        theH.addUserFloat("softdropMass",FatJetsVect.at(0).userFloat("ak8PFJetsCHSSoftDropMass"));
         //if(theH.mass()>180) theH.clearDaughters();
       }
     }
-    Hist["a_HMass_HPt"]->Fill(theH.mass(), EventWeight);
+    Hist["a_HMass_HPt"]->Fill(theH.hasUserFloat("softdropMass") ? theH.userFloat("softdropMass") : theH.mass(), EventWeight);
     //std::cout << "chosen mass: " << theH.mass() << std::endl;
     
     // Reset theH
-    theH.clearDaughters();
-    */
+    //theH.clearDaughters();
+    
 
     /////////////////// Prefer merged AK8 jet method ////////////////////
     
     // Boosted topology
     //if(FatJetsVect.size() < 1) {if(Verbose) std::cout << " - N fat jets < 1" << std::endl;}
 
-    if(FatJetsVect.size() >= 1 && FatJetsVect.at(0).hasUserFloat("ak8PFJetsSoftDropMass") && FatJetsVect.at(0).userFloat("ak8PFJetsSoftDropMass")>30){
-      theH.addDaughter(FatJetsVect.at(0));
-      addP4.set(theH);
+    if(FatJetsVect.size()>=1){
+      isMerged = true;
+      theHMerged.addDaughter(FatJetsVect.at(0));
+      theHMerged.addUserFloat("softdropMass",FatJetsVect.at(0).userFloat("ak8PFJetsCHSSoftDropMass"));
+      addP4.set(theHMerged);
+      Hist["a_nEvents"]->Fill(3., EventWeight);
+      if(isZtoEE) Hist["e_nEvents"]->Fill(3., EventWeight);
+      if(isZtoMM)Hist["m_nEvents"]->Fill(3., EventWeight);
       //std::cout << "merged mass: " << theH.mass() << std::endl;
-      Hist["a_HAK8Mass_PM"]->Fill(FatJetsVect.at(0).hasUserFloat("ak8PFJetsCHSSoftDropMass")?FatJetsVect.at(0).userFloat("ak8PFJetsCHSSoftDropMass"):FatJetsVect.at(0).mass(), EventWeight);
+      Hist["a_HAK8Mass"]->Fill(FatJetsVect.at(0).hasUserFloat("ak8PFJetsCHSSoftDropMass")?FatJetsVect.at(0).userFloat("ak8PFJetsCHSSoftDropMass"):FatJetsVect.at(0).mass(), EventWeight);
     }
 
-    else{
+    //else{
         // Resolved topology if we don't have the right AK8
-        if(JetsVect.size() < 2) {if(Verbose) std::cout << " - N fat jet <1 or with pruned mass < 30 GeV and N ak4 jets < 2, no H candidate" << std::endl;} // return;}
-        else {
-            theH.addDaughter(JetsVect.at(0));
-            theH.addDaughter(JetsVect.at(1));
-            addP4.set(theH);
+        //if(JetsVect.size() < 2) {if(Verbose) std::cout << " - N fat jet <1 or with pruned mass < 30 GeV and N ak4 jets < 2, no H candidate" << std::endl;} // return;}
+    if(JetsVect.size() >= 2){
+            isResolved = true;
+            theHResolved.addDaughter(JetsVect.at(0));
+            theHResolved.addDaughter(JetsVect.at(1));
+            addP4.set(theHResolved);
+            Hist["a_nEvents"]->Fill(4., EventWeight);
+            if(isZtoEE)Hist["e_nEvents"]->Fill(4., EventWeight);
+            if(isZtoMM)Hist["m_nEvents"]->Fill(4., EventWeight);
       //std::cout << "resolved mass: " << theH.mass() << std::endl;
-            Hist["a_HAK4Mass_PM"]->Fill(theH.mass(), EventWeight);
+            Hist["a_HAK4Mass"]->Fill(theHResolved.mass(), EventWeight);
         }
-    }
+      //}
 
-    Hist["a_HMass_PM"]->Fill(theH.mass(), EventWeight);
+    if(FatJetsVect.size()>=1) Hist["a_HMass_PM"]->Fill(theHMerged.userFloat("softdropMass"), EventWeight);
+    else if(FatJetsVect.size()<1 && JetsVect.size() >= 2) Hist["a_HMass_PM"]->Fill(theHResolved.mass(), EventWeight);
     //std::cout << "chosen mass: " << theH.mass() << std::endl;
     
 
     // Global candidate
-    pat::CompositeCandidate theX;
-    if((isZtoEE || isZtoMM || isWtoEN || isWtoMN) && theH.numberOfDaughters()>0){
-        theX.addDaughter(theH);
-        theX.addDaughter(theV);
-        addP4.set(theX);
+    pat::CompositeCandidate theXMerged;
+    pat::CompositeCandidate theXResolved;
+    if((isZtoEE || isZtoMM) && theHMerged.numberOfDaughters()>0){
+        theXMerged.addDaughter(theHMerged);
+        theXMerged.addDaughter(theV);
+        addP4.set(theXMerged);
+        Hist["a_nEvents"]->Fill(5., EventWeight);
+        if(isZtoMM) Hist["m_nEvents"]->Fill(5., EventWeight);
+        if(isZtoEE) Hist["e_nEvents"]->Fill(5., EventWeight);
+   }
+
+    if((isZtoEE || isZtoMM) && theHResolved.numberOfDaughters()>0){
+        theXResolved.addDaughter(theHResolved);
+        theXResolved.addDaughter(theV);
+        addP4.set(theXResolved);
+        Hist["a_nEvents"]->Fill(6., EventWeight);
+        if(isZtoMM) Hist["m_nEvents"]->Fill(6., EventWeight);
+        if(isZtoEE) Hist["e_nEvents"]->Fill(6., EventWeight);
     }
 
+    else{
+        if(Verbose) std::cout << "No dilepton, no X!" << std::endl;
+        return;
+    }
+
+    /*
     else if(theH.numberOfDaughters()>0){//if is Z to nu nu: apply recoil mass formula
         theX = recoilMassFormula(theH,MET);
     }
@@ -380,26 +423,29 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         if(Verbose) std::cout << "No H, no X" << std::endl;
         return;
     }
+    */
 
     // ---------- Print Summary ----------
     if(Verbose) {
         std::cout << " --- Event n. " << iEvent.id().event() << ", lumi " << iEvent.luminosityBlock() << ", run " << iEvent.id().run() << ", weight " << EventWeight << std::endl;
         std::cout << "number of electrons: " << ElecVect.size() << std::endl;
-        for(unsigned int i = 0; i < ElecVect.size(); i++) std::cout << "  electron [" << i << "]\tpt: " << ElecVect[i].pt() << "\teta: " << ElecVect[i].eta() << "\tphi: " << ElecVect[i].phi() << std::endl;
+        for(unsigned int i = 0; i < ElecVect.size(); i++) std::cout << "  electron [" << i << "]\tpt: " << ElecVect[i].pt() << "\teta: " << ElecVect[i].eta() << "\tphi: " << ElecVect[i].phi() << "\tmass: " << ElecVect[i].mass() << "\tcharge: " << ElecVect[i].charge() << std::endl;
         std::cout << "number of muons:     " << MuonVect.size() << std::endl;
-        for(unsigned int i = 0; i < MuonVect.size(); i++) std::cout << "  muon     [" << i << "]\tpt: " << MuonVect[i].pt() << "\teta: " << MuonVect[i].eta() << "\tphi: " << MuonVect[i].phi() << std::endl;
+        for(unsigned int i = 0; i < MuonVect.size(); i++) std::cout << "  muon     [" << i << "]\tpt: " << MuonVect[i].pt() << "\teta: " << MuonVect[i].eta() << "\tphi: " << MuonVect[i].phi() << "\tmass: " << MuonVect[i].mass() << "\tcharge: " << MuonVect[i].charge() << std::endl;
         std::cout << "number of taus:  " << TauVect.size() << std::endl;
         for(unsigned int i = 0; i < TauVect.size(); i++) std::cout << "  tau  [" << i << "]\tpt: " << TauVect[i].pt() << "\teta: " << TauVect[i].eta() << "\tphi: " << TauVect[i].phi() << std::endl;
         std::cout << "number of photons:  " << PhotonVect.size() << std::endl;
         for(unsigned int i = 0; i < PhotonVect.size(); i++) std::cout << "  photon  [" << i << "]\tpt: " << PhotonVect[i].pt() << "\teta: " << PhotonVect[i].eta() << "\tphi: " << PhotonVect[i].phi() << std::endl;
         std::cout << "number of AK4 jets:  " << JetsVect.size() << std::endl;
-        for(unsigned int i = 0; i < JetsVect.size(); i++) std::cout << "  AK4 jet  [" << i << "]\tpt: " << JetsVect[i].pt() << "\teta: " << JetsVect[i].eta() << "\tphi: " << JetsVect[i].phi() << std::endl;
+        for(unsigned int i = 0; i < JetsVect.size(); i++) std::cout << "  AK4 jet  [" << i << "]\tpt: " << JetsVect[i].pt() << "\teta: " << JetsVect[i].eta() << "\tphi: " << JetsVect[i].phi() << "\tmass: " << JetsVect[i].mass() << std::endl;
         std::cout << "number of AK8 jets:  " << FatJetsVect.size() << std::endl;
-        for(unsigned int i = 0; i < FatJetsVect.size(); i++) std::cout << "  AK8 jet  [" << i << "]\tpt: " << FatJetsVect[i].pt() << "\teta: " << FatJetsVect[i].eta() << "\tphi: " << FatJetsVect[i].phi() << std::endl;
+        for(unsigned int i = 0; i < FatJetsVect.size(); i++) std::cout << "  AK8 jet  [" << i << "]\tpt: " << FatJetsVect[i].pt() << "\teta: " << FatJetsVect[i].eta() << "\tphi: " << FatJetsVect[i].phi() << "\tmass: " << FatJetsVect[i].mass() << std::endl;
         std::cout << "Missing energy:      " << MET.pt() << std::endl;
         std::cout << "V leptonic mass:     " << theV.mass() << ", generated: " << GenZLepMass << std::endl;
-        std::cout << "Z hadronic mass:     " << theH.mass() << ", generated: " << GenZHadMass << std::endl;
-        std::cout << "X candidate mass:    " << theX.mass() << ", generated: " << GenXMass << std::endl;
+        std::cout << "Z merged hadronic mass:     " << theHMerged.mass() << ", generated: " << GenZHadMass << std::endl;
+        std::cout << "X merged candidate mass:    " << theXMerged.mass() << ", generated: " << GenXMass << std::endl;
+        std::cout << "Z resolved hadronic mass:     " << theHResolved.mass() << ", generated: " << GenZHadMass << std::endl;
+        std::cout << "X resolved candidate mass:    " << theXResolved.mass() << ", generated: " << GenXMass << std::endl;
     }
 
     
@@ -412,8 +458,10 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     for(unsigned int i = 0; i < FatJets.size() && i < FatJetsVect.size(); i++) ObjectsFormat::FillFatJetType(FatJets[i], &FatJetsVect[i], isMC);
     ObjectsFormat::FillMEtType(MEt, &MET, isMC);
     ObjectsFormat::FillCandidateType(V, &theV, isMC);
-    ObjectsFormat::FillCandidateType(H, &theH, isMC);
-    ObjectsFormat::FillCandidateType(X, &theX, isMC);
+    ObjectsFormat::FillCandidateType(HMerged, &theHMerged, isMC);
+    ObjectsFormat::FillCandidateType(XMerged, &theXMerged, isMC);
+    ObjectsFormat::FillCandidateType(HResolved, &theHResolved, isMC);
+    ObjectsFormat::FillCandidateType(XResolved, &theXResolved, isMC);
         
     // Lepton and Trigger SF
     if(isMC) {
@@ -529,6 +577,9 @@ void Diboson::beginJob() {
     tree->Branch("isZtoMM", &isZtoMM, "isZtoMM/O");
     tree->Branch("isWtoEN", &isWtoEN, "isWtoEN/O");
     tree->Branch("isWtoMN", &isWtoMN, "isWtoMN/O");
+    tree->Branch("isZtoNN", &isZtoNN, "isZtoNN/O");
+    tree->Branch("isMerged", &isMerged, "isMerged/O");
+    tree->Branch("isResolved", &isResolved, "isResolved/O");
     
     // Set Branches for objects
     for(int i = 0; i < WriteNElectrons; i++) tree->Branch(("Electron"+std::to_string(i+1)).c_str(), &(Electrons[i]), ObjectsFormat::ListLeptonType().c_str());
@@ -540,8 +591,10 @@ void Diboson::beginJob() {
     for(int i = 0; i < WriteNFatJets; i++) tree->Branch(("FatJet"+std::to_string(i+1)).c_str(), &(FatJets[i]), ObjectsFormat::ListFatJetType().c_str());
     tree->Branch("MEt", &MEt, ObjectsFormat::ListMEtType().c_str());
     tree->Branch("V", &V, ObjectsFormat::ListCandidateType().c_str());
-    tree->Branch("H", &H, ObjectsFormat::ListCandidateType().c_str());
-    tree->Branch("X", &X, ObjectsFormat::ListCandidateType().c_str());
+    tree->Branch("HMerged", &HMerged, ObjectsFormat::ListCandidateType().c_str());
+    tree->Branch("XMerged", &XMerged, ObjectsFormat::ListCandidateType().c_str());
+    tree->Branch("HResolved", &HResolved, ObjectsFormat::ListCandidateType().c_str());
+    tree->Branch("XResolved", &XResolved, ObjectsFormat::ListCandidateType().c_str());
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
