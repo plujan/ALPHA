@@ -31,7 +31,7 @@ float PileupAnalyzer::GetPUWeight(const edm::Event& iEvent) {
     // https://twiki.cern.ch/twiki/bin/view/CMS/SWGuideCMSDataAnalysisSchool2012PileupReweighting
     if(!iEvent.isRealData()) {
         edm::Handle<std::vector<PileupSummaryInfo> > PUInfo;
-        iEvent.getByLabel(edm::InputTag("slimmedAddPileupInfo"), PUInfo);
+        iEvent.getByToken(PUToken, PUInfo);
         for(std::vector<PileupSummaryInfo>::const_iterator pvi=PUInfo->begin(), pvn=PUInfo->end(); pvi!=pvn; ++pvi) {
             if(pvi->getBunchCrossing()==0) nPT=pvi->getTrueNumInteractions(); // getPU_NumInteractions();
         }
