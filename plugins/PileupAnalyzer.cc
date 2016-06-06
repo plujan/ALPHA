@@ -3,6 +3,7 @@
 
 PileupAnalyzer::PileupAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl):
     PUToken(CColl.consumes<std::vector<PileupSummaryInfo> >(PSet.getParameter<edm::InputTag>("pileup"))),
+    PVToken(CColl.consumes<std::vector<reco::Vertex> >(PSet.getParameter<edm::InputTag>("vertices"))),
     DataFileName(PSet.getParameter<std::string>("dataFileName")),
     MCFileName(PSet.getParameter<std::string>("mcFileName")),
     DataName(PSet.getParameter<std::string>("dataName")),
@@ -37,5 +38,12 @@ float PileupAnalyzer::GetPUWeight(const edm::Event& iEvent) {
         return LumiWeights->weight( nPT );
     }
     return 1.;
+}
+
+
+float PileupAnalyzer::GetPV(const edm::Event& iEvent) {
+    edm::Handle<reco::VertexCollection> PVCollection;
+    iEvent.getByToken(PVToken, PVCollection);
+    return PVCollection->size();
 }
 
