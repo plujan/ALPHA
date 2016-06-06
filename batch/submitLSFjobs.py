@@ -10,9 +10,15 @@ from Analysis.ALPHA.samples import sample
 filelists = [ 
     'SingleMuonRun2016B-PromptReco-v1', 
     'SingleMuonRun2016B-PromptReco-v2',
+    'DoubleMuonRun2016B-PromptReco-v1',
+    'DoubleMuonRun2016B-PromptReco-v2',
+    'SingleElectronRun2016B-PromptReco-v1',
+    'SingleElectronRun2016B-PromptReco-v2',
     'DoubleEGRun2016B-PromptReco-v1',
     'DoubleEGRun2016B-PromptReco-v2',
     'DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0_ext1-v1',
+    'WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_v0-v1',
+    'TTTo2L2Nu_13TeV-powheg_v0_ext1-v1',
 #    # Signal
 ##    'BulkGravToZZToZlepZhad_narrow_M-1000_13TeV-madgraph_PRIVATE-MC_v0-v1',
 ##    'BulkGravToZZToZlepZhad_narrow_M-1200_13TeV-madgraph_PRIVATE-MC_v0-v1',
@@ -23,7 +29,7 @@ filelists = [
 ##    'BulkGravToZZToZlepZhad_narrow_M-3500_13TeV-madgraph_PRIVATE-MC_v0-v1',
 ##    'BulkGravToZZToZlepZhad_narrow_M-4000_13TeV-madgraph_PRIVATE-MC_v0-v1',
 ##    'BulkGravToZZToZlepZhad_narrow_M-4500_13TeV-madgraph_PRIVATE-MC_v0-v1',
-#]
+]
 
 ########## DO NOT TOUCH BELOW THIS POINT ##########
 
@@ -34,7 +40,7 @@ usage = 'usage: %prog [options]'
 parser = optparse.OptionParser(usage)
 parser.add_option('-b', '--base',         action='store', type='string', dest='base',         default='$CMSSW_BASE/src/Analysis/ALPHA/')
 parser.add_option('-o', '--output',       action='store', type='string', dest='output',       default='output')
-parser.add_option('-c', '--cfg',          action='store', type='string', dest='cfg',          default='python/HZZ_cfg.py')
+parser.add_option('-c', '--cfg',          action='store', type='string', dest='cfg',          default='python/Diboson.py')
 parser.add_option('-q', '--queue',        action='store', type='string', dest='queue',        default='local-cms-short')
 parser.add_option('-m', '--maxlsftime',   action='store', type='int',    dest='maxlsftime',   default=5)
 parser.add_option('-e', '--eventspersec', action='store', type='int',    dest='eventspersec', default=100)
@@ -70,7 +76,8 @@ for l in filelists:
     if not l in sample:
         print l
         continue
-    file=open(os.path.expandvars(options.base+'filelists/Spring16/'+l+'.txt'),'r')
+    dir= 'Run2016' if 'Run2016' in l else 'Spring16'
+    file=open(os.path.expandvars(options.base+'filelists/'+dir+'/'+l+'.txt'),'r')
     filelist = file.readlines()
     splitting= max(int(float(sample[l]['nevents'])/(options.maxlsftime*3600*options.eventspersec)),1)
     njobs    = int(len(filelist)/splitting)+1
