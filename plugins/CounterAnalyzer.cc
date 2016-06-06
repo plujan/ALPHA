@@ -29,12 +29,14 @@ CounterAnalyzer::~CounterAnalyzer() {
 
 // ------------ method called for each event  ------------
 void CounterAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
-    // Declare and open collection
-    edm::Handle<LHEEventProduct> LheEventCollection;
-    iEvent.getByToken(LheToken, LheEventCollection);
-    
-    float weight = LheEventCollection.product()->originalXWGTUP();
-    weight = weight > 0. ? 1. : -1.;
+    float weight(1.);
+    if(!iEvent.isRealData()) {
+        // Declare and open collection
+        edm::Handle<LHEEventProduct> LheEventCollection;
+        iEvent.getByToken(LheToken, LheEventCollection);
+        weight = LheEventCollection.product()->originalXWGTUP();
+        weight = weight > 0. ? 1. : -1.;
+    }
     Hist->Fill(0., weight);
 }
 

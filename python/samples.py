@@ -81,6 +81,16 @@ sample = {
     },
     
     # Signal
+    'BulkGravToZZToZlepZhad_narrow_M-600_13TeV-madgraph_PRIVATE-MC_v0-v1' : {
+        'nevents' : 10000,
+        'xsec'    : 1.,
+        'kfactor' : 1.,
+    },
+    'BulkGravToZZToZlepZhad_narrow_M-800_13TeV-madgraph_PRIVATE-MC_v0-v1' : {
+        'nevents' : 10000,
+        'xsec'    : 1.,
+        'kfactor' : 1.,
+    },
     'BulkGravToZZToZlepZhad_narrow_M-1000_13TeV-madgraph_PRIVATE-MC_v0-v1' : {
         'nevents' : 10000,
         'xsec'    : 1.,
