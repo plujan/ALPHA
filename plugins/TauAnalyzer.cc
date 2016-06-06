@@ -95,3 +95,22 @@ std::vector<pat::Tau> TauAnalyzer::FillTauVector(const edm::Event& iEvent) {
     return Vect;
 }
 
+
+void TauAnalyzer::CleanTausFromMuons(std::vector<pat::Tau>& Taus, std::vector<pat::Muon>& Muons, float angle) {
+    for(unsigned int m = 0; m < Muons.size(); m++) {
+        for(unsigned int j = 0; j < Taus.size(); ) {
+            if(deltaR(Taus[j], Muons[m]) < angle) Taus.erase(Taus.begin() + j);
+            else j++;
+        }
+    }
+}
+
+void TauAnalyzer::CleanTausFromElectrons(std::vector<pat::Tau>& Taus, std::vector<pat::Electron>& Electrons, float angle) {
+    for(unsigned int e = 0; e < Electrons.size(); e++) {
+        for(unsigned int j = 0; j < Taus.size(); ) {
+            if(deltaR(Taus[j], Electrons[e]) < angle) Taus.erase(Taus.begin() + j);
+            else j++;
+        }
+    }
+}
+

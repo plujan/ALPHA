@@ -180,6 +180,8 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     nMuons = MuonVect.size();
     // Taus
     std::vector<pat::Tau> TauVect = theTauAnalyzer->FillTauVector(iEvent);
+    theTauAnalyzer->CleanTausFromMuons(TauVect, MuonVect, 0.4);
+    theTauAnalyzer->CleanTausFromElectrons(TauVect, ElecVect, 0.4);
     nTaus = TauVect.size();
     // Photons
     std::vector<pat::Photon> PhotonVect = thePhotonAnalyzer->FillPhotonVector(iEvent);
@@ -624,7 +626,9 @@ void Diboson::beginJob() {
     tree->Branch("HMerged", &HMerged, ObjectsFormat::ListCandidateType().c_str());
     tree->Branch("XMerged", &XMerged, ObjectsFormat::ListCandidateType().c_str());
     tree->Branch("HResolved", &HResolved, ObjectsFormat::ListCandidateType().c_str());
+    tree->Branch("HResolvedHpt", &HResolvedHpt, ObjectsFormat::ListCandidateType().c_str());
     tree->Branch("XResolved", &XResolved, ObjectsFormat::ListCandidateType().c_str());
+    tree->Branch("XResolvedHpt", &XResolvedHpt, ObjectsFormat::ListCandidateType().c_str());
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
