@@ -205,11 +205,11 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
             Hist["g_HadPt"]->Fill(theGenHad->pt(), EventWeight);
             Hist["g_HadEta"]->Fill(theGenHad->eta(), EventWeight);
             Hist["g_ZZDR"]->Fill(reco::deltaR(theGenZHad->eta(),theGenZHad->phi(),theGenZLep->eta(),theGenZLep->phi()), EventWeight);
-	    Hist["g_ZZDPhi"]->Fill(reco::deltaPhi(theGenZHad->phi(),theGenZLep->phi()), EventWeight);
+            Hist["g_ZZDPhi"]->Fill(reco::deltaPhi(theGenZHad->phi(),theGenZLep->phi()), EventWeight);
             Hist["g_LepHadDR"]->Fill(reco::deltaR(theGenHad->eta(),theGenHad->phi(),theGenLep->eta(),theGenLep->phi()), EventWeight);
             GenZHadMass = theGenZHad->mass();
             isGenZZ = true;
-	}
+        }
     }
 
     
@@ -278,8 +278,8 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
             theV.addDaughter(MuonVect.at(0));
             theV.addDaughter(MuonVect.at(1));
             addP4.set(theV);
-            MuonVect.at(0).addUserFloat("trkIso",theMuonAnalyzer->FixTrackerIsolation(MuonVect.at(0),MuonVect.at(1)).at(0));
-            MuonVect.at(1).addUserFloat("trkIso",theMuonAnalyzer->FixTrackerIsolation(MuonVect.at(0),MuonVect.at(1)).at(1));
+//            MuonVect.at(0).addUserFloat("trkIso",theMuonAnalyzer->FixTrackerIsolation(MuonVect.at(0),MuonVect.at(1)).at(0));
+//            MuonVect.at(1).addUserFloat("trkIso",theMuonAnalyzer->FixTrackerIsolation(MuonVect.at(0),MuonVect.at(1)).at(1));
         }
         else { if(Verbose) std::cout << " - No OS SF leptons" << std::endl; return;  }
     }
@@ -288,16 +288,17 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
           theV.addDaughter(ElecVect.at(0));
           theV.addDaughter(ElecVect.at(1));
           addP4.set(theV);
-	}
+        }
         else { if(Verbose) std::cout << " - No OS SF leptons" << std::endl; return;  }
     }
     else if(isWtoMN){
-	theV = createkW(MuonVect.at(0),MET);
+        theV = createkW(MuonVect.at(0), MET);
     }
     else if(isWtoEN){
-	theV = createkW(ElecVect.at(0),MET);
+        theV = createkW(ElecVect.at(0), MET);
     }
-    else{ //Z to nu nu
+    else {
+        //Z to nu nu
     }
     
     // ---------- Z TO HADRONS ----------
@@ -311,7 +312,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         theH.addDaughter(JetsVect.at(0));
         theH.addDaughter(JetsVect.at(1));
         addP4.set(theH);
-	//std::cout << "resolved mass: " << theH.mass() << std::endl;
+  //std::cout << "resolved mass: " << theH.mass() << std::endl;
         //if(theH.mass()<40 || theH.pt()<100) theH.clearDaughters();
         Hist["a_HAK4Mass_HPt"]->Fill(theH.mass(), EventWeight);
     }
@@ -354,7 +355,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
             theH.addDaughter(JetsVect.at(0));
             theH.addDaughter(JetsVect.at(1));
             addP4.set(theH);
-	    //std::cout << "resolved mass: " << theH.mass() << std::endl;
+      //std::cout << "resolved mass: " << theH.mass() << std::endl;
             Hist["a_HAK4Mass_PM"]->Fill(theH.mass(), EventWeight);
         }
     }
@@ -372,12 +373,12 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     }
 
     else if(theH.numberOfDaughters()>0){//if is Z to nu nu: apply recoil mass formula
-	theX = recoilMassFormula(theH,MET);
+        theX = recoilMassFormula(theH,MET);
     }
 
     else{//no H, no X
-      if(Verbose) std::cout << "No H, no X" << std::endl;
-      return;
+        if(Verbose) std::cout << "No H, no X" << std::endl;
+        return;
     }
 
     // ---------- Print Summary ----------
@@ -422,9 +423,9 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
             LeptonWeight*=theElectronAnalyzer->GetElectronIdSF(ElecVect.at(1), ElectronPSet.getParameter<int>("electron2id"));
             LeptonWeight*=theElectronAnalyzer->GetElectronRecoEffSF(ElecVect.at(0));
             LeptonWeight*=theElectronAnalyzer->GetElectronRecoEffSF(ElecVect.at(1));
-	    }
+      }
         if(isZtoMM) {
-	    //TriggerWeight*=theMuonAnalyzer->GetDoubleMuonTriggerSF(MuonVect.at(0), MuonVect.at(1));
+      //TriggerWeight*=theMuonAnalyzer->GetDoubleMuonTriggerSF(MuonVect.at(0), MuonVect.at(1));
             LeptonWeight*=theMuonAnalyzer->GetMuonIdSF(MuonVect.at(0), MuonPSet.getParameter<int>("muon1id"));
             LeptonWeight*=theMuonAnalyzer->GetMuonIdSF(MuonVect.at(1), MuonPSet.getParameter<int>("muon2id"));
             LeptonWeight*=theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(0), MuonPSet.getParameter<int>("muon1iso"));
@@ -432,11 +433,11 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         }
         if(isWtoEN) {
             //TriggerWeight*=theElectronAnalyzer->GetDoubleElectronTriggerSF(ElecVect.at(0));
-	    LeptonWeight*=theElectronAnalyzer->GetElectronIdSF(ElecVect.at(0), ElectronPSet.getParameter<int>("electron1id"));
+      LeptonWeight*=theElectronAnalyzer->GetElectronIdSF(ElecVect.at(0), ElectronPSet.getParameter<int>("electron1id"));
             LeptonWeight*=theElectronAnalyzer->GetElectronRecoEffSF(ElecVect.at(0));
-	    }
+      }
         if(isWtoMN) {
-	    //TriggerWeight*=theMuonAnalyzer->GetDoubleMuonTriggerSF(MuonVect.at(0));
+      //TriggerWeight*=theMuonAnalyzer->GetDoubleMuonTriggerSF(MuonVect.at(0));
             LeptonWeight*=theMuonAnalyzer->GetMuonIdSF(MuonVect.at(0), MuonPSet.getParameter<int>("muon1iso"));
             LeptonWeight*=theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(0), MuonPSet.getParameter<int>("muon1iso"));
         }

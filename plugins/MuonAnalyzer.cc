@@ -125,10 +125,13 @@ std::vector<pat::Muon> MuonAnalyzer::FillMuonVector(const edm::Event& iEvent) {
         // Isolation
         float pfIso03 = (mu.pfIsolationR03().sumChargedHadronPt + std::max(mu.pfIsolationR03().sumNeutralHadronEt + mu.pfIsolationR03().sumPhotonEt - 0.5*mu.pfIsolationR03().sumPUPt, 0.) ) / mu.pt();
         float pfIso04 = (mu.pfIsolationR04().sumChargedHadronPt + std::max(mu.pfIsolationR04().sumNeutralHadronEt + mu.pfIsolationR04().sumPhotonEt - 0.5*mu.pfIsolationR04().sumPUPt, 0.) ) / mu.pt();
-	//uncorrect tracker iso
-        float trkIso = mu.trackIso();
+	      // Tracker iso corrected with by-hand subtraction
+        float trkIso = mu.trackIso() * mu.pt();
+        if(Vect.size() == 0 && std::next(it, 1)!=MuonCollection->end() && deltaR(*std::next(it, 1), mu) < 0.3) trkIso -= std::next(it, 1)->pt();
+        if(Vect.size() == 1 && deltaR(Vect[0], mu) < 0.3) trkIso -= Vect[0].pt();
+        trkIso = trkIso / mu.pt();
         // Muon Isolation working point 2015-2016: see https://twiki.cern.ch/twiki/bin/view/CMS/SWGuideMuonIdRun2#Muon_Isolation
-        if(IsoTh==0 && mu.trackIso()>0.1) continue;
+        if(IsoTh==0 && trkIso>0.1) continue;
         if(IsoTh==1 && pfIso04>0.25) continue;
         if(IsoTh==2 && pfIso04>0.15) continue;
         // Muon Quality ID 2015-2016: see https://twiki.cern.ch/twiki/bin/view/CMS/SWGuideMuonIdRun2
