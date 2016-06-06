@@ -577,6 +577,7 @@ void ObjectsFormat::FillCandidateType(CandidateType& I, pat::CompositeCandidate*
   I.phi         = R->phi();
   I.mass        = R->mass();
   I.tmass       = R->numberOfDaughters()>1 ? sqrt( 2.*R->daughter(0)->pt()*R->daughter(1)->pt()*(1.-cos(deltaPhi(R->daughter(0)->phi(), R->daughter(1)->phi())) ) ) : -1.;
+  I.softdropMass= R->hasUserFloat("softdropMass") ? R->userFloat("softdropMass") : -1.; 
   I.dR          = R->numberOfDaughters()>1 ? deltaR(*R->daughter(0), *R->daughter(1)) : -1.;
   I.dEta        = R->numberOfDaughters()>1 ? fabs( R->daughter(0)->eta() - R->daughter(1)->eta() ) : -1.;
   I.dPhi        = R->numberOfDaughters()>1 ? fabs( deltaPhi(R->daughter(0)->phi(), R->daughter(1)->phi()) ) : -1.;
@@ -593,6 +594,7 @@ void ObjectsFormat::ResetCandidateType(CandidateType& I) {
   I.phi         = -9.;
   I.mass        = -1.;
   I.tmass       = -1.;
+  I.softdropMass = -1.;
   I.dR          = -1.;
   I.dEta        = -1.;
   I.dPhi        = -1.;
@@ -603,7 +605,7 @@ void ObjectsFormat::ResetCandidateType(CandidateType& I) {
 //  I.charge      = -1.;
 }
 
-std::string ObjectsFormat::ListCandidateType() {return "pt/F:eta/F:phi/F:mass/F:tmass/F:dR/F:dEta/F:dPhi/F:twist/F";}
+std::string ObjectsFormat::ListCandidateType() {return "pt/F:eta/F:phi/F:mass/F:tmass/F:softdropMass/F:dR/F:dEta/F:dPhi/F:twist/F";}
 
 /*
 void ObjectsFormat::FillCandidateType(CandidateType& I, const reco::Candidate::LorentzVector* V1, const reco::Candidate::LorentzVector* V2) {
