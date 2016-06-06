@@ -77,8 +77,8 @@ Diboson::Diboson(const edm::ParameterSet& iConfig):
     TFileDirectory kinDir=fs->mkdir("Kin/");
     
     // Make TH1F
-    //    std::vector<std::string> nLabels={"Trigger", "Lep #geq 2", "Z cand ", "Jets #geq 2", "Z mass ", "bJets #geq 1", "bJets #geq 2", "h mass ", "#slash{E}_{T}", "Final"};
-    std::vector<std::string> nLabels={"All", "Z Lep", "H Merged", "H Resolved", "X Merged", "X Resolved", "..", "..", "..", ".."};
+    std::vector<std::string> nLabels={"All", "Trigger", "Iso Lep #geq 2", "Z cand ", "Jets #geq 2", "Z mass ", "bJets #geq 1", "bJets #geq 2", "h mass ", "#slash{E}_{T}", "Final"};
+    std::vector<std::string> nLabels={"All", "Z cand ", "H Merged", "H Resolved", "X Merged", "X Resolved", "..", "..", "..", ".."};
     
     int nbins;
     float min, max;
@@ -157,6 +157,9 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     ObjectsFormat::ResetCandidateType(HMerged);
     ObjectsFormat::ResetCandidateType(HResolved);
     
+    Hist["a_nEvents"]->Fill(1., EventWeight);
+    Hist["e_nEvents"]->Fill(1., EventWeight);
+    Hist["m_nEvents"]->Fill(1., EventWeight);
     
     // Electrons
     std::vector<pat::Electron> ElecVect = theElectronAnalyzer->FillElectronVector(iEvent);
@@ -232,9 +235,9 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     EventWeight *= TriggerWeight;
     
     
-    Hist["a_nEvents"]->Fill(1., EventWeight);
-    Hist["e_nEvents"]->Fill(1., EventWeight);
-    Hist["m_nEvents"]->Fill(1., EventWeight);
+    Hist["a_nEvents"]->Fill(2., EventWeight);
+    Hist["e_nEvents"]->Fill(2., EventWeight);
+    Hist["m_nEvents"]->Fill(2., EventWeight);
     
     // ---------- Do analysis selections ----------
     
@@ -247,7 +250,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     }
     else if(ElecVect.size()>=2) isZtoEE=true;
     else if(MuonVect.size()>=2) isZtoMM=true;
-    //else {if(Verbose) std::cout << " - No Iso SF OS Leptons" << std::endl; return;}
+    else {if(Verbose) std::cout << " - No Iso SF OS Leptons" << std::endl; return;}
 
     // ---------- W TO LEPTON and NEUTRINO ----------
     
@@ -257,11 +260,15 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     }
     else if(ElecVect.size()==1) isWtoEN=true;
     else if(MuonVect.size()==1) isWtoMN=true;
-    //else {if(Verbose) std::cout << " - No W to Leptons" << std::endl; return;}
+    else {if(Verbose) std::cout << " - No Iso Leptons" << std::endl; return;}
 
     // ----------- Z TO NEUTRINOS ---------------
 
-    else { if(Verbose) std::cout << " - No charged leptons" << std::endl;}// return;}
+    else { if(Verbose) std::cout << " - No charged leptons" << std::endl; return;}
+    
+    Hist["a_nEvents"]->Fill(3., EventWeight);
+    if(isZtoEE) Hist["e_nEvents"]->Fill(3., EventWeight);
+    if(isZtoMM) Hist["m_nEvents"]->Fill(3., EventWeight);
 
     // AZh lepton choice
 //    int l1(0), l2(-1);
@@ -280,27 +287,19 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
             theV.addDaughter(MuonVect.at(0));
             theV.addDaughter(MuonVect.at(1));
             addP4.set(theV);
-            Hist["a_nEvents"]->Fill(2., EventWeight);
-            Hist["m_nEvents"]->Fill(2., EventWeight);
-//            MuonVect.at(0).addUserFloat("trkIso",theMuonAnalyzer->FixTrackerIsolation(MuonVect.at(0),MuonVect.at(1)).at(0));
-//            MuonVect.at(1).addUserFloat("trkIso",theMuonAnalyzer->FixTrackerIsolation(MuonVect.at(0),MuonVect.at(1)).at(1));
         }
-        else { if(Verbose) std::cout << " - No OS SF leptons" << std::endl; return;  }
+        else { if(Verbose) std::cout << " - No OS muons" << std::endl; return; }
     }
-    else if(isZtoEE){
+    else if(isZtoEE) {
         if(ElecVect.at(0).charge()*ElecVect.at(1).charge()<0){
             theV.addDaughter(ElecVect.at(0));
             theV.addDaughter(ElecVect.at(1));
             addP4.set(theV);
-            Hist["a_nEvents"]->Fill(2., EventWeight);
-            Hist["e_nEvents"]->Fill(2., EventWeight);
         }
-        else { if(Verbose) std::cout << " - No OS SF leptons" << std::endl; return;  }
+        else { if(Verbose) std::cout << " - No OS electrons" << std::endl; return; }
     }
-    else{
-        if(Verbose) std::cout << "No dilepton!" << std::endl;
-        return;
-    }
+    else { if(Verbose) std::cout << " - No Iso SF OS Leptons" << std::endl; return; }
+    
     /*
     else if(isWtoMN){
         theV = createkW(MuonVect.at(0), MET);
@@ -312,6 +311,11 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         //Z to nu nu
     }
     */
+    
+    Hist["a_nEvents"]->Fill(4., EventWeight);
+    if(isZtoEE) Hist["e_nEvents"]->Fill(4., EventWeight);
+    if(isZtoMM) Hist["m_nEvents"]->Fill(4., EventWeight);
+    
     // ---------- Z TO HADRONS ----------
     pat::CompositeCandidate theHMerged;
     pat::CompositeCandidate theHResolved;
