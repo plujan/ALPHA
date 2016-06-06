@@ -77,7 +77,7 @@ Diboson::Diboson(const edm::ParameterSet& iConfig):
     TFileDirectory kinDir=fs->mkdir("Kin/");
     
     // Make TH1F
-    std::vector<std::string> nLabels={"All", "Trigger", "Iso Lep #geq 2", "Z cand ", "Jets #geq 2", "Z mass ", "bJets #geq 1", "bJets #geq 2", "h mass ", "#slash{E}_{T}", "Final"};
+    std::vector<std::string> nLabels={"All", "Trigger", "Iso Lep #geq 2", "Z cand ", "Jets #geq 2", "Z mass ", "bJets #geq 1", "bJets #geq 2", "h mass ", "#slash{E}_{T}"};
     
     int nbins;
     float min, max;
@@ -140,6 +140,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     RunNumber = iEvent.id().run();
     
     EventWeight = PUWeight = TriggerWeight = LeptonWeight = 1.;
+    nPV = nElectrons = nMuons = nTaus = nPhotons = nJets = nFatJets = 1.;
     
     AddFourMomenta addP4;
     
@@ -160,24 +161,43 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     Hist["e_nEvents"]->Fill(1., EventWeight);
     Hist["m_nEvents"]->Fill(1., EventWeight);
     
+    
+    // Pu weight
+    PUWeight = thePileupAnalyzer->GetPUWeight(iEvent);
+    nPV = thePileupAnalyzer->GetPV(iEvent);
+    EventWeight *= PUWeight;
+    
+    // Trigger
+    theTriggerAnalyzer->FillTriggerMap(iEvent, TriggerMap);
+    EventWeight *= TriggerWeight;
+    
+    
     // Electrons
     std::vector<pat::Electron> ElecVect = theElectronAnalyzer->FillElectronVector(iEvent);
+    nElectrons = ElecVect.size();
     // Muons
     std::vector<pat::Muon> MuonVect = theMuonAnalyzer->FillMuonVector(iEvent);
+    nMuons = MuonVect.size();
     // Taus
     std::vector<pat::Tau> TauVect = theTauAnalyzer->FillTauVector(iEvent);
+    nTaus = TauVect.size();
     // Photons
     std::vector<pat::Photon> PhotonVect = thePhotonAnalyzer->FillPhotonVector(iEvent);
+    nPhotons = PhotonVect.size();
     // Jets
     std::vector<pat::Jet> JetsVect = theJetAnalyzer->FillJetVector(iEvent);
     theJetAnalyzer->CleanJetsFromMuons(JetsVect, MuonVect, 0.4);
     theJetAnalyzer->CleanJetsFromElectrons(JetsVect, ElecVect, 0.4);
+    nJets = JetsVect.size();
     // Fat Jets
     std::vector<pat::Jet> FatJetsVect = theFatJetAnalyzer->FillJetVector(iEvent);
     theFatJetAnalyzer->CleanJetsFromMuons(FatJetsVect, MuonVect, 1.);
     theFatJetAnalyzer->CleanJetsFromElectrons(FatJetsVect, ElecVect, 1.);
+    nFatJets = FatJetsVect.size();
     // Missing Energy
     pat::MET MET = theJetAnalyzer->FillMetVector(iEvent);
+    
+    
     
     // Gen weights
     std::map<std::string, float> GenWeight = theGenAnalyzer->FillWeightsMap(iEvent);
@@ -225,13 +245,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     }
     
 
-    // Pu weight
-    PUWeight = thePileupAnalyzer->GetPUWeight(iEvent);
-    EventWeight *= PUWeight;
     
-    // Trigger
-    theTriggerAnalyzer->FillTriggerMap(iEvent, TriggerMap);
-    EventWeight *= TriggerWeight;
     
     
     Hist["a_nEvents"]->Fill(2., EventWeight);
@@ -589,6 +603,14 @@ void Diboson::beginJob() {
     tree->Branch("isMerged", &isMerged, "isMerged/O");
     tree->Branch("isResolved", &isResolved, "isResolved/O");
     
+    // Objects
+    tree->Branch("nPV", &nPV, "nPV/F");
+    tree->Branch("nElectrons", &nElectrons, "nElectrons/F");
+    tree->Branch("nMuons", &nMuons, "nMuons/F");
+    tree->Branch("nTaus", &nTaus, "nTaus/F");
+    tree->Branch("nPhotons", &nPhotons, "nPhotons/F");
+    tree->Branch("nJets", &nJets, "nJets/F");
+    tree->Branch("nFatJets", &nFatJets, "nFatJets/F");
     // Set Branches for objects
     for(int i = 0; i < WriteNElectrons; i++) tree->Branch(("Electron"+std::to_string(i+1)).c_str(), &(Electrons[i]), ObjectsFormat::ListLeptonType().c_str());
     for(int i = 0; i < WriteNMuons; i++) tree->Branch(("Muon"+std::to_string(i+1)).c_str(), &(Muons[i]), ObjectsFormat::ListLeptonType().c_str());

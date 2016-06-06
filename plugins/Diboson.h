@@ -161,8 +161,9 @@ class Diboson : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
         edm::Service<TFileService> fs;
         TTree* tree;
         bool isMC, isZtoEE, isZtoMM, isWtoEN, isWtoMN, isZtoNN, isMerged, isResolved;
-        long int EventNumber, RunNumber, LumiNumber, nPV;
+        long int EventNumber, RunNumber, LumiNumber;
         float EventWeight, PUWeight, TriggerWeight, LeptonWeight;
+        float nPV, nElectrons, nMuons, nTaus, nPhotons, nJets, nFatJets;
         
         //
         std::vector<LeptonType> Electrons;
