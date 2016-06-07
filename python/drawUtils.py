@@ -19,7 +19,7 @@ gStyle.SetOptStat(0)
 #    PROJECT     #
 ##################
 
-def project(var, cut, reg, weight, samplelist, pd, ntupledir):
+def project(var, cut, weight, samplelist, pd, ntupledir):
     # Create dict
     file = {}
     tree = {}
@@ -183,8 +183,8 @@ def draw(hist, data, back, sign, snorm=1, lumi=-1, ratio=0, poisson=False, log=F
         err.Draw("E2")
         errLine.Draw("SAME, HIST")
         if len(data) > 0:
-            #res.Draw("SAME, PE0")
-            res_graph.Draw("SAME, PE0")
+            if poisson: res_graph.Draw("SAME, PE0")
+            else: res.Draw("SAME, PE0")
             if len(err.GetXaxis().GetBinLabel(1))==0: # Bin labels: not a ordinary plot
                 drawRatio(hist['data_obs'], hist['BkgSum'])
                 drawKolmogorov(hist['data_obs'], hist['BkgSum'])
@@ -192,7 +192,7 @@ def draw(hist, data, back, sign, snorm=1, lumi=-1, ratio=0, poisson=False, log=F
     c1.Update()
     
     # return list of objects created by the draw() function
-    return [c1, bkg, leg, err, errLine, res, data_graph, res_graph]
+    return [c1, bkg, leg, err, errLine, res, data_graph if poisson else None, res_graph if poisson else None]
 
 def drawRatio(data, bkg):
     errData = array('d', [1.0])
