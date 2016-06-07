@@ -627,6 +627,7 @@ void ObjectsFormat::FillCandidateType(CandidateType& I, const reco::Candidate::L
 //  I.centrality  = (R->daughter(0)->pt()+R->daughter(0)->pt()) / (R->daughter(0)->p()+R->daughter(0)->p());// /R->mass();
 //  I.charge      = R->charge();
 }
+*/
 
 void ObjectsFormat::FillLorentzType(LorentzType& I, const reco::Candidate::LorentzVector* V) {
   I.pt          = V->pt();
@@ -635,4 +636,15 @@ void ObjectsFormat::FillLorentzType(LorentzType& I, const reco::Candidate::Loren
   I.energy      = V->energy();
   I.mass        = V->mass();
 }
-*/
+
+void ObjectsFormat::ResetLorentzType(LorentzType& I) {
+  I.pt          = -1.;
+  I.eta         = -9.;
+  I.phi         = -9.;
+  I.energy      = -1.;
+  I.mass        = -1.;
+}
+
+std::string ObjectsFormat::ListLorentzType() {return "pt/F:eta/F:phi/F:energy/F:mass/F";}
+
+
