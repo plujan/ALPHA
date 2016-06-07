@@ -127,6 +127,9 @@ process.cleanedMuons = cms.EDProducer("PATMuonCleanerBySegments",
     fractionOfSharedSegments = cms.double(0.499)
 )
 
+# Jet corrector https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookJetEnergyCorrections#CorrOnTheFly
+process.load('JetMETCorrections.Configuration.JetCorrectors_cff')
+
 #quark gluon likelihood upstream modules
 qgDatabaseVersion = 'v2b' # check https://twiki.cern.ch/twiki/bin/viewauth/CMS/QGDataBaseVersion
 from CondCore.DBCommon.CondDBSetup_cfi import *
@@ -239,6 +242,7 @@ process.ntuple = cms.EDAnalyzer('Diboson',
         jet1pt = cms.double(30.),
         jet2pt = cms.double(30.),
         jeteta = cms.double(2.5),
+        corrector = cms.InputTag("ak4PFL2L3ResidualCorrector"),
         btag = cms.string("combinedSecondaryVertexBJetTags"),
         jet1btag = cms.int32(0), # 0: no selection, 1: loose, 2: medium, 3: tight
         jet2btag = cms.int32(0),
@@ -253,6 +257,7 @@ process.ntuple = cms.EDAnalyzer('Diboson',
         jet1pt = cms.double(200.),
         jet2pt = cms.double(200.),
         jeteta = cms.double(2.5),
+        corrector = cms.InputTag("ak4PFL2L3ResidualCorrector"),
         btag = cms.string("combinedSecondaryVertexBJetTags"),
         jet1btag = cms.int32(0), # 0: no selection, 1: loose, 2: medium, 3: tight
         jet2btag = cms.int32(0),
@@ -290,6 +295,7 @@ if isData:
         process.egmGsfElectronIDSequence *
         process.egmPhotonIDSequence *
         process.cleanedMuons *
+        process.ak4PFL2L3ResidualCorrectorChain *
         process.QGTagger *
         process.ntuple
     )
@@ -300,6 +306,7 @@ else:
         process.egmGsfElectronIDSequence *
         process.egmPhotonIDSequence *
         process.cleanedMuons *
+        process.ak4PFL2L3ResidualCorrectorChain *
         process.QGTagger *
         process.ntuple
     )
