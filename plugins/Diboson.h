@@ -163,7 +163,7 @@ class Diboson : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
         bool isMC, isZtoEE, isZtoMM, isWtoEN, isWtoMN, isZtoNN, isMerged, isResolved;
         long int EventNumber, RunNumber, LumiNumber;
         float EventWeight, PUWeight, TriggerWeight, LeptonWeight;
-        float nPV, nElectrons, nMuons, nTaus, nPhotons, nJets, nFatJets;
+        int nPV, nElectrons, nMuons, nTaus, nPhotons, nJets, nFatJets, nBTagJets;
         
         //
         std::vector<LeptonType> Electrons;

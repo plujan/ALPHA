@@ -140,7 +140,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     RunNumber = iEvent.id().run();
     
     EventWeight = PUWeight = TriggerWeight = LeptonWeight = 1.;
-    nPV = nElectrons = nMuons = nTaus = nPhotons = nJets = nFatJets = 1.;
+    nPV = nElectrons = nMuons = nTaus = nPhotons = nJets = nFatJets = nBTagJets = 1;
     
     AddFourMomenta addP4;
     
@@ -191,6 +191,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     theJetAnalyzer->CleanJetsFromMuons(JetsVect, MuonVect, 0.4);
     theJetAnalyzer->CleanJetsFromElectrons(JetsVect, ElecVect, 0.4);
     nJets = JetsVect.size();
+    nBTagJets = theJetAnalyzer->GetNBJets(JetsVect);
     // Fat Jets
     std::vector<pat::Jet> FatJetsVect = theFatJetAnalyzer->FillJetVector(iEvent);
     theFatJetAnalyzer->CleanJetsFromMuons(FatJetsVect, MuonVect, 1.);
@@ -362,7 +363,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
             theH.clearDaughters();
             theH.addDaughter(FatJetsVect.at(0));
             addP4.set(theH);
-            theH.addUserFloat("softdropMass", FatJetsVect.at(0).userFloat("ak8PFJetsCHSSoftDropMass"));
+            //theH.addUserFloat("softdropMass", FatJetsVect.at(0).userFloat("ak8PFJetsCHSSoftDropMass"));
             //if(theH.mass()>180) theH.clearDaughters();
         }
     }
@@ -383,7 +384,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         isMerged = true;
         theHMerged.addDaughter(FatJetsVect.at(0));
         addP4.set(theHMerged);
-        theHMerged.addUserFloat("softdropMass", FatJetsVect.at(0).userFloat("ak8PFJetsCHSSoftDropMass"));
+        //theHMerged.addUserFloat("softdropMass", FatJetsVect.at(0).userFloat("ak8PFJetsCHSSoftDropMass"));
     }
     
     // Resolved
@@ -606,13 +607,14 @@ void Diboson::beginJob() {
     tree->Branch("isResolved", &isResolved, "isResolved/O");
     
     // Objects
-    tree->Branch("nPV", &nPV, "nPV/F");
-    tree->Branch("nElectrons", &nElectrons, "nElectrons/F");
-    tree->Branch("nMuons", &nMuons, "nMuons/F");
-    tree->Branch("nTaus", &nTaus, "nTaus/F");
-    tree->Branch("nPhotons", &nPhotons, "nPhotons/F");
-    tree->Branch("nJets", &nJets, "nJets/F");
-    tree->Branch("nFatJets", &nFatJets, "nFatJets/F");
+    tree->Branch("nPV", &nPV, "nPV/I");
+    tree->Branch("nElectrons", &nElectrons, "nElectrons/I");
+    tree->Branch("nMuons", &nMuons, "nMuons/I");
+    tree->Branch("nTaus", &nTaus, "nTaus/I");
+    tree->Branch("nPhotons", &nPhotons, "nPhotons/I");
+    tree->Branch("nJets", &nJets, "nJets/I");
+    tree->Branch("nFatJets", &nFatJets, "nFatJets/I");
+    tree->Branch("nBTagJets", &nBTagJets, "nBTagJets/I");
     // Set Branches for objects
     for(int i = 0; i < WriteNElectrons; i++) tree->Branch(("Electron"+std::to_string(i+1)).c_str(), &(Electrons[i]), ObjectsFormat::ListLeptonType().c_str());
     for(int i = 0; i < WriteNMuons; i++) tree->Branch(("Muon"+std::to_string(i+1)).c_str(), &(Muons[i]), ObjectsFormat::ListLeptonType().c_str());
