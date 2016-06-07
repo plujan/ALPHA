@@ -22,7 +22,7 @@
 <use name="PhysicsTools/HepMCCandAlgos"/>
 <use name="PhysicsTools/CandUtils"/>
 <use name="PhysicsTools/Utilities"/>
-<!--<use name="PhysicsTools/KinFitter"/>-->
+<use name="PhysicsTools/KinFitter"/>
 <use name="CommonTools/CandUtils"/>
 <use name="CommonTools/UtilAlgos"/>
 <use name="CommonTools/Utils"/>
