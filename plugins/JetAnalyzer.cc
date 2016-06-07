@@ -6,6 +6,7 @@
 JetAnalyzer::JetAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl):
     JetToken(CColl.consumes<std::vector<pat::Jet> >(PSet.getParameter<edm::InputTag>("jets"))),
     MetToken(CColl.consumes<std::vector<pat::MET> >(PSet.getParameter<edm::InputTag>("met"))),
+    CorToken(CColl.consumes<reco::JetCorrector>(PSet.getParameter<edm::InputTag>("corrector"))),
     QGToken(CColl.consumes<edm::ValueMap<float>>(edm::InputTag("QGTagger", "qgLikelihood"))),
     JetId(PSet.getParameter<int>("jetid")),
     Jet1Pt(PSet.getParameter<double>("jet1pt")),
@@ -65,6 +66,9 @@ std::vector<pat::Jet> JetAnalyzer::FillJetVector(const edm::Event& iEvent) {
     // Declare and open collection
     edm::Handle<std::vector<pat::Jet> > PFJetsCollection;
     iEvent.getByToken(JetToken, PFJetsCollection);
+    // Jet corrector
+    edm::Handle<reco::JetCorrector> Corrector;
+    iEvent.getByToken(CorToken, Corrector);
     // Open QG value maps
     edm::Handle<edm::ValueMap<float>> QGHandle;
     iEvent.getByToken(QGToken, QGHandle);
@@ -77,7 +81,7 @@ std::vector<pat::Jet> JetAnalyzer::FillJetVector(const edm::Event& iEvent) {
         pat::Jet jet=*it;
         int idx=it-PFJetsCollection->begin();
         jet.addUserInt("Index", idx);
-	pat::JetRef jetRef(PFJetsCollection, idx);
+        pat::JetRef jetRef(PFJetsCollection, idx);
         // Jet Energy Smearing
         if(isMC) {
             const reco::GenJet* genJet=jet.genJet();
@@ -105,20 +109,26 @@ std::vector<pat::Jet> JetAnalyzer::FillJetVector(const edm::Event& iEvent) {
         jet.addUserFloat("JESUncertainty", jet.pt()*GetScaleUncertainty(jet));
 
         // PUPPI soft drop mass for AK8 jets
-        if(jet.hasSubjets("SoftDropPuppi")){
-	    TLorentzVector puppiSoftdrop, puppiSoftdropSubjet;
-	    auto const & sdSubjetsPuppi = jet.subjets("SoftDropPuppi");
-            for ( auto const & it : sdSubjetsPuppi ) {
-                puppiSoftdropSubjet.SetPtEtaPhiM(it->pt(),it->eta(),it->phi(),it->mass());
-                puppiSoftdrop+=puppiSoftdropSubjet;
+        if(jet.hasSubjets("SoftDropPuppi")) {
+            TLorentzVector puppiSoftdrop, puppiSoftdropSubjet;
+            auto const & sdSubjetsPuppi = jet.subjets("SoftDropPuppi");
+            for (auto const & it : sdSubjetsPuppi) {
+                puppiSoftdropSubjet.SetPtEtaPhiM(it->pt(), it->eta(), it->phi(), it->mass());
+                puppiSoftdrop += puppiSoftdropSubjet;
             }
             jet.addUserFloat("softdropPuppiMass", puppiSoftdrop.M());
-	}
-
+        }
+        
+        // Mass correction
+        float jec = Corrector->correction(jet);
+        if(jet.hasUserFloat("ak8PFJetsCHSPrunedMass")) jet.addUserFloat("ak8PFJetsCHSPrunedMassCorr", jet.hasUserFloat("ak8PFJetsCHSPrunedMass") * jec);
+        if(jet.hasUserFloat("ak8PFJetsCHSSoftDropMassMass")) jet.addUserFloat("ak8PFJetsCHSSoftDropMassCorr", jet.hasUserFloat("ak8PFJetsCHSSoftDropMass") * jec);
+        if(jet.hasUserFloat("ak8PFJetsCHSSoftDropPuppiMass")) jet.addUserFloat("ak8PFJetsCHSSoftDropPuppiMassCorr", jet.hasUserFloat("ak8PFJetsCHSSoftDropPuppiMass") * jec);
+        
         //QG tagger for AK4 jets
-        if(jet.nSubjetCollections()<=0){
-             jet.addUserFloat("QGLikelihood", (*QGHandle)[jetRef]);
-	}
+        if(jet.nSubjetCollections()<=0) {
+            jet.addUserFloat("QGLikelihood", (*QGHandle)[jetRef]);
+        }
         
         Vect.push_back(jet); // Fill vector
     }
@@ -250,7 +260,7 @@ bool JetAnalyzer::isLooseJet(pat::Jet& jet) {
     }
     else{
         if(jet.neutralEmEnergyFraction()>=0.90) return false;
-	if(jet.neutralMultiplicity()<=10) return false;
+  if(jet.neutralMultiplicity()<=10) return false;
     }
     return true;
 }
@@ -268,7 +278,7 @@ bool JetAnalyzer::isTightJet(pat::Jet& jet) {
     }
     else{
         if(jet.neutralEmEnergyFraction()>=0.90) return false;
-	if(jet.neutralMultiplicity()<=10) return false;
+  if(jet.neutralMultiplicity()<=10) return false;
     }
     return true;
 }
@@ -287,7 +297,7 @@ bool JetAnalyzer::isTightLepVetoJet(pat::Jet& jet) {
     }
     else{
         if(jet.neutralEmEnergyFraction()>=0.90) return false;
-	if(jet.neutralMultiplicity()<=10) return false;
+  if(jet.neutralMultiplicity()<=10) return false;
     }
     return true;
 }

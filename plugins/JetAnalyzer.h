@@ -23,6 +23,7 @@
 #include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
 #include "CondFormats/JetMETObjects/interface/JetCorrectionUncertainty.h"
 #include "DataFormats/Common/interface/ValueMap.h"
+#include "JetMETCorrections/JetCorrector/interface/JetCorrector.h"
 
 #include "RecoilCorrector.h" // From: https://github.com/cms-met/MetTools/tree/master/RecoilCorrections
 
@@ -52,7 +53,8 @@ class JetAnalyzer {
     
         edm::EDGetTokenT<std::vector<pat::Jet> > JetToken;
         edm::EDGetTokenT<std::vector<pat::MET> > MetToken;
-	edm::EDGetTokenT<edm::ValueMap<float>> QGToken;
+        edm::EDGetTokenT<reco::JetCorrector> CorToken;
+        edm::EDGetTokenT<edm::ValueMap<float>> QGToken;
         int JetId;
         float Jet1Pt, Jet2Pt, JetEta;
         std::string BTag;
