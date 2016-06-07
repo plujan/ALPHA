@@ -12,6 +12,9 @@ JetAnalyzer::JetAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl
     Jet1Pt(PSet.getParameter<double>("jet1pt")),
     Jet2Pt(PSet.getParameter<double>("jet2pt")),
     JetEta(PSet.getParameter<double>("jeteta")),
+    AddQG(PSet.getParameter<bool>("addQGdiscriminator")),
+    RecalibrateJets(PSet.getParameter<bool>("recalibrateJets")),
+    RecalibrateMass(PSet.getParameter<bool>("recalibrateMass")),
     BTag(PSet.getParameter<std::string>("btag")),
     Jet1BTag(PSet.getParameter<int>("jet1btag")),
     Jet2BTag(PSet.getParameter<int>("jet2btag")),
@@ -68,10 +71,12 @@ std::vector<pat::Jet> JetAnalyzer::FillJetVector(const edm::Event& iEvent) {
     iEvent.getByToken(JetToken, PFJetsCollection);
     // Jet corrector
     edm::Handle<reco::JetCorrector> Corrector;
-    iEvent.getByToken(CorToken, Corrector);
+    if(RecalibrateJets || RecalibrateMass) iEvent.getByToken(CorToken, Corrector);
+    
     // Open QG value maps
     edm::Handle<edm::ValueMap<float>> QGHandle;
-    iEvent.getByToken(QGToken, QGHandle);
+    if(AddQG) iEvent.getByToken(QGToken, QGHandle);
+    
     // Loop on Jet collection
     for(std::vector<pat::Jet>::const_iterator it=PFJetsCollection->begin(); it!=PFJetsCollection->end(); ++it) {
         if(Vect.size()>0) {
@@ -120,13 +125,14 @@ std::vector<pat::Jet> JetAnalyzer::FillJetVector(const edm::Event& iEvent) {
         }
         
         // Mass correction
-        float jec = Corrector->correction(jet);
-        if(jet.hasUserFloat("ak8PFJetsCHSPrunedMass")) jet.addUserFloat("ak8PFJetsCHSPrunedMassCorr", jet.hasUserFloat("ak8PFJetsCHSPrunedMass") * jec);
-        if(jet.hasUserFloat("ak8PFJetsCHSSoftDropMassMass")) jet.addUserFloat("ak8PFJetsCHSSoftDropMassCorr", jet.hasUserFloat("ak8PFJetsCHSSoftDropMass") * jec);
-        if(jet.hasUserFloat("ak8PFJetsCHSSoftDropPuppiMass")) jet.addUserFloat("ak8PFJetsCHSSoftDropPuppiMassCorr", jet.hasUserFloat("ak8PFJetsCHSSoftDropPuppiMass") * jec);
-        
+        if(RecalibrateMass) {
+            float jec = Corrector->correction(jet);
+            if(jet.hasUserFloat("ak8PFJetsCHSPrunedMass")) jet.addUserFloat("ak8PFJetsCHSPrunedMassCorr", jet.userFloat("ak8PFJetsCHSPrunedMass") * jec);
+            if(jet.hasUserFloat("ak8PFJetsCHSSoftDropMass")) jet.addUserFloat("ak8PFJetsCHSSoftDropMassCorr", jet.userFloat("ak8PFJetsCHSSoftDropMass") * jec);
+            if(jet.hasUserFloat("ak8PFJetsCHSSoftDropPuppiMass")) jet.addUserFloat("ak8PFJetsCHSSoftDropPuppiMassCorr", jet.userFloat("ak8PFJetsCHSSoftDropPuppiMass") * jec);
+        }
         //QG tagger for AK4 jets
-        if(jet.nSubjetCollections()<=0) {
+        if(AddQG && jet.nSubjetCollections()<=0) {
             jet.addUserFloat("QGLikelihood", (*QGHandle)[jetRef]);
         }
         
@@ -154,6 +160,11 @@ void JetAnalyzer::CleanJetsFromElectrons(std::vector<pat::Jet>& Jets, std::vecto
     }
 }
 
+int JetAnalyzer::GetNBJets(std::vector<pat::Jet>& Jets) {
+    int n(0);
+    for(unsigned int i = 0; i < Jets.size(); i++) if(abs(Jets[i].hadronFlavour()) == 5) n++;
+    return n;
+}
 
 pat::MET JetAnalyzer::FillMetVector(const edm::Event& iEvent) {
     

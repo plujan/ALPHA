@@ -38,6 +38,7 @@ class JetAnalyzer {
         virtual std::vector<pat::Jet> FillJetVector(const edm::Event&);
         virtual void CleanJetsFromMuons(std::vector<pat::Jet>&, std::vector<pat::Muon>&, float);
         virtual void CleanJetsFromElectrons(std::vector<pat::Jet>&, std::vector<pat::Electron>&, float);
+        virtual int GetNBJets(std::vector<pat::Jet>&);
         virtual pat::MET FillMetVector(const edm::Event&);
         virtual void ApplyRecoilCorrections(pat::MET&, const reco::Candidate::LorentzVector*, const reco::Candidate::LorentzVector*, int);
         virtual float GetScaleUncertainty(pat::Jet&);
@@ -57,6 +58,7 @@ class JetAnalyzer {
         edm::EDGetTokenT<edm::ValueMap<float>> QGToken;
         int JetId;
         float Jet1Pt, Jet2Pt, JetEta;
+        bool AddQG, RecalibrateJets, RecalibrateMass;
         std::string BTag;
         int Jet1BTag, Jet2BTag;
         bool UseRecoil;
