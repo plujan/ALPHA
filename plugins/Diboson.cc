@@ -301,17 +301,17 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     // Reconstruct V candidate
     pat::CompositeCandidate theV;
     if(isZtoMM) {
-        if(MuonVect.at(0).charge()*MuonVect.at(1).charge()<0) {
-            theV.addDaughter(MuonVect.at(0));
-            theV.addDaughter(MuonVect.at(1));
+        if(MuonVect.at(0).charge()*MuonVect.at(1).charge()<0 && (MuonVect[0].p4() + MuonVect[1].p4()).mass() > 50.) {
+            theV.addDaughter(MuonVect.at(0).charge() < 0 ? MuonVect.at(0) : MuonVect.at(1));
+            theV.addDaughter(MuonVect.at(0).charge() < 0 ? MuonVect.at(1) : MuonVect.at(0));
             addP4.set(theV);
         }
         else { if(Verbose) std::cout << " - No OS muons" << std::endl; return; }
     }
     else if(isZtoEE) {
-        if(ElecVect.at(0).charge()*ElecVect.at(1).charge()<0) {
-            theV.addDaughter(ElecVect.at(0));
-            theV.addDaughter(ElecVect.at(1));
+        if(ElecVect.at(0).charge()*ElecVect.at(1).charge()<0 && (ElecVect[0].p4() + ElecVect[1].p4()).mass() > 50.) {
+            theV.addDaughter(ElecVect.at(0).charge() ? ElecVect.at(0) : ElecVect.at(1));
+            theV.addDaughter(ElecVect.at(0).charge() ? ElecVect.at(1) : ElecVect.at(0));
             addP4.set(theV);
         }
         else { if(Verbose) std::cout << " - No OS electrons" << std::endl; return; }
@@ -342,7 +342,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     isMerged = isResolved = false;
     
     /////////////////// Highest pT method ////////////////////
-    
+/*  
     // Resolved topology
     if(JetsVect.size() < 2) {if(Verbose) std::cout << " - N jets < 2" << std::endl;} // return;}
     else {
@@ -352,6 +352,9 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         //std::cout << "resolved mass: " << theH.mass() << std::endl;
         //if(theH.mass()<40 || theH.pt()<100) theH.clearDaughters();
         //Hist["a_HAK4Mass_HPt"]->Fill(theH.mass(), EventWeight);
+        Hist["a_nEvents"]->Fill(5., EventWeight);
+        if(isZtoEE) Hist["e_nEvents"]->Fill(5., EventWeight);
+        if(isZtoMM) Hist["m_nEvents"]->Fill(5., EventWeight);
     }
 
     // Boosted topology
@@ -372,10 +375,8 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     
     // Reset theH
     //theH.clearDaughters();
+    */
     
-    Hist["a_nEvents"]->Fill(5., EventWeight);
-    if(isZtoEE) Hist["e_nEvents"]->Fill(5., EventWeight);
-    if(isZtoMM) Hist["m_nEvents"]->Fill(5., EventWeight);
     
     /////////////////// Prefer merged AK8 jet method ////////////////////
     
@@ -447,6 +448,38 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         return;
     }
     */
+    
+    if(JetsVect.size() < 2) {if(Verbose) std::cout << " - N jets < 2" << std::endl;} // return;}
+    else {
+        theH.addDaughter(JetsVect.at(0));
+        theH.addDaughter(JetsVect.at(1));
+        addP4.set(theH);
+        
+        Hist["a_nEvents"]->Fill(5., EventWeight);
+        if(isZtoEE) Hist["e_nEvents"]->Fill(5., EventWeight);
+        if(isZtoMM) Hist["m_nEvents"]->Fill(5., EventWeight);
+        
+        // ----------- KINEMATIC FIT -----------
+        reco::Candidate::LorentzVector fJet1 = bJet1->p4();
+        reco::Candidate::LorentzVector fJet2 = bJet2->p4();
+        Chi2 = performKinematicFit(&JetsVect.at(0), &JetsVect.at(1), &fJet1, &fJet2, 125.0);
+        
+        // Kinematic Fit Candidates
+        reco::Candidate::LorentzVector thekH = fJet1 + fJet2;
+        reco::Candidate::LorentzVector thekA = theV.p4() + thekH;
+        
+        // ########## PART 5: VARIABLES ##########
+  
+        // ---------- Angular ----------
+        CosThetaStar = Utilities::ReturnCosThetaStar(theA.p4(), theV.p4());
+        CosTheta1    = Utilities::ReturnCosTheta1(theV.p4(), theV.daughter(0)->p4(), theV.daughter(1)->p4(), theH.daughter(0)->p4(), theH.daughter(1)->p4());
+        CosTheta2    = fabs( Utilities::ReturnCosTheta2(theH.p4(), theV.daughter(0)->p4(), theV.daughter(1)->p4(), theH.daughter(0)->p4(), theH.daughter(1)->p4()) );
+        Phi          = Utilities::ReturnPhi(theA.p4(), theV.daughter(0)->p4(), theV.daughter(1)->p4(), theH.daughter(0)->p4(), theH.daughter(1)->p4());
+        Phi1         = Utilities::ReturnPhi1(theA.p4(), theV.daughter(0)->p4(), theV.daughter(1)->p4());
+    }
+    
+    
+    
 
     // ---------- Print Summary ----------
     if(Verbose) {
@@ -615,6 +648,14 @@ void Diboson::beginJob() {
     tree->Branch("nJets", &nJets, "nJets/I");
     tree->Branch("nFatJets", &nFatJets, "nFatJets/I");
     tree->Branch("nBTagJets", &nBTagJets, "nBTagJets/I");
+    
+    // Angular variables
+    tree->Branch("CosThetaStar", &CosThetaStar, "CosThetaStar/F");
+    tree->Branch("CosTheta1", &CosTheta1, "CosTheta1/F");
+    tree->Branch("CosTheta2", &CosTheta2, "CosTheta2/F");
+    tree->Branch("Phi", &Phi, "Phi/F");
+    tree->Branch("Phi1", &Phi1, "Phi1/F");
+  
     // Set Branches for objects
     for(int i = 0; i < WriteNElectrons; i++) tree->Branch(("Electron"+std::to_string(i+1)).c_str(), &(Electrons[i]), ObjectsFormat::ListLeptonType().c_str());
     for(int i = 0; i < WriteNMuons; i++) tree->Branch(("Muon"+std::to_string(i+1)).c_str(), &(Muons[i]), ObjectsFormat::ListLeptonType().c_str());

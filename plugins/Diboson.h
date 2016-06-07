@@ -164,6 +164,8 @@ class Diboson : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
         long int EventNumber, RunNumber, LumiNumber;
         float EventWeight, PUWeight, TriggerWeight, LeptonWeight;
         int nPV, nElectrons, nMuons, nTaus, nPhotons, nJets, nFatJets, nBTagJets;
+        // Angular
+        float CosThetaStar, CosTheta1, CosTheta2, Phi, Phi1, AngularLD;
         
         //
         std::vector<LeptonType> Electrons;
