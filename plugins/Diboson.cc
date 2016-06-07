@@ -661,7 +661,7 @@ pat::CompositeCandidate Diboson::createkW(reco::Candidate& lep, pat::MET& met){
         else pz=s2;
     }
     // Otherwise, use real part                                                                           
-    else{
+    else {
          pz = -B/(2*A);
     }
     reco::Particle::LorentzVector neutrino( met.px(), met.py(), pz, sqrt( pow(met.pt(),2)+pow(pz,2) ) );

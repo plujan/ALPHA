@@ -116,7 +116,7 @@ std::vector<pat::Jet> JetAnalyzer::FillJetVector(const edm::Event& iEvent) {
                 puppiSoftdropSubjet.SetPtEtaPhiM(it->pt(), it->eta(), it->phi(), it->mass());
                 puppiSoftdrop += puppiSoftdropSubjet;
             }
-            jet.addUserFloat("softdropPuppiMass", puppiSoftdrop.M());
+            jet.addUserFloat("ak8PFJetsCHSSoftDropPuppiMass", puppiSoftdrop.M());
         }
         
         // Mass correction
