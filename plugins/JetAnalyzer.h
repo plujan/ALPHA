@@ -23,6 +23,7 @@
 #include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
 #include "CondFormats/JetMETObjects/interface/JetCorrectionUncertainty.h"
 #include "DataFormats/Common/interface/ValueMap.h"
+#include "JetMETCorrections/JetCorrector/interface/JetCorrector.h"
 
 #include "RecoilCorrector.h" // From: https://github.com/cms-met/MetTools/tree/master/RecoilCorrections
 
@@ -37,6 +38,7 @@ class JetAnalyzer {
         virtual std::vector<pat::Jet> FillJetVector(const edm::Event&);
         virtual void CleanJetsFromMuons(std::vector<pat::Jet>&, std::vector<pat::Muon>&, float);
         virtual void CleanJetsFromElectrons(std::vector<pat::Jet>&, std::vector<pat::Electron>&, float);
+        virtual int GetNBJets(std::vector<pat::Jet>&);
         virtual pat::MET FillMetVector(const edm::Event&);
         virtual void ApplyRecoilCorrections(pat::MET&, const reco::Candidate::LorentzVector*, const reco::Candidate::LorentzVector*, int);
         virtual float GetScaleUncertainty(pat::Jet&);
@@ -52,9 +54,11 @@ class JetAnalyzer {
     
         edm::EDGetTokenT<std::vector<pat::Jet> > JetToken;
         edm::EDGetTokenT<std::vector<pat::MET> > MetToken;
-	edm::EDGetTokenT<edm::ValueMap<float>> QGToken;
+        edm::EDGetTokenT<reco::JetCorrector> CorToken;
+        edm::EDGetTokenT<edm::ValueMap<float>> QGToken;
         int JetId;
         float Jet1Pt, Jet2Pt, JetEta;
+        bool AddQG, RecalibrateJets, RecalibrateMass;
         std::string BTag;
         int Jet1BTag, Jet2BTag;
         bool UseRecoil;

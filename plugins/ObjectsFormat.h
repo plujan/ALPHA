@@ -28,6 +28,7 @@ class ObjectsFormat {
 //        static void FillMEtCorType(MEtCorType&, const pat::MET*, bool);
         static void FillMEtFullType(MEtFullType&, const pat::MET*, bool);
         static void FillCandidateType(CandidateType&, pat::CompositeCandidate*, bool);
+        static void FillLorentzType(LorentzType&, const reco::Candidate::LorentzVector*);
         static void ResetLeptonType(LeptonType&);
         static void ResetPhotonType(PhotonType&);
         static void ResetTauType(TauType&);
@@ -37,6 +38,7 @@ class ObjectsFormat {
 //        static void ResetMEtCorType(MEtCorType&);
         static void ResetMEtFullType(MEtFullType&);
         static void ResetCandidateType(CandidateType&);
+        static void ResetLorentzType(LorentzType&);
         static std::string ListLeptonType();
         static std::string ListPhotonType();
         static std::string ListTauType();
@@ -46,6 +48,7 @@ class ObjectsFormat {
 //        static std::string ListMEtCorType();
         static std::string ListMEtFullType();
         static std::string ListCandidateType();
+        static std::string ListLorentzType();
         
     private:
     

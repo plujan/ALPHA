@@ -94,7 +94,7 @@ filelists = [
 #    'QCD_HT500to700_GenJets5_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0-v1',
 #    'GluGluSpin0ToZGamma_ZToQQ_W_5-p-6_M_4050_TuneCUEP8M1_13TeV_pythia8_v0-v1',
 #    'QCD_HT700to1000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0_ext1-v1',
-    'DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0_ext1-v1',
+#    'DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0_ext1-v1',
     'DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_v0-v1',
 #    'DYJetsToLL_M-50_HT-100to200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0_ext1-v1',
 #    'DYJetsToLL_M-50_HT-200to400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0_ext1-v1',

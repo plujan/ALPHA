@@ -149,7 +149,7 @@ var_template = {
 #    },
     "MEt.pt": {
       "title" : "#slash{E}_{T} (GeV)",
-      "nbins" : 100,
+      "nbins" : 50,
       "min" : 0,
       "max" : 400,
       "log" : True,

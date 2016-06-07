@@ -369,10 +369,10 @@ void ObjectsFormat::FillFatJetType(FatJetType& I, const pat::Jet* R, bool isMC) 
     I.isMatched   = (I.mother==25);
     I.prunedMass            = R->hasUserFloat("ak8PFJetsCHSPrunedMass") ? R->userFloat("ak8PFJetsCHSPrunedMass") : -1.;
     I.softdropMass          = R->hasUserFloat("ak8PFJetsCHSSoftDropMass") ? R->userFloat("ak8PFJetsCHSSoftDropMass") : -1.;
-    I.softdropPuppiMass     = R->hasUserFloat("softdropPuppiMass") ? R->userFloat("softdropPuppiMass") : -1.;
+    I.softdropPuppiMass     = R->hasUserFloat("ak8PFJetsCHSSoftDropPuppiMass") ? R->userFloat("ak8PFJetsCHSSoftDropPuppiMass") : -1.;
     I.prunedMassCorr        = R->hasUserFloat("ak8PFJetsCHSPrunedMassCorr") ? R->userFloat("ak8PFJetsCHSPrunedMassCorr") : -1.;
     I.softdropMassCorr      = R->hasUserFloat("ak8PFJetsCHSSoftDropMassCorr") ? R->userFloat("ak8PFJetsCHSSoftDropMassCorr") : -1.;
-    I.softdropPuppiMassCorr = R->hasUserFloat("ak8PFJetsCHSSoftDropMassCorr") ? R->userFloat("ak8PFJetsCHSSoftDropMassCorr") : -1.;
+    I.softdropPuppiMassCorr = R->hasUserFloat("ak8PFJetsCHSSoftDropPuppiMassCorr") ? R->userFloat("ak8PFJetsCHSSoftDropPuppiMassCorr") : -1.;
     I.pt1         = R->subjets("SoftDrop").size() > 0 ? R->subjets("SoftDrop")[0]->pt() : -1.;
     I.eta1        = R->subjets("SoftDrop").size() > 0 ? R->subjets("SoftDrop")[0]->eta() : -1.;
     I.phi1        = R->subjets("SoftDrop").size() > 0 ? R->subjets("SoftDrop")[0]->phi() : -1.;
@@ -577,7 +577,7 @@ void ObjectsFormat::FillCandidateType(CandidateType& I, pat::CompositeCandidate*
   I.phi         = R->phi();
   I.mass        = R->mass();
   I.tmass       = R->numberOfDaughters()>1 ? sqrt( 2.*R->daughter(0)->pt()*R->daughter(1)->pt()*(1.-cos(deltaPhi(R->daughter(0)->phi(), R->daughter(1)->phi())) ) ) : -1.;
-  I.softdropMass= R->hasUserFloat("softdropMass") ? R->userFloat("softdropMass") : -1.; 
+//  I.softdropMass= R->hasUserFloat("softdropMass") ? R->userFloat("softdropMass") : -1.; 
   I.dR          = R->numberOfDaughters()>1 ? deltaR(*R->daughter(0), *R->daughter(1)) : -1.;
   I.dEta        = R->numberOfDaughters()>1 ? fabs( R->daughter(0)->eta() - R->daughter(1)->eta() ) : -1.;
   I.dPhi        = R->numberOfDaughters()>1 ? fabs( deltaPhi(R->daughter(0)->phi(), R->daughter(1)->phi()) ) : -1.;
@@ -594,7 +594,7 @@ void ObjectsFormat::ResetCandidateType(CandidateType& I) {
   I.phi         = -9.;
   I.mass        = -1.;
   I.tmass       = -1.;
-  I.softdropMass = -1.;
+//  I.softdropMass = -1.;
   I.dR          = -1.;
   I.dEta        = -1.;
   I.dPhi        = -1.;
@@ -605,7 +605,7 @@ void ObjectsFormat::ResetCandidateType(CandidateType& I) {
 //  I.charge      = -1.;
 }
 
-std::string ObjectsFormat::ListCandidateType() {return "pt/F:eta/F:phi/F:mass/F:tmass/F:softdropMass/F:dR/F:dEta/F:dPhi/F:twist/F";}
+std::string ObjectsFormat::ListCandidateType() {return "pt/F:eta/F:phi/F:mass/F:tmass/F:dR/F:dEta/F:dPhi/F:twist/F";}
 
 /*
 void ObjectsFormat::FillCandidateType(CandidateType& I, const reco::Candidate::LorentzVector* V1, const reco::Candidate::LorentzVector* V2) {
@@ -627,6 +627,7 @@ void ObjectsFormat::FillCandidateType(CandidateType& I, const reco::Candidate::L
 //  I.centrality  = (R->daughter(0)->pt()+R->daughter(0)->pt()) / (R->daughter(0)->p()+R->daughter(0)->p());// /R->mass();
 //  I.charge      = R->charge();
 }
+*/
 
 void ObjectsFormat::FillLorentzType(LorentzType& I, const reco::Candidate::LorentzVector* V) {
   I.pt          = V->pt();
@@ -635,4 +636,15 @@ void ObjectsFormat::FillLorentzType(LorentzType& I, const reco::Candidate::Loren
   I.energy      = V->energy();
   I.mass        = V->mass();
 }
-*/
+
+void ObjectsFormat::ResetLorentzType(LorentzType& I) {
+  I.pt          = -1.;
+  I.eta         = -9.;
+  I.phi         = -9.;
+  I.energy      = -1.;
+  I.mass        = -1.;
+}
+
+std::string ObjectsFormat::ListLorentzType() {return "pt/F:eta/F:phi/F:energy/F:mass/F";}
+
+

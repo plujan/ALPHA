@@ -140,7 +140,8 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     RunNumber = iEvent.id().run();
     
     EventWeight = PUWeight = TriggerWeight = LeptonWeight = 1.;
-    nPV = nElectrons = nMuons = nTaus = nPhotons = nJets = nFatJets = 1.;
+    nPV = nElectrons = nMuons = nTaus = nPhotons = nJets = nFatJets = nBTagJets = 1;
+    Chi2 = -1.;
     
     AddFourMomenta addP4;
     
@@ -156,6 +157,8 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     ObjectsFormat::ResetCandidateType(V);
     ObjectsFormat::ResetCandidateType(HMerged);
     ObjectsFormat::ResetCandidateType(HResolved);
+    ObjectsFormat::ResetLorentzType(kH);
+    ObjectsFormat::ResetLorentzType(kX);
     
     Hist["a_nEvents"]->Fill(1., EventWeight);
     Hist["e_nEvents"]->Fill(1., EventWeight);
@@ -191,6 +194,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     theJetAnalyzer->CleanJetsFromMuons(JetsVect, MuonVect, 0.4);
     theJetAnalyzer->CleanJetsFromElectrons(JetsVect, ElecVect, 0.4);
     nJets = JetsVect.size();
+    nBTagJets = theJetAnalyzer->GetNBJets(JetsVect);
     // Fat Jets
     std::vector<pat::Jet> FatJetsVect = theFatJetAnalyzer->FillJetVector(iEvent);
     theFatJetAnalyzer->CleanJetsFromMuons(FatJetsVect, MuonVect, 1.);
@@ -300,17 +304,17 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     // Reconstruct V candidate
     pat::CompositeCandidate theV;
     if(isZtoMM) {
-        if(MuonVect.at(0).charge()*MuonVect.at(1).charge()<0) {
-            theV.addDaughter(MuonVect.at(0));
-            theV.addDaughter(MuonVect.at(1));
+        if(MuonVect.at(0).charge()*MuonVect.at(1).charge()<0 && (MuonVect[0].p4() + MuonVect[1].p4()).mass() > 50.) {
+            theV.addDaughter(MuonVect.at(0).charge() < 0 ? MuonVect.at(0) : MuonVect.at(1));
+            theV.addDaughter(MuonVect.at(0).charge() < 0 ? MuonVect.at(1) : MuonVect.at(0));
             addP4.set(theV);
         }
         else { if(Verbose) std::cout << " - No OS muons" << std::endl; return; }
     }
     else if(isZtoEE) {
-        if(ElecVect.at(0).charge()*ElecVect.at(1).charge()<0) {
-            theV.addDaughter(ElecVect.at(0));
-            theV.addDaughter(ElecVect.at(1));
+        if(ElecVect.at(0).charge()*ElecVect.at(1).charge()<0 && (ElecVect[0].p4() + ElecVect[1].p4()).mass() > 50.) {
+            theV.addDaughter(ElecVect.at(0).charge() ? ElecVect.at(0) : ElecVect.at(1));
+            theV.addDaughter(ElecVect.at(0).charge() ? ElecVect.at(1) : ElecVect.at(0));
             addP4.set(theV);
         }
         else { if(Verbose) std::cout << " - No OS electrons" << std::endl; return; }
@@ -338,10 +342,11 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     pat::CompositeCandidate theHResolved;
     pat::CompositeCandidate theHResolvedHpt;
     pat::CompositeCandidate theH;
+    pat::CompositeCandidate theX;
     isMerged = isResolved = false;
     
     /////////////////// Highest pT method ////////////////////
-    
+/*  
     // Resolved topology
     if(JetsVect.size() < 2) {if(Verbose) std::cout << " - N jets < 2" << std::endl;} // return;}
     else {
@@ -351,6 +356,9 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         //std::cout << "resolved mass: " << theH.mass() << std::endl;
         //if(theH.mass()<40 || theH.pt()<100) theH.clearDaughters();
         //Hist["a_HAK4Mass_HPt"]->Fill(theH.mass(), EventWeight);
+        Hist["a_nEvents"]->Fill(5., EventWeight);
+        if(isZtoEE) Hist["e_nEvents"]->Fill(5., EventWeight);
+        if(isZtoMM) Hist["m_nEvents"]->Fill(5., EventWeight);
     }
 
     // Boosted topology
@@ -362,7 +370,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
             theH.clearDaughters();
             theH.addDaughter(FatJetsVect.at(0));
             addP4.set(theH);
-            theH.addUserFloat("softdropMass", FatJetsVect.at(0).userFloat("ak8PFJetsCHSSoftDropMass"));
+            //theH.addUserFloat("softdropMass", FatJetsVect.at(0).userFloat("ak8PFJetsCHSSoftDropMass"));
             //if(theH.mass()>180) theH.clearDaughters();
         }
     }
@@ -371,10 +379,8 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     
     // Reset theH
     //theH.clearDaughters();
+    */
     
-    Hist["a_nEvents"]->Fill(5., EventWeight);
-    if(isZtoEE) Hist["e_nEvents"]->Fill(5., EventWeight);
-    if(isZtoMM) Hist["m_nEvents"]->Fill(5., EventWeight);
     
     /////////////////// Prefer merged AK8 jet method ////////////////////
     
@@ -383,7 +389,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         isMerged = true;
         theHMerged.addDaughter(FatJetsVect.at(0));
         addP4.set(theHMerged);
-        theHMerged.addUserFloat("softdropMass", FatJetsVect.at(0).userFloat("ak8PFJetsCHSSoftDropMass"));
+        //theHMerged.addUserFloat("softdropMass", FatJetsVect.at(0).userFloat("ak8PFJetsCHSSoftDropMass"));
     }
     
     // Resolved
@@ -446,6 +452,45 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         return;
     }
     */
+    reco::Candidate::LorentzVector thekH;
+    reco::Candidate::LorentzVector thekX;
+    if(JetsVect.size() < 2) {if(Verbose) std::cout << " - N jets < 2" << std::endl;} // return;}
+    else {
+        theH.addDaughter(JetsVect.at(0));
+        theH.addDaughter(JetsVect.at(1));
+        addP4.set(theH);
+        
+        theX.addDaughter(theV);
+        theX.addDaughter(theH);
+        addP4.set(theX);
+        
+        Hist["a_nEvents"]->Fill(5., EventWeight);
+        if(isZtoEE) Hist["e_nEvents"]->Fill(5., EventWeight);
+        if(isZtoMM) Hist["m_nEvents"]->Fill(5., EventWeight);
+        
+        // ----------- KINEMATIC FIT -----------
+        reco::Candidate::LorentzVector fJet1 = JetsVect.at(0).p4();
+        reco::Candidate::LorentzVector fJet2 = JetsVect.at(1).p4();
+        Chi2 = performKinematicFit(&JetsVect.at(0), &JetsVect.at(1), &fJet1, &fJet2, 125.0);
+        
+        // Kinematic Fit Candidates
+        thekH = fJet1 + fJet2;
+        thekX = theV.p4() + thekH;
+        
+        
+        
+        // ########## PART 5: VARIABLES ##########
+  
+        // ---------- Angular ----------
+        CosThetaStar = Utilities::ReturnCosThetaStar(theX.p4(), theV.p4());
+        CosTheta1    = Utilities::ReturnCosTheta1(theV.p4(), theV.daughter(0)->p4(), theV.daughter(1)->p4(), theH.daughter(0)->p4(), theH.daughter(1)->p4());
+        CosTheta2    = fabs( Utilities::ReturnCosTheta2(theH.p4(), theV.daughter(0)->p4(), theV.daughter(1)->p4(), theH.daughter(0)->p4(), theH.daughter(1)->p4()) );
+        Phi          = Utilities::ReturnPhi(theX.p4(), theV.daughter(0)->p4(), theV.daughter(1)->p4(), theH.daughter(0)->p4(), theH.daughter(1)->p4());
+        Phi1         = Utilities::ReturnPhi1(theX.p4(), theV.daughter(0)->p4(), theV.daughter(1)->p4());
+    }
+    
+    
+    
 
     // ---------- Print Summary ----------
     if(Verbose) {
@@ -480,12 +525,16 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     for(unsigned int i = 0; i < FatJets.size() && i < FatJetsVect.size(); i++) ObjectsFormat::FillFatJetType(FatJets[i], &FatJetsVect[i], isMC);
     ObjectsFormat::FillMEtType(MEt, &MET, isMC);
     ObjectsFormat::FillCandidateType(V, &theV, isMC);
+    ObjectsFormat::FillCandidateType(H, &theH, isMC);
+    ObjectsFormat::FillCandidateType(X, &theX, isMC);
     ObjectsFormat::FillCandidateType(HMerged, &theHMerged, isMC);
     ObjectsFormat::FillCandidateType(XMerged, &theXMerged, isMC);
     ObjectsFormat::FillCandidateType(HResolved, &theHResolved, isMC);
     ObjectsFormat::FillCandidateType(XResolved, &theXResolved, isMC);
     ObjectsFormat::FillCandidateType(HResolvedHpt, &theHResolvedHpt, isMC);
     ObjectsFormat::FillCandidateType(XResolvedHpt, &theXResolvedHpt, isMC);
+    ObjectsFormat::FillLorentzType(kH, &thekH);
+    ObjectsFormat::FillLorentzType(kX, &thekX);
         
     // Lepton and Trigger SF
     if(isMC) {
@@ -606,13 +655,23 @@ void Diboson::beginJob() {
     tree->Branch("isResolved", &isResolved, "isResolved/O");
     
     // Objects
-    tree->Branch("nPV", &nPV, "nPV/F");
-    tree->Branch("nElectrons", &nElectrons, "nElectrons/F");
-    tree->Branch("nMuons", &nMuons, "nMuons/F");
-    tree->Branch("nTaus", &nTaus, "nTaus/F");
-    tree->Branch("nPhotons", &nPhotons, "nPhotons/F");
-    tree->Branch("nJets", &nJets, "nJets/F");
-    tree->Branch("nFatJets", &nFatJets, "nFatJets/F");
+    tree->Branch("nPV", &nPV, "nPV/I");
+    tree->Branch("nElectrons", &nElectrons, "nElectrons/I");
+    tree->Branch("nMuons", &nMuons, "nMuons/I");
+    tree->Branch("nTaus", &nTaus, "nTaus/I");
+    tree->Branch("nPhotons", &nPhotons, "nPhotons/I");
+    tree->Branch("nJets", &nJets, "nJets/I");
+    tree->Branch("nFatJets", &nFatJets, "nFatJets/I");
+    tree->Branch("nBTagJets", &nBTagJets, "nBTagJets/I");
+    
+    tree->Branch("Chi2", &Chi2, "Chi2/F");
+    // Angular variables
+    tree->Branch("CosThetaStar", &CosThetaStar, "CosThetaStar/F");
+    tree->Branch("CosTheta1", &CosTheta1, "CosTheta1/F");
+    tree->Branch("CosTheta2", &CosTheta2, "CosTheta2/F");
+    tree->Branch("Phi", &Phi, "Phi/F");
+    tree->Branch("Phi1", &Phi1, "Phi1/F");
+  
     // Set Branches for objects
     for(int i = 0; i < WriteNElectrons; i++) tree->Branch(("Electron"+std::to_string(i+1)).c_str(), &(Electrons[i]), ObjectsFormat::ListLeptonType().c_str());
     for(int i = 0; i < WriteNMuons; i++) tree->Branch(("Muon"+std::to_string(i+1)).c_str(), &(Muons[i]), ObjectsFormat::ListLeptonType().c_str());
@@ -623,12 +682,16 @@ void Diboson::beginJob() {
     for(int i = 0; i < WriteNFatJets; i++) tree->Branch(("FatJet"+std::to_string(i+1)).c_str(), &(FatJets[i]), ObjectsFormat::ListFatJetType().c_str());
     tree->Branch("MEt", &MEt, ObjectsFormat::ListMEtType().c_str());
     tree->Branch("V", &V, ObjectsFormat::ListCandidateType().c_str());
+    tree->Branch("H", &H, ObjectsFormat::ListCandidateType().c_str());
+    tree->Branch("X", &X, ObjectsFormat::ListCandidateType().c_str());
     tree->Branch("HMerged", &HMerged, ObjectsFormat::ListCandidateType().c_str());
     tree->Branch("XMerged", &XMerged, ObjectsFormat::ListCandidateType().c_str());
     tree->Branch("HResolved", &HResolved, ObjectsFormat::ListCandidateType().c_str());
     tree->Branch("HResolvedHpt", &HResolvedHpt, ObjectsFormat::ListCandidateType().c_str());
     tree->Branch("XResolved", &XResolved, ObjectsFormat::ListCandidateType().c_str());
     tree->Branch("XResolvedHpt", &XResolvedHpt, ObjectsFormat::ListCandidateType().c_str());
+    tree->Branch("kH", &kH, ObjectsFormat::ListLorentzType().c_str());
+    tree->Branch("kX", &kX, ObjectsFormat::ListLorentzType().c_str());
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
@@ -661,7 +724,7 @@ pat::CompositeCandidate Diboson::createkW(reco::Candidate& lep, pat::MET& met){
         else pz=s2;
     }
     // Otherwise, use real part                                                                           
-    else{
+    else {
          pz = -B/(2*A);
     }
     reco::Particle::LorentzVector neutrino( met.px(), met.py(), pz, sqrt( pow(met.pt(),2)+pow(pz,2) ) );
@@ -699,6 +762,103 @@ pat::CompositeCandidate Diboson::recoilMassFormula(pat::CompositeCandidate& H, p
     X.setP4(Xp4);
     X.setCharge(0);
     return X;
+}
+
+
+
+
+// -----------------------------------
+// ---------- KINEMATIC FIT ----------
+// -----------------------------------
+
+float Diboson::performKinematicFit(pat::Jet* tJet1, pat::Jet* tJet2, reco::Candidate::LorentzVector* fJet1, reco::Candidate::LorentzVector* fJet2, float mass) {
+//  TLorentzVector b1, b2;
+//  b1.SetPtEtaPhiE(tJet1->pt(), tJet1->eta(), tJet1->phi(), tJet1->energy());
+//  b2.SetPtEtaPhiE(tJet2->pt(), tJet2->eta(), tJet2->phi(), tJet2->energy());
+  
+  TMatrixD m1(3,3);
+  TMatrixD m2(3,3);
+  m1.Zero();
+  m2.Zero();
+
+  //In this example the covariant matrix depends on the transverse energy and eta of the jets
+  m1(0,0) = GetErrEt (tJet1->et(), tJet1->eta()); // et
+  m1(1,1) = GetErrEta(tJet1->et(), tJet1->eta()); // eta
+  m1(2,2) = GetErrPhi(tJet1->et(), tJet1->eta()); // phi
+  m2(0,0) = GetErrEt (tJet2->et(), tJet2->eta()); // et
+  m2(1,1) = GetErrEta(tJet2->et(), tJet2->eta()); // eta
+  m2(2,2) = GetErrPhi(tJet2->et(), tJet2->eta()); // phi
+
+//  TFitParticleEtEtaPhi jet1("Jet1", "Jet1", &b1, &m1);
+//  TFitParticleEtEtaPhi jet2("Jet2", "Jet2", &b2, &m2);
+  
+//  TVector3 b1_3=b1.Vect();
+//  TVector3 b2_3=b2.Vect();
+  TVector3 b1(tJet1->px(), tJet1->py(), tJet1->pz());
+  TVector3 b2(tJet2->px(), tJet2->py(), tJet2->pz());
+  TFitParticlePtEtaPhi jet1("Jet1", "Jet1", &b1, tJet1->mass(), &m1 );
+  TFitParticlePtEtaPhi jet2("Jet2", "Jet2", &b2, tJet2->mass(), &m2 );
+
+//  TFitParticleEScaledMomDev jet1("Jet1", "Jet1", &b1, &m1);
+//  TFitParticleEScaledMomDev jet2("Jet2", "Jet2", &b2, &m2);
+
+  //vec1 and vec2 must make a W boson
+  TFitConstraintM mCons1("hMassConstraint", "hMass-Constraint", 0, 0, mass);
+  mCons1.addParticles1( &jet1, &jet2 );
+
+  //Definition of the fitter
+  //Add two constraints
+  TKinFitter fitter("fitter", "fitter");
+  fitter.addMeasParticle( &jet1 );
+  fitter.addMeasParticle( &jet2 );
+
+  fitter.addConstraint( &mCons1 );
+  
+  //Set convergence criteria
+  fitter.setMaxNbIter( 30 );
+  fitter.setMaxDeltaS( 1e-2 );
+  fitter.setMaxF( 1e-1 );
+  fitter.setVerbosity(1);
+
+  // Perform the fit
+  if(Verbose) std::cout << "Performing kinematic fit..." << std::endl;
+  fitter.fit();
+//  fitter.print();
+
+  float dPt1  = jet1.getCurr4Vec()->Pt()  - jet1.getIni4Vec()->Pt();
+  float dEta1 = jet1.getCurr4Vec()->Eta() - jet1.getIni4Vec()->Eta();
+  float dPhi1 = jet1.getCurr4Vec()->Phi() - jet1.getIni4Vec()->Phi();
+  float dPt2  = jet2.getCurr4Vec()->Pt()  - jet2.getIni4Vec()->Pt();
+  float dEta2 = jet2.getCurr4Vec()->Eta() - jet2.getIni4Vec()->Eta();
+  float dPhi2 = jet2.getCurr4Vec()->Phi() - jet2.getIni4Vec()->Phi();
+
+  float chi2( dPt1*dPt1/m1(0,0) + dEta1*dEta1/m1(1,1) + dPhi1*dPhi1/m1(2,2) + dPt2*dPt2/m2(0,0) + dEta2*dEta2/m2(1,1) + dPhi2*dPhi2/m2(2,2) ); //=fitter.getS();
+  float pchi2=TMath::Prob(chi2, fitter.getNDF());
+  
+  Hist["k_chi2"]->Fill(chi2, EventWeight);
+  Hist["k_chi2Prob"]->Fill(pchi2, EventWeight);
+  Hist["k_deltaPt1" ]->Fill(dPt1, EventWeight);
+  Hist["k_deltaEta1"]->Fill(dEta1, EventWeight);
+  Hist["k_deltaPhi1"]->Fill(dPhi1, EventWeight);
+  Hist["k_deltaPt2" ]->Fill(dPt2, EventWeight);
+  Hist["k_deltaEta2"]->Fill(dEta2, EventWeight);
+  Hist["k_deltaPhi2"]->Fill(dPhi2, EventWeight);
+  if(tJet1->genParton()) {
+    Hist["k_pullPt1" ]->Fill((jet1.getCurr4Vec()->Pt()-tJet1->genParton()->pt())/sqrt(m1(0,0)), EventWeight);
+    Hist["k_pullEta1"]->Fill((jet1.getCurr4Vec()->Eta()-tJet1->genParton()->eta())/sqrt(m1(1,1)), EventWeight);
+    Hist["k_pullPhi1"]->Fill((jet1.getCurr4Vec()->Phi()-tJet1->genParton()->phi())/sqrt(m1(2,2)), EventWeight);
+  }
+  if(tJet2->genParton()) {
+    Hist["k_pullPt2" ]->Fill((jet2.getCurr4Vec()->Pt()-tJet2->genParton()->pt())/sqrt(m2(0,0)), EventWeight);
+    Hist["k_pullEta2"]->Fill((jet2.getCurr4Vec()->Eta()-tJet2->genParton()->eta())/sqrt(m2(1,1)), EventWeight);
+    Hist["k_pullPhi2"]->Fill((jet2.getCurr4Vec()->Phi()-tJet2->genParton()->phi())/sqrt(m2(2,2)), EventWeight);
+  }
+  
+  // Update objects
+  fJet1->SetPxPyPzE(jet1.getCurr4Vec()->Px(), jet1.getCurr4Vec()->Py(), jet1.getCurr4Vec()->Pz(), jet1.getCurr4Vec()->Energy());
+  fJet2->SetPxPyPzE(jet2.getCurr4Vec()->Px(), jet2.getCurr4Vec()->Py(), jet2.getCurr4Vec()->Pz(), jet2.getCurr4Vec()->Energy());
+  
+  return chi2;
 }
 
 

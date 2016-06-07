@@ -81,10 +81,15 @@
 // dR and dPhi
 #include "DataFormats/Math/interface/deltaR.h"
 #include "DataFormats/Math/interface/deltaPhi.h"
-//// KinFitter
-//#include "PhysicsTools/KinFitter/interface/TKinFitter.h"
-//#include "PhysicsTools/KinFitter/interface/TFitConstraintM.h"
-////#include "PhysicsTools/KinFitter/interface/TFitParticlePtEtaPhi.h"
+// KinFitter
+#include "PhysicsTools/KinFitter/interface/TFitConstraintM.h"
+#include "PhysicsTools/KinFitter/interface/TFitParticleEtEtaPhi.h"
+#include "PhysicsTools/KinFitter/interface/TFitParticlePtEtaPhi.h"
+#include "PhysicsTools/KinFitter/interface/TFitParticleEScaledMomDev.h"
+#include "PhysicsTools/KinFitter/interface/TKinFitter.h"
+
+#include "Utilities.h"
+#include "Numbers.h"
 
 #include "TTree.h"
 #include "TH2.h"
@@ -124,6 +129,7 @@ class Diboson : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
         static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
         virtual pat::CompositeCandidate createkW(reco::Candidate&, pat::MET&);
         virtual pat::CompositeCandidate recoilMassFormula(pat::CompositeCandidate&, pat::MET&);
+        virtual float performKinematicFit(pat::Jet*, pat::Jet*, reco::Candidate::LorentzVector*, reco::Candidate::LorentzVector*, float);
 
     private:
         virtual void beginJob() override;
@@ -163,7 +169,10 @@ class Diboson : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
         bool isMC, isZtoEE, isZtoMM, isWtoEN, isWtoMN, isZtoNN, isMerged, isResolved;
         long int EventNumber, RunNumber, LumiNumber;
         float EventWeight, PUWeight, TriggerWeight, LeptonWeight;
-        float nPV, nElectrons, nMuons, nTaus, nPhotons, nJets, nFatJets;
+        int nPV, nElectrons, nMuons, nTaus, nPhotons, nJets, nFatJets, nBTagJets;
+        float Chi2;
+        // Angular
+        float CosThetaStar, CosTheta1, CosTheta2, Phi, Phi1, AngularLD;
         
         //
         std::vector<LeptonType> Electrons;
@@ -174,9 +183,10 @@ class Diboson : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
         std::vector<JetType> Jets;
         std::vector<FatJetType> FatJets;
         MEtType MEt;
-        CandidateType V;
+        CandidateType V, H, X;
         CandidateType HMerged, HResolved, HResolvedHpt;
         CandidateType XMerged, XResolved, XResolvedHpt;
+        LorentzType kH, kX;
 };
 
 #endif

@@ -116,6 +116,12 @@ sample = {
         'kfactor' : 1.,
     },
     
+    'VVTo2L2Nu_13TeV_amcatnloFXFX_madspin_pythia8_v0-v1' : {
+        'nevents' : 2944584,
+        'xsec'    : 1,
+        'kfactor' : 1.,
+    },
+    
     # Signal
     'BulkGravToZZToZlepZhad_narrow_M-600_13TeV-madgraph_PRIVATE-MC_v0-v1' : {
         'nevents' : 10000,
