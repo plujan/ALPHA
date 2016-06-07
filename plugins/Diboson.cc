@@ -141,6 +141,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     
     EventWeight = PUWeight = TriggerWeight = LeptonWeight = 1.;
     nPV = nElectrons = nMuons = nTaus = nPhotons = nJets = nFatJets = nBTagJets = 1;
+    Chi2 = -1.;
     
     AddFourMomenta addP4;
     
@@ -341,6 +342,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     pat::CompositeCandidate theHResolved;
     pat::CompositeCandidate theHResolvedHpt;
     pat::CompositeCandidate theH;
+    pat::CompositeCandidate theX;
     isMerged = isResolved = false;
     
     /////////////////// Highest pT method ////////////////////
@@ -458,6 +460,10 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         theH.addDaughter(JetsVect.at(1));
         addP4.set(theH);
         
+        theX.addDaughter(theV);
+        theX.addDaughter(theH);
+        addP4.set(theX);
+        
         Hist["a_nEvents"]->Fill(5., EventWeight);
         if(isZtoEE) Hist["e_nEvents"]->Fill(5., EventWeight);
         if(isZtoMM) Hist["m_nEvents"]->Fill(5., EventWeight);
@@ -465,7 +471,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         // ----------- KINEMATIC FIT -----------
         reco::Candidate::LorentzVector fJet1 = JetsVect.at(0).p4();
         reco::Candidate::LorentzVector fJet2 = JetsVect.at(1).p4();
-        float Chi2 = performKinematicFit(&JetsVect.at(0), &JetsVect.at(1), &fJet1, &fJet2, 125.0);
+        Chi2 = performKinematicFit(&JetsVect.at(0), &JetsVect.at(1), &fJet1, &fJet2, 125.0);
         
         // Kinematic Fit Candidates
         thekH = fJet1 + fJet2;
@@ -476,11 +482,11 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         // ########## PART 5: VARIABLES ##########
   
         // ---------- Angular ----------
-//        CosThetaStar = Utilities::ReturnCosThetaStar(theA.p4(), theV.p4());
-//        CosTheta1    = Utilities::ReturnCosTheta1(theV.p4(), theV.daughter(0)->p4(), theV.daughter(1)->p4(), theH.daughter(0)->p4(), theH.daughter(1)->p4());
-//        CosTheta2    = fabs( Utilities::ReturnCosTheta2(theH.p4(), theV.daughter(0)->p4(), theV.daughter(1)->p4(), theH.daughter(0)->p4(), theH.daughter(1)->p4()) );
-//        Phi          = Utilities::ReturnPhi(theA.p4(), theV.daughter(0)->p4(), theV.daughter(1)->p4(), theH.daughter(0)->p4(), theH.daughter(1)->p4());
-//        Phi1         = Utilities::ReturnPhi1(theA.p4(), theV.daughter(0)->p4(), theV.daughter(1)->p4());
+        CosThetaStar = Utilities::ReturnCosThetaStar(theX.p4(), theV.p4());
+        CosTheta1    = Utilities::ReturnCosTheta1(theV.p4(), theV.daughter(0)->p4(), theV.daughter(1)->p4(), theH.daughter(0)->p4(), theH.daughter(1)->p4());
+        CosTheta2    = fabs( Utilities::ReturnCosTheta2(theH.p4(), theV.daughter(0)->p4(), theV.daughter(1)->p4(), theH.daughter(0)->p4(), theH.daughter(1)->p4()) );
+        Phi          = Utilities::ReturnPhi(theX.p4(), theV.daughter(0)->p4(), theV.daughter(1)->p4(), theH.daughter(0)->p4(), theH.daughter(1)->p4());
+        Phi1         = Utilities::ReturnPhi1(theX.p4(), theV.daughter(0)->p4(), theV.daughter(1)->p4());
     }
     
     
@@ -519,6 +525,8 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     for(unsigned int i = 0; i < FatJets.size() && i < FatJetsVect.size(); i++) ObjectsFormat::FillFatJetType(FatJets[i], &FatJetsVect[i], isMC);
     ObjectsFormat::FillMEtType(MEt, &MET, isMC);
     ObjectsFormat::FillCandidateType(V, &theV, isMC);
+    ObjectsFormat::FillCandidateType(H, &theH, isMC);
+    ObjectsFormat::FillCandidateType(X, &theX, isMC);
     ObjectsFormat::FillCandidateType(HMerged, &theHMerged, isMC);
     ObjectsFormat::FillCandidateType(XMerged, &theXMerged, isMC);
     ObjectsFormat::FillCandidateType(HResolved, &theHResolved, isMC);
@@ -656,6 +664,7 @@ void Diboson::beginJob() {
     tree->Branch("nFatJets", &nFatJets, "nFatJets/I");
     tree->Branch("nBTagJets", &nBTagJets, "nBTagJets/I");
     
+    tree->Branch("Chi2", &Chi2, "Chi2/F");
     // Angular variables
     tree->Branch("CosThetaStar", &CosThetaStar, "CosThetaStar/F");
     tree->Branch("CosTheta1", &CosTheta1, "CosTheta1/F");
@@ -673,12 +682,16 @@ void Diboson::beginJob() {
     for(int i = 0; i < WriteNFatJets; i++) tree->Branch(("FatJet"+std::to_string(i+1)).c_str(), &(FatJets[i]), ObjectsFormat::ListFatJetType().c_str());
     tree->Branch("MEt", &MEt, ObjectsFormat::ListMEtType().c_str());
     tree->Branch("V", &V, ObjectsFormat::ListCandidateType().c_str());
+    tree->Branch("H", &H, ObjectsFormat::ListCandidateType().c_str());
+    tree->Branch("X", &X, ObjectsFormat::ListCandidateType().c_str());
     tree->Branch("HMerged", &HMerged, ObjectsFormat::ListCandidateType().c_str());
     tree->Branch("XMerged", &XMerged, ObjectsFormat::ListCandidateType().c_str());
     tree->Branch("HResolved", &HResolved, ObjectsFormat::ListCandidateType().c_str());
     tree->Branch("HResolvedHpt", &HResolvedHpt, ObjectsFormat::ListCandidateType().c_str());
     tree->Branch("XResolved", &XResolved, ObjectsFormat::ListCandidateType().c_str());
     tree->Branch("XResolvedHpt", &XResolvedHpt, ObjectsFormat::ListCandidateType().c_str());
+    tree->Branch("kH", &kH, ObjectsFormat::ListLorentzType().c_str());
+    tree->Branch("kX", &kX, ObjectsFormat::ListLorentzType().c_str());
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
