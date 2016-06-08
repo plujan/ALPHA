@@ -27,6 +27,8 @@
 
 #include "RecoilCorrector.h" // From: https://github.com/cms-met/MetTools/tree/master/RecoilCorrections
 
+#include "BTagCalibrationStandalone.h"
+
 #include "TFile.h"
 #include "TH2.h"
 #include "TLorentzVector.h"
@@ -49,6 +51,7 @@ class JetAnalyzer {
         //virtual bool isMediumJet(pat::Jet&);
         virtual bool isTightJet(pat::Jet&);
         virtual bool isTightLepVetoJet(pat::Jet&);
+        virtual std::vector<float> reshapeBtagDiscriminator(pat::Jet&);
       
     private:
     
@@ -61,6 +64,7 @@ class JetAnalyzer {
         bool AddQG, RecalibrateJets, RecalibrateMass;
         std::string BTag;
         int Jet1BTag, Jet2BTag;
+        std::string BTagDB;
         bool UseRecoil;
         std::string RecoilMCFile;
         std::string RecoilDataFile;

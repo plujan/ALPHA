@@ -220,7 +220,9 @@ void ObjectsFormat::FillJetType(JetType& I, const pat::Jet* R, bool isMC) {
     I.dPhi_jet1   = R->hasUserFloat("dPhi_jet1") ? R->userFloat("dPhi_jet1") : -1.;
     I.puId        = -1.; //R->userFloat("pileupJetId:fullDiscriminant");
     I.CSV         = R->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
-    I.CSVR        = R->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
+    I.CSVR        = R->hasUserFloat("ReshapedDiscriminator") ? R->userFloat("ReshapedDiscriminator") : R->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
+    I.CSVRUp      = R->hasUserFloat("ReshapedDiscriminatorUp") ? R->userFloat("ReshapedDiscriminatorUp") : R->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
+    I.CSVRDown    = R->hasUserFloat("ReshapedDiscriminatorDown") ? R->userFloat("ReshapedDiscriminatorDown") : R->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
   //  I.CSVV1       = R->bDiscriminator("combinedSecondaryVertexV1BJetTags");
   //  I.CSVSL       = R->bDiscriminator("combinedSecondaryVertexSoftPFLeptonV1BJetTags");
   //  I.JPro        = R->bDiscriminator("jetProbabilityBJetTags"); // jetBProbabilityBJetTags
@@ -275,6 +277,8 @@ void ObjectsFormat::ResetJetType(JetType& I) {
     I.puId        = -1.;
     I.CSV         = -99.;
     I.CSVR        = -99.;
+    I.CSVRUp      = -99.;
+    I.CSVRDown    = -99.;
     I.chf         = -1.;
     I.nhf         = -1.;
     I.phf         = -1.;
@@ -295,7 +299,7 @@ void ObjectsFormat::ResetJetType(JetType& I) {
     I.QGLikelihood = -1.;
 }
 
-std::string ObjectsFormat::ListJetType() {return "pt/F:eta/F:phi/F:mass/F:energy/F:ptRaw/F:ptUnc/F:dPhi_met/F:dPhi_jet1/F:puId/F:CSV/F:CSVR/F:chf/F:nhf/F:phf/F:elf/F:muf/F:chm/I:npr/I:flavour/I:mother/I:isLoose/O:isMedium/O:isTight/O:isTightLepVeto/O:isCSVL/O:isCSVM/O:isCSVT/O:isMatched/O:QGLikelihood/F";}
+std::string ObjectsFormat::ListJetType() {return "pt/F:eta/F:phi/F:mass/F:energy/F:ptRaw/F:ptUnc/F:dPhi_met/F:dPhi_jet1/F:puId/F:CSV/F:CSVR/F:CSVRUp/F:CSVRDown/F:chf/F:nhf/F:phf/F:elf/F:muf/F:chm/I:npr/I:flavour/I:mother/I:isLoose/O:isMedium/O:isTight/O:isTightLepVeto/O:isCSVL/O:isCSVM/O:isCSVT/O:isMatched/O:QGLikelihood/F";}
 
 //*******************//
 //     Fat Jet       //
@@ -330,8 +334,9 @@ void ObjectsFormat::FillFatJetType(FatJetType& I, const pat::Jet* R, bool isMC) 
     I.dPhi_met    = R->hasUserFloat("dPhi_met") ? R->userFloat("dPhi_met") : -1.;
     I.dPhi_jet1   = R->hasUserFloat("dPhi_jet1") ? R->userFloat("dPhi_jet1") : -1.;
     I.puId        = -1.; //R->userFloat("pileupJetId:fullDiscriminant");
-    I.CSV         = R->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
-    I.CSVR        = R->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
+    I.CSVR        = R->hasUserFloat("ReshapedDiscriminator") ? R->userFloat("ReshapedDiscriminator") : R->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
+    I.CSVRUp      = R->hasUserFloat("ReshapedDiscriminatorUp") ? R->userFloat("ReshapedDiscriminatorUp") : R->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
+    I.CSVRDown    = R->hasUserFloat("ReshapedDiscriminatorDown") ? R->userFloat("ReshapedDiscriminatorDown") : R->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
   //  I.CSVV1       = R->bDiscriminator("combinedSecondaryVertexV1BJetTags");
   //  I.CSVSL       = R->bDiscriminator("combinedSecondaryVertexSoftPFLeptonV1BJetTags");
   //  I.JPro        = R->bDiscriminator("jetProbabilityBJetTags"); // jetBProbabilityBJetTags
@@ -404,6 +409,8 @@ void ObjectsFormat::ResetFatJetType(FatJetType& I) {
     I.puId        = -1.;
     I.CSV         = -99.;
     I.CSVR        = -99.;
+    I.CSVRUp      = -99.;
+    I.CSVRDown    = -99.;
     I.chf         = -1.;
     I.nhf         = -1.;
     I.phf         = -1.;
@@ -442,7 +449,7 @@ void ObjectsFormat::ResetFatJetType(FatJetType& I) {
     I.tau21       = -1.;
 }
 
-std::string ObjectsFormat::ListFatJetType() {return "pt/F:eta/F:phi/F:mass/F:energy/F:ptRaw/F:ptUnc/F:dPhi_met/F:dPhi_jet1/F:puId/F:CSV/F:CSVR/F:chf/F:nhf/F:phf/F:elf/F:muf/F:chm/I:npr/I:flavour/I:mother/I:isLoose/O:isMedium/O:isTight/O:isTightLepVeto/O:isCSVL/O:isCSVM/O:isCSVT/O:isMatched/O:prunedMass/F:softdropMass/F:softdropPuppiMass/F:prunedMassCorr/F:softdropMassCorr/F:softdropPuppiMassCorr/F:pt1/F:eta1/F:phi1/F:mass1/F:CSV1/F:CSVR1/F:flavour1/F:pt2/F:eta2/F:phi2/F:mass2/F:CSV2/F:CSVR2/F:flavour2/F:dR/F:tau21/F";}
+std::string ObjectsFormat::ListFatJetType() {return "pt/F:eta/F:phi/F:mass/F:energy/F:ptRaw/F:ptUnc/F:dPhi_met/F:dPhi_jet1/F:puId/F:CSV/F:CSVR/F:CSVRUp/F:CSVRDown/F:chf/F:nhf/F:phf/F:elf/F:muf/F:chm/I:npr/I:flavour/I:mother/I:isLoose/O:isMedium/O:isTight/O:isTightLepVeto/O:isCSVL/O:isCSVM/O:isCSVT/O:isMatched/O:prunedMass/F:softdropMass/F:softdropPuppiMass/F:prunedMassCorr/F:softdropMassCorr/F:softdropPuppiMassCorr/F:pt1/F:eta1/F:phi1/F:mass1/F:CSV1/F:CSVR1/F:flavour1/F:pt2/F:eta2/F:phi2/F:mass2/F:CSV2/F:CSVR2/F:flavour2/F:dR/F:tau21/F";}
 
 
 
