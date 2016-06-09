@@ -128,6 +128,19 @@ std::vector<pat::Jet> JetAnalyzer::FillJetVector(const edm::Event& iEvent) {
             jet.addUserFloat("ak8PFJetsCHSSoftDropPuppiMass", puppiSoftdrop.M());
         }
         
+        // CSV reshaping for soft drop subjets
+        if(jet.hasSubjets("SoftDrop")) {
+            auto const & sdSubjets = jet.subjets("SoftDrop");
+            short nsj = 1;
+            for (auto const & it : sdSubjets) {
+                pat::Jet subjet = it;
+                jet.addUserFloat(Form("ReshapedDiscriminator%d",nsj), reshapeBtagDiscriminator(subjet)[0]);
+                jet.addUserFloat(Form("ReshapedDiscriminatorUp%d",nsj), reshapeBtagDiscriminator(subjet)[1]);
+                jet.addUserFloat(Form("ReshapedDiscriminatorDown%d",nsj), reshapeBtagDiscriminator(subjet)[2]);
+                ++nsj;
+            }
+        }
+                
         // Mass correction
         if(RecalibrateMass) {
             float jec = Corrector->correction(jet);

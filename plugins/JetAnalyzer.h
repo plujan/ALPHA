@@ -29,6 +29,8 @@
 
 #include "BTagCalibrationStandalone.h"
 
+#include "DataFormats/Common/interface/Ptr.h"
+
 #include "TFile.h"
 #include "TH2.h"
 #include "TLorentzVector.h"
