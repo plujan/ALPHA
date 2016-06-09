@@ -220,6 +220,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     //Gen level plots and candidates
     double GenZLepMass = 0.;
     double GenZHadMass = 0.;
+    double GenZHadPt = 0.;
     double GenXMass = 0.;
     bool isGenZZ = false;
     if(theGenLep!=NULL && theGenHad!=NULL){
@@ -238,6 +239,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
             Hist["g_ZZDPhi"]->Fill(reco::deltaPhi(theGenZHad->phi(),theGenZLep->phi()), EventWeight);
             Hist["g_LepHadDR"]->Fill(reco::deltaR(theGenHad->eta(),theGenHad->phi(),theGenLep->eta(),theGenLep->phi()), EventWeight);
             GenZHadMass = theGenZHad->mass();
+            GenZHadPt = theGenZHad->pt();
             isGenZZ = true;
         }
     }
@@ -341,6 +343,8 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     pat::CompositeCandidate theHMerged;
     pat::CompositeCandidate theHResolved;
     pat::CompositeCandidate theHResolvedHpt;
+    pat::CompositeCandidate theHResolvedDZ;
+    pat::CompositeCandidate theHResolvedDR;
     pat::CompositeCandidate theH;
     pat::CompositeCandidate theX;
     isMerged = isResolved = false;
@@ -391,8 +395,11 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         addP4.set(theHMerged);
         //theHMerged.addUserFloat("softdropMass", FatJetsVect.at(0).userFloat("ak8PFJetsCHSSoftDropMass"));
     }
-    
+
+    //printout chosen jet number
+    int ch1(100), ch2(100);    
     // Resolved
+
     if(JetsVect.size() >= 2) {
         isResolved = true;
         // chose the two highest-pt jets
@@ -405,13 +412,85 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
             for(unsigned int i2 = i1+1; i2 < JetsVect.size(); i2++) {
                 if( (JetsVect[i1].p4()+JetsVect[i2].p4()).pt() > ptmin ) {
                     ptmin = (JetsVect[i1].p4()+JetsVect[i2].p4()).pt();
+                    ch1 = i1;
+                    ch2 = i2;
+                    if(theHResolvedHpt.numberOfDaughters()>0) theHResolvedHpt.clearDaughters();
                     theHResolvedHpt.addDaughter(JetsVect.at(i1));
                     theHResolvedHpt.addDaughter(JetsVect.at(i2));
                     addP4.set(theHResolvedHpt);
                 }
             }
         }
+
+        //MC truth histograms
+        if(isMC && isGenZZ){
+            Hist["a_den_H_truth_Hpt"]->Fill(GenZHadPt, EventWeight);
+            Hist["a_den_H_truth_XMass"]->Fill(GenXMass, EventWeight);
+	}
+ 
+        if(isMC && JetsVect.at(0).genParton()!=NULL && JetsVect.at(1).genParton()!=NULL && isGenZZ){
+            if(FindMomId(JetsVect.at(0).genParton())==23 && FindMomId(JetsVect.at(1).genParton())==23){
+                Hist["a_num_H_truth_Hpt"]->Fill(GenZHadPt, EventWeight);
+                Hist["a_num_H_truth_XMass"]->Fill(GenXMass, EventWeight);
+            }
+        }
+
+        if(isMC && JetsVect.at(ch1).genParton()!=NULL && JetsVect.at(ch2).genParton()!=NULL && isGenZZ){
+            if(FindMomId(JetsVect.at(ch1).genParton())==23 && FindMomId(JetsVect.at(ch2).genParton())==23){
+                Hist["a_num_HHpt_truth_Hpt"]->Fill(GenZHadPt, EventWeight);
+                Hist["a_num_HHpt_truth_XMass"]->Fill(GenXMass, EventWeight);
+            }
+        }
+        ch1 = 100;
+        ch2 = 100;
         //
+        // chose the two jets whose mass is closest to Z
+        float DZmin(1000.);
+        for(unsigned int i1 = 0; i1 < JetsVect.size(); i1++) {
+            for(unsigned int i2 = i1+1; i2 < JetsVect.size(); i2++) {
+                if( fabs((JetsVect[i1].p4()+JetsVect[i2].p4()).M() - 91) < DZmin ) {
+                    DZmin = fabs((JetsVect[i1].p4()+JetsVect[i2].p4()).M()-91);
+                    ch1 = i1;
+                    ch2 = i2;
+                    if(theHResolvedDZ.numberOfDaughters()>0) theHResolvedDZ.clearDaughters();
+                    theHResolvedDZ.addDaughter(JetsVect.at(i1));
+                    theHResolvedDZ.addDaughter(JetsVect.at(i2));
+                    addP4.set(theHResolvedDZ);
+                }
+            }
+        }
+        //std::cout << "DZ: chosen jets " << ch1 << ", " << ch2 << ", mass " << theHResolvedDZ.mass()  << std::endl;
+        if(isMC && JetsVect.at(ch1).genParton()!=NULL && JetsVect.at(ch2).genParton()!=NULL && isGenZZ){
+            if(FindMomId(JetsVect.at(ch1).genParton())==23 && FindMomId(JetsVect.at(ch2).genParton())==23){
+                Hist["a_num_HDZ_truth_Hpt"]->Fill(GenZHadPt, EventWeight);
+                Hist["a_num_HDZ_truth_XMass"]->Fill(GenXMass, EventWeight);
+            }
+        }
+        ch1 = 100;
+        ch2 = 100;
+        //	
+        // chose the two closest jets in DR
+        float DRmin(10.);
+        for(unsigned int i1 = 0; i1 < JetsVect.size(); i1++) {
+            for(unsigned int i2 = i1+1; i2 < JetsVect.size(); i2++) {
+                if( deltaR(JetsVect[i1],JetsVect[i2]) < DRmin ) {
+                    DRmin = deltaR(JetsVect[i1],JetsVect[i2]);
+                    ch1 = i1;
+                    ch2 = i2;
+                    if(theHResolvedDR.numberOfDaughters()>0) theHResolvedDR.clearDaughters();
+                    theHResolvedDR.addDaughter(JetsVect.at(i1));
+                    theHResolvedDR.addDaughter(JetsVect.at(i2));
+                    addP4.set(theHResolvedDR);
+                }
+            }
+        }
+        if(isMC && JetsVect.at(ch1).genParton()!=NULL && JetsVect.at(ch2).genParton()!=NULL && isGenZZ){
+            if(FindMomId(JetsVect.at(ch1).genParton())==23 && FindMomId(JetsVect.at(ch2).genParton())==23){
+                Hist["a_num_HDR_truth_Hpt"]->Fill(GenZHadPt, EventWeight);
+                Hist["a_num_HDR_truth_XMass"]->Fill(GenXMass, EventWeight);
+	    }
+        }
+       //	
     }
     
 
@@ -419,6 +498,8 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     pat::CompositeCandidate theXMerged;
     pat::CompositeCandidate theXResolved;
     pat::CompositeCandidate theXResolvedHpt;
+    pat::CompositeCandidate theXResolvedDZ;
+    pat::CompositeCandidate theXResolvedDR;
     
     theXMerged.addDaughter(theV);
     if(theHMerged.numberOfDaughters()>0) theXMerged.addDaughter(theHMerged);
@@ -432,6 +513,14 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     if(theHResolvedHpt.numberOfDaughters()>0) theXResolvedHpt.addDaughter(theHResolvedHpt);
     addP4.set(theXResolvedHpt);
     
+    theXResolvedDZ.addDaughter(theV);
+    if(theHResolvedDZ.numberOfDaughters()>0) theXResolvedDZ.addDaughter(theHResolvedDZ);
+    addP4.set(theXResolvedDZ);
+
+    theXResolvedDR.addDaughter(theV);
+    if(theHResolvedDR.numberOfDaughters()>0) theXResolvedDR.addDaughter(theHResolvedDR);
+    addP4.set(theXResolvedDR);
+
     if(isResolved || isMerged) {
         Hist["a_nEvents"]->Fill(6., EventWeight);
         if(isZtoMM) Hist["m_nEvents"]->Fill(6., EventWeight);
@@ -533,6 +622,10 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     ObjectsFormat::FillCandidateType(XResolved, &theXResolved, isMC);
     ObjectsFormat::FillCandidateType(HResolvedHpt, &theHResolvedHpt, isMC);
     ObjectsFormat::FillCandidateType(XResolvedHpt, &theXResolvedHpt, isMC);
+    ObjectsFormat::FillCandidateType(HResolvedDZ, &theHResolvedDZ, isMC);
+    ObjectsFormat::FillCandidateType(XResolvedDZ, &theXResolvedDZ, isMC);
+    ObjectsFormat::FillCandidateType(HResolvedDR, &theHResolvedDR, isMC);
+    ObjectsFormat::FillCandidateType(XResolvedDR, &theXResolvedDR, isMC);
     ObjectsFormat::FillLorentzType(kH, &thekH);
     ObjectsFormat::FillLorentzType(kX, &thekX);
         
@@ -688,8 +781,12 @@ void Diboson::beginJob() {
     tree->Branch("XMerged", &XMerged, ObjectsFormat::ListCandidateType().c_str());
     tree->Branch("HResolved", &HResolved, ObjectsFormat::ListCandidateType().c_str());
     tree->Branch("HResolvedHpt", &HResolvedHpt, ObjectsFormat::ListCandidateType().c_str());
+    tree->Branch("HResolvedDZ", &HResolvedDZ, ObjectsFormat::ListCandidateType().c_str());
+    tree->Branch("HResolvedDR", &HResolvedDR, ObjectsFormat::ListCandidateType().c_str());
     tree->Branch("XResolved", &XResolved, ObjectsFormat::ListCandidateType().c_str());
     tree->Branch("XResolvedHpt", &XResolvedHpt, ObjectsFormat::ListCandidateType().c_str());
+    tree->Branch("XResolvedDZ", &XResolvedDZ, ObjectsFormat::ListCandidateType().c_str());
+    tree->Branch("XResolvedDR", &XResolvedDR, ObjectsFormat::ListCandidateType().c_str());
     tree->Branch("kH", &kH, ObjectsFormat::ListLorentzType().c_str());
     tree->Branch("kX", &kX, ObjectsFormat::ListLorentzType().c_str());
 }
@@ -859,6 +956,15 @@ float Diboson::performKinematicFit(pat::Jet* tJet1, pat::Jet* tJet2, reco::Candi
   fJet2->SetPxPyPzE(jet2.getCurr4Vec()->Px(), jet2.getCurr4Vec()->Py(), jet2.getCurr4Vec()->Pz(), jet2.getCurr4Vec()->Energy());
   
   return chi2;
+}
+
+//Find mother id of a const reco::GenParticle, method used for genPartons MC truth
+int Diboson::FindMomId(const reco::GenParticle* p) {
+  int pId = p->pdgId();
+  const reco::Candidate* mom = p->mother();
+  while (mom != 0 && mom->pdgId() == pId)
+    mom = mom->mother();
+  return mom->pdgId();
 }
 
 

@@ -88,7 +88,6 @@
 #include "PhysicsTools/KinFitter/interface/TFitParticleEScaledMomDev.h"
 #include "PhysicsTools/KinFitter/interface/TKinFitter.h"
 
-#include "Utilities.h"
 #include "Numbers.h"
 
 #include "TTree.h"
@@ -108,7 +107,7 @@
 #include "TauAnalyzer.h"
 #include "JetAnalyzer.h"
 //#include "BTagInterface.h"
-
+#include "Utilities.h"
 
 
 //
@@ -130,6 +129,7 @@ class Diboson : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
         virtual pat::CompositeCandidate createkW(reco::Candidate&, pat::MET&);
         virtual pat::CompositeCandidate recoilMassFormula(pat::CompositeCandidate&, pat::MET&);
         virtual float performKinematicFit(pat::Jet*, pat::Jet*, reco::Candidate::LorentzVector*, reco::Candidate::LorentzVector*, float);
+        virtual int FindMomId(const reco::GenParticle*);
 
     private:
         virtual void beginJob() override;
@@ -184,8 +184,8 @@ class Diboson : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
         std::vector<FatJetType> FatJets;
         MEtType MEt;
         CandidateType V, H, X;
-        CandidateType HMerged, HResolved, HResolvedHpt;
-        CandidateType XMerged, XResolved, XResolvedHpt;
+  CandidateType HMerged, HResolved, HResolvedHpt, HResolvedDZ, HResolvedDR;
+        CandidateType XMerged, XResolved, XResolvedHpt, XResolvedDZ, XResolvedDR;
         LorentzType kH, kX;
 };
 
