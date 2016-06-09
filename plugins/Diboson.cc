@@ -397,7 +397,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     }
 
     //printout chosen jet number
-    int ch1(100), ch2(100);    
+    unsigned int ch1(100), ch2(100);    
     // Resolved
 
     if(JetsVect.size() >= 2) {
@@ -435,14 +435,14 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
             }
         }
 
-        if(isMC && JetsVect.at(ch1).genParton()!=NULL && JetsVect.at(ch2).genParton()!=NULL && isGenZZ){
+        if(isMC && (ch1<=JetsVect.size() && ch2<=JetsVect.size())  && JetsVect.at(ch1).genParton()!=NULL && JetsVect.at(ch2).genParton()!=NULL && isGenZZ){
             if(FindMomId(JetsVect.at(ch1).genParton())==23 && FindMomId(JetsVect.at(ch2).genParton())==23){
                 Hist["a_num_HHpt_truth_Hpt"]->Fill(GenZHadPt, EventWeight);
                 Hist["a_num_HHpt_truth_XMass"]->Fill(GenXMass, EventWeight);
             }
         }
-        ch1 = 100;
-        ch2 = 100;
+        ch1 = 0;
+        ch2 = 0;
         //
         // chose the two jets whose mass is closest to Z
         float DZmin(1000.);
@@ -460,7 +460,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
             }
         }
         //std::cout << "DZ: chosen jets " << ch1 << ", " << ch2 << ", mass " << theHResolvedDZ.mass()  << std::endl;
-        if(isMC && JetsVect.at(ch1).genParton()!=NULL && JetsVect.at(ch2).genParton()!=NULL && isGenZZ){
+        if(isMC && (ch1<=JetsVect.size() && ch2<=JetsVect.size()) && JetsVect.at(ch1).genParton()!=NULL && JetsVect.at(ch2).genParton()!=NULL && isGenZZ){
             if(FindMomId(JetsVect.at(ch1).genParton())==23 && FindMomId(JetsVect.at(ch2).genParton())==23){
                 Hist["a_num_HDZ_truth_Hpt"]->Fill(GenZHadPt, EventWeight);
                 Hist["a_num_HDZ_truth_XMass"]->Fill(GenXMass, EventWeight);
@@ -484,7 +484,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
                 }
             }
         }
-        if(isMC && JetsVect.at(ch1).genParton()!=NULL && JetsVect.at(ch2).genParton()!=NULL && isGenZZ){
+        if(isMC && (ch1<=JetsVect.size() && ch2<=JetsVect.size()) && JetsVect.at(ch1).genParton()!=NULL && JetsVect.at(ch2).genParton()!=NULL && isGenZZ){
             if(FindMomId(JetsVect.at(ch1).genParton())==23 && FindMomId(JetsVect.at(ch2).genParton())==23){
                 Hist["a_num_HDR_truth_Hpt"]->Fill(GenZHadPt, EventWeight);
                 Hist["a_num_HDR_truth_XMass"]->Fill(GenXMass, EventWeight);
