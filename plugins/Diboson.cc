@@ -144,6 +144,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     RunNumber = iEvent.id().run();
     
     EventWeight = PUWeight = TriggerWeight = LeptonWeight = 1.;
+    isZtoEE = isZtoMM = isWtoEN = isWtoMN = isZtoNN = false;
     nPV = nElectrons = nMuons = nTaus = nPhotons = nJets = nFatJets = nBTagJets = 1;
     Chi2 = -1.;
     
@@ -168,6 +169,9 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     Hist["e_nEvents"]->Fill(1., EventWeight);
     Hist["m_nEvents"]->Fill(1., EventWeight);
     
+    // -----------------------------------
+    //           READ OBJECTS
+    // -----------------------------------
     
     // Pu weight
     PUWeight = thePileupAnalyzer->GetPUWeight(iEvent);
@@ -209,6 +213,9 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     pat::MET MET = theJetAnalyzer->FillMetVector(iEvent);
     
     
+    // -----------------------------------
+    //           GEN LEVEL
+    // -----------------------------------
     
     // Gen weights
     std::map<std::string, float> GenWeight = theGenAnalyzer->FillWeightsMap(iEvent);
@@ -258,18 +265,23 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     }
     
 
-    
+    // ---------- Trigger selections ----------
+    // Dummy trigger
     
     
     Hist["a_nEvents"]->Fill(2., EventWeight);
     Hist["e_nEvents"]->Fill(2., EventWeight);
     Hist["m_nEvents"]->Fill(2., EventWeight);
     
-    // ---------- Do analysis selections ----------
+    
+    
+    // -----------------------------------
+    //           PRESELECTIONS
+    // -----------------------------------
+    
+    // Categorization depending on the number of leptons
     
     // ---------- Z TO LEPTONS ----------
-    isZtoEE = isZtoMM = isWtoEN = isWtoMN = isZtoNN = false;
-    
     if(MuonVect.size()>=2 || ElecVect.size()>=2) {
         if(MuonVect.size()>=2 && ElecVect.size()>=2) {
             if(MuonVect.at(0).pt() > ElecVect.at(0).pt()) isZtoMM=true;
@@ -277,7 +289,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         }
         else if(ElecVect.size()>=2) isZtoEE=true;
         else if(MuonVect.size()>=2) isZtoMM=true;
-        else {if(Verbose) std::cout << " - No Iso SF OS Leptons" << std::endl; return;}
+        else {if(Verbose) std::cout << " - No Iso SF OS Leptons" << std::endl;}
     }
     // ---------- W TO LEPTON and NEUTRINO ----------
     else if(MuonVect.size()==1 || ElecVect.size()==1) {
@@ -287,28 +299,21 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         }
         else if(ElecVect.size()==1) isWtoEN=true;
         else if(MuonVect.size()==1) isWtoMN=true;
-        else {if(Verbose) std::cout << " - No Iso Leptons" << std::endl; return;}
+        else {if(Verbose) std::cout << " - No Iso Leptons" << std::endl;}
     }
     // ----------- Z TO NEUTRINOS ---------------
-    else {
-        if(Verbose) std::cout << " - No charged leptons" << std::endl; return;
+    else if(MET.pt() > 200.) {
+        isZtoNN=true;
+        if(Verbose) std::cout << " - No charged leptons" << std::endl;
     }
+    else {if(Verbose) std::cout << " - No V candidate" << std::endl; return;}
     
     Hist["a_nEvents"]->Fill(3., EventWeight);
     if(isZtoEE) Hist["e_nEvents"]->Fill(3., EventWeight);
     if(isZtoMM) Hist["m_nEvents"]->Fill(3., EventWeight);
 
-    // AZh lepton choice
-//    int l1(0), l2(-1);
-//    if(isZtoEE) {
-//        for(unsigned int i=1; i<ElecVect.size(); i++) if(l2<0 && ElecVect.at(i).charge()!=ElecVect.at(l1).charge()) l2=i;
-//    }
-//    else if(isZtoMM) {
-//        for(unsigned int i=1; i<MuonVect.size(); i++) if(l2<0 && MuonVect.at(i).charge()!=MuonVect.at(l1).charge()) l2=i;
-//    }
-//    if(l1<0 || l2<0) {if(Verbose) std::cout << " - No OS SF leptons" << std::endl; return;}
 
-    // Reconstruct V candidate
+    // ---------- Reconstruct V candidate ----------
     pat::CompositeCandidate theV;
     if(isZtoMM) {
         if(MuonVect.at(0).charge()*MuonVect.at(1).charge()<0 && (MuonVect[0].p4() + MuonVect[1].p4()).mass() > 50.) {
@@ -326,6 +331,18 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         }
         else { if(Verbose) std::cout << " - No OS electrons" << std::endl; return; }
     }
+    else if(isWtoMN) {
+        // W kinematic reconstruction
+        float pz = GetNeutrinoPz(&MuonVect.at(0).p4(), &MET.p4());
+//        theV.addDaughter(MuonVect.at(0));
+//        theV.addDaughter(Neutrino);
+//        theV.addDaughter(MET);
+//        theV.setCharge(MuonVect.at(0).charge());
+//        addP4.set(theV);
+    }
+//    else if(isWtoEN) {
+//        
+//    }
     else { if(Verbose) std::cout << " - No Iso SF OS Leptons" << std::endl; return; }
     
     /*
@@ -428,10 +445,10 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         }
 
         //MC truth histograms
-        if(isMC && isGenZZ){
+        if(isMC && isGenZZ) {
             Hist["a_den_H_truth_Hpt"]->Fill(GenZHadPt, EventWeight);
             Hist["a_den_H_truth_XMass"]->Fill(GenXMass, EventWeight);
-	}
+	      }
  
         if(isMC && JetsVect.at(0).genParton()!=NULL && JetsVect.at(1).genParton()!=NULL && isGenZZ){
             if(FindMomId(JetsVect.at(0).genParton())==23 && FindMomId(JetsVect.at(1).genParton())==23){
@@ -493,7 +510,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
             if(FindMomId(JetsVect.at(ch1).genParton())==23 && FindMomId(JetsVect.at(ch2).genParton())==23){
                 Hist["a_num_HDR_truth_Hpt"]->Fill(GenZHadPt, EventWeight);
                 Hist["a_num_HDR_truth_XMass"]->Fill(GenXMass, EventWeight);
-	    }
+	          }
         }
        //	
     }
@@ -809,17 +826,16 @@ void Diboson::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
     descriptions.addDefault(desc);
 }
 
-pat::CompositeCandidate Diboson::createkW(reco::Candidate& lep, pat::MET& met){
-    pat::CompositeCandidate thekW;
+float Diboson::GetNeutrinoPz(const reco::Particle::LorentzVector* lep, const reco::Particle::LorentzVector* met) {
     // W kinematical reconstruction
     float pz = 0.;
-    float a = pow(80.4,2) - pow(lep.mass(),2) + 2.*lep.px()*met.px() + 2.*lep.py()*met.py();
-    float A = 4*( pow(lep.energy(),2) - pow(lep.pz(),2) );
-    float B = -4*a*lep.pz();
-    float C = 4*pow(lep.energy(),2) * (pow(met.px(),2)  + pow(met.py(),2)) - pow(a,2);
+    float a = pow(80.4,2) - pow(lep->mass(),2) + 2.*lep->px()*met->px() + 2.*lep->py()*met->py();
+    float A = 4*( pow(lep->energy(),2) - pow(lep->pz(),2) );
+    float B = -4*a*lep->pz();
+    float C = 4*pow(lep->energy(),2) * (pow(met->px(),2)  + pow(met->py(),2)) - pow(a,2);
     float D = pow(B,2) - 4*A*C;
     // If there are real solutions, use the one with lowest pz                                            
-    if (D>=0){
+    if (D>=0) {
         float s1 = (-B+sqrt(D))/(2*A);
         float s2 = (-B-sqrt(D))/(2*A);
         if(fabs(s1)<fabs(s2)) pz=s1;
@@ -829,11 +845,7 @@ pat::CompositeCandidate Diboson::createkW(reco::Candidate& lep, pat::MET& met){
     else {
          pz = -B/(2*A);
     }
-    reco::Particle::LorentzVector neutrino( met.px(), met.py(), pz, sqrt( pow(met.pt(),2)+pow(pz,2) ) );
-    reco::Particle::LorentzVector kW = lep.p4() + neutrino;
-    thekW.setP4(kW);
-    thekW.setCharge(lep.charge());
-    return thekW;
+    return pz;
 }
 
 pat::CompositeCandidate Diboson::recoilMassFormula(pat::CompositeCandidate& H, pat::MET& met){
