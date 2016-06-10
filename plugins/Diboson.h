@@ -126,7 +126,7 @@ class Diboson : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
         ~Diboson();
 
         static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
-        virtual pat::CompositeCandidate createkW(reco::Candidate&, pat::MET&);
+        virtual float GetNeutrinoPz(const reco::Particle::LorentzVector*, const reco::Particle::LorentzVector*);
         virtual pat::CompositeCandidate recoilMassFormula(pat::CompositeCandidate&, pat::MET&);
         virtual float performKinematicFit(pat::Jet*, pat::Jet*, reco::Candidate::LorentzVector*, reco::Candidate::LorentzVector*, float);
         virtual int FindMomId(const reco::GenParticle*);
@@ -184,7 +184,7 @@ class Diboson : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
         std::vector<FatJetType> FatJets;
         MEtType MEt;
         CandidateType V, H, X;
-  CandidateType HMerged, HResolved, HResolvedHpt, HResolvedDZ, HResolvedDR;
+        CandidateType HMerged, HResolved, HResolvedHpt, HResolvedDZ, HResolvedDR;
         CandidateType XMerged, XResolved, XResolvedHpt, XResolvedDZ, XResolvedDR;
         LorentzType kH, kX;
 };
