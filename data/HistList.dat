@@ -138,6 +138,14 @@ m_nStations             ;nStations                                  6     0     
 m_chi2                  ;chi2                                     100     0   2.5   Lin
 m_d0vtx                 ;d0vtx                                    100 -0.05  0.05   Log
 m_dZvtx                 ;dZvtx                                    100 -0.10  0.10   Log
+p_mass                  ;m_{#gamma#gamma}~[GeV]                    64   320  1600   Log
+p_massEBEB              ;m_{#gamma#gamma}~(EBEB)~[GeV]             64   320  1600   Log
+p_massEBEE              ;m_{#gamma#gamma}~(EBEB)~[GeV]             64   320  1600   Log
+p_massLow               ;m_{#gamma#gamma}~[GeV]                    80     0  1600   Log
+p_pt1                   ;Photon~1~p_{T}~[GeV]                     100     0  1000   Log
+p_pt2                   ;Photon~2~p_{T}~[GeV]                     100     0  1000   Log
+p_eta1                  ;Photon~1~#eta                            100    -3     3   Lin
+p_eta2                  ;Photon~2~#eta                            100    -3     3   Lin
 j_number                ;Number~of~Jets                            40  -0.5  39.5   Log
 j_eta                   ;Jets~#eta                                100    -3     3   Lin
 j_etaGen                ;Jets~Parton~#eta                         100    -3     3   Lin

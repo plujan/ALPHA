@@ -22,6 +22,7 @@ class PhotonAnalyzer {
         PhotonAnalyzer(edm::ParameterSet&, edm::ConsumesCollector&&);
         ~PhotonAnalyzer();
         virtual std::vector<pat::Photon> FillPhotonVector(const edm::Event&);
+        virtual void InspectPhotons(std::vector<pat::Photon>&, std::map<std::string, bool>&, std::map<std::string, TH1F*>&, float);
         virtual float GetPhotonIdSFLoose(pat::Photon&);
         virtual float GetPhotonIdSFLooseError(pat::Photon&);
         virtual float GetPhotonIdSFMedium(pat::Photon&);
@@ -36,17 +37,17 @@ class PhotonAnalyzer {
       
         edm::EDGetTokenT<std::vector<pat::Photon> > PhotonToken;
         edm::EDGetTokenT<reco::VertexCollection> VertexToken;
-	edm::EDGetTokenT<edm::ValueMap<bool>> PhoLooseIdMapToken;
-	edm::EDGetTokenT<edm::ValueMap<bool>> PhoMediumIdMapToken;
-	edm::EDGetTokenT<edm::ValueMap<bool>> PhoTightIdMapToken;
-	edm::EDGetTokenT<edm::ValueMap<bool>> PhoMVANonTrigMediumIdMapToken;
-	std::string PhoLooseIdFileName;
-	std::string PhoMediumIdFileName;
-	std::string PhoTightIdFileName;
-	std::string PhoMVANonTrigMediumIdFileName;
+        edm::EDGetTokenT<edm::ValueMap<bool>> PhoLooseIdMapToken;
+        edm::EDGetTokenT<edm::ValueMap<bool>> PhoMediumIdMapToken;
+        edm::EDGetTokenT<edm::ValueMap<bool>> PhoTightIdMapToken;
+        edm::EDGetTokenT<edm::ValueMap<bool>> PhoMVANonTrigMediumIdMapToken;
+        std::string PhoLooseIdFileName;
+        std::string PhoMediumIdFileName;
+        std::string PhoTightIdFileName;
+        std::string PhoMVANonTrigMediumIdFileName;
         int PhotonId;
         float PhotonPt;
-	bool isPhoLooseIdFile, isPhoMediumIdFile, isPhoTightIdFile, isPhoMVANonTrigMediumIdFile;
+        bool isPhoLooseIdFile, isPhoMediumIdFile, isPhoTightIdFile, isPhoMVANonTrigMediumIdFile;
         TFile* PhoLooseIdFile;
         TFile* PhoMediumIdFile;
         TFile* PhoTightIdFile;

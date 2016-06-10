@@ -105,7 +105,7 @@ std::vector<pat::Photon> PhotonAnalyzer::FillPhotonVector(const edm::Event& iEve
     // Loop on Photon collection
     for(std::vector<pat::Photon>::const_iterator it=PhoCollection->begin(); it!=PhoCollection->end(); ++it) {
         pat::Photon ph=*it;
-	pat::PhotonRef phRef(PhoCollection,phIdx);
+  pat::PhotonRef phRef(PhoCollection,phIdx);
         // Pt and eta
         if(ph.pt()<PtTh || fabs(ph.eta())>2.5) continue;
         float pfIso = ( ph.chargedHadronIso() + std::max(ph.neutralHadronIso() + ph.photonIso() - 0.5*ph.puChargedHadronIso(), 0.) ) / ph.pt();
@@ -133,6 +133,19 @@ std::vector<pat::Photon> PhotonAnalyzer::FillPhotonVector(const edm::Event& iEve
         Vect.push_back(ph); // Fill vector
     }
     return Vect;
+}
+
+void PhotonAnalyzer::InspectPhotons(std::vector<pat::Photon>& PhotonVect, std::map<std::string, bool>& TriggerMap, std::map<std::string, TH1F*>& Hist, float EventWeight) {
+    if( !(TriggerMap["HLT_DoublePhoton60_v"] && PhotonVect.size()>=2 && PhotonVect[0].pt()>80. && PhotonVect[1].pt()>80. && (PhotonVect[0].isEB() || PhotonVect[1].isEB()) )) return;
+    float diphoton = (PhotonVect[0].p4()+PhotonVect[1].p4()).mass();
+    Hist["p_mass"]->Fill(diphoton, EventWeight);
+    if(PhotonVect[0].isEB() && PhotonVect[1].isEB()) Hist["p_massEBEB"]->Fill(diphoton, EventWeight);
+    else Hist["p_massEBEE"]->Fill(diphoton, EventWeight);
+    Hist["p_massLow"]->Fill(diphoton, EventWeight);
+    Hist["p_pt1"]->Fill(PhotonVect[0].pt(), EventWeight);
+    Hist["p_pt2"]->Fill(PhotonVect[1].pt(), EventWeight);
+    Hist["p_eta1"]->Fill(PhotonVect[0].eta(), EventWeight);
+    Hist["p_eta2 "]->Fill(PhotonVect[1].eta(), EventWeight);
 }
 
 float PhotonAnalyzer::GetPhotonIdSFLoose(pat::Photon& el) {

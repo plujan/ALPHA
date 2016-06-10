@@ -73,6 +73,8 @@ Diboson::Diboson(const edm::ParameterSet& iConfig):
     TFileDirectory genDir=fs->mkdir("Gen/");
     TFileDirectory eleDir=fs->mkdir("Electrons/");
     TFileDirectory muoDir=fs->mkdir("Muons/");
+    TFileDirectory tauDir=fs->mkdir("Taus/");
+    TFileDirectory phoDir=fs->mkdir("Photons/");
     TFileDirectory jetDir=fs->mkdir("Jets/");
     TFileDirectory kinDir=fs->mkdir("Kin/");
     
@@ -94,6 +96,8 @@ Diboson::Diboson(const edm::ParameterSet& iConfig):
             if(name.substr(0, 2)=="g_") Hist[name] = genDir.make<TH1F>(name.c_str(), title.c_str(), nbins, min, max);
             if(name.substr(0, 2)=="e_") Hist[name] = eleDir.make<TH1F>(name.c_str(), title.c_str(), nbins, min, max);
             if(name.substr(0, 2)=="m_") Hist[name] = muoDir.make<TH1F>(name.c_str(), title.c_str(), nbins, min, max);
+            if(name.substr(0, 2)=="t_") Hist[name] = tauDir.make<TH1F>(name.c_str(), title.c_str(), nbins, min, max);
+            if(name.substr(0, 2)=="p_") Hist[name] = phoDir.make<TH1F>(name.c_str(), title.c_str(), nbins, min, max);
             if(name.substr(0, 2)=="j_") Hist[name] = jetDir.make<TH1F>(name.c_str(), title.c_str(), nbins, min, max);
             if(name.substr(0, 2)=="k_") Hist[name] = kinDir.make<TH1F>(name.c_str(), title.c_str(), nbins, min, max);
             Hist[name]->Sumw2();
@@ -188,6 +192,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     nTaus = TauVect.size();
     // Photons
     std::vector<pat::Photon> PhotonVect = thePhotonAnalyzer->FillPhotonVector(iEvent);
+    thePhotonAnalyzer->InspectPhotons(PhotonVect, TriggerMap, Hist, EventWeight);
     nPhotons = PhotonVect.size();
     // Jets
     std::vector<pat::Jet> JetsVect = theJetAnalyzer->FillJetVector(iEvent);
@@ -226,7 +231,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     if(theGenLep!=NULL && theGenHad!=NULL){
         const reco::Candidate* theGenZLep = theGenAnalyzer->FindMother(theGenLep);
         const reco::Candidate* theGenZHad = theGenAnalyzer->FindMother(theGenHad);
-        if(theGenZLep!=NULL && theGenZLep->pdgId()==23 && theGenZHad!=NULL && theGenZHad->pdgId()==23){
+        if(theGenZLep!=NULL && theGenZLep->pdgId()==23 && theGenZHad!=NULL && (theGenZHad->pdgId()==23 || theGenZHad->pdgId()==25)) {
             Hist["g_ZLepMass"]->Fill(theGenZLep->mass(), EventWeight);
             Hist["g_ZLepPt"]->Fill(theGenZLep->pt(), EventWeight);
             Hist["g_LepPt"]->Fill(theGenLep->pt(), EventWeight);
@@ -966,6 +971,8 @@ int Diboson::FindMomId(const reco::GenParticle* p) {
     mom = mom->mother();
   return mom->pdgId();
 }
+
+
 
 
 //define this as a plug-in
