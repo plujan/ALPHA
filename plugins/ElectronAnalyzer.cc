@@ -179,7 +179,7 @@ std::vector<pat::Electron> ElectronAnalyzer::FillElectronVector(const edm::Event
     iEvent.getByToken(EleMVATrigMediumIdMapToken, MVATrigMediumIdDecisions);
     iEvent.getByToken(EleMVATrigTightIdMapToken, MVATrigTightIdDecisions);
     unsigned int elIdx = 0;
-
+    
     // Loop on Electron collection
     for(std::vector<pat::Electron>::const_iterator it=EleCollection->begin(); it!=EleCollection->end(); ++it) {
         if(Vect.size()>0) {
@@ -188,14 +188,13 @@ std::vector<pat::Electron> ElectronAnalyzer::FillElectronVector(const edm::Event
             PtTh=Electron2Pt;
         }
         pat::Electron el=*it;
-	pat::ElectronRef elRef(EleCollection, elIdx);
+        pat::ElectronRef elRef(EleCollection, elIdx);
         // Pt and eta
         if(el.pt()<PtTh || fabs(el.eta())>2.5) continue;
         // PF (?) Isolation R=0.4 https://twiki.cern.ch/twiki/bin/viewauth/CMS/EgammaPFBasedIsolation#for_PAT_electron_users_using_sta
         float pfIso04 = ( el.chargedHadronIso() + std::max(el.neutralHadronIso() + el.photonIso() - 0.5*el.puChargedHadronIso(), 0.) ) / el.pt();
         float pfIso03 = ( el.pfIsolationVariables().sumChargedHadronPt + std::max(el.pfIsolationVariables().sumNeutralHadronEt + el.pfIsolationVariables().sumPhotonEt - 0.5*el.pfIsolationVariables().sumPUPt, 0.) ) / el.pt();
         //if(IsoTh==1 && pfIso03>0.15) continue;
-
         //Electron CutBased and HEEP ID 2015-2016, https://twiki.cern.ch/twiki/bin/viewauth/CMS/EgammaIDRecipesRun2
         bool isPassVeto = (*VetoIdDecisions)[elRef];
         bool isPassLoose = (*LooseIdDecisions)[elRef];
@@ -216,7 +215,6 @@ std::vector<pat::Electron> ElectronAnalyzer::FillElectronVector(const edm::Event
         if(IdTh==6 && !isPassMVANonTrigTight) continue;
         if(IdTh==7 && !isPassMVATrigMedium) continue;
         if(IdTh==8 && !isPassMVATrigTight) continue;
-        
         // Fill userFloat
         el.addUserFloat("pfIso03", pfIso03);
         el.addUserFloat("pfIso04", pfIso04);
@@ -232,7 +230,6 @@ std::vector<pat::Electron> ElectronAnalyzer::FillElectronVector(const edm::Event
         el.addUserInt("isMVANonTrigTight", isPassMVANonTrigTight ? 1 : 0);
         el.addUserInt("isMVATrigMedium", isPassMVATrigMedium ? 1 : 0);
         el.addUserInt("isMVATrigTight", isPassMVATrigTight ? 1 : 0);
-
         ++elIdx;
 
         // Fill vector

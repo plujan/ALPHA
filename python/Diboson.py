@@ -10,7 +10,7 @@ process = cms.Process("ALPHA")
 process.load("FWCore.MessageService.MessageLogger_cfi")
 process.MessageLogger.cerr.threshold = 'ERROR'
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
 
 # input
 # default: if no filelist from command line, run on specified samples
@@ -216,7 +216,7 @@ process.ntuple = cms.EDAnalyzer('Diboson',
         taus = cms.InputTag("slimmedTaus"),
         vertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
         taupt = cms.double(20.),
-        taueta = cms.double(9999.),
+        taueta = cms.double(2.3),
         tauIdByDecayMode = cms.int32(0),# 0: not set, 1: old, 2: new
         tauIdByDeltaBetaIso = cms.int32(0),# 0: not set, 1: loose, 2: medium, 3: tight
         tauIdByMVAIso = cms.int32(0),# 0: not set, 1: V loose, 2: loose, 3: medium, 4: tight, 5: V tight
