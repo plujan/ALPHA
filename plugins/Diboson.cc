@@ -210,6 +210,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     nFatJets = FatJetsVect.size();
     // Missing Energy
     pat::MET MET = theJetAnalyzer->FillMetVector(iEvent);
+    //theJetAnalyzer->ApplyRecoilCorrections(MET, &MET.genMET()->p4(), &theV.p4(), 0);
     
     
     
@@ -268,6 +269,9 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
 
     // ---------- Trigger selections ----------
     // Dummy trigger
+    //TriggerWeight*=theElectronAnalyzer->GetDoubleElectronTriggerSF(ElecVect.at(0), ElecVect.at(1));
+    //TriggerWeight*=theMuonAnalyzer->GetDoubleMuonTriggerSF(MuonVect.at(0), MuonVect.at(1));
+    
     
     
     Hist["a_nEvents"]->Fill(2., EventWeight);
@@ -321,6 +325,11 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
             theV.addDaughter(MuonVect.at(0).charge() < 0 ? MuonVect.at(0) : MuonVect.at(1));
             theV.addDaughter(MuonVect.at(0).charge() < 0 ? MuonVect.at(1) : MuonVect.at(0));
             addP4.set(theV);
+            // SF
+            LeptonWeight *= theMuonAnalyzer->GetMuonIdSF(MuonVect.at(0), MuonPSet.getParameter<int>("muon1id"));
+            LeptonWeight *= theMuonAnalyzer->GetMuonIdSF(MuonVect.at(1), MuonPSet.getParameter<int>("muon2id"));
+            LeptonWeight *= theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(0), MuonPSet.getParameter<int>("muon1iso"));
+            LeptonWeight *= theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(1), MuonPSet.getParameter<int>("muon2iso"));
         }
         else { if(Verbose) std::cout << " - No OS muons" << std::endl; return; }
     }
@@ -329,6 +338,11 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
             theV.addDaughter(ElecVect.at(0).charge() ? ElecVect.at(0) : ElecVect.at(1));
             theV.addDaughter(ElecVect.at(0).charge() ? ElecVect.at(1) : ElecVect.at(0));
             addP4.set(theV);
+            // SF
+            LeptonWeight *= theElectronAnalyzer->GetElectronIdSF(ElecVect.at(0), ElectronPSet.getParameter<int>("electron1id"));
+            LeptonWeight *= theElectronAnalyzer->GetElectronIdSF(ElecVect.at(1), ElectronPSet.getParameter<int>("electron2id"));
+            LeptonWeight *= theElectronAnalyzer->GetElectronRecoEffSF(ElecVect.at(0));
+            LeptonWeight *= theElectronAnalyzer->GetElectronRecoEffSF(ElecVect.at(1));
         }
         else { if(Verbose) std::cout << " - No OS electrons" << std::endl; return; }
     }
@@ -341,6 +355,9 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         theV.addDaughter(*Neutrino);
         theV.setCharge(MuonVect.at(0).charge());
         addP4.set(theV);
+        // SF
+        LeptonWeight *= theMuonAnalyzer->GetMuonIdSF(MuonVect.at(0), MuonPSet.getParameter<int>("muon1id"));
+        LeptonWeight *= theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(0), MuonPSet.getParameter<int>("muon1iso"));
     }
     else if(isWtoEN) {
         // W kinematic reconstruction
@@ -351,13 +368,17 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         theV.addDaughter(*Neutrino);
         theV.setCharge(ElecVect.at(0).charge());
         addP4.set(theV);
+        // SF
+        LeptonWeight *= theElectronAnalyzer->GetElectronIdSF(ElecVect.at(0), ElectronPSet.getParameter<int>("electron1id"));
+        LeptonWeight *= theElectronAnalyzer->GetElectronRecoEffSF(ElecVect.at(0));
     }
     else if(isZtoNN) {
         theV.addDaughter(MET);
         addP4.set(theV);
     }
     else { if(Verbose) std::cout << " - No reconstructible V candidate" << std::endl; return; }
-    
+    // Update event weight with lepton selections
+    EventWeight *= LeptonWeight;
     
     Hist["a_nEvents"]->Fill(4., EventWeight);
     if(isZtoEE) Hist["e_nEvents"]->Fill(4., EventWeight);
@@ -663,73 +684,8 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     ObjectsFormat::FillCandidateType(XResolvedDR, &theXResolvedDR, isMC);
     ObjectsFormat::FillLorentzType(kH, &thekH);
     ObjectsFormat::FillLorentzType(kX, &thekX);
-        
-    // Lepton and Trigger SF
-    if(isMC) {
-          if(isZtoEE) {
-            //TriggerWeight*=theElectronAnalyzer->GetDoubleElectronTriggerSF(ElecVect.at(0), ElecVect.at(1));
-            LeptonWeight*=theElectronAnalyzer->GetElectronIdSF(ElecVect.at(0), ElectronPSet.getParameter<int>("electron1id"));
-            LeptonWeight*=theElectronAnalyzer->GetElectronIdSF(ElecVect.at(1), ElectronPSet.getParameter<int>("electron2id"));
-            LeptonWeight*=theElectronAnalyzer->GetElectronRecoEffSF(ElecVect.at(0));
-            LeptonWeight*=theElectronAnalyzer->GetElectronRecoEffSF(ElecVect.at(1));
-      }
-        if(isZtoMM) {
-      //TriggerWeight*=theMuonAnalyzer->GetDoubleMuonTriggerSF(MuonVect.at(0), MuonVect.at(1));
-            LeptonWeight*=theMuonAnalyzer->GetMuonIdSF(MuonVect.at(0), MuonPSet.getParameter<int>("muon1id"));
-            LeptonWeight*=theMuonAnalyzer->GetMuonIdSF(MuonVect.at(1), MuonPSet.getParameter<int>("muon2id"));
-            LeptonWeight*=theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(0), MuonPSet.getParameter<int>("muon1iso"));
-            LeptonWeight*=theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(1), MuonPSet.getParameter<int>("muon2iso"));
-        }
-        if(isWtoEN) {
-            //TriggerWeight*=theElectronAnalyzer->GetDoubleElectronTriggerSF(ElecVect.at(0));
-      LeptonWeight*=theElectronAnalyzer->GetElectronIdSF(ElecVect.at(0), ElectronPSet.getParameter<int>("electron1id"));
-            LeptonWeight*=theElectronAnalyzer->GetElectronRecoEffSF(ElecVect.at(0));
-      }
-        if(isWtoMN) {
-      //TriggerWeight*=theMuonAnalyzer->GetDoubleMuonTriggerSF(MuonVect.at(0));
-            LeptonWeight*=theMuonAnalyzer->GetMuonIdSF(MuonVect.at(0), MuonPSet.getParameter<int>("muon1iso"));
-            LeptonWeight*=theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(0), MuonPSet.getParameter<int>("muon1iso"));
-        }
-    }
-    //EventWeight*=TriggerWeight;
-    EventWeight*=LeptonWeight;
-
-//    
-//    // Lepton and Trigger SF
-//    if(isMC) {
-//        if(isZtoEE) {
-//            TriggerWeight*=theElectronAnalyzer->GetDoubleElectronTriggerSF(ElecVect.at(l1), ElecVect.at(l2));
-//            LeptonWeight*=theElectronAnalyzer->GetElectronIdSF(ElecVect.at(l1));
-//            LeptonWeight*=theElectronAnalyzer->GetElectronIdSF(ElecVect.at(l2));
-//            LeptonWeight*=theElectronAnalyzer->GetElectronIsoSF(ElecVect.at(l1));
-//            LeptonWeight*=theElectronAnalyzer->GetElectronIsoSF(ElecVect.at(l2));
-//        }
-//        else {
-//            TriggerWeight*=theMuonAnalyzer->GetDoubleMuonTriggerSF(MuonVect.at(l1), MuonVect.at(l2));
-//            LeptonWeight*=theMuonAnalyzer->GetMuonIdSF(MuonVect.at(l1));
-//            LeptonWeight*=theMuonAnalyzer->GetMuonIdSF(MuonVect.at(l2));
-//            LeptonWeight*=theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(l1));
-//            LeptonWeight*=theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(l2));
-//        }
-//    }
-//    EventWeight*=TriggerWeight;
-//    EventWeight*=LeptonWeight;
-//    
-//    if(Verbose) {
-//        std::cout << "\tReconstructed Z candidate from " << (isZtoMM ? "muons" : "electrons") << " " << l1 << " and " << l2 << " with mass: " << theV.mass() << std::endl;
-//    }
-//    
-//    // FatJet
-//    if(JetsVect.size()<=0) {if(Verbose) std::cout << " - No Fat Jet" << std::endl; return;}
-//    const pat::Jet* fatJet=&JetsVect.at(0);
-//    int nSubJets=fatJet->numberOfDaughters();
-//    const pat::Jet* subJet1 = dynamic_cast<const pat::Jet*>(fatJet->daughter(0));
-//    const pat::Jet* subJet2 = dynamic_cast<const pat::Jet*>(fatJet->daughter(1));
-//    //double subjet0Bdisc = subjet->bDiscriminator("combinedInclusiveSecondaryVertexV2BJetTags");
-//    
-//    
-//    theJetAnalyzer->ApplyRecoilCorrections(MET, &MET.genMET()->p4(), &theV.p4(), 0);
-
+    
+    // Fill tree
     tree->Fill();
 
 }
