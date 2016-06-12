@@ -182,7 +182,6 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     theTriggerAnalyzer->FillTriggerMap(iEvent, TriggerMap);
     EventWeight *= TriggerWeight;
     
-    
     // Electrons
     std::vector<pat::Electron> ElecVect = theElectronAnalyzer->FillElectronVector(iEvent);
     nElectrons = ElecVect.size();
@@ -196,7 +195,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     nTaus = TauVect.size();
     // Photons
     std::vector<pat::Photon> PhotonVect = thePhotonAnalyzer->FillPhotonVector(iEvent);
-    thePhotonAnalyzer->InspectPhotons(PhotonVect, TriggerMap, Hist, EventWeight);
+    if(TriggerMap.find("HLT_DoublePhoton60_v") != TriggerMap.end() && TriggerMap["HLT_DoublePhoton60_v"]) thePhotonAnalyzer->PlotPhotons(PhotonVect, Hist, EventWeight);
     nPhotons = PhotonVect.size();
     // Jets
     std::vector<pat::Jet> JetsVect = theJetAnalyzer->FillJetVector(iEvent);
@@ -213,6 +212,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     pat::MET MET = theJetAnalyzer->FillMetVector(iEvent);
     
     
+    
     // -----------------------------------
     //           GEN LEVEL
     // -----------------------------------
@@ -224,6 +224,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     std::vector<reco::GenParticle> GenPVect = theGenAnalyzer->FillGenVector(iEvent);
     // Gen candidates
     //reco::Candidate* theGenZ = theGenAnalyzer->FindGenParticle(GenPVect, 23);
+    
     std::vector<int> LepIds = {11,13};
     std::vector<int> HadIds = {1,2,3,4,5};
     reco::GenParticle* theGenLep = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, LepIds);
@@ -276,7 +277,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     
     
     // -----------------------------------
-    //           PRESELECTIONS
+    //           VECTOR BOSON
     // -----------------------------------
     
     // Categorization depending on the number of leptons
@@ -334,32 +335,39 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     else if(isWtoMN) {
         // W kinematic reconstruction
         float pz = GetNeutrinoPz(&MuonVect.at(0).p4(), &MET.p4());
-//        theV.addDaughter(MuonVect.at(0));
-//        theV.addDaughter(Neutrino);
-//        theV.addDaughter(MET);
-//        theV.setCharge(MuonVect.at(0).charge());
-//        addP4.set(theV);
+        reco::Candidate* Neutrino;
+        Neutrino->setP4(reco::Particle::LorentzVector(MET.px(), MET.py(), pz, sqrt(MET.pt()*MET.pt() + pz*pz) ));
+        theV.addDaughter(MuonVect.at(0));
+        theV.addDaughter(*Neutrino);
+        theV.setCharge(MuonVect.at(0).charge());
+        addP4.set(theV);
     }
-//    else if(isWtoEN) {
-//        
-//    }
-    else { if(Verbose) std::cout << " - No Iso SF OS Leptons" << std::endl; return; }
+    else if(isWtoEN) {
+        // W kinematic reconstruction
+        float pz = GetNeutrinoPz(&ElecVect.at(0).p4(), &MET.p4());
+        reco::Candidate* Neutrino;
+        Neutrino->setP4(reco::Particle::LorentzVector(MET.px(), MET.py(), pz, sqrt(MET.pt()*MET.pt() + pz*pz) ));
+        theV.addDaughter(ElecVect.at(0));
+        theV.addDaughter(*Neutrino);
+        theV.setCharge(ElecVect.at(0).charge());
+        addP4.set(theV);
+    }
+    else if(isZtoNN) {
+        theV.addDaughter(MET);
+        addP4.set(theV);
+    }
+    else { if(Verbose) std::cout << " - No reconstructible V candidate" << std::endl; return; }
     
-    /*
-    else if(isWtoMN){
-        theV = createkW(MuonVect.at(0), MET);
-    }
-    else if(isWtoEN){
-        theV = createkW(ElecVect.at(0), MET);
-    }
-    else {
-        //Z to nu nu
-    }
-    */
     
     Hist["a_nEvents"]->Fill(4., EventWeight);
     if(isZtoEE) Hist["e_nEvents"]->Fill(4., EventWeight);
     if(isZtoMM) Hist["m_nEvents"]->Fill(4., EventWeight);
+    
+    
+    // -----------------------------------
+    //           HADRONIC BOSON
+    // -----------------------------------
+    
     
     // ---------- Z TO HADRONS ----------
     pat::CompositeCandidate theHMerged;
@@ -371,8 +379,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     pat::CompositeCandidate theX;
     isMerged = isResolved = false;
     
-    /////////////////// Highest pT method ////////////////////
-/*  
+    /////////////////// Highest pT method ////////////////////  
     // Resolved topology
     if(JetsVect.size() < 2) {if(Verbose) std::cout << " - N jets < 2" << std::endl;} // return;}
     else {
@@ -405,7 +412,6 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     
     // Reset theH
     //theH.clearDaughters();
-    */
     
     
     /////////////////// Prefer merged AK8 jet method ////////////////////
@@ -443,7 +449,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
                 }
             }
         }
-
+        
         //MC truth histograms
         if(isMC && isGenZZ) {
             Hist["a_den_H_truth_Hpt"]->Fill(GenZHadPt, EventWeight);
@@ -465,6 +471,9 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         }
         ch1 = 0;
         ch2 = 0;
+        
+        if(Verbose) std::cout << ch1 << ch2 << std::endl;
+        
         //
         // chose the two jets whose mass is closest to Z
         float DZmin(1000.);
@@ -481,6 +490,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
                 }
             }
         }
+        
         //std::cout << "DZ: chosen jets " << ch1 << ", " << ch2 << ", mass " << theHResolvedDZ.mass()  << std::endl;
         if(isMC && (ch1<=JetsVect.size() && ch2<=JetsVect.size()) && JetsVect.at(ch1).genParton()!=NULL && JetsVect.at(ch2).genParton()!=NULL && isGenZZ){
             if(FindMomId(JetsVect.at(ch1).genParton())==23 && FindMomId(JetsVect.at(ch2).genParton())==23){
@@ -491,6 +501,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         ch1 = 100;
         ch2 = 100;
         //	
+        
         // chose the two closest jets in DR
         float DRmin(10.);
         for(unsigned int i1 = 0; i1 < JetsVect.size(); i1++) {
@@ -506,12 +517,14 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
                 }
             }
         }
+        
         if(isMC && (ch1<=JetsVect.size() && ch2<=JetsVect.size()) && JetsVect.at(ch1).genParton()!=NULL && JetsVect.at(ch2).genParton()!=NULL && isGenZZ){
             if(FindMomId(JetsVect.at(ch1).genParton())==23 && FindMomId(JetsVect.at(ch2).genParton())==23){
                 Hist["a_num_HDR_truth_Hpt"]->Fill(GenZHadPt, EventWeight);
                 Hist["a_num_HDR_truth_XMass"]->Fill(GenXMass, EventWeight);
 	          }
         }
+        
        //	
     }
     
