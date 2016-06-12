@@ -112,6 +112,7 @@ process.ntuple = cms.EDAnalyzer('Ntuple',
     ),
     pileupSet = cms.PSet(
         pileup = cms.InputTag("slimmedAddPileupInfo"),
+        vertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
         dataFileName = cms.string('%s/src/Analysis/ALPHA/data/Prod6.root' % os.environ['CMSSW_BASE']),
         mcFileName = cms.string('%s/src/Analysis/ALPHA/data/PU_MC.root' % os.environ['CMSSW_BASE']),
         dataName = cms.string('pileup'),

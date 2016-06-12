@@ -10,7 +10,7 @@ process = cms.Process("ALPHA")
 process.load("FWCore.MessageService.MessageLogger_cfi")
 process.MessageLogger.cerr.threshold = 'ERROR'
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
 
 # input
 # default: if no filelist from command line, run on specified samples
@@ -48,7 +48,7 @@ print "Running on", ("data" if isData else "MC")
 # JSON filter
 import FWCore.PythonUtilities.LumiList as LumiList
 if isData:
-    process.source.lumisToProcess = LumiList.LumiList(filename = '%s/src/Analysis/ALPHA/data/JSON/Cert_271036-274240_13TeV_PromptReco_Collisions16_JSON.txt' % os.environ['CMSSW_BASE']).getVLuminosityBlockRange()
+    process.source.lumisToProcess = LumiList.LumiList(filename = '%s/src/Analysis/ALPHA/data/JSON/Cert_271036-274421_13TeV_PromptReco_Collisions16_JSON.txt' % os.environ['CMSSW_BASE']).getVLuminosityBlockRange() #2.07
 
 
 process.counter = cms.EDAnalyzer('CounterAnalyzer',
@@ -77,7 +77,8 @@ process.HLTFilter = cms.EDFilter("HLTHighLevel",
         'HLT_PFMETNoMu90_JetIdCleaned_PFMHTNoMu90_IDTight_v*',
         'HLT_PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight_v*',
         'HLT_PFMET120_BTagCSV_p067_v*',
-        'HLT_PFMET170_NoiseCleaned_v*'
+        'HLT_PFMET170_NoiseCleaned_v*',
+        'HLT_DoublePhoton60_v*',
     ),
     eventSetupPathsKey = cms.string(''), # not empty => use read paths from AlCaRecoTriggerBitsRcd via this key
     andOr = cms.bool(True),    # how to deal with multiple triggers: True (OR) accept if ANY is true, False (AND) accept if ALL are true
@@ -170,7 +171,7 @@ process.ntuple = cms.EDAnalyzer('Diboson',
     ),
     triggerSet = cms.PSet(
         trigger = cms.InputTag("TriggerResults", "", "HLT"),
-        paths = cms.vstring('HLT_Mu45_eta2p1_v', 'HLT_Mu50_v', 'HLT_IsoMu20_v', 'HLT_IsoMu24_v', 'HLT_Mu27_TkMu8_v', 'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v', 'HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v', 'HLT_Ele105_CaloIdVT_GsfTrkIdT_v', 'HLT_Ele23_WPLoose_Gsf_v', 'HLT_Ele27_WPLoose_Gsf_v', 'HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v', 'HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_v', 'HLT_PFMETNoMu90_PFMHTNoMu90_IDTight_v', 'HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v', 'HLT_PFMETNoMu90_JetIdCleaned_PFMHTNoMu90_IDTight_v', 'HLT_PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight_v', 'HLT_PFMET120_BTagCSV_p067_v', 'HLT_PFMET170_NoiseCleaned_v'),
+        paths = cms.vstring('HLT_Mu45_eta2p1_v', 'HLT_Mu50_v', 'HLT_IsoMu20_v', 'HLT_IsoMu24_v', 'HLT_Mu27_TkMu8_v', 'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v', 'HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v', 'HLT_Ele105_CaloIdVT_GsfTrkIdT_v', 'HLT_Ele23_WPLoose_Gsf_v', 'HLT_Ele27_WPLoose_Gsf_v', 'HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v', 'HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_v', 'HLT_PFMETNoMu90_PFMHTNoMu90_IDTight_v', 'HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v', 'HLT_PFMETNoMu90_JetIdCleaned_PFMHTNoMu90_IDTight_v', 'HLT_PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight_v', 'HLT_PFMET120_BTagCSV_p067_v', 'HLT_PFMET170_NoiseCleaned_v', 'HLT_DoublePhoton60_v',),
     ),
     electronSet = cms.PSet(
         electrons = cms.InputTag("slimmedElectrons"),
@@ -215,7 +216,7 @@ process.ntuple = cms.EDAnalyzer('Diboson',
         taus = cms.InputTag("slimmedTaus"),
         vertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
         taupt = cms.double(20.),
-        taueta = cms.double(9999.),
+        taueta = cms.double(2.3),
         tauIdByDecayMode = cms.int32(0),# 0: not set, 1: old, 2: new
         tauIdByDeltaBetaIso = cms.int32(0),# 0: not set, 1: loose, 2: medium, 3: tight
         tauIdByMVAIso = cms.int32(0),# 0: not set, 1: V loose, 2: loose, 3: medium, 4: tight, 5: V tight
