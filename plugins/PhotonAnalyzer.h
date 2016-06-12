@@ -22,7 +22,7 @@ class PhotonAnalyzer {
         PhotonAnalyzer(edm::ParameterSet&, edm::ConsumesCollector&&);
         ~PhotonAnalyzer();
         virtual std::vector<pat::Photon> FillPhotonVector(const edm::Event&);
-        virtual void InspectPhotons(std::vector<pat::Photon>&, std::map<std::string, bool>&, std::map<std::string, TH1F*>&, float);
+        virtual void PlotPhotons(std::vector<pat::Photon>&, std::map<std::string, TH1F*>&, float);
         virtual float GetPhotonIdSFLoose(pat::Photon&);
         virtual float GetPhotonIdSFLooseError(pat::Photon&);
         virtual float GetPhotonIdSFMedium(pat::Photon&);
