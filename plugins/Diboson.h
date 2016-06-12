@@ -81,14 +81,6 @@
 // dR and dPhi
 #include "DataFormats/Math/interface/deltaR.h"
 #include "DataFormats/Math/interface/deltaPhi.h"
-// KinFitter
-#include "PhysicsTools/KinFitter/interface/TFitConstraintM.h"
-#include "PhysicsTools/KinFitter/interface/TFitParticleEtEtaPhi.h"
-#include "PhysicsTools/KinFitter/interface/TFitParticlePtEtaPhi.h"
-#include "PhysicsTools/KinFitter/interface/TFitParticleEScaledMomDev.h"
-#include "PhysicsTools/KinFitter/interface/TKinFitter.h"
-
-#include "Numbers.h"
 
 #include "TTree.h"
 #include "TH2.h"
@@ -126,10 +118,6 @@ class Diboson : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
         ~Diboson();
 
         static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
-        virtual float GetNeutrinoPz(const reco::Particle::LorentzVector*, const reco::Particle::LorentzVector*);
-        virtual pat::CompositeCandidate recoilMassFormula(pat::CompositeCandidate&, pat::MET&);
-        virtual float performKinematicFit(pat::Jet*, pat::Jet*, reco::Candidate::LorentzVector*, reco::Candidate::LorentzVector*, float);
-        virtual int FindMomId(const reco::GenParticle*);
 
     private:
         virtual void beginJob() override;

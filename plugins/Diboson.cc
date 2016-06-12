@@ -348,7 +348,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     }
     else if(isWtoMN) {
         // W kinematic reconstruction
-        float pz = GetNeutrinoPz(&MuonVect.at(0).p4(), &MET.p4());
+        float pz = Utilities::RecoverNeutrinoPz(&MuonVect.at(0).p4(), &MET.p4());
         reco::Candidate* Neutrino;
         Neutrino->setP4(reco::Particle::LorentzVector(MET.px(), MET.py(), pz, sqrt(MET.pt()*MET.pt() + pz*pz) ));
         theV.addDaughter(MuonVect.at(0));
@@ -361,7 +361,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     }
     else if(isWtoEN) {
         // W kinematic reconstruction
-        float pz = GetNeutrinoPz(&ElecVect.at(0).p4(), &MET.p4());
+        float pz = Utilities::RecoverNeutrinoPz(&ElecVect.at(0).p4(), &MET.p4());
         reco::Candidate* Neutrino;
         Neutrino->setP4(reco::Particle::LorentzVector(MET.px(), MET.py(), pz, sqrt(MET.pt()*MET.pt() + pz*pz) ));
         theV.addDaughter(ElecVect.at(0));
@@ -478,14 +478,14 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
 	      }
  
         if(isMC && JetsVect.at(0).genParton()!=NULL && JetsVect.at(1).genParton()!=NULL && isGenZZ){
-            if(FindMomId(JetsVect.at(0).genParton())==23 && FindMomId(JetsVect.at(1).genParton())==23){
+            if(Utilities::FindMotherId(JetsVect.at(0).genParton())==23 && Utilities::FindMotherId(JetsVect.at(1).genParton())==23){
                 Hist["a_num_H_truth_Hpt"]->Fill(GenZHadPt, EventWeight);
                 Hist["a_num_H_truth_XMass"]->Fill(GenXMass, EventWeight);
             }
         }
 
         if(isMC && (ch1<=JetsVect.size() && ch2<=JetsVect.size())  && JetsVect.at(ch1).genParton()!=NULL && JetsVect.at(ch2).genParton()!=NULL && isGenZZ){
-            if(FindMomId(JetsVect.at(ch1).genParton())==23 && FindMomId(JetsVect.at(ch2).genParton())==23){
+            if(Utilities::FindMotherId(JetsVect.at(ch1).genParton())==23 && Utilities::FindMotherId(JetsVect.at(ch2).genParton())==23){
                 Hist["a_num_HHpt_truth_Hpt"]->Fill(GenZHadPt, EventWeight);
                 Hist["a_num_HHpt_truth_XMass"]->Fill(GenXMass, EventWeight);
             }
@@ -514,7 +514,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         
         //std::cout << "DZ: chosen jets " << ch1 << ", " << ch2 << ", mass " << theHResolvedDZ.mass()  << std::endl;
         if(isMC && (ch1<=JetsVect.size() && ch2<=JetsVect.size()) && JetsVect.at(ch1).genParton()!=NULL && JetsVect.at(ch2).genParton()!=NULL && isGenZZ){
-            if(FindMomId(JetsVect.at(ch1).genParton())==23 && FindMomId(JetsVect.at(ch2).genParton())==23){
+            if(Utilities::FindMotherId(JetsVect.at(ch1).genParton())==23 && Utilities::FindMotherId(JetsVect.at(ch2).genParton())==23){
                 Hist["a_num_HDZ_truth_Hpt"]->Fill(GenZHadPt, EventWeight);
                 Hist["a_num_HDZ_truth_XMass"]->Fill(GenXMass, EventWeight);
             }
@@ -540,7 +540,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         }
         
         if(isMC && (ch1<=JetsVect.size() && ch2<=JetsVect.size()) && JetsVect.at(ch1).genParton()!=NULL && JetsVect.at(ch2).genParton()!=NULL && isGenZZ){
-            if(FindMomId(JetsVect.at(ch1).genParton())==23 && FindMomId(JetsVect.at(ch2).genParton())==23){
+            if(Utilities::FindMotherId(JetsVect.at(ch1).genParton())==23 && Utilities::FindMotherId(JetsVect.at(ch2).genParton())==23){
                 Hist["a_num_HDR_truth_Hpt"]->Fill(GenZHadPt, EventWeight);
                 Hist["a_num_HDR_truth_XMass"]->Fill(GenXMass, EventWeight);
 	          }
@@ -616,7 +616,8 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         // ----------- KINEMATIC FIT -----------
         reco::Candidate::LorentzVector fJet1 = JetsVect.at(0).p4();
         reco::Candidate::LorentzVector fJet2 = JetsVect.at(1).p4();
-        Chi2 = performKinematicFit(&JetsVect.at(0), &JetsVect.at(1), &fJet1, &fJet2, 125.0);
+        if(Verbose) std::cout << "Performing kinematic fit..." << std::endl;
+        Chi2 = Utilities::PerformKinematicFit(&JetsVect.at(0), &JetsVect.at(1), &fJet1, &fJet2, 125.0);
         
         // Kinematic Fit Candidates
         thekH = fJet1 + fJet2;
@@ -794,166 +795,6 @@ void Diboson::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
     desc.setUnknown();
     descriptions.addDefault(desc);
 }
-
-float Diboson::GetNeutrinoPz(const reco::Particle::LorentzVector* lep, const reco::Particle::LorentzVector* met) {
-    // W kinematical reconstruction
-    float pz = 0.;
-    float a = pow(80.4,2) - pow(lep->mass(),2) + 2.*lep->px()*met->px() + 2.*lep->py()*met->py();
-    float A = 4*( pow(lep->energy(),2) - pow(lep->pz(),2) );
-    float B = -4*a*lep->pz();
-    float C = 4*pow(lep->energy(),2) * (pow(met->px(),2)  + pow(met->py(),2)) - pow(a,2);
-    float D = pow(B,2) - 4*A*C;
-    // If there are real solutions, use the one with lowest pz                                            
-    if (D>=0) {
-        float s1 = (-B+sqrt(D))/(2*A);
-        float s2 = (-B-sqrt(D))/(2*A);
-        if(fabs(s1)<fabs(s2)) pz=s1;
-        else pz=s2;
-    }
-    // Otherwise, use real part                                                                           
-    else {
-         pz = -B/(2*A);
-    }
-    return pz;
-}
-
-pat::CompositeCandidate Diboson::recoilMassFormula(pat::CompositeCandidate& H, pat::MET& met){
-    pat::CompositeCandidate X;
-    AddFourMomenta addP4;
-    X.addDaughter(H);
-    X.addDaughter(met);
-    addP4.set(X);
-    reco::Particle::LorentzVector metp4 = met.p4();
-    reco::Particle::LorentzVector Xp4;
-    metp4.SetPz(-H.pz());
-    Xp4 += metp4;
-    Xp4.SetPz(0);
-    float B = -2.*H.energy();
-    float C = pow(H.mass(),2) - pow(90.18,2);
-    float D = pow(B,2) - 4*1*C;
-    float mX;
-    if(D>0){
-        float s1 = (-B+sqrt(D))/2.;
-        float s2 = (-B-sqrt(D))/2.;
-        if(fabs(s1)>fabs(s2)) mX = s1;
-        else mX = s2;
-    }
-    else{
-        mX = -B/2.;
-    }
-    Xp4.SetE(sqrt(pow(mX,2) + pow(Xp4.Px(),2) + pow(Xp4.Py(),2) + pow(Xp4.Pz(),2)));
-    X.setP4(Xp4);
-    X.setCharge(0);
-    return X;
-}
-
-
-
-
-// -----------------------------------
-// ---------- KINEMATIC FIT ----------
-// -----------------------------------
-
-float Diboson::performKinematicFit(pat::Jet* tJet1, pat::Jet* tJet2, reco::Candidate::LorentzVector* fJet1, reco::Candidate::LorentzVector* fJet2, float mass) {
-//  TLorentzVector b1, b2;
-//  b1.SetPtEtaPhiE(tJet1->pt(), tJet1->eta(), tJet1->phi(), tJet1->energy());
-//  b2.SetPtEtaPhiE(tJet2->pt(), tJet2->eta(), tJet2->phi(), tJet2->energy());
-  
-  TMatrixD m1(3,3);
-  TMatrixD m2(3,3);
-  m1.Zero();
-  m2.Zero();
-
-  //In this example the covariant matrix depends on the transverse energy and eta of the jets
-  m1(0,0) = GetErrEt (tJet1->et(), tJet1->eta()); // et
-  m1(1,1) = GetErrEta(tJet1->et(), tJet1->eta()); // eta
-  m1(2,2) = GetErrPhi(tJet1->et(), tJet1->eta()); // phi
-  m2(0,0) = GetErrEt (tJet2->et(), tJet2->eta()); // et
-  m2(1,1) = GetErrEta(tJet2->et(), tJet2->eta()); // eta
-  m2(2,2) = GetErrPhi(tJet2->et(), tJet2->eta()); // phi
-
-//  TFitParticleEtEtaPhi jet1("Jet1", "Jet1", &b1, &m1);
-//  TFitParticleEtEtaPhi jet2("Jet2", "Jet2", &b2, &m2);
-  
-//  TVector3 b1_3=b1.Vect();
-//  TVector3 b2_3=b2.Vect();
-  TVector3 b1(tJet1->px(), tJet1->py(), tJet1->pz());
-  TVector3 b2(tJet2->px(), tJet2->py(), tJet2->pz());
-  TFitParticlePtEtaPhi jet1("Jet1", "Jet1", &b1, tJet1->mass(), &m1 );
-  TFitParticlePtEtaPhi jet2("Jet2", "Jet2", &b2, tJet2->mass(), &m2 );
-
-//  TFitParticleEScaledMomDev jet1("Jet1", "Jet1", &b1, &m1);
-//  TFitParticleEScaledMomDev jet2("Jet2", "Jet2", &b2, &m2);
-
-  //vec1 and vec2 must make a W boson
-  TFitConstraintM mCons1("hMassConstraint", "hMass-Constraint", 0, 0, mass);
-  mCons1.addParticles1( &jet1, &jet2 );
-
-  //Definition of the fitter
-  //Add two constraints
-  TKinFitter fitter("fitter", "fitter");
-  fitter.addMeasParticle( &jet1 );
-  fitter.addMeasParticle( &jet2 );
-
-  fitter.addConstraint( &mCons1 );
-  
-  //Set convergence criteria
-  fitter.setMaxNbIter( 30 );
-  fitter.setMaxDeltaS( 1e-2 );
-  fitter.setMaxF( 1e-1 );
-  fitter.setVerbosity(1);
-
-  // Perform the fit
-  if(Verbose) std::cout << "Performing kinematic fit..." << std::endl;
-  fitter.fit();
-//  fitter.print();
-
-  float dPt1  = jet1.getCurr4Vec()->Pt()  - jet1.getIni4Vec()->Pt();
-  float dEta1 = jet1.getCurr4Vec()->Eta() - jet1.getIni4Vec()->Eta();
-  float dPhi1 = jet1.getCurr4Vec()->Phi() - jet1.getIni4Vec()->Phi();
-  float dPt2  = jet2.getCurr4Vec()->Pt()  - jet2.getIni4Vec()->Pt();
-  float dEta2 = jet2.getCurr4Vec()->Eta() - jet2.getIni4Vec()->Eta();
-  float dPhi2 = jet2.getCurr4Vec()->Phi() - jet2.getIni4Vec()->Phi();
-
-  float chi2( dPt1*dPt1/m1(0,0) + dEta1*dEta1/m1(1,1) + dPhi1*dPhi1/m1(2,2) + dPt2*dPt2/m2(0,0) + dEta2*dEta2/m2(1,1) + dPhi2*dPhi2/m2(2,2) ); //=fitter.getS();
-  float pchi2=TMath::Prob(chi2, fitter.getNDF());
-  
-  Hist["k_chi2"]->Fill(chi2, EventWeight);
-  Hist["k_chi2Prob"]->Fill(pchi2, EventWeight);
-  Hist["k_deltaPt1" ]->Fill(dPt1, EventWeight);
-  Hist["k_deltaEta1"]->Fill(dEta1, EventWeight);
-  Hist["k_deltaPhi1"]->Fill(dPhi1, EventWeight);
-  Hist["k_deltaPt2" ]->Fill(dPt2, EventWeight);
-  Hist["k_deltaEta2"]->Fill(dEta2, EventWeight);
-  Hist["k_deltaPhi2"]->Fill(dPhi2, EventWeight);
-  if(tJet1->genParton()) {
-    Hist["k_pullPt1" ]->Fill((jet1.getCurr4Vec()->Pt()-tJet1->genParton()->pt())/sqrt(m1(0,0)), EventWeight);
-    Hist["k_pullEta1"]->Fill((jet1.getCurr4Vec()->Eta()-tJet1->genParton()->eta())/sqrt(m1(1,1)), EventWeight);
-    Hist["k_pullPhi1"]->Fill((jet1.getCurr4Vec()->Phi()-tJet1->genParton()->phi())/sqrt(m1(2,2)), EventWeight);
-  }
-  if(tJet2->genParton()) {
-    Hist["k_pullPt2" ]->Fill((jet2.getCurr4Vec()->Pt()-tJet2->genParton()->pt())/sqrt(m2(0,0)), EventWeight);
-    Hist["k_pullEta2"]->Fill((jet2.getCurr4Vec()->Eta()-tJet2->genParton()->eta())/sqrt(m2(1,1)), EventWeight);
-    Hist["k_pullPhi2"]->Fill((jet2.getCurr4Vec()->Phi()-tJet2->genParton()->phi())/sqrt(m2(2,2)), EventWeight);
-  }
-  
-  // Update objects
-  fJet1->SetPxPyPzE(jet1.getCurr4Vec()->Px(), jet1.getCurr4Vec()->Py(), jet1.getCurr4Vec()->Pz(), jet1.getCurr4Vec()->Energy());
-  fJet2->SetPxPyPzE(jet2.getCurr4Vec()->Px(), jet2.getCurr4Vec()->Py(), jet2.getCurr4Vec()->Pz(), jet2.getCurr4Vec()->Energy());
-  
-  return chi2;
-}
-
-//Find mother id of a const reco::GenParticle, method used for genPartons MC truth
-int Diboson::FindMomId(const reco::GenParticle* p) {
-  int pId = p->pdgId();
-  const reco::Candidate* mom = p->mother();
-  while (mom != 0 && mom->pdgId() == pId)
-    mom = mom->mother();
-  return mom->pdgId();
-}
-
-
 
 
 //define this as a plug-in
