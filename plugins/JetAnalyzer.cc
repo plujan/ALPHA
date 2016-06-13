@@ -33,6 +33,24 @@ JetAnalyzer::JetAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl
 //      isJESFile=true;
 //    }
     
+    
+    // BTag calibrator
+    calib           = new BTagCalibration("CSVv2", BTagDB);
+    
+    reader          = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","central");
+    reader_up_jes   = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","up_jes");
+    reader_down_jes = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","down_jes");
+//    reader_up_lf        = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","up_lf");
+//    reader_up_hfstats1  = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","up_hfstats1");
+//    reader_up_hfstats2  = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","up_hfstats2");
+//    reader_up_cferr1    = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","up_cferr1");
+//    reader_up_cferr2    = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","up_cferr2");
+//    reader_down_lf        = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","down_lf");
+//    reader_down_hfstats1  = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","down_hfstats1");
+//    reader_down_hfstats2  = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","down_hfstats2");
+//    reader_down_cferr1    = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","down_cferr1");
+//    reader_down_cferr2    = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","down_cferr2");
+    
     // Recoil Corrector
     if(UseRecoil) {
         recoilCorr = new RecoilCorrector(RecoilMCFile);
@@ -55,6 +73,7 @@ JetAnalyzer::JetAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl
 
 JetAnalyzer::~JetAnalyzer() {
 //    JESFile->Close();
+    
     if(UseRecoil) delete recoilCorr;
 }
 
@@ -113,9 +132,9 @@ std::vector<pat::Jet> JetAnalyzer::FillJetVector(const edm::Event& iEvent) {
         jet.addUserInt("isTight", isTightJet(jet) ? 1 : 0);
         jet.addUserInt("isTightLepVeto", isTightLepVetoJet(jet) ? 1 : 0);
         jet.addUserFloat("JESUncertainty", jet.pt()*GetScaleUncertainty(jet));
-        jet.addUserFloat("ReshapedDiscriminator", reshapeBtagDiscriminator(jet)[0]);
-        jet.addUserFloat("ReshapedDiscriminatorUp", reshapeBtagDiscriminator(jet)[1]);
-        jet.addUserFloat("ReshapedDiscriminatorDown", reshapeBtagDiscriminator(jet)[2]);
+        jet.addUserFloat("ReshapedDiscriminator", ReshapeBtagDiscriminator(jet)[0]);
+        jet.addUserFloat("ReshapedDiscriminatorUp", ReshapeBtagDiscriminator(jet)[1]);
+        jet.addUserFloat("ReshapedDiscriminatorDown", ReshapeBtagDiscriminator(jet)[2]);
 
         // PUPPI soft drop mass for AK8 jets
         if(jet.hasSubjets("SoftDropPuppi")) {
@@ -134,9 +153,9 @@ std::vector<pat::Jet> JetAnalyzer::FillJetVector(const edm::Event& iEvent) {
             short nsj = 1;
             for (auto const & it : sdSubjets) {
                 pat::Jet subjet = it;
-                jet.addUserFloat(Form("ReshapedDiscriminator%d",nsj), reshapeBtagDiscriminator(subjet)[0]);
-                jet.addUserFloat(Form("ReshapedDiscriminatorUp%d",nsj), reshapeBtagDiscriminator(subjet)[1]);
-                jet.addUserFloat(Form("ReshapedDiscriminatorDown%d",nsj), reshapeBtagDiscriminator(subjet)[2]);
+                jet.addUserFloat(Form("ReshapedDiscriminator%d",nsj), ReshapeBtagDiscriminator(subjet)[0]);
+                jet.addUserFloat(Form("ReshapedDiscriminatorUp%d",nsj), ReshapeBtagDiscriminator(subjet)[1]);
+                jet.addUserFloat(Form("ReshapedDiscriminatorDown%d",nsj), ReshapeBtagDiscriminator(subjet)[2]);
                 ++nsj;
             }
         }
@@ -330,7 +349,7 @@ bool JetAnalyzer::isTightLepVetoJet(pat::Jet& jet) {
     return true;
 }
 
-std::vector<float> JetAnalyzer::reshapeBtagDiscriminator(pat::Jet& jet) {
+std::vector<float> JetAnalyzer::ReshapeBtagDiscriminator(pat::Jet& jet) {
     float pt(jet.pt()), eta(fabs(jet.eta())), discr(jet.bDiscriminator(BTag));
     int hadronFlavour_ = std::abs(jet.hadronFlavour());
     std::vector<float> reshapedDiscr = {discr,discr,discr};
@@ -340,22 +359,6 @@ std::vector<float> JetAnalyzer::reshapeBtagDiscriminator(pat::Jet& jet) {
     else if (hadronFlavour_ == 4) jf = BTagEntry::FLAV_C;
     else if (hadronFlavour_ == 0) jf = BTagEntry::FLAV_UDSG;
 
-    BTagCalibration       * calib           = new BTagCalibration("CSVv2", BTagDB);
-    
-    BTagCalibrationReader * reader          = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","central");
-    BTagCalibrationReader * reader_up_jes   = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","up_jes");
-    BTagCalibrationReader * reader_down_jes = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","down_jes");
-//     BTagCalibrationReader * reader_up_lf        = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","up_lf");
-//     BTagCalibrationReader * reader_up_hfstats1  = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","up_hfstats1");
-//     BTagCalibrationReader * reader_up_hfstats2  = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","up_hfstats2");
-//     BTagCalibrationReader * reader_up_cferr1    = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","up_cferr1");
-//     BTagCalibrationReader * reader_up_cferr2    = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","up_cferr2");
-//     BTagCalibrationReader * reader_down_lf        = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","down_lf");
-//     BTagCalibrationReader * reader_down_hfstats1  = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","down_hfstats1");
-//     BTagCalibrationReader * reader_down_hfstats2  = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","down_hfstats2");
-//     BTagCalibrationReader * reader_down_cferr1    = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","down_cferr1");
-//     BTagCalibrationReader * reader_down_cferr2    = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","down_cferr2");
-        
     reshapedDiscr[0] = discr*reader->eval(jf, eta, pt); 
     reshapedDiscr[1] = discr*reader_up_jes->eval(jf, eta, pt); 
     reshapedDiscr[2] = discr*reader_down_jes->eval(jf, eta, pt); 

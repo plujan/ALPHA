@@ -53,7 +53,7 @@ class JetAnalyzer {
         //virtual bool isMediumJet(pat::Jet&);
         virtual bool isTightJet(pat::Jet&);
         virtual bool isTightLepVetoJet(pat::Jet&);
-        virtual std::vector<float> reshapeBtagDiscriminator(pat::Jet&);
+        virtual std::vector<float> ReshapeBtagDiscriminator(pat::Jet&);
       
     private:
     
@@ -76,6 +76,24 @@ class JetAnalyzer {
         TFile* JESFile;
         TH2F* hist;
         
+        // Btag calibrations
+        BTagCalibration       * calib;
+    
+        BTagCalibrationReader * reader;
+        BTagCalibrationReader * reader_up_jes;
+        BTagCalibrationReader * reader_down_jes;
+//        BTagCalibrationReader * reader_up_lf;
+//        BTagCalibrationReader * reader_up_hfstats1;
+//        BTagCalibrationReader * reader_up_hfstats2;
+//        BTagCalibrationReader * reader_up_cferr1;
+//        BTagCalibrationReader * reader_up_cferr2;
+//        BTagCalibrationReader * reader_down_lf;
+//        BTagCalibrationReader * reader_down_hfstats1;
+//        BTagCalibrationReader * reader_down_hfstats2;
+//        BTagCalibrationReader * reader_down_cferr1;
+//        BTagCalibrationReader * reader_down_cferr2;
+        
+        // Recoil corrections
         RecoilCorrector* recoilCorr;
 };
 
