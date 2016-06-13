@@ -369,9 +369,9 @@ std::vector<float> JetAnalyzer::ReshapeBtagDiscriminator(pat::Jet& jet) {
         else if (hadronFlavour_ == 4) jf = BTagEntry::FLAV_C;
         else if (hadronFlavour_ == 0) jf = BTagEntry::FLAV_UDSG;
 
-        reshapedDiscr[0] = discr*reader->eval(jf, eta, pt); 
-        reshapedDiscr[1] = discr*reader_up_jes->eval(jf, eta, pt); 
-        reshapedDiscr[2] = discr*reader_down_jes->eval(jf, eta, pt); 
+        reshapedDiscr[0] = discr*reader->eval(jf, eta, pt, discr); 
+        reshapedDiscr[1] = discr*reader_up_jes->eval(jf, eta, pt, discr); 
+        reshapedDiscr[2] = discr*reader_down_jes->eval(jf, eta, pt, discr); 
     
 //     float reshapedDiscr_up_jes        = discr*reader_up_jes->eval(jf, eta, pt); 
 //     float reshapedDiscr_up_lf         = discr*reader_up_lf->eval(jf, eta, pt); 
