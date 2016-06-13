@@ -146,7 +146,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     EventWeight = PUWeight = TriggerWeight = LeptonWeight = 1.;
     isZtoEE = isZtoMM = isWtoEN = isWtoMN = isZtoNN = false;
     nPV = nElectrons = nMuons = nTaus = nPhotons = nJets = nFatJets = nBTagJets = 1;
-    Chi2 = -1.;
+    JetMaxBtag = FatJetMaxBtag = Chi2 = -1.;
     
     AddFourMomenta addP4;
     
@@ -159,7 +159,6 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     for(int i = 0; i < WriteNJets; i++) ObjectsFormat::ResetJetType(Jets[i]);
     for(int i = 0; i < WriteNFatJets; i++) ObjectsFormat::ResetFatJetType(FatJets[i]);
     ObjectsFormat::ResetMEtType(MEt);
-    ObjectsFormat::ResetJetType(bJet1);
     
     ObjectsFormat::ResetCandidateType(V);
     ObjectsFormat::ResetCandidateType(H);
@@ -681,8 +680,8 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
             Phi1         = Utilities::ReturnPhi1(theA.p4(), theV.daughter(0)->p4(), theV.daughter(1)->p4());
         }
         
-        // Max CSV in the event
-        
+        // Max b-tagged jet in the event
+        for(unsigned int i = 2; i < JetsVect.size(); i++) if(JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag")) > JetMaxBtag) JetMaxBtag = JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag"));
         
         Hist["a_nEvents"]->Fill(5., EventWeight);
         if(isZtoEE) Hist["e_nEvents"]->Fill(5., EventWeight);
@@ -698,6 +697,9 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         theX.addDaughter(theV);
         theX.addDaughter(FatJetsVect.at(0));
         addP4.set(theX);
+        
+        // Max b-tagged jet in the event
+        for(unsigned int i = 0; i < JetsVect.size(); i++) if(JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag")) > FatJetMaxBtag && deltaR(FatJetsVect.at(0), JetsVect[i])>0.8) FatJetMaxBtag = JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag"));
     }
     else {if(Verbose) std::cout << " - N fat jets < 1" << std::endl;}
     
@@ -846,6 +848,8 @@ void Diboson::beginJob() {
     tree->Branch("nFatJets", &nFatJets, "nFatJets/I");
     tree->Branch("nBTagJets", &nBTagJets, "nBTagJets/I");
     
+    tree->Branch("JetMaxBtag", &JetMaxBtag, "JetMaxBtag/F");
+    tree->Branch("FatJetMaxBtag", &FatJetMaxBtag, "FatJetMaxBtag/F");
     tree->Branch("Chi2", &Chi2, "Chi2/F");
     // Angular variables
     tree->Branch("CosThetaStar", &CosThetaStar, "CosThetaStar/F");

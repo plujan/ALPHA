@@ -158,7 +158,7 @@ class Diboson : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
         long int EventNumber, RunNumber, LumiNumber;
         float EventWeight, PUWeight, TriggerWeight, LeptonWeight;
         int nPV, nElectrons, nMuons, nTaus, nPhotons, nJets, nFatJets, nBTagJets;
-        float Chi2;
+        float JetMaxBtag, FatJetMaxBtag, Chi2;
         // Angular
         float CosThetaStar, CosTheta1, CosTheta2, Phi, Phi1, AngularLD;
         
@@ -174,7 +174,7 @@ class Diboson : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
         CandidateType V, H, A, X;
         CandidateType HMerged, HResolved, HResolvedPt, HResolvedHpt, HResolvedDZ, HResolvedDR;
         CandidateType XMerged, XResolved, XResolvedPt, XResolvedHpt, XResolvedDZ, XResolvedDR;
-        LorentzType kH, kX;
+        LorentzType kH, kA;
 };
 
 #endif
