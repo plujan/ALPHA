@@ -352,7 +352,6 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         // W kinematic reconstruction
         float pz = Utilities::RecoverNeutrinoPz(&MuonVect.at(0).p4(), &MET.p4());
         Neutrino.setP4(reco::Particle::LorentzVector(MET.px(), MET.py(), pz, sqrt(MET.pt()*MET.pt() + pz*pz) ));
-        std::cout << MET.pt() << "       " << Neutrino.pt() << "     " << Neutrino.pz() << "     " << Neutrino.mass() << std::endl;
         theV.addDaughter(MuonVect.at(0));
         theV.addDaughter(Neutrino);
         theV.setCharge(MuonVect.at(0).charge());
@@ -365,7 +364,6 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         // W kinematic reconstruction
         float pz = Utilities::RecoverNeutrinoPz(&ElecVect.at(0).p4(), &MET.p4());
         Neutrino.setP4(reco::Particle::LorentzVector(MET.px(), MET.py(), pz, sqrt(MET.pt()*MET.pt() + pz*pz) ));
-        std::cout << MET.pt() << "       " << Neutrino.pt() << "     " << Neutrino.pz() << "     " << Neutrino.mass() << std::endl;
         theV.addDaughter(ElecVect.at(0));
         theV.addDaughter(Neutrino);
         theV.setCharge(ElecVect.at(0).charge());
