@@ -243,11 +243,11 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         const reco::Candidate* theGenZLep = theGenAnalyzer->FindMother(theGenLep);
         const reco::Candidate* theGenZHad = theGenAnalyzer->FindMother(theGenHad);
 	for(unsigned int a = 0; a<=theGenZHad->numberOfDaughters(); a++){
-  	    if(theGenZHad!=NULL && theGenZHad->daughter(a)!=NULL && (theGenZHad->pdgId()==23 || theGenZHad->pdgId()==25) && (theGenZHad->daughter(a)->pdgId() == - theGenHad->pdgId())){
+            if(theGenZHad!=NULL && theGenZHad->daughter(a)!=NULL && (theGenZHad->pdgId()==23 || theGenZHad->pdgId()==25) && (theGenZHad->daughter(a)->pdgId() == - theGenHad->pdgId())){
 	        GenHadDR = reco::deltaR(theGenHad->eta(),theGenHad->phi(),theGenZHad->daughter(a)->eta(),theGenZHad->daughter(a)->phi());
                 break;
-	    }
-	}
+            }
+        }
         if(theGenZLep!=NULL && theGenZLep->pdgId()==23 && theGenZHad!=NULL && (theGenZHad->pdgId()==23 || theGenZHad->pdgId()==25)) {
             Hist["g_ZLepMass"]->Fill(theGenZLep->mass(), EventWeight);
             Hist["g_ZLepPt"]->Fill(theGenZLep->pt(), EventWeight);
