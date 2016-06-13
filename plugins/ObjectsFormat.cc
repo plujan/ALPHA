@@ -223,6 +223,10 @@ void ObjectsFormat::FillJetType(JetType& I, const pat::Jet* R, bool isMC) {
     I.CSVR        = R->hasUserFloat("ReshapedDiscriminator") ? R->userFloat("ReshapedDiscriminator") : R->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
     I.CSVRUp      = R->hasUserFloat("ReshapedDiscriminatorUp") ? R->userFloat("ReshapedDiscriminatorUp") : R->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
     I.CSVRDown    = R->hasUserFloat("ReshapedDiscriminatorDown") ? R->userFloat("ReshapedDiscriminatorDown") : R->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags");
+    I.CMVA        = R->bDiscriminator("pfCombinedMVAV2BJetTags");
+    I.CMVAR       = R->hasUserFloat("CMVAR") ? R->userFloat("CMVAR") : -99.;
+    I.CMVARUp     = R->hasUserFloat("CMVARUp") ? R->userFloat("CMVARUp") : -99.;
+    I.CMVARDown   = R->hasUserFloat("CMVARDown") ? R->userFloat("CMVARDown") : -99.;
   //  I.CSVV1       = R->bDiscriminator("combinedSecondaryVertexV1BJetTags");
   //  I.CSVSL       = R->bDiscriminator("combinedSecondaryVertexSoftPFLeptonV1BJetTags");
   //  I.JPro        = R->bDiscriminator("jetProbabilityBJetTags"); // jetBProbabilityBJetTags
@@ -279,6 +283,10 @@ void ObjectsFormat::ResetJetType(JetType& I) {
     I.CSVR        = -99.;
     I.CSVRUp      = -99.;
     I.CSVRDown    = -99.;
+    I.CMVA        = -99.;
+    I.CMVAR       = -99.;
+    I.CMVARUp     = -99.;
+    I.CMVARDown   = -99.;
     I.chf         = -1.;
     I.nhf         = -1.;
     I.phf         = -1.;
@@ -299,7 +307,7 @@ void ObjectsFormat::ResetJetType(JetType& I) {
     I.QGLikelihood = -1.;
 }
 
-std::string ObjectsFormat::ListJetType() {return "pt/F:eta/F:phi/F:mass/F:energy/F:ptRaw/F:ptUnc/F:dPhi_met/F:dPhi_jet1/F:puId/F:CSV/F:CSVR/F:CSVRUp/F:CSVRDown/F:chf/F:nhf/F:phf/F:elf/F:muf/F:chm/I:npr/I:flavour/I:mother/I:isLoose/O:isMedium/O:isTight/O:isTightLepVeto/O:isCSVL/O:isCSVM/O:isCSVT/O:isMatched/O:QGLikelihood/F";}
+std::string ObjectsFormat::ListJetType() {return "pt/F:eta/F:phi/F:mass/F:energy/F:ptRaw/F:ptUnc/F:dPhi_met/F:dPhi_jet1/F:puId/F:CSV/F:CSVR/F:CSVRUp/F:CSVRDown/F:CMVA/F:CMVAR/F:CMVARUp/F:CMVARDown/F:chf/F:nhf/F:phf/F:elf/F:muf/F:chm/I:npr/I:flavour/I:mother/I:isLoose/O:isMedium/O:isTight/O:isTightLepVeto/O:isCSVL/O:isCSVM/O:isCSVT/O:isMatched/O:QGLikelihood/F";}
 
 //*******************//
 //     Fat Jet       //
