@@ -23,11 +23,11 @@ a_num_HHpt_truth_Hpt    ;num~MC~truth~HHpt~vs~GenZHadPt           100     0  100
 a_num_HDZ_truth_Hpt     ;num~MC~truth~HDZ~vs~GenZHadPt            100     0  1000   Lin
 a_num_HDR_truth_Hpt     ;num~MC~truth~HDR~vs~GenZHadPt            100     0  1000   Lin
 a_den_H_truth_Hpt       ;den~MC~truth~H~vs~GenZHadPt              100     0  1000   Lin
-a_num_H_truth_XMass     ;num~MC~truth~H~vs~GenXMass               100     0  1000   Lin
-a_num_HHpt_truth_XMass  ;num~MC~truth~HHpt~vs~GenXMass            100     0  1000   Lin
-a_num_HDZ_truth_XMass   ;num~MC~truth~HDZ~vs~GenXMass             100     0  1000   Lin
-a_num_HDR_truth_XMass   ;num~MC~truth~HDR~vs~GenXMass             100     0  1000   Lin
-a_den_H_truth_XMass     ;den~MC~truth~H~vs~GenXMass               100     0  1000   Lin
+a_num_H_truth_HadDR     ;num~MC~truth~H~vs~GenDRHad               100    -5     5   Lin
+a_num_HHpt_truth_HadDR  ;num~MC~truth~HHpt~vs~GenDRHad            100    -5     5   Lin
+a_num_HDZ_truth_HadDR   ;num~MC~truth~HDZ~vs~GenDRHad             100    -5     5   Lin
+a_num_HDR_truth_HadDR   ;num~MC~truth~HDR~vs~GenDRHad             100    -5     5   Lin
+a_den_H_truth_HadDR     ;den~MC~truth~H~vs~GenDRHad               100    -5     5   Lin
 a_HMass_HPt             ;m_{H}~[GeV]                              100     0  1000   Lin
 a_HMass_PM              ;m_{H}~[GeV]                              100     0  1000   Lin
 a_HAK8Mass              ;m_{AK8~jet}~[GeV]                        100     0  1000   Lin
@@ -53,6 +53,7 @@ g_ZHadPt                ;Gen~p_{T,~Z_{Had}}~[GeV]                 100     0  500
 g_LepPt                 ;Gen~p_{T,~l}~[GeV]                       100     0  5000   Lin
 g_HadPt                 ;Gen~p_{T,~q}~[GeV]                       100     0  5000   Lin
 g_HadEta                ;Gen~#eta_{q}                             100    -5     5   Lin
+g_HadDR                 ;Gen~#DeltaR~(q_{1},q_{2})                100    -5     5   Lin
 g_ZZDR                  ;Gen~#DeltaR~Z_{Lep}~Z_{Had}              100     0     5   Lin
 g_ZZDPhi                ;Gen~#Delta#phi~(Z_{Lep},Z_{Had})         100    -5     5   Lin
 g_LepHadDR              ;Gen~#DeltaR~(l,q)                        100     0     5   Lin
