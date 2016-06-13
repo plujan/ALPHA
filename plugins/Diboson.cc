@@ -176,7 +176,9 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     // Pu weight
     PUWeight = thePileupAnalyzer->GetPUWeight(iEvent);
     nPV = thePileupAnalyzer->GetPV(iEvent);
+    Hist["a_nPVNoWeight"]->Fill(nPV, EventWeight);
     EventWeight *= PUWeight;
+    Hist["a_nPVReWeight"]->Fill(nPV, EventWeight);
     
     // Trigger
     theTriggerAnalyzer->FillTriggerMap(iEvent, TriggerMap);
@@ -242,9 +244,9 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     if(theGenLep!=NULL && theGenHad!=NULL){
         const reco::Candidate* theGenZLep = theGenAnalyzer->FindMother(theGenLep);
         const reco::Candidate* theGenZHad = theGenAnalyzer->FindMother(theGenHad);
-	for(unsigned int a = 0; a<=theGenZHad->numberOfDaughters(); a++){
+        for(unsigned int a = 0; a<=theGenZHad->numberOfDaughters(); a++) {
             if(theGenZHad!=NULL && theGenZHad->daughter(a)!=NULL && (theGenZHad->pdgId()==23 || theGenZHad->pdgId()==25) && (theGenZHad->daughter(a)->pdgId() == - theGenHad->pdgId())){
-	        GenHadDR = reco::deltaR(theGenHad->eta(),theGenHad->phi(),theGenZHad->daughter(a)->eta(),theGenZHad->daughter(a)->phi());
+                GenHadDR = reco::deltaR(theGenHad->eta(),theGenHad->phi(),theGenZHad->daughter(a)->eta(),theGenZHad->daughter(a)->phi());
                 break;
             }
         }
@@ -269,6 +271,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
 
     
     reco::Candidate* theGenX = theGenAnalyzer->FindGenParticleByIdAndStatus(GenPVect, 39, 62);
+    if(!theGenX) theGenX = theGenAnalyzer->FindGenParticleByIdAndStatus(GenPVect, 36, 62);
     if(theGenX!=NULL && theGenLep!=NULL && theGenHad!=NULL && isGenZZ){
         Hist["g_XMass"]->Fill(theGenX->mass(), EventWeight);
         Hist["g_XPt"]->Fill(theGenX->pt(), EventWeight);
@@ -393,7 +396,13 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     if(isZtoEE) Hist["e_nEvents"]->Fill(4., EventWeight);
     if(isZtoMM) Hist["m_nEvents"]->Fill(4., EventWeight);
     
-    if(isZtoEE) Hist["e_Zmass"]->Fill(theV.mass(), EventWeight);
+    if(isZtoEE) {
+        Hist["e_Zmass"]->Fill(theV.mass(), EventWeight);
+        if(ElecVect.at(0).isEB() && ElecVect.at(1).isEB()) Hist["e_ZmassBB"]->Fill(theV.mass(), EventWeight);
+        if(ElecVect.at(0).isEE() && ElecVect.at(1).isEB()) Hist["e_ZmassEB"]->Fill(theV.mass(), EventWeight);
+        if(ElecVect.at(0).isEB() && ElecVect.at(1).isEE()) Hist["e_ZmassBE"]->Fill(theV.mass(), EventWeight);
+        if(ElecVect.at(0).isEE() && ElecVect.at(1).isEE()) Hist["e_ZmassEE"]->Fill(theV.mass(), EventWeight);
+    }
     if(isZtoMM) Hist["m_Zmass"]->Fill(theV.mass(), EventWeight);
     
     // -----------------------------------
@@ -407,23 +416,20 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     pat::CompositeCandidate theHResolvedHpt;
     pat::CompositeCandidate theHResolvedDZ;
     pat::CompositeCandidate theHResolvedDR;
-    pat::CompositeCandidate theH;
-    pat::CompositeCandidate theX;
+    pat::CompositeCandidate theHResolvedPt;
+    
     isMerged = isResolved = false;
     
     /////////////////// Highest pT method ////////////////////  
     // Resolved topology
     if(nJets < 2) {if(Verbose) std::cout << " - N jets < 2" << std::endl;} // return;}
     else {
-        theH.addDaughter(JetsVect.at(0));
-        theH.addDaughter(JetsVect.at(1));
-        addP4.set(theH);
-        //std::cout << "resolved mass: " << theH.mass() << std::endl;
-        //if(theH.mass()<40 || theH.pt()<100) theH.clearDaughters();
-        //Hist["a_HAK4Mass_HPt"]->Fill(theH.mass(), EventWeight);
-        Hist["a_nEvents"]->Fill(5., EventWeight);
-        if(isZtoEE) Hist["e_nEvents"]->Fill(5., EventWeight);
-        if(isZtoMM) Hist["m_nEvents"]->Fill(5., EventWeight);
+        theHResolvedPt.addDaughter(JetsVect.at(0));
+        theHResolvedPt.addDaughter(JetsVect.at(1));
+        addP4.set(theHResolvedPt);
+        //std::cout << "resolved mass: " << theHResolvedPt.mass() << std::endl;
+        //if(theHResolvedPt.mass()<40 || theHResolvedPt.pt()<100) theHResolvedPt.clearDaughters();
+        //Hist["a_HAK4Mass_HPt"]->Fill(theHResolvedPt.mass(), EventWeight);
     }
 
     // Boosted topology
@@ -431,15 +437,15 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     else {
         //Hist["a_HAK8Mass_HPt"]->Fill(FatJetsVect.at(0).hasUserFloat("ak8PFJetsCHSSoftDropMass")?FatJetsVect.at(0).userFloat("ak8PFJetsCHSSoftDropMass"):FatJetsVect.at(0).mass(), EventWeight);
         //std::cout << "merged mass: " << FatJetsVect.at(0).mass() << std::endl;
-        if(theH.pt()<FatJetsVect.at(0).pt()) {
-            theH.clearDaughters();
-            theH.addDaughter(FatJetsVect.at(0));
-            addP4.set(theH);
+        if(theHResolvedPt.pt()<FatJetsVect.at(0).pt()) {
+            theHResolvedPt.clearDaughters();
+            theHResolvedPt.addDaughter(FatJetsVect.at(0));
+            addP4.set(theHResolvedPt);
             //theH.addUserFloat("softdropMass", FatJetsVect.at(0).userFloat("ak8PFJetsCHSSoftDropMass"));
             //if(theH.mass()>180) theH.clearDaughters();
         }
     }
-    Hist["a_HMass_HPt"]->Fill(theH.hasUserFloat("softdropMass") ? theH.userFloat("softdropMass") : theH.mass(), EventWeight);
+    Hist["a_HMass_HPt"]->Fill(theHResolvedPt.hasUserFloat("softdropMass") ? theHResolvedPt.userFloat("softdropMass") : theHResolvedPt.mass(), EventWeight);
     //std::cout << "chosen mass: " << theH.mass() << std::endl;
     
     // Reset theH
@@ -486,7 +492,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         if(isMC && isGenZZ) {
             Hist["a_den_H_truth_Hpt"]->Fill(GenZHadPt, EventWeight);
             Hist["a_den_H_truth_HadDR"]->Fill(GenHadDR, EventWeight);
-	      }
+        }
  
         if(isMC && JetsVect.at(0).genParton()!=NULL && JetsVect.at(1).genParton()!=NULL && isGenZZ){
             if(Utilities::FindMotherId(JetsVect.at(0).genParton())==23 && Utilities::FindMotherId(JetsVect.at(1).genParton())==23){
@@ -532,7 +538,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         }
         ch1 = 100;
         ch2 = 100;
-        //	
+        //  
         
         // chose the two closest jets in DR
         float DRmin(10.);
@@ -554,16 +560,17 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
             if(Utilities::FindMotherId(JetsVect.at(ch1).genParton())==23 && Utilities::FindMotherId(JetsVect.at(ch2).genParton())==23){
                 Hist["a_num_HDR_truth_Hpt"]->Fill(GenZHadPt, EventWeight);
                 Hist["a_num_HDR_truth_HadDR"]->Fill(GenHadDR, EventWeight);
-	          }
+            }
         }
         
-       //	
+       //  
     }
     
 
     // Global candidate
     pat::CompositeCandidate theXMerged;
     pat::CompositeCandidate theXResolved;
+    pat::CompositeCandidate theXResolvedPt;
     pat::CompositeCandidate theXResolvedHpt;
     pat::CompositeCandidate theXResolvedDZ;
     pat::CompositeCandidate theXResolvedDR;
@@ -575,6 +582,10 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     theXResolved.addDaughter(theV);
     if(theHResolved.numberOfDaughters()>0) theXResolved.addDaughter(theHResolved);
     addP4.set(theXResolved);
+    
+    theXResolvedPt.addDaughter(theV);
+    if(theHResolvedPt.numberOfDaughters()>0) theXResolvedPt.addDaughter(theHResolvedPt);
+    addP4.set(theXResolvedPt);
     
     theXResolvedHpt.addDaughter(theV);
     if(theHResolvedHpt.numberOfDaughters()>0) theXResolvedHpt.addDaughter(theHResolvedHpt);
@@ -608,6 +619,15 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         return;
     }
     */
+    
+    
+    // ------------------------------
+    // ----------    AZh   ----------
+    // ------------------------------
+    
+    pat::CompositeCandidate theH;
+    pat::CompositeCandidate theX;
+    
     reco::Candidate::LorentzVector thekH;
     reco::Candidate::LorentzVector thekX;
     if(nJets < 2) {if(Verbose) std::cout << " - N jets < 2" << std::endl;} // return;}
@@ -684,18 +704,20 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     ObjectsFormat::FillCandidateType(V, &theV, isMC);
     ObjectsFormat::FillCandidateType(H, &theH, isMC);
     ObjectsFormat::FillCandidateType(X, &theX, isMC);
+    ObjectsFormat::FillLorentzType(kH, &thekH);
+    ObjectsFormat::FillLorentzType(kX, &thekX);
     ObjectsFormat::FillCandidateType(HMerged, &theHMerged, isMC);
     ObjectsFormat::FillCandidateType(XMerged, &theXMerged, isMC);
     ObjectsFormat::FillCandidateType(HResolved, &theHResolved, isMC);
     ObjectsFormat::FillCandidateType(XResolved, &theXResolved, isMC);
+    ObjectsFormat::FillCandidateType(HResolvedPt, &theHResolvedPt, isMC);
+    ObjectsFormat::FillCandidateType(XResolvedPt, &theXResolvedPt, isMC);
     ObjectsFormat::FillCandidateType(HResolvedHpt, &theHResolvedHpt, isMC);
     ObjectsFormat::FillCandidateType(XResolvedHpt, &theXResolvedHpt, isMC);
     ObjectsFormat::FillCandidateType(HResolvedDZ, &theHResolvedDZ, isMC);
     ObjectsFormat::FillCandidateType(XResolvedDZ, &theXResolvedDZ, isMC);
     ObjectsFormat::FillCandidateType(HResolvedDR, &theHResolvedDR, isMC);
     ObjectsFormat::FillCandidateType(XResolvedDR, &theXResolvedDR, isMC);
-    ObjectsFormat::FillLorentzType(kH, &thekH);
-    ObjectsFormat::FillLorentzType(kX, &thekX);
     
     if(nJets < 2 && nFatJets < 1) return;
     
@@ -782,18 +804,21 @@ void Diboson::beginJob() {
     tree->Branch("V", &V, ObjectsFormat::ListCandidateType().c_str());
     tree->Branch("H", &H, ObjectsFormat::ListCandidateType().c_str());
     tree->Branch("X", &X, ObjectsFormat::ListCandidateType().c_str());
+    tree->Branch("kH", &kH, ObjectsFormat::ListLorentzType().c_str());
+    tree->Branch("kX", &kX, ObjectsFormat::ListLorentzType().c_str());
     tree->Branch("HMerged", &HMerged, ObjectsFormat::ListCandidateType().c_str());
     tree->Branch("XMerged", &XMerged, ObjectsFormat::ListCandidateType().c_str());
     tree->Branch("HResolved", &HResolved, ObjectsFormat::ListCandidateType().c_str());
+    tree->Branch("HResolvedPt", &HResolvedPt, ObjectsFormat::ListCandidateType().c_str());
     tree->Branch("HResolvedHpt", &HResolvedHpt, ObjectsFormat::ListCandidateType().c_str());
     tree->Branch("HResolvedDZ", &HResolvedDZ, ObjectsFormat::ListCandidateType().c_str());
     tree->Branch("HResolvedDR", &HResolvedDR, ObjectsFormat::ListCandidateType().c_str());
     tree->Branch("XResolved", &XResolved, ObjectsFormat::ListCandidateType().c_str());
+    tree->Branch("XResolvedPt", &XResolvedPt, ObjectsFormat::ListCandidateType().c_str());
     tree->Branch("XResolvedHpt", &XResolvedHpt, ObjectsFormat::ListCandidateType().c_str());
     tree->Branch("XResolvedDZ", &XResolvedDZ, ObjectsFormat::ListCandidateType().c_str());
     tree->Branch("XResolvedDR", &XResolvedDR, ObjectsFormat::ListCandidateType().c_str());
-    tree->Branch("kH", &kH, ObjectsFormat::ListLorentzType().c_str());
-    tree->Branch("kX", &kX, ObjectsFormat::ListLorentzType().c_str());
+    
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
