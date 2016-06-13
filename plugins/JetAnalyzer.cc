@@ -15,6 +15,7 @@ JetAnalyzer::JetAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl
     AddQG(PSet.getParameter<bool>("addQGdiscriminator")),
     RecalibrateJets(PSet.getParameter<bool>("recalibrateJets")),
     RecalibrateMass(PSet.getParameter<bool>("recalibrateMass")),
+    UseReshape(PSet.getParameter<bool>("reshapeBTag")),
     BTag(PSet.getParameter<std::string>("btag")),
     Jet1BTag(PSet.getParameter<int>("jet1btag")),
     Jet2BTag(PSet.getParameter<int>("jet2btag")),
@@ -35,22 +36,23 @@ JetAnalyzer::JetAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl
     
     
     // BTag calibrator
-    calib           = new BTagCalibration("CSVv2", BTagDB);
-    
-    reader          = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","central");
-    reader_up_jes   = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","up_jes");
-    reader_down_jes = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","down_jes");
-//    reader_up_lf        = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","up_lf");
-//    reader_up_hfstats1  = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","up_hfstats1");
-//    reader_up_hfstats2  = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","up_hfstats2");
-//    reader_up_cferr1    = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","up_cferr1");
-//    reader_up_cferr2    = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","up_cferr2");
-//    reader_down_lf        = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","down_lf");
-//    reader_down_hfstats1  = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","down_hfstats1");
-//    reader_down_hfstats2  = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","down_hfstats2");
-//    reader_down_cferr1    = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","down_cferr1");
-//    reader_down_cferr2    = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","down_cferr2");
-    
+    if(UseReshape) {
+        calib           = new BTagCalibration("CSVv2", BTagDB);
+        
+        reader          = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","central");
+        reader_up_jes   = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","up_jes");
+        reader_down_jes = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","down_jes");
+    //    reader_up_lf        = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","up_lf");
+    //    reader_up_hfstats1  = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","up_hfstats1");
+    //    reader_up_hfstats2  = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","up_hfstats2");
+    //    reader_up_cferr1    = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","up_cferr1");
+    //    reader_up_cferr2    = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","up_cferr2");
+    //    reader_down_lf        = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","down_lf");
+    //    reader_down_hfstats1  = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","down_hfstats1");
+    //    reader_down_hfstats2  = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","down_hfstats2");
+    //    reader_down_cferr1    = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","down_cferr1");
+    //    reader_down_cferr2    = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","down_cferr2");
+    }
     // Recoil Corrector
     if(UseRecoil) {
         recoilCorr = new RecoilCorrector(RecoilMCFile);
@@ -73,7 +75,14 @@ JetAnalyzer::JetAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl
 
 JetAnalyzer::~JetAnalyzer() {
 //    JESFile->Close();
-    
+
+//    Creates segmentation fault (?)
+//    if(UseReshape) {
+//        delete reader;
+//        delete reader_up_jes;
+//        delete reader_down_jes;
+//        delete calib;
+//    }
     if(UseRecoil) delete recoilCorr;
 }
 
@@ -300,14 +309,14 @@ bool JetAnalyzer::isLooseJet(pat::Jet& jet) {
         if(jet.neutralEmEnergyFraction()>=0.99) return false;
         if(jet.numberOfDaughters()<=1) return false;
         if(fabs(jet.eta())<=2.4) {
-          if(jet.chargedHadronEnergyFraction()<=0.) return false;
-          if(jet.chargedEmEnergyFraction()>=0.99) return false;
-          if(jet.chargedMultiplicity()<=0) return false;
+            if(jet.chargedHadronEnergyFraction()<=0.) return false;
+            if(jet.chargedEmEnergyFraction()>=0.99) return false;
+            if(jet.chargedMultiplicity()<=0) return false;
         }
     }
     else{
         if(jet.neutralEmEnergyFraction()>=0.90) return false;
-  if(jet.neutralMultiplicity()<=10) return false;
+        if(jet.neutralMultiplicity()<=10) return false;
     }
     return true;
 }
@@ -318,14 +327,14 @@ bool JetAnalyzer::isTightJet(pat::Jet& jet) {
         if(jet.neutralEmEnergyFraction()>=0.90) return false;
         if(jet.numberOfDaughters()<=1) return false;
         if(fabs(jet.eta())<=2.4) {
-          if(jet.chargedHadronEnergyFraction()<=0.) return false;
-          if(jet.chargedEmEnergyFraction()>=0.99) return false;
-          if(jet.chargedMultiplicity()<=0) return false;
+            if(jet.chargedHadronEnergyFraction()<=0.) return false;
+            if(jet.chargedEmEnergyFraction()>=0.99) return false;
+            if(jet.chargedMultiplicity()<=0) return false;
         }
     }
     else{
         if(jet.neutralEmEnergyFraction()>=0.90) return false;
-  if(jet.neutralMultiplicity()<=10) return false;
+        if(jet.neutralMultiplicity()<=10) return false;
     }
     return true;
 }
@@ -337,14 +346,14 @@ bool JetAnalyzer::isTightLepVetoJet(pat::Jet& jet) {
         if(jet.numberOfDaughters()<=1) return false;
         if(jet.muonEnergyFraction()>=0.8) return false;
         if(fabs(jet.eta())<=2.4) {
-          if(jet.chargedHadronEnergyFraction()<=0.) return false;
-          if(jet.chargedEmEnergyFraction()>=0.90) return false;
-          if(jet.chargedMultiplicity()<=0) return false;
+            if(jet.chargedHadronEnergyFraction()<=0.) return false;
+            if(jet.chargedEmEnergyFraction()>=0.90) return false;
+            if(jet.chargedMultiplicity()<=0) return false;
         }
     }
     else{
         if(jet.neutralEmEnergyFraction()>=0.90) return false;
-  if(jet.neutralMultiplicity()<=10) return false;
+        if(jet.neutralMultiplicity()<=10) return false;
     }
     return true;
 }
@@ -353,16 +362,17 @@ std::vector<float> JetAnalyzer::ReshapeBtagDiscriminator(pat::Jet& jet) {
     float pt(jet.pt()), eta(fabs(jet.eta())), discr(jet.bDiscriminator(BTag));
     int hadronFlavour_ = std::abs(jet.hadronFlavour());
     std::vector<float> reshapedDiscr = {discr,discr,discr};
+    
+    if(UseReshape) {
+        BTagEntry::JetFlavor jf = BTagEntry::FLAV_UDSG;
+        if (hadronFlavour_ == 5) jf = BTagEntry::FLAV_B;
+        else if (hadronFlavour_ == 4) jf = BTagEntry::FLAV_C;
+        else if (hadronFlavour_ == 0) jf = BTagEntry::FLAV_UDSG;
 
-    BTagEntry::JetFlavor jf = BTagEntry::FLAV_UDSG;
-    if (hadronFlavour_ == 5) jf = BTagEntry::FLAV_B;
-    else if (hadronFlavour_ == 4) jf = BTagEntry::FLAV_C;
-    else if (hadronFlavour_ == 0) jf = BTagEntry::FLAV_UDSG;
-
-    reshapedDiscr[0] = discr*reader->eval(jf, eta, pt); 
-    reshapedDiscr[1] = discr*reader_up_jes->eval(jf, eta, pt); 
-    reshapedDiscr[2] = discr*reader_down_jes->eval(jf, eta, pt); 
-
+        reshapedDiscr[0] = discr*reader->eval(jf, eta, pt); 
+        reshapedDiscr[1] = discr*reader_up_jes->eval(jf, eta, pt); 
+        reshapedDiscr[2] = discr*reader_down_jes->eval(jf, eta, pt); 
+    
 //     float reshapedDiscr_up_jes        = discr*reader_up_jes->eval(jf, eta, pt); 
 //     float reshapedDiscr_up_lf         = discr*reader_up_lf->eval(jf, eta, pt); 
 //     float reshapedDiscr_up_hfstats1   = discr*reader_up_hfstats1->eval(jf, eta, pt); 
@@ -383,7 +393,7 @@ std::vector<float> JetAnalyzer::ReshapeBtagDiscriminator(pat::Jet& jet) {
 //     std::cout << Form(" hfstats2: %f / %f\n", reshapedDiscr_up_hfstats2, reshapedDiscr_down_hfstats2);
 //     std::cout << Form(" cferr1  : %f / %f\n", reshapedDiscr_up_cferr1, reshapedDiscr_down_cferr1);
 //     std::cout << Form(" cferr2  : %f / %f\n", reshapedDiscr_up_cferr2, reshapedDiscr_down_cferr2);
-
+    }
     return reshapedDiscr;
 }
 

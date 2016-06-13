@@ -64,6 +64,7 @@ class JetAnalyzer {
         int JetId;
         float Jet1Pt, Jet2Pt, JetEta;
         bool AddQG, RecalibrateJets, RecalibrateMass;
+        bool UseReshape;
         std::string BTag;
         int Jet1BTag, Jet2BTag;
         std::string BTagDB;
