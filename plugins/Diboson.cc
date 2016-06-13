@@ -79,7 +79,7 @@ Diboson::Diboson(const edm::ParameterSet& iConfig):
     TFileDirectory kinDir=fs->mkdir("Kin/");
     
     // Make TH1F
-    std::vector<std::string> nLabels={"All", "Trigger", "Iso Lep #geq 2", "Z cand ", "Jets #geq 2", "Z mass ", "bJets #geq 1", "bJets #geq 2", "h mass ", "#slash{E}_{T}"};
+    std::vector<std::string> nLabels={"All", "Trigger", "Iso Lep #geq 2", "Z cand ", "Jets #geq 2", "Z mass ", "h mass ", "Top veto", "bJets #geq 1", "bJets #geq 2"};
     
     int nbins;
     float min, max;
@@ -159,11 +159,26 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     for(int i = 0; i < WriteNJets; i++) ObjectsFormat::ResetJetType(Jets[i]);
     for(int i = 0; i < WriteNFatJets; i++) ObjectsFormat::ResetFatJetType(FatJets[i]);
     ObjectsFormat::ResetMEtType(MEt);
+    ObjectsFormat::ResetJetType(bJet1);
+    
     ObjectsFormat::ResetCandidateType(V);
+    ObjectsFormat::ResetCandidateType(H);
+    ObjectsFormat::ResetCandidateType(A);
+    ObjectsFormat::ResetCandidateType(X);
     ObjectsFormat::ResetCandidateType(HMerged);
+    ObjectsFormat::ResetCandidateType(XMerged);
     ObjectsFormat::ResetCandidateType(HResolved);
+    ObjectsFormat::ResetCandidateType(XResolved);
+    ObjectsFormat::ResetCandidateType(HResolvedPt);
+    ObjectsFormat::ResetCandidateType(XResolvedPt);
+    ObjectsFormat::ResetCandidateType(HResolvedHpt);
+    ObjectsFormat::ResetCandidateType(XResolvedHpt);
+    ObjectsFormat::ResetCandidateType(HResolvedDZ);
+    ObjectsFormat::ResetCandidateType(XResolvedDZ);
+    ObjectsFormat::ResetCandidateType(HResolvedDR);
+    ObjectsFormat::ResetCandidateType(XResolvedDR);
     ObjectsFormat::ResetLorentzType(kH);
-    ObjectsFormat::ResetLorentzType(kX);
+    ObjectsFormat::ResetLorentzType(kA);
     
     Hist["a_nEvents"]->Fill(1., EventWeight);
     Hist["e_nEvents"]->Fill(1., EventWeight);
@@ -403,7 +418,13 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         if(ElecVect.at(0).isEB() && ElecVect.at(1).isEE()) Hist["e_ZmassBE"]->Fill(theV.mass(), EventWeight);
         if(ElecVect.at(0).isEE() && ElecVect.at(1).isEE()) Hist["e_ZmassEE"]->Fill(theV.mass(), EventWeight);
     }
-    if(isZtoMM) Hist["m_Zmass"]->Fill(theV.mass(), EventWeight);
+    if(isZtoMM) {
+        Hist["m_Zmass"]->Fill(theV.mass(), EventWeight);
+        if(abs(MuonVect.at(0).eta())<1.1 && abs(MuonVect.at(1).eta())<1.1) Hist["m_ZmassBB"]->Fill(theV.mass(), EventWeight);
+        if(abs(MuonVect.at(0).eta())>1.1 && abs(MuonVect.at(1).eta())<1.1) Hist["m_ZmassEB"]->Fill(theV.mass(), EventWeight);
+        if(abs(MuonVect.at(0).eta())<1.1 && abs(MuonVect.at(1).eta())>1.1) Hist["m_ZmassBE"]->Fill(theV.mass(), EventWeight);
+        if(abs(MuonVect.at(0).eta())>1.1 && abs(MuonVect.at(1).eta())>1.1) Hist["m_ZmassEE"]->Fill(theV.mass(), EventWeight);
+    }
     
     // -----------------------------------
     //           HADRONIC BOSON
@@ -599,11 +620,11 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     if(theHResolvedDR.numberOfDaughters()>0) theXResolvedDR.addDaughter(theHResolvedDR);
     addP4.set(theXResolvedDR);
 
-    if(isResolved || isMerged) {
-        Hist["a_nEvents"]->Fill(6., EventWeight);
-        if(isZtoMM) Hist["m_nEvents"]->Fill(6., EventWeight);
-        if(isZtoEE) Hist["e_nEvents"]->Fill(6., EventWeight);
-    }
+//    if(isResolved || isMerged) {
+//        Hist["a_nEvents"]->Fill(6., EventWeight);
+//        if(isZtoMM) Hist["m_nEvents"]->Fill(6., EventWeight);
+//        if(isZtoEE) Hist["e_nEvents"]->Fill(6., EventWeight);
+//    }
 //    else {
 //        if(Verbose) std::cout << "No dilepton, no X!" << std::endl;
 //        return;
@@ -626,23 +647,19 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     // ------------------------------
     
     pat::CompositeCandidate theH;
+    pat::CompositeCandidate theA;
     pat::CompositeCandidate theX;
     
     reco::Candidate::LorentzVector thekH;
-    reco::Candidate::LorentzVector thekX;
-    if(nJets < 2) {if(Verbose) std::cout << " - N jets < 2" << std::endl;} // return;}
-    else {
+    reco::Candidate::LorentzVector thekA;
+    if(nJets >= 2) {
         theH.addDaughter(JetsVect.at(0));
         theH.addDaughter(JetsVect.at(1));
         addP4.set(theH);
         
-        theX.addDaughter(theV);
-        theX.addDaughter(theH);
-        addP4.set(theX);
-        
-        Hist["a_nEvents"]->Fill(5., EventWeight);
-        if(isZtoEE) Hist["e_nEvents"]->Fill(5., EventWeight);
-        if(isZtoMM) Hist["m_nEvents"]->Fill(5., EventWeight);
+        theA.addDaughter(theV);
+        theA.addDaughter(theH);
+        addP4.set(theA);
         
         // ----------- KINEMATIC FIT -----------
         reco::Candidate::LorentzVector fJet1 = JetsVect.at(0).p4();
@@ -652,21 +669,39 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         
         // Kinematic Fit Candidates
         thekH = fJet1 + fJet2;
-        thekX = theV.p4() + thekH;
+        thekA = theV.p4() + thekH;
         
         // ########## PART 5: VARIABLES ##########
         if(isZtoMM || isZtoEE) {
             // ---------- Angular ----------
-            CosThetaStar = Utilities::ReturnCosThetaStar(theX.p4(), theV.p4());
+            CosThetaStar = Utilities::ReturnCosThetaStar(theA.p4(), theV.p4());
             CosTheta1    = Utilities::ReturnCosTheta1(theV.p4(), theV.daughter(0)->p4(), theV.daughter(1)->p4(), theH.daughter(0)->p4(), theH.daughter(1)->p4());
             CosTheta2    = fabs( Utilities::ReturnCosTheta2(theH.p4(), theV.daughter(0)->p4(), theV.daughter(1)->p4(), theH.daughter(0)->p4(), theH.daughter(1)->p4()) );
-            Phi          = Utilities::ReturnPhi(theX.p4(), theV.daughter(0)->p4(), theV.daughter(1)->p4(), theH.daughter(0)->p4(), theH.daughter(1)->p4());
-            Phi1         = Utilities::ReturnPhi1(theX.p4(), theV.daughter(0)->p4(), theV.daughter(1)->p4());
+            Phi          = Utilities::ReturnPhi(theA.p4(), theV.daughter(0)->p4(), theV.daughter(1)->p4(), theH.daughter(0)->p4(), theH.daughter(1)->p4());
+            Phi1         = Utilities::ReturnPhi1(theA.p4(), theV.daughter(0)->p4(), theV.daughter(1)->p4());
         }
+        
+        // Max CSV in the event
+        
+        
+        Hist["a_nEvents"]->Fill(5., EventWeight);
+        if(isZtoEE) Hist["e_nEvents"]->Fill(5., EventWeight);
+        if(isZtoMM) Hist["m_nEvents"]->Fill(5., EventWeight);
     }
+    else {if(Verbose) std::cout << " - N jets < 2" << std::endl;}
     
+    // ------------------------------
+    // ----------    VH    ----------
+    // ------------------------------
     
+    if(nFatJets >= 1) {
+        theX.addDaughter(theV);
+        theX.addDaughter(FatJetsVect.at(0));
+        addP4.set(theX);
+    }
+    else {if(Verbose) std::cout << " - N fat jets < 1" << std::endl;}
     
+    // Highest CSV bjet in the event
 
     // ---------- Print Summary ----------
     if(Verbose) {
@@ -703,9 +738,10 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     ObjectsFormat::FillMEtType(MEt, &MET, isMC);
     ObjectsFormat::FillCandidateType(V, &theV, isMC);
     ObjectsFormat::FillCandidateType(H, &theH, isMC);
+    ObjectsFormat::FillCandidateType(A, &theA, isMC);
     ObjectsFormat::FillCandidateType(X, &theX, isMC);
     ObjectsFormat::FillLorentzType(kH, &thekH);
-    ObjectsFormat::FillLorentzType(kX, &thekX);
+    ObjectsFormat::FillLorentzType(kA, &thekA);
     ObjectsFormat::FillCandidateType(HMerged, &theHMerged, isMC);
     ObjectsFormat::FillCandidateType(XMerged, &theXMerged, isMC);
     ObjectsFormat::FillCandidateType(HResolved, &theHResolved, isMC);
@@ -724,6 +760,32 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     // Fill tree
     tree->Fill();
     if(Verbose) std::cout << " - Tree filled, end of event" << std::endl;
+    
+    if(theV.mass()<80. || theV.mass()>100.) {if(Verbose) std::cout << " - Z off-shell" << std::endl; return;}
+    Hist["a_nEvents"]->Fill(6., EventWeight);
+    if(isZtoEE) Hist["e_nEvents"]->Fill(6., EventWeight);
+    if(isZtoMM) Hist["m_nEvents"]->Fill(6., EventWeight);
+    
+    if(theH.mass()<90. || theH.mass()>140.) {if(Verbose) std::cout << " - No h candidate" << std::endl; return;}
+    Hist["a_nEvents"]->Fill(7., EventWeight);
+    if(isZtoEE) Hist["e_nEvents"]->Fill(7., EventWeight);
+    if(isZtoMM) Hist["m_nEvents"]->Fill(7., EventWeight);
+    
+    if(MET.pt()>60.)  {if(Verbose) std::cout << " - Failed Top veto" << std::endl; return;}
+    Hist["a_nEvents"]->Fill(8., EventWeight);
+    if(isZtoEE) Hist["e_nEvents"]->Fill(8., EventWeight);
+    if(isZtoMM) Hist["m_nEvents"]->Fill(8., EventWeight);
+    
+    if(!(nJets >= 2 && (JetsVect.at(0).bDiscriminator(JetPSet.getParameter<std::string>("btag")) > 0.800 || JetsVect.at(1).bDiscriminator(JetPSet.getParameter<std::string>("btag")) > 0.800)) ) {if(Verbose) std::cout << " - BTag < 1" << std::endl; return;}
+    Hist["a_nEvents"]->Fill(9., EventWeight);
+    if(isZtoEE) Hist["e_nEvents"]->Fill(9., EventWeight);
+    if(isZtoMM) Hist["m_nEvents"]->Fill(9., EventWeight);
+    
+    if(!(nJets >= 2 && JetsVect.at(0).bDiscriminator(JetPSet.getParameter<std::string>("btag")) > 0.800 && JetsVect.at(1).bDiscriminator(JetPSet.getParameter<std::string>("btag")) > 0.800) ) {if(Verbose) std::cout << " - BTag < 2" << std::endl; return;}
+    Hist["a_nEvents"]->Fill(10., EventWeight);
+    if(isZtoEE) Hist["e_nEvents"]->Fill(10., EventWeight);
+    if(isZtoMM) Hist["m_nEvents"]->Fill(10., EventWeight);
+    
 }
 
 //#ifdef THIS_IS_AN_EVENT_EXAMPLE
@@ -803,9 +865,10 @@ void Diboson::beginJob() {
     tree->Branch("MEt", &MEt, ObjectsFormat::ListMEtType().c_str());
     tree->Branch("V", &V, ObjectsFormat::ListCandidateType().c_str());
     tree->Branch("H", &H, ObjectsFormat::ListCandidateType().c_str());
+    tree->Branch("A", &A, ObjectsFormat::ListCandidateType().c_str());
     tree->Branch("X", &X, ObjectsFormat::ListCandidateType().c_str());
     tree->Branch("kH", &kH, ObjectsFormat::ListLorentzType().c_str());
-    tree->Branch("kX", &kX, ObjectsFormat::ListLorentzType().c_str());
+    tree->Branch("kA", &kA, ObjectsFormat::ListLorentzType().c_str());
     tree->Branch("HMerged", &HMerged, ObjectsFormat::ListCandidateType().c_str());
     tree->Branch("XMerged", &XMerged, ObjectsFormat::ListCandidateType().c_str());
     tree->Branch("HResolved", &HResolved, ObjectsFormat::ListCandidateType().c_str());

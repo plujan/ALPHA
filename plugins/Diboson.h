@@ -171,7 +171,7 @@ class Diboson : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
         std::vector<JetType> Jets;
         std::vector<FatJetType> FatJets;
         MEtType MEt;
-        CandidateType V, H, X;
+        CandidateType V, H, A, X;
         CandidateType HMerged, HResolved, HResolvedPt, HResolvedHpt, HResolvedDZ, HResolvedDR;
         CandidateType XMerged, XResolved, XResolvedPt, XResolvedHpt, XResolvedDZ, XResolvedDR;
         LorentzType kH, kX;
