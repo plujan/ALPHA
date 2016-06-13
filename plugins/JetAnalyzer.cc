@@ -75,7 +75,14 @@ JetAnalyzer::JetAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl
 
 JetAnalyzer::~JetAnalyzer() {
 //    JESFile->Close();
-    
+
+//    Creates segmentation fault (?)
+//    if(UseReshape) {
+//        delete reader;
+//        delete reader_up_jes;
+//        delete reader_down_jes;
+//        delete calib;
+//    }
     if(UseRecoil) delete recoilCorr;
 }
 
