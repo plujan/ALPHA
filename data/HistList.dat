@@ -36,7 +36,7 @@ g_PythiaBParton1eta     ;Pythia~BParton1~#eta                     100    -5     
 g_PythiaBParton2eta     ;Pythia~BParton2~#eta                     100    -5     5   Lin
 g_JetMatching           ;Jet~Matching                               5  -0.5   4.5   Lin
 g_ZtoTauTau             ;Z~to~#tau~#tau                             3  -0.5   2.5   Lin
-g_XMass                 ;Gen~m_{X}~[GeV]                          100     0  5000   Lin
+g_XMass                 ;Gen~m_{X}~[GeV]                         5000     0  5000   Lin
 g_XPt                   ;Gen~p_{T,~X}~[GeV]                       100     0  1000   Lin
 g_ZLepMass              ;Gen~m_{Z_{Lep}}~[GeV]                    100     0   500   Lin
 g_ZLepPt                ;Gen~p_{T,~Z_{Lep}}~[GeV]                 100     0  5000   Lin

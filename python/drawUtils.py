@@ -26,18 +26,18 @@ def project(var, cut, weight, samplelist, pd, ntupledir):
     chain = {}
     hist = {}
     
+    histDir = {"a_" : "All", "g_" : "Gen", "e_" : "Electrons", "m_" : "Muons", "t_" : "Taus", "p_" : "Photons", "j_" : "Jets", "k_" : "Kin"}
+    
     ### Create and fill MC histograms ###
     for i, s in enumerate(samplelist):
         if "HIST" in cut: # Histogram written to file
-            tmphist = file[ss].Get(var)
+            for j, ss in enumerate(samples[s]['files']):
+                file[ss] = TFile(ntupledir + ss + ".root", "READ")
+                hist[s] = file[ss].Get("ntuple/" + histDir[var[0:2]] + "/" + var) if not s in hist else hist[s].Add(file[ss].Get("ntuple/" + histDir[var[0:2]] + "/" + var))
         else: # Project from tree
             chain[s] = TChain("ntuple/tree")
             for j, ss in enumerate(samples[s]['files']):
                 if not 'data' in s or ('data' in s and ss in pd):
-                    #file[ss] = TFile(ntupledir + ss + ".root", "READ")
-                    #tree[ss] = file[ss].Get("ntuple/tree")
-                    #nevents = file[ss].Get("ntuple/All/a_nEvents").GetBinContent(1)
-                    #tree[ss].SetWeight(nevents)
                     chain[s].Add(ntupledir + ss + ".root")
             if variable[var]['nbins']>0: hist[s] = TH1F(s, ";"+variable[var]['title'], variable[var]['nbins'], variable[var]['min'], variable[var]['max']) # Init histogram
             else: hist[s] = TH1F(s, ";"+variable[var]['title'], len(variable[var]['bins'])-1, array('f', variable[var]['bins']))
@@ -60,6 +60,7 @@ def project(var, cut, weight, samplelist, pd, ntupledir):
         hist[s].SetLineColor(samples[s]['linecolor'])
         hist[s].SetLineStyle(samples[s]['linestyle'])
     
+    hist["files"] = file
     return hist
 
 
@@ -194,6 +195,49 @@ def draw(hist, data, back, sign, snorm=1, lumi=-1, ratio=0, poisson=False, log=F
     # return list of objects created by the draw() function
     return [c1, bkg, leg, err, errLine, res, data_graph if poisson else None, res_graph if poisson else None]
 
+
+def drawSignal(hist, sign, lumi=-1, log=False, channel=""):
+    
+    # Legend
+    n = len(sign)
+    leg = TLegend(0.7, 0.9-0.05*n, 0.95, 0.9)
+    leg.SetBorderSize(0)
+    leg.SetFillStyle(0) #1001
+    leg.SetFillColor(0)
+    for i, s in enumerate(sign):
+        if samples[s]['plot']: leg.AddEntry(hist[s], samples[s]['label'], "fl")
+    
+    
+    # --- Display ---
+    c1 = TCanvas("c1", hist.values()[0].GetXaxis().GetTitle(), 800, 600)
+    
+    c1.cd(1)
+    c1.GetPad(0).SetTopMargin(0.06)
+    c1.GetPad(0).SetRightMargin(0.05)
+    c1.GetPad(0).SetTicks(1, 1)
+    if log:
+        c1.GetPad(0).SetLogy()
+        
+    # Draw
+    for i, s in enumerate(sign):
+        if samples[s]['plot']:
+            hist[s].Draw("SAME, HIST" if i>0 else "HIST") # signals
+    
+    hist[sign[0]].GetYaxis().SetTitleOffset(hist[sign[-1]].GetYaxis().GetTitleOffset()*1.075)
+    hist[sign[0]].SetMaximum(max(hist[sign[0]].GetMaximum(), hist[sign[-1]].GetMaximum())*1.25)
+    
+    if log:
+        hist[sign[0]].GetYaxis().SetNoExponent(hist[sign[0]].GetMaximum() < 1.e4)
+        hist[sign[0]].GetYaxis().SetMoreLogLabels(True)
+    
+    leg.Draw()
+    drawCMS(lumi, "Preliminary")
+    
+    c1.Update()
+    
+    # return list of objects created by the draw() function
+    return [c1, leg]
+
 def drawRatio(data, bkg):
     errData = array('d', [1.0])
     errBkg = array('d', [1.0])
@@ -244,6 +288,16 @@ def getPrimaryDataset(cut):
     if 'HLT_PFMET' in cut: pd += [x for x in samples['data_obs']['files'] if "MET" in x]
     return pd
 
+def getNm1Cut(cut):
+    try:
+        cut = float(cut.split(var, 1)[1].split(" ")[0][1:])
+    except:
+        print "n-1 cut value not found"
+    if ' '+var+'>' in cut: cut = cut.replace(var, "1e99")
+    elif ' '+var+'<' in cut: cut = cut.replace(var, "-1e99")
+    elif ' '+var+'==' in cut: cut = cut.replace(var+'==', "-9!=")
+    else: print "  unrecognized var '", var ,"' in cut, cannot plot n-1 cut"
+    return cut
 
 def addOverflow(hist, addUnder=True):
     n = hist.GetNbinsX()
