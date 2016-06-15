@@ -1,0 +1,1 @@
+file:/lustre/cmswork/zucchett/CMSSW_8_0_5/src/GluGluToAToZhToLLBB_M700_13TeV-amcatnlo_MINIAODv2.root
