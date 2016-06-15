@@ -97,12 +97,16 @@ reco::Candidate* GenAnalyzer::FindLastDaughter(reco::Candidate* p) {
     return FindLastDaughter(p->daughter(0));
 }
 
-reco::GenParticle* GenAnalyzer::FindGenParticleGenByIds(std::vector<reco::GenParticle>& Vect, std::vector<int> pdgs) {
+reco::GenParticle* GenAnalyzer::FindGenParticleGenByIds(std::vector<reco::GenParticle>& Vect, std::vector<int> pdgs, int motherId) {
     for(unsigned int i = 0; i < Vect.size(); i++) {
-      for(unsigned int j=0; j<pdgs.size();j++){
-
-	if( fabs(Vect[i].pdgId()) == pdgs[j] ) return FindLastDaughterGen(&Vect[i]);
-      }
+        for(unsigned int j=0; j<pdgs.size();j++) {
+            if( Vect[i].pdgId() == pdgs[j] ) {
+                if(motherId<=0) return FindLastDaughterGen(&Vect[i]);
+                else {
+                    if(Vect[i].mother() && Vect[i].mother()->pdgId() == motherId) return &Vect[i];
+                }
+            }
+        }
     }
     return NULL;
 }
