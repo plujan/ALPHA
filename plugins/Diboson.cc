@@ -144,9 +144,9 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     RunNumber = iEvent.id().run();
     
     EventWeight = PUWeight = TriggerWeight = LeptonWeight = 1.;
-    isZtoEE = isZtoMM = isWtoEN = isWtoMN = isZtoNN = false;
+    isZtoEE = isZtoMM = isTtoEM = isWtoEN = isWtoMN = isZtoNN = false;
     nPV = nElectrons = nMuons = nTaus = nPhotons = nJets = nFatJets = nBTagJets = 1;
-    JetMaxBtag = FatJetMaxBtag = Chi2 = -1.;
+    MaxJetBTag = MaxFatJetBTag = MinJetMetDPhi = Chi2 = -1.;
     
     AddFourMomenta addP4;
     
@@ -358,10 +358,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     }
     // ---------- W TO LEPTON and NEUTRINO ----------
     else if(MuonVect.size()==1 || ElecVect.size()==1) {
-        if(MuonVect.size()==1 && ElecVect.size()==1) {
-            if(MuonVect.at(0).pt() > ElecVect.at(0).pt()) isWtoMN=true;
-            else isWtoEN=true;
-        }
+        if(MuonVect.size()==1 && ElecVect.size()==1) isTtoEM = true;
         else if(ElecVect.size()==1) isWtoEN=true;
         else if(MuonVect.size()==1) isWtoMN=true;
         else {if(Verbose) std::cout << " - No Iso Leptons" << std::endl;}
@@ -381,6 +378,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     // ---------- Reconstruct V candidate ----------
     pat::CompositeCandidate theV;
     if(isZtoMM) {
+        if(Verbose) std::cout << " - Try to reconstruct Z -> mm" << std::endl;
         if(MuonVect.at(0).charge()*MuonVect.at(1).charge()<0 && (MuonVect[0].p4() + MuonVect[1].p4()).mass() > 50.) {
             theV.addDaughter(MuonVect.at(0).charge() < 0 ? MuonVect.at(0) : MuonVect.at(1));
             theV.addDaughter(MuonVect.at(0).charge() < 0 ? MuonVect.at(1) : MuonVect.at(0));
@@ -394,6 +392,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         else { if(Verbose) std::cout << " - No OS muons" << std::endl; return; }
     }
     else if(isZtoEE) {
+        if(Verbose) std::cout << " - Try to reconstruct Z -> ee" << std::endl;
         if(ElecVect.at(0).charge()*ElecVect.at(1).charge()<0 && (ElecVect[0].p4() + ElecVect[1].p4()).mass() > 50.) {
             theV.addDaughter(ElecVect.at(0).charge() ? ElecVect.at(0) : ElecVect.at(1));
             theV.addDaughter(ElecVect.at(0).charge() ? ElecVect.at(1) : ElecVect.at(0));
@@ -406,32 +405,38 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         }
         else { if(Verbose) std::cout << " - No OS electrons" << std::endl; return; }
     }
-    
+    else if(isTtoEM) {
+        if(Verbose) std::cout << " - Try to reconstruct TT -> enmn" << std::endl;
+        theV.addDaughter(MuonVect.at(0));
+        theV.addDaughter(ElecVect.at(0));
+        addP4.set(theV);
+    }
     else if(isWtoMN) {
+        if(Verbose) std::cout << " - Try to reconstruct W -> mn" << std::endl;
         // W kinematic reconstruction
         float pz = Utilities::RecoverNeutrinoPz(&MuonVect.at(0).p4(), &MET.p4());
         Neutrino.setP4(reco::Particle::LorentzVector(MET.px(), MET.py(), pz, sqrt(MET.pt()*MET.pt() + pz*pz) ));
         theV.addDaughter(MuonVect.at(0));
         theV.addDaughter(Neutrino);
-        theV.setCharge(MuonVect.at(0).charge());
         addP4.set(theV);
         // SF
         LeptonWeight *= theMuonAnalyzer->GetMuonIdSF(MuonVect.at(0), MuonPSet.getParameter<int>("muon1id"));
         LeptonWeight *= theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(0), MuonPSet.getParameter<int>("muon1iso"));
     }
     else if(isWtoEN) {
+        if(Verbose) std::cout << " - Try to reconstruct W -> em" << std::endl;
         // W kinematic reconstruction
         float pz = Utilities::RecoverNeutrinoPz(&ElecVect.at(0).p4(), &MET.p4());
         Neutrino.setP4(reco::Particle::LorentzVector(MET.px(), MET.py(), pz, sqrt(MET.pt()*MET.pt() + pz*pz) ));
         theV.addDaughter(ElecVect.at(0));
         theV.addDaughter(Neutrino);
-        theV.setCharge(ElecVect.at(0).charge());
         addP4.set(theV);
         // SF
         LeptonWeight *= theElectronAnalyzer->GetElectronIdSF(ElecVect.at(0), ElectronPSet.getParameter<int>("electron1id"));
         LeptonWeight *= theElectronAnalyzer->GetElectronRecoEffSF(ElecVect.at(0));
     }
     else if(isZtoNN) {
+        if(Verbose) std::cout << " - Try to reconstruct Z -> nn" << std::endl;
         theV.addDaughter(MET);
         addP4.set(theV);
     }
@@ -715,7 +720,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         }
         
         // Max b-tagged jet in the event
-        for(unsigned int i = 2; i < JetsVect.size(); i++) if(JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag")) > JetMaxBtag) JetMaxBtag = JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag"));
+        for(unsigned int i = 2; i < JetsVect.size(); i++) if(JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag")) > MaxJetBTag) MaxJetBTag = JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag"));
         
         Hist["a_nEvents"]->Fill(5., EventWeight);
         if(isZtoEE) Hist["e_nEvents"]->Fill(5., EventWeight);
@@ -733,9 +738,11 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         addP4.set(theX);
         
         // Max b-tagged jet in the event
-        for(unsigned int i = 0; i < JetsVect.size(); i++) if(JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag")) > FatJetMaxBtag && deltaR(FatJetsVect.at(0), JetsVect[i])>0.8) FatJetMaxBtag = JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag"));
+        for(unsigned int i = 0; i < JetsVect.size(); i++) if(JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag")) > MaxFatJetBTag && deltaR(FatJetsVect.at(0), JetsVect[i])>0.8) MaxFatJetBTag = JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag"));
     }
     else {if(Verbose) std::cout << " - N fat jets < 1" << std::endl;}
+    
+    for(unsigned int i = 0; i < JetsVect.size(); i++) if(reco::deltaPhi(JetsVect[i].phi(), MET.phi()) < MinJetMetDPhi) MinJetMetDPhi = reco::deltaPhi(JetsVect[i].phi(), MET.phi());
     
     // Highest CSV bjet in the event
 
@@ -767,6 +774,16 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     if(Verbose) std::cout << " - Filling objects" << std::endl;
     if(isZtoEE || isWtoEN) for(unsigned int i = 0; i < Leptons.size() && i < ElecVect.size(); i++) ObjectsFormat::FillElectronType(Leptons[i], &ElecVect[i], isMC);
     else if(isZtoMM || isWtoMN) for(unsigned int i = 0; i < Leptons.size() && i < MuonVect.size(); i++) ObjectsFormat::FillMuonType(Leptons[i], &MuonVect[i], isMC);
+    else if(isTtoEM && Leptons.size() >= 2) {
+        if(ElecVect[0].pt() > MuonVect[0].pt()) {
+            ObjectsFormat::FillElectronType(Leptons[0], &ElecVect[0], isMC);
+            ObjectsFormat::FillMuonType(Leptons[1], &MuonVect[1], isMC);
+        }
+        else {
+            ObjectsFormat::FillMuonType(Leptons[0], &MuonVect[0], isMC);
+            ObjectsFormat::FillElectronType(Leptons[1], &ElecVect[1], isMC);
+        }
+    }
     for(unsigned int i = 0; i < Taus.size() && i < TauVect.size(); i++) ObjectsFormat::FillTauType(Taus[i], &TauVect[i], isMC);
     for(unsigned int i = 0; i < Photons.size() && i < PhotonVect.size(); i++) ObjectsFormat::FillPhotonType(Photons[i], &PhotonVect[i], isMC);
     for(unsigned int i = 0; i < Jets.size() && i < JetsVect.size(); i++) ObjectsFormat::FillJetType(Jets[i], &JetsVect[i], isMC);
@@ -866,6 +883,7 @@ void Diboson::beginJob() {
     // Analysis variables
     tree->Branch("isZtoEE", &isZtoEE, "isZtoEE/O");
     tree->Branch("isZtoMM", &isZtoMM, "isZtoMM/O");
+    tree->Branch("isTtoEM", &isTtoEM, "isTtoEM/O");
     tree->Branch("isWtoEN", &isWtoEN, "isWtoEN/O");
     tree->Branch("isWtoMN", &isWtoMN, "isWtoMN/O");
     tree->Branch("isZtoNN", &isZtoNN, "isZtoNN/O");
@@ -882,8 +900,9 @@ void Diboson::beginJob() {
     tree->Branch("nFatJets", &nFatJets, "nFatJets/I");
     tree->Branch("nBTagJets", &nBTagJets, "nBTagJets/I");
     
-    tree->Branch("JetMaxBtag", &JetMaxBtag, "JetMaxBtag/F");
-    tree->Branch("FatJetMaxBtag", &FatJetMaxBtag, "FatJetMaxBtag/F");
+    tree->Branch("MaxJetBTag", &MaxJetBTag, "MaxJetBTag/F");
+    tree->Branch("MaxFatJetBTag", &MaxFatJetBTag, "MaxFatJetBTag/F");
+    tree->Branch("MinJetMetDPhi", &MinJetMetDPhi, "MinJetMetDPhi/F");
     tree->Branch("Chi2", &Chi2, "Chi2/F");
     // Angular variables
     tree->Branch("CosThetaStar", &CosThetaStar, "CosThetaStar/F");

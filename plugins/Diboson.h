@@ -154,11 +154,11 @@ class Diboson : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
         
         edm::Service<TFileService> fs;
         TTree* tree;
-        bool isMC, isZtoEE, isZtoMM, isWtoEN, isWtoMN, isZtoNN, isMerged, isResolved;
+        bool isMC, isZtoEE, isZtoMM, isTtoEM, isWtoEN, isWtoMN, isZtoNN, isMerged, isResolved;
         long int EventNumber, RunNumber, LumiNumber;
         float EventWeight, PUWeight, TriggerWeight, LeptonWeight;
         int nPV, nElectrons, nMuons, nTaus, nPhotons, nJets, nFatJets, nBTagJets;
-        float JetMaxBtag, FatJetMaxBtag, Chi2;
+        float MaxJetBTag, MaxFatJetBTag, MinJetMetDPhi, Chi2;
         // Angular
         float CosThetaStar, CosTheta1, CosTheta2, Phi, Phi1, AngularLD;
         
