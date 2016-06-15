@@ -60,7 +60,7 @@ def project(var, cut, weight, samplelist, pd, ntupledir):
         hist[s].SetLineColor(samples[s]['linecolor'])
         hist[s].SetLineStyle(samples[s]['linestyle'])
     
-    hist["files"] = file
+    if "HIST" in cut: hist["files"] = file
     return hist
 
 
@@ -68,7 +68,7 @@ def project(var, cut, weight, samplelist, pd, ntupledir):
 #      DRAW      #
 ##################
 
-def draw(hist, data, back, sign, snorm=1, lumi=-1, ratio=0, poisson=False, log=False, channel=""):
+def draw(hist, data, back, sign, snorm=1, ratio=0, poisson=False, log=False):
     # If not present, create BkgSum
     if not 'BkgSum' in hist.keys():
         hist['BkgSum'] = hist['data_obs'].Clone("BkgSum") if 'data_obs' in hist else hist[back[0]].Clone("BkgSum")
@@ -117,7 +117,7 @@ def draw(hist, data, back, sign, snorm=1, lumi=-1, ratio=0, poisson=False, log=F
     
     
     # --- Display ---
-    c1 = TCanvas("c1", hist.values()[0].GetXaxis().GetTitle(), 800, 800 if ratio else 600)
+    c1 = TCanvas("c1", hist.values()[-1].GetXaxis().GetTitle(), 800, 800 if ratio else 600)
     
     if ratio:
         c1.Divide(1, 2)
@@ -140,22 +140,28 @@ def draw(hist, data, back, sign, snorm=1, lumi=-1, ratio=0, poisson=False, log=F
             hist[s].DrawNormalized("SAME, HIST", hist[s].Integral()*snorm) # signals
     
     bkg.GetYaxis().SetTitleOffset(bkg.GetYaxis().GetTitleOffset()*1.075)
-    bkg.SetMaximum((2. if log else 1.2)*max(bkg.GetMaximum(), hist['data_obs'].GetBinContent(hist['data_obs'].GetMaximumBin())+hist['data_obs'].GetBinError(hist['data_obs'].GetMaximumBin())))
-    bkg.SetMinimum(max(min(hist['BkgSum'].GetBinContent(hist['BkgSum'].GetMinimumBin()), hist['data_obs'].GetMinimum()), 5.e-1)  if log else 0.)
+    
+    # Determine range
+    if 'data_obs' in hist:
+        bkg.SetMaximum((2.5 if log else 1.2)*max(bkg.GetMaximum(), hist['data_obs'].GetBinContent(hist['data_obs'].GetMaximumBin())+hist['data_obs'].GetBinError(hist['data_obs'].GetMaximumBin())))
+        bkg.SetMinimum(max(min(hist['BkgSum'].GetBinContent(hist['BkgSum'].GetMinimumBin()), hist['data_obs'].GetMinimum()), 5.e-1)  if log else 0.)
+    else:
+        bkg.SetMaximum(bkg.GetMaximum()*(2.5 if log else 1.2))
+        bkg.SetMinimum(5.e-1 if log else 0.)
     if log:
         bkg.GetYaxis().SetNoExponent(bkg.GetMaximum() < 1.e4)
         bkg.GetYaxis().SetMoreLogLabels(True)
     
     leg.Draw()
-    drawCMS(lumi, "Preliminary")
+    #drawCMS(lumi, "Preliminary")
     #drawRegion(channel)
     #drawAnalysis(channel)
     
     #if nm1 and not cutValue is None: drawCut(cutValue, bkg.GetMinimum(), bkg.GetMaximum()) #FIXME
-    if len(sign) > 0:
-        if channel.startswith('X') and len(sign)>0: drawNorm(0.9-0.04*(n+1), "#sigma(X) #times B(X #rightarrow Vh) = %.1f pb" % snorm)
-        #elif "SR" in channel: drawNorm(0.9-0.04*(n+1), "DM+bb/tt, scaled by %.0f" % snorm, "m_{#chi}=1 GeV, scalar mediator")
-        elif "SR" in channel: drawNorm(0.9-0.04*(n+1), "DM+bb/tt, m_{#chi}=1 GeV", "scalar mediator")
+    #if len(sign) > 0:
+    #    if channel.startswith('X') and len(sign)>0: drawNorm(0.9-0.04*(n+1), "#sigma(X) #times B(X #rightarrow Vh) = %.1f pb" % snorm)
+    #    #elif "SR" in channel: drawNorm(0.9-0.04*(n+1), "DM+bb/tt, scaled by %.0f" % snorm, "m_{#chi}=1 GeV, scalar mediator")
+    #    elif "SR" in channel: drawNorm(0.9-0.04*(n+1), "DM+bb/tt, m_{#chi}=1 GeV", "scalar mediator")
     
     setHistStyle(bkg, 1.2 if ratio else 1.1)
     setHistStyle(hist['BkgSum'], 1.2 if ratio else 1.1)
@@ -173,30 +179,32 @@ def draw(hist, data, back, sign, snorm=1, lumi=-1, ratio=0, poisson=False, log=F
         errLine = err.Clone("errLine")
         errLine.SetLineWidth(1)
         errLine.SetFillStyle(0)
-        res = hist['data_obs'].Clone("Residues")
-        for i in range(0, res.GetNbinsX()+1):
-            if hist['BkgSum'].GetBinContent(i) > 0: 
-                res.SetBinContent(i, res.GetBinContent(i)/hist['BkgSum'].GetBinContent(i))
-                res.SetBinError(i, res.GetBinError(i)/hist['BkgSum'].GetBinContent(i))
-        setBotStyle(res)
+        errLine.SetLineColor(1)
         #err.GetXaxis().SetLabelOffset(err.GetXaxis().GetLabelOffset()*5)
         #err.GetXaxis().SetTitleOffset(err.GetXaxis().GetTitleOffset()*2)
         err.Draw("E2")
         errLine.Draw("SAME, HIST")
-        if len(data) > 0:
+        if 'data_obs' in hist:
+            res = hist['data_obs'].Clone("Residues")
+            for i in range(0, res.GetNbinsX()+1):
+                if hist['BkgSum'].GetBinContent(i) > 0: 
+                    res.SetBinContent(i, res.GetBinContent(i)/hist['BkgSum'].GetBinContent(i))
+                    res.SetBinError(i, res.GetBinError(i)/hist['BkgSum'].GetBinContent(i))
+            setBotStyle(res)
             if poisson: res_graph.Draw("SAME, PE0")
             else: res.Draw("SAME, PE0")
             if len(err.GetXaxis().GetBinLabel(1))==0: # Bin labels: not a ordinary plot
                 drawRatio(hist['data_obs'], hist['BkgSum'])
                 drawKolmogorov(hist['data_obs'], hist['BkgSum'])
-    
+        else: res = None
     c1.Update()
     
     # return list of objects created by the draw() function
     return [c1, bkg, leg, err, errLine, res, data_graph if poisson else None, res_graph if poisson else None]
 
 
-def drawSignal(hist, sign, lumi=-1, log=False, channel=""):
+def drawSignal(hist, sign, log=False):
+    #sign = [x for x in sign if samples[x]['plot']]
     
     # Legend
     n = len(sign)
@@ -204,12 +212,11 @@ def drawSignal(hist, sign, lumi=-1, log=False, channel=""):
     leg.SetBorderSize(0)
     leg.SetFillStyle(0) #1001
     leg.SetFillColor(0)
-    for i, s in enumerate(sign):
-        if samples[s]['plot']: leg.AddEntry(hist[s], samples[s]['label'], "fl")
+    for i, s in enumerate(sign): leg.AddEntry(hist[s], samples[s]['label'], "fl")
     
     
     # --- Display ---
-    c1 = TCanvas("c1", hist.values()[0].GetXaxis().GetTitle(), 800, 600)
+    c1 = TCanvas("c1", hist.values()[-1].GetXaxis().GetTitle(), 800, 600)
     
     c1.cd(1)
     c1.GetPad(0).SetTopMargin(0.06)
@@ -219,19 +226,19 @@ def drawSignal(hist, sign, lumi=-1, log=False, channel=""):
         c1.GetPad(0).SetLogy()
         
     # Draw
-    for i, s in enumerate(sign):
-        if samples[s]['plot']:
-            hist[s].Draw("SAME, HIST" if i>0 else "HIST") # signals
+    for i, s in enumerate(sign): hist[s].Draw("SAME, HIST" if i>0 else "HIST") # signals
     
+    #hist[sign[0]].GetXaxis().SetRangeUser(0., 1500)
     hist[sign[0]].GetYaxis().SetTitleOffset(hist[sign[-1]].GetYaxis().GetTitleOffset()*1.075)
     hist[sign[0]].SetMaximum(max(hist[sign[0]].GetMaximum(), hist[sign[-1]].GetMaximum())*1.25)
+    hist[sign[0]].SetMinimum(0.)
     
     if log:
         hist[sign[0]].GetYaxis().SetNoExponent(hist[sign[0]].GetMaximum() < 1.e4)
         hist[sign[0]].GetYaxis().SetMoreLogLabels(True)
     
     leg.Draw()
-    drawCMS(lumi, "Preliminary")
+    #drawCMS(lumi, "Preliminary")
     
     c1.Update()
     
@@ -263,7 +270,7 @@ def drawKolmogorov(data, bkg):
     latex.DrawLatex(0.55, 0.85, "#chi^{2}/ndf = %.2f,   K-S = %.3f" % (data.Chi2Test(bkg, "CHI2/NDF"), data.KolmogorovTest(bkg)))
 
 def printTable(hist, sign=[]):
-    samples = [x for x in hist.keys() if not 'data' in x and not 'BkgSum' in x and not x in sign]
+    samples = [x for x in hist.keys() if not 'data' in x and not 'BkgSum' in x and not x in sign and not x=="files"]
     print "Sample                  Events          Entries         %"
     print "-"*80
     for i, s in enumerate(['data_obs']+samples+['BkgSum']):
@@ -379,18 +386,47 @@ def drawCMS(lumi, text, onTop=False):
 #    latex.DrawLatex(0.45, 0.98, "DM monojet")
 
 def drawAnalysis(s, center=False):
-    text = ""
-    if "VH" in s or "Vh" in s or s.startswith('X'): text = "X #rightarrow Vh #rightarrow (ll,l#nu,#nu#nu)bb"
-    elif "Zh" in s: text = "Z' #rightarrow Zh #rightarrow (ll,#nu#nu)bb"
-    elif "Wh" in s: text = "W' #rightarrow Wh #rightarrow l#nu bb"
-    elif "DM" in s or "CR" in s: text = "DM + heavy flavour"
-    else: return True
+    analyses = {"VH" : "X #rightarrow Vh #rightarrow (ll,l#nu,#nu#nu)bb", "Vh" : "X #rightarrow Vh #rightarrow (ll,l#nu,#nu#nu)bb", "Zh" : "Z' #rightarrow Zh #rightarrow (ll,#nu#nu)bb", "Wh" : "W' #rightarrow Wh #rightarrow l#nu bb", "DM": "DM + heavy flavour", "AZh" : "A #rightarrow Zh #rightarrow llbb"}
     latex = TLatex()
     latex.SetNDC()
     latex.SetTextSize(0.04)
     latex.SetTextFont(42)
     #latex.SetTextAlign(33)
-    latex.DrawLatex(0.15 if not center else 0.3, 0.95, text)
+    latex.DrawLatex(0.15 if not center else 0.3, 0.95, s if not s in analyses else analyses[s])
 
-
+def drawRegion(channel, left=False):
+    region = {"SR" : "1 + 2 b-tag categories", "SR1" : "1 b-tag category", "SR2" : "2 b-tag category", "ZCR" : "Z region", "ZeeCR" : "2e region", "ZeebCR" : "2e, 1 b-tag region", "ZeebbCR" : "2e, 2 b-tag region", "ZmmCR" : "2#mu region", "ZmmbCR" : "2#mu, 1 b-tag region", "ZmmbbCR" : "2#mu, 2 b-tag region", "WCR" : "W region", "WeCR" : "1e region", "WebCR" : "1e, 1 b-tag region", "WebbCR" : "1e, 2 b-tag region", "WmCR" : "1#mu region", "WmbCR" : "1#mu, 1 b-tag region", "WmbbCR" : "1#mu, 2 b-tag region", "TCR" : "1#mu, 1e region", "TbCR" : "1#mu, 1e, 1 b-tag region", "TbbCR" : "1#mu, 1e, 2 b-tag region", "CR" : "Control regions", "ZmmInc" : "2#mu selection", "ZeeInc" : "2e selection", "WmInc" : "1#mu selection", "WeInc" : "1e selection", "TInc" : "1#mu, 1e selection", "XVh" : "0l, 1l, 2l channel", "XZh" : "0l, 2l channel", "XWh" : "1l channel", "XZhnn" : "0l channel", "XZhll" : "2l channel", "XZhee" : "2e channel", "XZhmm" : "2#mu channel", "XWhen" : "1e channel", "XWhmn" : "1#mu channel"}
+    
+    text = ""
+    if channel in region:
+        text = region[channel]
+    else: #if channel.startswith('X') or channel.startswith('A'):
+        # leptons
+        if 'ee' in channel: text += "2e"
+        elif 'e' in channel: text += "1e"
+        if 'mm' in channel: text += "2#mu"
+        elif 'm' in channel: text += "1#mu"
+        if 'll' in channel: text += "2l"
+        elif 'l' in channel: text += "1l"
+        if 'nn' in channel: text += "0l"
+        if 'Top' in channel: text += "top"
+        # b-tag
+        if 'bb' in channel: text += ", 2 b-tag"
+        elif 'b' in channel: text += ", 1 b-tag"
+        # region
+        if 'TR' in channel: text += ", top control region"
+        elif 'Inc' in channel: text += ", inclusive region"
+        elif 'SB' in channel: text += ", sidebands region"
+        elif 'SR' in channel: text += ", signal region"
+        elif 'MC' in channel: text += ", simulation"
+#    else:
+#        return False
+    latex = TLatex()
+    latex.SetNDC()
+    latex.SetTextFont(72) #52
+    latex.SetTextSize(0.035)
+    if left: latex.DrawLatex(0.15, 0.75, text)
+    else:
+        latex.SetTextAlign(22)
+        latex.DrawLatex(0.5, 0.85, text)
 

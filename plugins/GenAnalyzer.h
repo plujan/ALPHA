@@ -28,7 +28,7 @@ class GenAnalyzer {
         virtual std::vector<reco::GenParticle> FillGenVector(const edm::Event&);
         virtual reco::Candidate* FindGenParticle(std::vector<reco::GenParticle>&, int);
         virtual reco::Candidate* FindLastDaughter(reco::Candidate*);
-        virtual reco::GenParticle* FindGenParticleGenByIds(std::vector<reco::GenParticle>&, std::vector<int>);
+        virtual reco::GenParticle* FindGenParticleGenByIds(std::vector<reco::GenParticle>&, std::vector<int>, int=-1);
         virtual reco::GenParticle* FindLastDaughterGen(reco::GenParticle*);
         virtual const reco::Candidate* FindMother(reco::GenParticle*);
         virtual reco::Candidate* FindGenParticleByIdAndStatus(std::vector<reco::GenParticle>&, int, int);

@@ -242,9 +242,43 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     std::vector<reco::GenParticle> GenPVect = theGenAnalyzer->FillGenVector(iEvent);
     // Gen candidates
     //reco::Candidate* theGenZ = theGenAnalyzer->FindGenParticle(GenPVect, 23);
+
+    reco::GenParticle* genL1 = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, std::vector<int>{-11, -13}, 23);
+    reco::GenParticle* genL2 = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, std::vector<int>{+11, +13}, 23);
+    reco::GenParticle* genQ1 = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, std::vector<int>{5}, 25);
+    reco::GenParticle* genQ2 = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, std::vector<int>{-5}, 25);
+    reco::GenParticle* genZ = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, std::vector<int>{23});
+    reco::GenParticle* genH = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, std::vector<int>{25});
+    reco::GenParticle* genX = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, std::vector<int>{36});
     
-    std::vector<int> LepIds = {11,13};
-    std::vector<int> HadIds = {1,2,3,4,5};
+    if(genL1!=NULL && genL2!=NULL && genQ1!=NULL && genQ2!=NULL && genZ!=NULL && genH!=NULL && genX!=NULL) {
+        //reco::Candidate::LorentzVector genV(genL1->p4() + genL2->p4()), genH(genQ1->p4() + genQ2->p4()), genX(genL1->p4() + genL2->p4() + genQ1->p4() + genQ2->p4());
+        
+        Hist["g_Xmass"]->Fill(genX->mass(), EventWeight);
+        Hist["g_Xpt"]->Fill(genX->pt(), EventWeight);
+        Hist["g_Zmass"]->Fill(genZ->mass(), EventWeight);
+        Hist["g_Zpt"]->Fill(genZ->pt(), EventWeight);
+        Hist["g_ZdR"]->Fill(reco::deltaR(genL1->eta(), genL1->phi(), genL2->eta(), genL2->phi()), EventWeight);
+        Hist["g_Hmass"]->Fill(genH->mass(), EventWeight);
+        Hist["g_Hpt"]->Fill(genH->pt(), EventWeight);
+        Hist["g_HdR"]->Fill(reco::deltaR(genQ1->eta(), genQ1->phi(), genQ2->eta(), genQ2->phi()), EventWeight);
+        
+        float genCosThetaStar = Utilities::ReturnCosThetaStar(genX->p4(), genZ->p4());
+        float genCosTheta1    = Utilities::ReturnCosTheta1(genZ->p4(), genL1->p4(), genL2->p4(), genQ1->p4(), genQ2->p4());
+        float genCosTheta2    = fabs( Utilities::ReturnCosTheta2(genH->p4(), genL1->p4(), genL2->p4(), genQ1->p4(), genQ2->p4()) );
+        float genPhi          = Utilities::ReturnPhi(genX->p4(), genL1->p4(), genL2->p4(), genQ1->p4(), genQ2->p4());
+        float genPhi1         = Utilities::ReturnPhi1(genX->p4(), genL1->p4(), genL2->p4());
+        
+        Hist["g_CosThetaStar"]->Fill(genCosThetaStar, EventWeight);
+        Hist["g_CosTheta1"]->Fill(genCosTheta1, EventWeight);
+        Hist["g_CosTheta2"]->Fill(genCosTheta2, EventWeight);
+        Hist["g_Phi"]->Fill(genPhi, EventWeight);
+        Hist["g_Phi1"]->Fill(genPhi1, EventWeight);
+        
+    }
+    
+    std::vector<int> LepIds = {11,13,-11,-13};
+    std::vector<int> HadIds = {1,2,3,4,5,-1,-2,-3,-4,-5};
     reco::GenParticle* theGenLep = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, LepIds);
     reco::GenParticle* theGenHad = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, HadIds);
 
