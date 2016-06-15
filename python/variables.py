@@ -295,6 +295,50 @@ var_template = {
       "max" : 3.15,
       "log" : True,
     },
+    "Chi2" : {
+      "title" : "#chi^{2} (GeV)",
+      "nbins" : 100,
+      "min" : 0,
+      "max" : 100,
+      "log" : True,
+    },
+    "CosThetaStar" : {
+      "title" : "cos #theta*",
+      "nbins" : 50,
+      "min" : -1,
+      "max" : 1,
+      "log" : False,
+    },
+    "CosTheta1" : {
+      "title" : "cos #theta_{1}",
+      "nbins" : 25,
+      "min" : -1,
+      "max" : 1,
+      "log" : False,
+    },
+    "CosTheta2" : {
+      "title" : "cos #theta_{2}",
+      "nbins" : 25,
+      "min" : 0,
+      "max" : 1,
+      "log" : False,
+    },
+    "Phi" : {
+      "title" : "#Phi",
+      "nbins" : 25,
+      "min" : -3.15,
+      "max" : 3.15,
+      "log" : False,
+    },
+    "Phi1" : {
+      "title" : "#Phi_{1}",
+      "nbins" : 25,
+      "min" : -3.15,
+      "max" : 3.15,
+      "log" : False,
+    },
+    
+    
     
     # Jets
     "Jet[N].pt": {
@@ -362,6 +406,13 @@ var_template = {
     },
     "Jet[N].CSVRDown": {
       "title" : "jet [N] CSV (-1 #sigma)",
+      "nbins" : 50,
+      "min" : 0,
+      "max" : 1,
+      "log" : False,
+    },
+    "Jet[N].CMVA": {
+      "title" : "jet [N] cMVA",
       "nbins" : 50,
       "min" : 0,
       "max" : 1,
@@ -546,6 +597,34 @@ var_template = {
     },
     "FatJet[N].CSVR2": {
       "title" : "subjet 2 CSV",
+      "nbins" : 50,
+      "min" : 0,
+      "max" : 1,
+      "log" : False,
+    },
+    "FatJet[N].CMVA1": {
+      "title" : "subjet 1 cMVA",
+      "nbins" : 50,
+      "min" : 0,
+      "max" : 1,
+      "log" : False,
+    },
+    "FatJet[N].CMVA2": {
+      "title" : "subjet 2 cMVA",
+      "nbins" : 50,
+      "min" : 0,
+      "max" : 1,
+      "log" : False,
+    },
+    "FatJet[N].CMVAR1": {
+      "title" : "subjet 1 cMVA",
+      "nbins" : 50,
+      "min" : 0,
+      "max" : 1,
+      "log" : False,
+    },
+    "FatJet[N].CMVAR2": {
+      "title" : "subjet 2 cMVA",
       "nbins" : 50,
       "min" : 0,
       "max" : 1,
@@ -818,35 +897,35 @@ var_template = {
     
     #
     "H.pt": {
-      "title" : "Z candidate p_{T} (GeV)",
+      "title" : "p_{T} (jj) (GeV)",
       "nbins" : 50,
       "min" : 0,
       "max" : 1000,
       "log" : True,
     },
     "H.eta": {
-      "title" : "Z candidate #eta",
+      "title" : "#eta (jj)",
       "nbins" : 30,
       "min" : -3.,
       "max" : 3.,
       "log" : False,
     },
     "H.phi": {
-      "title" : "Z candidate #varphi",
+      "title" : "#varphi (jj)",
       "nbins" : 60,
       "min" : -3.15,
       "max" : 3.15,
       "log" : False,
     },
     "H.mass": {
-      "title" : "m_{Z} (GeV)",
-      "nbins" : 50,
+      "title" : "m_{jj} (GeV)",
+      "nbins" : 30,
       "min" : 0,
-      "max" : 250,
+      "max" : 300,
       "log" : False,
     },
     "H.charge": {
-      "title" : "Z candidate charge",
+      "title" : "H candidate charge",
       "nbins" : 3,
       "min" : -1.5,
       "max" : 1.5,
@@ -856,7 +935,7 @@ var_template = {
       "title" : "#Delta R (jj)",
       "nbins" : 40,
       "min" : 0,
-      "max" : 2,
+      "max" : 3,
       "log" : False,
     },
     "H.dEta": {
@@ -891,16 +970,16 @@ var_template = {
     },
     "A.phi": {
       "title" : "#varphi(Zh)",
-      "nbins" : 60,
+      "nbins" : 30,
       "min" : -3.15,
       "max" : 3.15,
       "log" : False,
     },
     "A.mass": {
       "title" : "m (Zh) (GeV)",
-      "nbins" : 120,
-      "min" : 0,
-      "max" : 1200,
+      "nbins" : 50,
+      "min" : 100,
+      "max" : 1100,
       "log" : False,
     },
     "A.charge": {
@@ -955,9 +1034,9 @@ var_template = {
     },
     "kA.mass": {
       "title" : "m (Zh) (GeV)",
-      "nbins" : 120,
-      "min" : 0,
-      "max" : 1200,
+      "nbins" : 100,
+      "min" : 100,
+      "max" : 1100,
       "log" : False,
     },
     

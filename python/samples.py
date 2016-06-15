@@ -115,10 +115,15 @@ sample = {
         'xsec'    : 831.76*(3./9.)*(3./9.),
         'kfactor' : 1.,
     },
+    'TTTo2L2Nu_13TeV-powheg_v0_v1' : {
+        'nevents' : 104607105,
+        'xsec'    : 831.76*(3./9.)*(3./9.),
+        'kfactor' : 1.,
+    },
     
     'VVTo2L2Nu_13TeV_amcatnloFXFX_madspin_pythia8_v0-v1' : {
-        'nevents' : 12.05*0.549,
-        'xsec'    : 1,
+        'nevents' : 1,
+        'xsec'    : 12.05*0.549,
         'kfactor' : 1.,
     },
     
@@ -339,7 +344,7 @@ samples = {
     },
     'TTbar' : {
         'order' : 3,
-        'files' : ['TTTo2L2Nu_13TeV-powheg_v0_ext1-v1'], #, 'TTWJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8-v1', 'TTZToLLNuNu_M-10_TuneCUETP8M1_13TeV-amcatnlo-pythia8-v2'
+        'files' : ['TTTo2L2Nu_13TeV-powheg_v0_v1'],#['TTTo2L2Nu_13TeV-powheg_v0_ext1-v1'], #, 'TTWJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8-v1', 'TTZToLLNuNu_M-10_TuneCUETP8M1_13TeV-amcatnlo-pythia8-v2'
         'fillcolor' : 798,
         'fillstyle' : 1001,
         'linecolor' : 798,
@@ -363,9 +368,7 @@ samples = {
     },
     'VV' : {
         'order' : 5,
-        'files' : ['WWTo1L1Nu2Q_13TeV_amcatnloFXFX_madspin_pythia8-v1', 'WZTo1L1Nu2Q_13TeV_amcatnloFXFX_madspin_pythia8-v1', 'WZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8-v1', 'WZTo1L3Nu_13TeV_amcatnloFXFX_madspin_pythia8-v1', 'ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8-v1', 'ZZTo2Q2Nu_13TeV_amcatnloFXFX_madspin_pythia8-v1', 'ZZTo4L_13TeV-amcatnloFXFX-pythia8-v1', 'ZH_HToBB_ZToLL_M125_13TeV_amcatnloFXFX_madspin_pythia8-v1', 'ZH_HToBB_ZToNuNu_M125_13TeV_amcatnloFXFX_madspin_pythia8-v1', 'WH_HToBB_WToLNu_M125_13TeV_amcatnloFXFX_madspin_pythia8-v1'],
-        #'files' : ['WWTo1L1Nu2Q_13TeV_amcatnloFXFX_madspin_pythia8-v1', 'WZTo1L1Nu2Q_13TeV_amcatnloFXFX_madspin_pythia8-v1', 'WZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8-v1', 'ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8-v1', 'ZZTo2Q2Nu_13TeV_amcatnloFXFX_madspin_pythia8-v1', 'ZZTo4L_13TeV-amcatnloFXFX-pythia8-v1', 'ZH_HToBB_ZToLL_M125_13TeV_amcatnloFXFX_madspin_pythia8-v1', 'ZH_HToBB_ZToNuNu_M125_13TeV_amcatnloFXFX_madspin_pythia8-v1'],
-        #'files' : ['WW_TuneCUETP8M1_13TeV-pythia8-v1','WZ_TuneCUETP8M1_13TeV-pythia8-v1','ZZ_TuneCUETP8M1_13TeV-pythia8-v1', 'ZH_HToBB_ZToLL_M125_13TeV_amcatnloFXFX_madspin_pythia8-v1', 'ZH_HToBB_ZToNuNu_M125_13TeV_amcatnloFXFX_madspin_pythia8-v1'],
+        'files' : ['VVTo2L2Nu_13TeV_amcatnloFXFX_madspin_pythia8_v0-v1'],
         'fillcolor' : 602,
         'fillstyle' : 1001,
         'linecolor' : 602,
