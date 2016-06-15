@@ -295,6 +295,20 @@ var_template = {
       "max" : 3.15,
       "log" : True,
     },
+    "JetMaxBtag": {
+      "title" : "max CSV",
+      "nbins" : 50,
+      "min" : 0,
+      "max" : 1,
+      "log" : False,
+    },
+    "FatJetMaxBtag": {
+      "title" : "max CSV",
+      "nbins" : 50,
+      "min" : 0,
+      "max" : 1,
+      "log" : False,
+    },
     "Chi2" : {
       "title" : "#chi^{2} (GeV)",
       "nbins" : 100,
@@ -630,6 +644,13 @@ var_template = {
       "max" : 1,
       "log" : False,
     },
+    "FatJet[N].BDSV": {
+      "title" : "double b-tagger",
+      "nbins" : 50,
+      "min" : -1,
+      "max" : 1,
+      "log" : False,
+    },
     "FatJet[N].nBtag": {
       "title" : "number of b-tagged subjets",
       "nbins" : 3,
@@ -860,10 +881,17 @@ var_template = {
       "log" : False,
     },
     "V.mass": {
-      "title" : "m_{Z} (GeV)",
+      "title" : "m_{V} (GeV)",
       "nbins" : 75,
       "min" : 50,
       "max" : 125,
+      "log" : False,
+    },
+    "V.tmass": {
+      "title" : "m_{V}^{T} (GeV)",
+      "nbins" : 100,
+      "min" : 0,
+      "max" : 200,
       "log" : False,
     },
     "V.charge": {
