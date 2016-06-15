@@ -777,11 +777,11 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     else if(isTtoEM && Leptons.size() >= 2) {
         if(ElecVect[0].pt() > MuonVect[0].pt()) {
             ObjectsFormat::FillElectronType(Leptons[0], &ElecVect[0], isMC);
-            ObjectsFormat::FillMuonType(Leptons[1], &MuonVect[1], isMC);
+            ObjectsFormat::FillMuonType(Leptons[1], &MuonVect[0], isMC);
         }
         else {
             ObjectsFormat::FillMuonType(Leptons[0], &MuonVect[0], isMC);
-            ObjectsFormat::FillElectronType(Leptons[1], &ElecVect[1], isMC);
+            ObjectsFormat::FillElectronType(Leptons[1], &ElecVect[0], isMC);
         }
     }
     for(unsigned int i = 0; i < Taus.size() && i < TauVect.size(); i++) ObjectsFormat::FillTauType(Taus[i], &TauVect[i], isMC);
