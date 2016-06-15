@@ -42,6 +42,7 @@
 #include "SimDataFormats/GeneratorProducts/interface/LHECommonBlocks.h"
 
 #include "TH1.h"
+#include "TH3.h"
 
 //
 // class declaration
@@ -70,6 +71,11 @@ class CounterAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
       
       edm::EDGetToken LheToken;
       edm::Service<TFileService> fs;
-      TH1F* Hist;
+      TH1F* Weight;
+      TH1F* NPartons;
+      TH1F* NBPartons;
+      TH1F* LheHT;
+      TH1F* LhePtZ;
+      TH3F* Bin;
 };
 
