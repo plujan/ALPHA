@@ -19,10 +19,10 @@ if len(options.inputFiles) == 0:
     process.source = cms.Source("PoolSource",
         fileNames = cms.untracked.vstring(
 #            'file:/lustre/cmswork/zucchett/CMSSW_8_0_5/src/00F0B3DC-211B-E611-A6A0-001E67248A39.root' # DYJets
-            'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/user/lbenato/BulkGraviton_ZZ_ZlepZhad_narrow_M1000_13TeV-madgraph_MINIAODv2_805_10000ev/BulkGravToZZToZlepZhad_narrow_M-1000_13TeV-madgraph_PRIVATE-MC/BulkGraviton_ZZ_ZlepZhad_narrow_M1000_13TeV-madgraph_MINIAODv2_805_10000ev/160525_131443/0000/BulkGraviton_ZZ_ZlepZhad_narrow_M1000_13TeV-madgraph_MINIAODv2_1.root'
+#            'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/user/lbenato/BulkGraviton_ZZ_ZlepZhad_narrow_M1000_13TeV-madgraph_MINIAODv2_805_10000ev/BulkGravToZZToZlepZhad_narrow_M-1000_13TeV-madgraph_PRIVATE-MC/BulkGraviton_ZZ_ZlepZhad_narrow_M1000_13TeV-madgraph_MINIAODv2_805_10000ev/160525_131443/0000/BulkGraviton_ZZ_ZlepZhad_narrow_M1000_13TeV-madgraph_MINIAODv2_1.root'
 #            'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/PromptReco-v1/000/273/013/00000/C09E75A4-3519-E611-8BA9-02163E014476.root', # SingleMuon
     #        'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/DoubleEG/MINIAOD/PromptReco-v2/000/273/725/00000/72118358-B620-E611-9C76-02163E012211.root', # DoubleEle
-#            'file:/lustre/cmswork/zucchett/CMSSW_8_0_5/src/GluGluToAToZhToLLBB_M300_13TeV-amcatnlo_MINIAODv2.root', # DEBUG
+            'file:/lustre/cmswork/zucchett/CMSSW_8_0_5/src/GluGluToAToZhToLLBB_M300_13TeV-amcatnlo_MINIAODv2.root', # DEBUG
         )
     )
 # production: read externally provided filelist
@@ -38,6 +38,7 @@ process.TFileService = cms.Service("TFileService",
 
 # Determine whether we are running on data or MC
 isData = ('/store/data/' in process.source.fileNames[0])
+isCustom = ('GluGluToAToZhToLLBB' in process.source.fileNames[0])
 print "Running on", ("data" if isData else "MC")
 #isData = False
 
@@ -52,7 +53,7 @@ if isData:
 
 
 process.counter = cms.EDAnalyzer('CounterAnalyzer',
-    lheProduct = cms.InputTag("externalLHEProducer"),
+    lheProduct = cms.InputTag("externalLHEProducer" if not isCustom else "source"),
 )
 
 # Trigger filter
@@ -189,7 +190,7 @@ process.QGTagger.jetsLabel = cms.string('QGL_AK4PFchs') # Other options: see htt
 process.ntuple = cms.EDAnalyzer('Diboson',
     genSet = cms.PSet(
         genProduct = cms.InputTag("generator"),
-        lheProduct = cms.InputTag("externalLHEProducer"),
+        lheProduct = cms.InputTag("externalLHEProducer" if not isCustom else "source"),
         genParticles = cms.InputTag("prunedGenParticles"),
         pdgId = cms.vint32(1, 2, 3, 4, 5, 6, 11, 12, 13, 14, 15, 16, 21, 23, 24, 25, 36, 39, 1000022, 9100000, 9000001, 9000002, 9100012, 9100022, 9900032, 1023),
     ),
