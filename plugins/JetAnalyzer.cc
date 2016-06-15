@@ -205,6 +205,13 @@ void JetAnalyzer::CleanJetsFromElectrons(std::vector<pat::Jet>& Jets, std::vecto
     }
 }
 
+void JetAnalyzer::AddVariables(std::vector<pat::Jet>& Jets, pat::MET& MET) {
+    for(unsigned int j = 0; j < Jets.size(); ) {
+        Jets[j].addUserFloat("dPhi_met", fabs(reco::deltaPhi(Jets[j].phi(), MET.phi())));
+        Jets[j].addUserFloat("dPhi_Jet1", fabs(reco::deltaPhi(Jets[j].phi(), Jets[0].phi())));
+    }
+}
+
 int JetAnalyzer::GetNBJets(std::vector<pat::Jet>& Jets) {
     int n(0);
     for(unsigned int i = 0; i < Jets.size(); i++) if(abs(Jets[i].hadronFlavour()) == 5) n++;
