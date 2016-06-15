@@ -146,7 +146,8 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     EventWeight = PUWeight = TriggerWeight = LeptonWeight = 1.;
     isZtoEE = isZtoMM = isTtoEM = isWtoEN = isWtoMN = isZtoNN = false;
     nPV = nElectrons = nMuons = nTaus = nPhotons = nJets = nFatJets = nBTagJets = 1;
-    MaxJetBTag = MaxFatJetBTag = MinJetMetDPhi = Chi2 = -1.;
+    MaxJetBTag = MaxFatJetBTag = Chi2 = -1.;
+    MinJetMetDPhi = 10.;
     
     AddFourMomenta addP4;
     
@@ -742,7 +743,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     }
     else {if(Verbose) std::cout << " - N fat jets < 1" << std::endl;}
     
-    for(unsigned int i = 0; i < JetsVect.size(); i++) if(reco::deltaPhi(JetsVect[i].phi(), MET.phi()) < MinJetMetDPhi) MinJetMetDPhi = reco::deltaPhi(JetsVect[i].phi(), MET.phi());
+    for(unsigned int i = 0; i < JetsVect.size(); i++) if(fabs(reco::deltaPhi(JetsVect[i].phi(), MET.phi())) < MinJetMetDPhi) MinJetMetDPhi = fabs(reco::deltaPhi(JetsVect[i].phi(), MET.phi()));
     
     // Highest CSV bjet in the event
 
