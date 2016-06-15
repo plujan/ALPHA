@@ -241,13 +241,13 @@ struct MEtFullType {
 
 
 struct CandidateType {
-CandidateType(): pt(-1.), eta(-9.), phi(-9.), mass(-1.), tmass(-1.), softdropMass(-1.), dR(-1.), dEta(-1.), dPhi(-1.), twist(-1.), isMatched(false) {} // angle(-1.), ptBalance(-9.), centrality(-1.), charge(0), 
+    CandidateType(): pt(-1.), eta(-9.), phi(-9.), mass(-1.), tmass(-1.), dR(-1.), dEta(-1.), dPhi(-1.), twist(-1.) {} // angle(-1.), ptBalance(-9.), centrality(-1.), charge(0), 
     float pt;
     float eta;
     float phi;
     float mass;
     float tmass;
-    float softdropMass;
+//    float softdropMass;
 //    float tmassScaleUp;
 //    float tmassScaleDown;
 //    float tmassResUp;
@@ -260,7 +260,7 @@ CandidateType(): pt(-1.), eta(-9.), phi(-9.), mass(-1.), tmass(-1.), softdropMas
   //  float ptBalance;
   //  float centrality;
   //  int charge;
-    bool isMatched;
+//    bool isMatched;
 };
 
 
