@@ -58,7 +58,6 @@ then
     rm filelists/Spring16/GluGluSpin0ToZG*
     rm filelists/Spring16/WpWp*
     rm filelists/Spring16/WprimeToMuNu*
-    rm filelists/Spring16/
 fi
 
 # source batch/createFilelist.sh
