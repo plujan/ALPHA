@@ -385,10 +385,12 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
             theV.addDaughter(MuonVect.at(0).charge() < 0 ? MuonVect.at(1) : MuonVect.at(0));
             addP4.set(theV);
             // SF
-            LeptonWeight *= theMuonAnalyzer->GetMuonIdSF(MuonVect.at(0), MuonPSet.getParameter<int>("muon1id"));
-            LeptonWeight *= theMuonAnalyzer->GetMuonIdSF(MuonVect.at(1), MuonPSet.getParameter<int>("muon2id"));
-            LeptonWeight *= theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(0), MuonPSet.getParameter<int>("muon1iso"));
-            LeptonWeight *= theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(1), MuonPSet.getParameter<int>("muon2iso"));
+            if(isMC) {
+                LeptonWeight *= theMuonAnalyzer->GetMuonIdSF(MuonVect.at(0), MuonPSet.getParameter<int>("muon1id"));
+                LeptonWeight *= theMuonAnalyzer->GetMuonIdSF(MuonVect.at(1), MuonPSet.getParameter<int>("muon2id"));
+                LeptonWeight *= theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(0), MuonPSet.getParameter<int>("muon1iso"));
+                LeptonWeight *= theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(1), MuonPSet.getParameter<int>("muon2iso"));
+            }
         }
         else { if(Verbose) std::cout << " - No OS muons" << std::endl; return; }
     }
@@ -399,10 +401,12 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
             theV.addDaughter(ElecVect.at(0).charge() ? ElecVect.at(1) : ElecVect.at(0));
             addP4.set(theV);
             // SF
-            LeptonWeight *= theElectronAnalyzer->GetElectronIdSF(ElecVect.at(0), ElectronPSet.getParameter<int>("electron1id"));
-            LeptonWeight *= theElectronAnalyzer->GetElectronIdSF(ElecVect.at(1), ElectronPSet.getParameter<int>("electron2id"));
-            LeptonWeight *= theElectronAnalyzer->GetElectronRecoEffSF(ElecVect.at(0));
-            LeptonWeight *= theElectronAnalyzer->GetElectronRecoEffSF(ElecVect.at(1));
+            if(isMC) {
+                LeptonWeight *= theElectronAnalyzer->GetElectronIdSF(ElecVect.at(0), ElectronPSet.getParameter<int>("electron1id"));
+                LeptonWeight *= theElectronAnalyzer->GetElectronIdSF(ElecVect.at(1), ElectronPSet.getParameter<int>("electron2id"));
+                LeptonWeight *= theElectronAnalyzer->GetElectronRecoEffSF(ElecVect.at(0));
+                LeptonWeight *= theElectronAnalyzer->GetElectronRecoEffSF(ElecVect.at(1));
+            }
         }
         else { if(Verbose) std::cout << " - No OS electrons" << std::endl; return; }
     }
@@ -421,8 +425,10 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         theV.addDaughter(Neutrino);
         addP4.set(theV);
         // SF
-        LeptonWeight *= theMuonAnalyzer->GetMuonIdSF(MuonVect.at(0), MuonPSet.getParameter<int>("muon1id"));
-        LeptonWeight *= theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(0), MuonPSet.getParameter<int>("muon1iso"));
+        if(isMC) {
+            LeptonWeight *= theMuonAnalyzer->GetMuonIdSF(MuonVect.at(0), MuonPSet.getParameter<int>("muon1id"));
+            LeptonWeight *= theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(0), MuonPSet.getParameter<int>("muon1iso"));
+        }
     }
     else if(isWtoEN) {
         if(Verbose) std::cout << " - Try to reconstruct W -> em" << std::endl;
@@ -433,8 +439,10 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         theV.addDaughter(Neutrino);
         addP4.set(theV);
         // SF
-        LeptonWeight *= theElectronAnalyzer->GetElectronIdSF(ElecVect.at(0), ElectronPSet.getParameter<int>("electron1id"));
-        LeptonWeight *= theElectronAnalyzer->GetElectronRecoEffSF(ElecVect.at(0));
+        if(isMC) {
+            LeptonWeight *= theElectronAnalyzer->GetElectronIdSF(ElecVect.at(0), ElectronPSet.getParameter<int>("electron1id"));
+            LeptonWeight *= theElectronAnalyzer->GetElectronRecoEffSF(ElecVect.at(0));
+        }
     }
     else if(isZtoNN) {
         if(Verbose) std::cout << " - Try to reconstruct Z -> nn" << std::endl;

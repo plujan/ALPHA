@@ -49,7 +49,7 @@ print "Running on", ("data" if isData else "MC")
 # JSON filter
 import FWCore.PythonUtilities.LumiList as LumiList
 if isData:
-    process.source.lumisToProcess = LumiList.LumiList(filename = '%s/src/Analysis/ALPHA/data/JSON/Cert_271036-274421_13TeV_PromptReco_Collisions16_JSON.txt' % os.environ['CMSSW_BASE']).getVLuminosityBlockRange() #2.07
+    process.source.lumisToProcess = LumiList.LumiList(filename = '%s/src/Analysis/ALPHA/data/JSON/Cert_271036-274443_13TeV_PromptReco_Collisions16_JSON.txt' % os.environ['CMSSW_BASE']).getVLuminosityBlockRange() #2.6
 
 
 process.counter = cms.EDAnalyzer('CounterAnalyzer',
