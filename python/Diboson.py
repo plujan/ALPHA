@@ -135,6 +135,7 @@ process.cleanedMuons = cms.EDProducer("PATMuonCleanerBySegments",
 # Jet corrector https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookJetEnergyCorrections#CorrOnTheFly
 process.load('JetMETCorrections.Configuration.JetCorrectors_cff')
 
+
 #quark gluon likelihood upstream modules
 qgDatabaseVersion = 'v2b' # check https://twiki.cern.ch/twiki/bin/viewauth/CMS/QGDataBaseVersion
 from CondCore.DBCommon.CondDBSetup_cfi import *
@@ -212,8 +213,9 @@ process.ntuple = cms.EDAnalyzer('Diboson',
         ),
         samplesZJetsToNuNu = cms.vstring(),
         samplesWJetsToLNu = cms.vstring(),
-        samplesDir = cms.string("data/Stitch/"),
+        samplesDir = cms.string("%s/src/Analysis/ALPHA/data/Stitch/" % os.environ['CMSSW_BASE']),
         sample = cms.string( sample ),
+        ewkFile = cms.string("%s/src/Analysis/ALPHA/data/scalefactors_v4.root" % os.environ['CMSSW_BASE']),
     ),
     pileupSet = cms.PSet(
         pileup = cms.InputTag("slimmedAddPileupInfo"),
@@ -302,6 +304,7 @@ process.ntuple = cms.EDAnalyzer('Diboson',
         recalibrateJets = cms.bool(False),
         recalibrateMass = cms.bool(False),
         corrector = cms.InputTag("ak4PFL2L3ResidualCorrector"),
+        jecUncertainty = cms.string('%s/src/Analysis/ALPHA/data/Spring16_25nsV3_MC/Spring16_25nsV3_MC_Uncertainty_AK4PFchs.txt' % os.environ['CMSSW_BASE']),
         reshapeBTag = cms.bool(True),
         btag = cms.string("pfCombinedInclusiveSecondaryVertexV2BJetTags"),
         btagDB = cms.string('%s/src/Analysis/ALPHA/data/CSVv2.csv' % os.environ['CMSSW_BASE']),
@@ -322,6 +325,7 @@ process.ntuple = cms.EDAnalyzer('Diboson',
         recalibrateJets = cms.bool(False),
         recalibrateMass = cms.bool(True),
         corrector = cms.InputTag("ak4PFL2L3ResidualCorrector"),
+        jecUncertainty = cms.string('%s/src/Analysis/ALPHA/data/Spring16_25nsV3_MC/Spring16_25nsV3_MC_Uncertainty_AK8PFchs.txt' % os.environ['CMSSW_BASE']),
         reshapeBTag = cms.bool(True),
         btag = cms.string("pfCombinedInclusiveSecondaryVertexV2BJetTags"),
         btagDB = cms.string('%s/src/Analysis/ALPHA/data/CSVv2.csv' % os.environ['CMSSW_BASE']),
