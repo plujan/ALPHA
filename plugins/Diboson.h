@@ -156,7 +156,7 @@ class Diboson : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
         TTree* tree;
         bool isMC, isZtoEE, isZtoMM, isTtoEM, isWtoEN, isWtoMN, isZtoNN, isMerged, isResolved;
         long int EventNumber, RunNumber, LumiNumber;
-        float EventWeight, StitchWeight, PUWeight, TriggerWeight, LeptonWeight;
+        float EventWeight, StitchWeight, ZewkWeight, WewkWeight, PUWeight, TriggerWeight, LeptonWeight;
         int nPV, nElectrons, nMuons, nTaus, nPhotons, nJets, nFatJets, nBTagJets;
         float MaxJetBTag, MaxFatJetBTag, MinJetMetDPhi, Chi2;
         // Angular

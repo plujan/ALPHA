@@ -143,7 +143,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     LumiNumber = iEvent.luminosityBlock();
     RunNumber = iEvent.id().run();
     
-    EventWeight = StitchWeight = PUWeight = TriggerWeight = LeptonWeight = 1.;
+    EventWeight = StitchWeight = ZewkWeight = WewkWeight = PUWeight = TriggerWeight = LeptonWeight = 1.;
     isZtoEE = isZtoMM = isTtoEM = isWtoEN = isWtoMN = isZtoNN = false;
     nPV = nElectrons = nMuons = nTaus = nPhotons = nJets = nFatJets = nBTagJets = 1;
     MaxJetBTag = MaxFatJetBTag = Chi2 = -1.;
@@ -239,14 +239,32 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     // Gen weights
     std::map<std::string, float> GenWeight = theGenAnalyzer->FillWeightsMap(iEvent);
     EventWeight *= GenWeight["event"];
+    // Lhe Particles
+    std::map<std::string, float> LheMap = theGenAnalyzer->FillLheMap(iEvent);
     // Mc Stitching
-    StitchWeight = theGenAnalyzer->GetStitchWeight(iEvent);
+    StitchWeight = theGenAnalyzer->GetStitchWeight(LheMap);
     //EventWeight *= StitchWeight; // Not yet
     // Gen Particles
     std::vector<reco::GenParticle> GenPVect = theGenAnalyzer->FillGenVector(iEvent);
     // Gen candidates
-    //reco::Candidate* theGenZ = theGenAnalyzer->FindGenParticle(GenPVect, 23);
-
+    reco::Candidate* theGenZ = theGenAnalyzer->FindGenParticle(GenPVect, 23);
+    reco::Candidate* theGenW = theGenAnalyzer->FindGenParticle(GenPVect, 24);
+    // EWK corrections
+    if(theGenZ) ZewkWeight = theGenAnalyzer->GetZewkWeight(theGenZ->pt());
+    if(theGenW) WewkWeight = theGenAnalyzer->GetWewkWeight(theGenW->pt());
+    
+//    if(LheMap.find("lhePtZ")!=LheMap.end()) ZewkWeight = theGenAnalyzer->GetZewkWeight(LheMap["lhePtZ"]);
+//    if(LheMap.find("lhePtW")!=LheMap.end()) WewkWeight = theGenAnalyzer->GetWewkWeight(LheMap["lhePtW"]);
+    
+    EventWeight *= ZewkWeight * WewkWeight;
+    
+    
+//        float genPtZ(-1.), genPtW(-1.);
+//    if(!genZ && genL1 && genL2) genPtZ = (!genZ) ? genZ->pt() : (*genL1 + *genL2).pt();
+//    if(!genW && ((genL1 && genN1) || (genL2 && genN2))) genPtW = (!genW) ? genW->pt() : ( (genL1 && genN1) ? (*genL1 + *genN1).pt() : (*genL2 + *genN2).pt() );
+//    if(genZ) genPtZ = genZ->pt();
+//    if(genW) genPtW = genW->pt();
+    
     reco::GenParticle* genL1 = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, std::vector<int>{-11, -13}, 23);
     reco::GenParticle* genL2 = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, std::vector<int>{+11, +13}, 23);
     reco::GenParticle* genQ1 = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, std::vector<int>{5}, 25);
@@ -886,6 +904,8 @@ void Diboson::beginJob() {
     tree->Branch("RunNumber", &RunNumber, "RunNumber/L");
     tree->Branch("EventWeight", &EventWeight, "EventWeight/F");
     tree->Branch("StitchWeight", &StitchWeight, "StitchWeight/F");
+    tree->Branch("ZewkWeight", &ZewkWeight, "ZewkWeight/F");
+    tree->Branch("WewkWeight", &WewkWeight, "WewkWeight/F");
     tree->Branch("PUWeight", &PUWeight, "PUWeight/F");
     tree->Branch("TriggerWeight", &TriggerWeight, "TriggerWeight/F");
     tree->Branch("LeptonWeight", &LeptonWeight, "LeptonWeight/F");
