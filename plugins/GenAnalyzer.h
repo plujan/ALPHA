@@ -34,7 +34,7 @@ class GenAnalyzer {
         virtual reco::GenParticle* FindLastDaughterGen(reco::GenParticle*);
         virtual const reco::Candidate* FindMother(reco::GenParticle*);
         virtual reco::Candidate* FindGenParticleByIdAndStatus(std::vector<reco::GenParticle>&, int, int);
-        virtual float GetStitchWeight(const edm::Event&);
+        virtual float GetStitchWeight(std::map<std::string, float>);
         virtual float GetZewkWeight(float);
         virtual float GetWewkWeight(float);
         virtual float GetPUWeight(const edm::Event&);
@@ -57,7 +57,7 @@ class GenAnalyzer {
         std::map<std::string, TH1F*> hPartons;
         std::map<std::string, TH1F*> hBPartons;
         std::map<std::string, TH1F*> hHT;
-        std::map<std::string, TH1F*> hPtZ;
+        std::map<std::string, TH1F*> hPtV;
         
         std::string EWKFileName;
         TFile* EWKFile;
