@@ -10,7 +10,8 @@ GenAnalyzer::GenAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl
     SampleZJetsToNuNu(PSet.getParameter<std::vector<std::string> >("samplesZJetsToNuNu")),
     SampleWJetsToLNu(PSet.getParameter<std::vector<std::string> >("samplesWJetsToLNu")),
     SampleDir(PSet.getParameter<std::string>("samplesDir")),
-    Sample(PSet.getParameter<std::string>("sample"))
+    Sample(PSet.getParameter<std::string>("sample")),
+    EWKFileName(PSet.getParameter<std::string>("ewkFile"))
 {
     
     for(unsigned int i = 0; i < SampleDYJetsToLL.size(); i++) {
@@ -35,7 +36,12 @@ GenAnalyzer::GenAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl
         hPtZ[SampleWJetsToLNu[i]] = (TH1F*)Files[SampleWJetsToLNu[i]]->Get("counter/c_lhePtZ");
     }
     
+    std::cout << EWKFileName.c_str() <<std::endl;
+    EWKFile = new TFile(EWKFileName.c_str(), "READ");
     
+//    std::cout << "     " << EWKFile->ls()  << std::endl;
+    fZEWK = (TF1*)EWKFile->Get("z_ewkcorr/z_ewkcorr_func");
+    fWEWK = (TF1*)EWKFile->Get("w_ewkcorr/w_ewkcorr_func");
     
     /*
     Sample=sample;
@@ -70,6 +76,7 @@ GenAnalyzer::GenAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl
 GenAnalyzer::~GenAnalyzer() {
 //    delete LumiWeights;
     for(auto const &it : Files) it.second->Close();
+    EWKFile->Close();
 }
 
 // ---------- GEN WEIGHTS ----------
@@ -109,6 +116,38 @@ std::vector<reco::GenParticle> GenAnalyzer::FillGenVector(const edm::Event& iEve
     }
 //    std::cout << "\n\n\n" << std::endl;
     return Vect;
+}
+
+std::map<std::string, float> GenAnalyzer::FillLheMap(const edm::Event& iEvent) {
+    int lhePartons(0), lheBPartons(0);
+    float lheHT(0.), lhePtZ(0.), lhePtW(0.), pt(0.);
+    
+    // Declare and open collection
+    edm::Handle<LHEEventProduct> LheEventCollection;
+    iEvent.getByToken(LheToken, LheEventCollection);
+    const lhef::HEPEUP hepeup = LheEventCollection->hepeup();
+    
+    for(int i = 0; i < hepeup.NUP; ++i) {
+        int id=abs(hepeup.IDUP[i]);
+        // Lab frame momentum (Px, Py, Pz, E and M in GeV) for the particle entries in this event
+        //reco::Candidate::LorentzVector P4(hepeup.PUP[i][0], hepeup.PUP[i][1], hepeup.PUP[i][2], hepeup.PUP[i][3]);
+        pt = sqrt(hepeup.PUP[i][0]*hepeup.PUP[i][0] + hepeup.PUP[i][1]*hepeup.PUP[i][1]);
+        if(hepeup.ISTUP[i]==1 && (id<6 || id==21)) {
+            lheHT += pt; //P4.pt() 
+            lhePartons++;
+            if(id==5) lheBPartons++;
+        }
+        if(hepeup.ISTUP[i]==2 && abs(hepeup.IDUP[i])==23) lhePtZ = pt;
+        if(hepeup.ISTUP[i]==2 && abs(hepeup.IDUP[i])==24) lhePtW = pt;
+    }
+    
+    std::map<std::string, float> Var;
+    Var["lhePartons"] = lhePartons;
+    Var["lheBPartons"] = lheBPartons;
+    Var["lheHT"] = lheHT;
+    Var["lhePtZ"] = lhePtZ;
+    Var["lhePtW"] = lhePtW;
+    return Var;
 }
 
 reco::Candidate* GenAnalyzer::FindGenParticle(std::vector<reco::GenParticle>& Vect, int pdg) {
@@ -322,3 +361,14 @@ float GenAnalyzer::GetStitchWeight(const edm::Event& iEvent) {
     return StitchWeight;
 }
 
+
+
+float GenAnalyzer::GetZewkWeight(float zpt) {
+    if(zpt <= 0) return 1.;
+    return fZEWK->Eval(zpt);
+}
+
+float GenAnalyzer::GetWewkWeight(float wpt) {
+    if(wpt <= 0) return 1.;
+    return fWEWK->Eval(wpt);
+}

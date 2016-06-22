@@ -18,6 +18,7 @@
 
 #include "TFile.h"
 #include "TH3.h"
+#include "TF1.h"
 #include "TKey.h"
 
 class GenAnalyzer {
@@ -25,6 +26,7 @@ class GenAnalyzer {
         GenAnalyzer(edm::ParameterSet&, edm::ConsumesCollector&&);
         ~GenAnalyzer();
         virtual std::map<std::string, float> FillWeightsMap(const edm::Event&);
+        virtual std::map<std::string, float> FillLheMap(const edm::Event&);
         virtual std::vector<reco::GenParticle> FillGenVector(const edm::Event&);
         virtual reco::Candidate* FindGenParticle(std::vector<reco::GenParticle>&, int);
         virtual reco::Candidate* FindLastDaughter(reco::Candidate*);
@@ -33,6 +35,8 @@ class GenAnalyzer {
         virtual const reco::Candidate* FindMother(reco::GenParticle*);
         virtual reco::Candidate* FindGenParticleByIdAndStatus(std::vector<reco::GenParticle>&, int, int);
         virtual float GetStitchWeight(const edm::Event&);
+        virtual float GetZewkWeight(float);
+        virtual float GetWewkWeight(float);
         virtual float GetPUWeight(const edm::Event&);
     //    virtual float GetPDFWeight(const edm::Event&);
         virtual std::pair<float, float> GetQ2Weight(const edm::Event&);
@@ -54,6 +58,11 @@ class GenAnalyzer {
         std::map<std::string, TH1F*> hBPartons;
         std::map<std::string, TH1F*> hHT;
         std::map<std::string, TH1F*> hPtZ;
+        
+        std::string EWKFileName;
+        TFile* EWKFile;
+        TF1* fZEWK;
+        TF1* fWEWK;
         
         edm::LumiReWeighting* LumiWeights;
 };
