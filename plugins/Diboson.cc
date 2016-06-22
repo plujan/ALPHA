@@ -143,7 +143,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     LumiNumber = iEvent.luminosityBlock();
     RunNumber = iEvent.id().run();
     
-    EventWeight = PUWeight = TriggerWeight = LeptonWeight = 1.;
+    EventWeight = StitchWeight = PUWeight = TriggerWeight = LeptonWeight = 1.;
     isZtoEE = isZtoMM = isTtoEM = isWtoEN = isWtoMN = isZtoNN = false;
     nPV = nElectrons = nMuons = nTaus = nPhotons = nJets = nFatJets = nBTagJets = 1;
     MaxJetBTag = MaxFatJetBTag = Chi2 = -1.;
@@ -239,6 +239,9 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     // Gen weights
     std::map<std::string, float> GenWeight = theGenAnalyzer->FillWeightsMap(iEvent);
     EventWeight *= GenWeight["event"];
+    // Mc Stitching
+    StitchWeight = theGenAnalyzer->GetStitchWeight(iEvent);
+    //EventWeight *= StitchWeight; // Not yet
     // Gen Particles
     std::vector<reco::GenParticle> GenPVect = theGenAnalyzer->FillGenVector(iEvent);
     // Gen candidates
@@ -882,6 +885,7 @@ void Diboson::beginJob() {
     tree->Branch("LumiNumber", &LumiNumber, "LumiNumber/L");
     tree->Branch("RunNumber", &RunNumber, "RunNumber/L");
     tree->Branch("EventWeight", &EventWeight, "EventWeight/F");
+    tree->Branch("StitchWeight", &StitchWeight, "StitchWeight/F");
     tree->Branch("PUWeight", &PUWeight, "PUWeight/F");
     tree->Branch("TriggerWeight", &TriggerWeight, "TriggerWeight/F");
     tree->Branch("LeptonWeight", &LeptonWeight, "LeptonWeight/F");
