@@ -51,17 +51,17 @@ void CounterAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
         
         const lhef::HEPEUP hepeup = LheEventCollection->hepeup();
         
-        for(int i=0; i < hepeup.NUP; ++i) {
-          int id=abs(hepeup.IDUP[i]);
-          // Lab frame momentum (Px, Py, Pz, E and M in GeV) for the particle entries in this event
-          //reco::Candidate::LorentzVector P4(hepeup.PUP[i][0], hepeup.PUP[i][1], hepeup.PUP[i][2], hepeup.PUP[i][3]);
-          pt = sqrt(hepeup.PUP[i][0]*hepeup.PUP[i][0] + hepeup.PUP[i][1]*hepeup.PUP[i][1]);
-          if(hepeup.ISTUP[i]==1 && (id<6 || id==21)) {
-            lheHT += pt; //P4.pt() 
-            lhePartons++;
-            if(id==5) lheBPartons++;
-          }
-          if(hepeup.ISTUP[i]==2 && abs(hepeup.IDUP[i])==23) lhePtZ = pt;
+        for(int i = 0; i < hepeup.NUP; ++i) {
+            int id=abs(hepeup.IDUP[i]);
+            // Lab frame momentum (Px, Py, Pz, E and M in GeV) for the particle entries in this event
+            //reco::Candidate::LorentzVector P4(hepeup.PUP[i][0], hepeup.PUP[i][1], hepeup.PUP[i][2], hepeup.PUP[i][3]);
+            pt = sqrt(hepeup.PUP[i][0]*hepeup.PUP[i][0] + hepeup.PUP[i][1]*hepeup.PUP[i][1]);
+            if(hepeup.ISTUP[i]==1 && (id<6 || id==21)) {
+                lheHT += pt; //P4.pt() 
+                lhePartons++;
+                if(id==5) lheBPartons++;
+            }
+            if(hepeup.ISTUP[i]==2 && (abs(hepeup.IDUP[i])==23 || abs(hepeup.IDUP[i])==24)) lhePtZ = pt;
         }
     }
     Weight->Fill(0., weight);
