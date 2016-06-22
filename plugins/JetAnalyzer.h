@@ -65,6 +65,7 @@ class JetAnalyzer {
         int JetId;
         float Jet1Pt, Jet2Pt, JetEta;
         bool AddQG, RecalibrateJets, RecalibrateMass;
+        std::string JECUncertainty;
         bool UseReshape;
         std::string BTag;
         int Jet1BTag, Jet2BTag;
@@ -77,6 +78,9 @@ class JetAnalyzer {
         
         TFile* JESFile;
         TH2F* hist;
+        
+        // JEC Uncertainty
+        JetCorrectionUncertainty* jecUnc;
         
         // Btag calibrations
         BTagCalibration       * calib;
