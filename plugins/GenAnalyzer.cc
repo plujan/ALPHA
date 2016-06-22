@@ -5,8 +5,38 @@ GenAnalyzer::GenAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl
     GenToken(CColl.consumes<GenEventInfoProduct>(PSet.getParameter<edm::InputTag>("genProduct"))),
     LheToken(CColl.consumes<LHEEventProduct>(PSet.getParameter<edm::InputTag>("lheProduct"))),
     GenParticlesToken(CColl.consumes<std::vector<reco::GenParticle> >(PSet.getParameter<edm::InputTag>("genParticles"))),
-    ParticleList(PSet.getParameter<std::vector<int> >("pdgId"))
+    ParticleList(PSet.getParameter<std::vector<int> >("pdgId")),
+    SampleDYJetsToLL(PSet.getParameter<std::vector<std::string> >("samplesDYJetsToLL")),
+    SampleZJetsToNuNu(PSet.getParameter<std::vector<std::string> >("samplesZJetsToNuNu")),
+    SampleWJetsToLNu(PSet.getParameter<std::vector<std::string> >("samplesWJetsToLNu")),
+    SampleDir(PSet.getParameter<std::string>("samplesDir")),
+    Sample(PSet.getParameter<std::string>("sample"))
 {
+    
+    for(unsigned int i = 0; i < SampleDYJetsToLL.size(); i++) {
+        Files[SampleDYJetsToLL[i]] = new TFile((SampleDir+SampleDYJetsToLL[i]+".root").c_str(), "READ");
+        hPartons[SampleDYJetsToLL[i]] = (TH1F*)Files[SampleDYJetsToLL[i]]->Get("counter/c_lhePartons");
+        hBPartons[SampleDYJetsToLL[i]] = (TH1F*)Files[SampleDYJetsToLL[i]]->Get("counter/c_lheBPartons");
+        hHT[SampleDYJetsToLL[i]] = (TH1F*)Files[SampleDYJetsToLL[i]]->Get("counter/c_lheHT");
+        hPtZ[SampleDYJetsToLL[i]] = (TH1F*)Files[SampleDYJetsToLL[i]]->Get("counter/c_lhePtZ");
+    }
+    for(unsigned int i = 0; i < SampleZJetsToNuNu.size(); i++) {
+        Files[SampleZJetsToNuNu[i]] = new TFile((SampleDir+SampleZJetsToNuNu[i]+".root").c_str(), "READ");
+        hPartons[SampleZJetsToNuNu[i]] = (TH1F*)Files[SampleZJetsToNuNu[i]]->Get("counter/c_lhePartons");
+        hBPartons[SampleZJetsToNuNu[i]] = (TH1F*)Files[SampleZJetsToNuNu[i]]->Get("counter/c_lheBPartons");
+        hHT[SampleZJetsToNuNu[i]] = (TH1F*)Files[SampleZJetsToNuNu[i]]->Get("counter/c_lheHT");
+        hPtZ[SampleZJetsToNuNu[i]] = (TH1F*)Files[SampleZJetsToNuNu[i]]->Get("counter/c_lhePtZ");
+    }
+    for(unsigned int i = 0; i < SampleWJetsToLNu.size(); i++) {
+        Files[SampleWJetsToLNu[i]] = new TFile((SampleDir+SampleWJetsToLNu[i]+".root").c_str(), "READ");
+        hPartons[SampleWJetsToLNu[i]] = (TH1F*)Files[SampleWJetsToLNu[i]]->Get("counter/c_lhePartons");
+        hBPartons[SampleWJetsToLNu[i]] = (TH1F*)Files[SampleWJetsToLNu[i]]->Get("counter/c_lheBPartons");
+        hHT[SampleWJetsToLNu[i]] = (TH1F*)Files[SampleWJetsToLNu[i]]->Get("counter/c_lheHT");
+        hPtZ[SampleWJetsToLNu[i]] = (TH1F*)Files[SampleWJetsToLNu[i]]->Get("counter/c_lhePtZ");
+    }
+    
+    
+    
     /*
     Sample=sample;
     isDYFile=false;
@@ -39,9 +69,7 @@ GenAnalyzer::GenAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl
 
 GenAnalyzer::~GenAnalyzer() {
 //    delete LumiWeights;
-    /*
-    DYFile->Close();
-    */
+    for(auto const &it : Files) it.second->Close();
 }
 
 // ---------- GEN WEIGHTS ----------
@@ -241,39 +269,56 @@ std::pair<float, float> GenAnalyzer::GetQ2Weight(const edm::Event& iEvent) {
 //}
 
 // ---------- LHE Event ----------
-/*
-float GenAnalyzer::GetDYWeight(const edm::Event& iEvent) {
-  if(!isDYFile) return 1.;
-  int lhePartons(0), lheBPartons(0);
-  float lheHT(0.), lhePtZ(0.);
-  // Open LHE event if possible
-  edm::Handle<LHEEventProduct> lheProduct;
-  iEvent.getByLabel(edm::InputTag("source"), lheProduct);
-  if(lheProduct.isValid()) return 1.;
-  const lhef::HEPEUP hepeup=lheProduct->hepeup();
-  
-  // Find LHE Z and partons
-  for(int i=0; i<hepeup.NUP; ++i) {
-    int id=abs(hepeup.IDUP[i]);
-    // Lab frame momentum (Px, Py, Pz, E and M in GeV) for the particle entries in this event
-    reco::Candidate::LorentzVector P4(hepeup.PUP[i][0], hepeup.PUP[i][1], hepeup.PUP[i][2], hepeup.PUP[i][3]);
-    if(hepeup.ISTUP[i]==1 && (id<6 || id==21)) {
-      lheHT+=P4.pt();
-      lhePartons++;
-      if(id==5) lheBPartons++;
+
+float GenAnalyzer::GetStitchWeight(const edm::Event& iEvent) {
+
+    if(iEvent.isRealData()) return 1.;
+    if(Sample=="" || (SampleDYJetsToLL.size()==0 && SampleZJetsToNuNu.size()==0 && SampleWJetsToLNu.size()==0)) return 1.;
+    if(Sample.find("JetsToLL") == std::string::npos && Sample.find("JetsToNuNu") == std::string::npos && Sample.find("JetsToLNu") == std::string::npos) return 1.;
+
+    int lhePartons(0), lheBPartons(0);
+    float lheHT(0.), lhePtZ(0.), pt(0.);
+    
+    // Declare and open collection
+    edm::Handle<LHEEventProduct> LheEventCollection;
+    iEvent.getByToken(LheToken, LheEventCollection);
+    const lhef::HEPEUP hepeup = LheEventCollection->hepeup();
+    
+    for(int i = 0; i < hepeup.NUP; ++i) {
+        int id=abs(hepeup.IDUP[i]);
+        // Lab frame momentum (Px, Py, Pz, E and M in GeV) for the particle entries in this event
+        //reco::Candidate::LorentzVector P4(hepeup.PUP[i][0], hepeup.PUP[i][1], hepeup.PUP[i][2], hepeup.PUP[i][3]);
+        pt = sqrt(hepeup.PUP[i][0]*hepeup.PUP[i][0] + hepeup.PUP[i][1]*hepeup.PUP[i][1]);
+        if(hepeup.ISTUP[i]==1 && (id<6 || id==21)) {
+            lheHT += pt; //P4.pt() 
+            lhePartons++;
+            if(id==5) lheBPartons++;
+        }
+        if(hepeup.ISTUP[i]==2 && (abs(hepeup.IDUP[i])==23 || abs(hepeup.IDUP[i])==24)) lhePtZ = pt;
     }
-    if(hepeup.ISTUP[i]==2 && abs(hepeup.IDUP[i])==23) lhePtZ=P4.pt();
-  }
-  // Check ranges
-  if(lhePartons>npMax) lhePartons=npMax;
-  if(lhePtZ>ptMax) lhePtZ=ptMax;
-  if(lheHT>htMax) lheHT=htMax;
-  // Get numbers
-  int bin=Sum->FindBin(lhePartons, lhePtZ, lheHT);
-  float num=Num->GetBinContent(bin);
-  float den=Sum->GetBinContent(bin);
-  if(den!=den || num!=num) return 0.;
-  if(den<=0. || num<=0.) return 0.;
-  return num/den;
+    
+    // Find bins
+    float StitchWeight(1.);
+    int binPartons = hPartons[Sample]->FindBin(lhePartons);
+    int binBPartons = hBPartons[Sample]->FindBin(lheBPartons);
+    int binHT = hHT[Sample]->FindBin(lheHT);
+    int binPtZ = hPtZ[Sample]->FindBin(lhePtZ);
+    
+    // Calculate numerator and denominator
+    if(Sample.find("JetsToLL") != std::string::npos) {
+        float num(0.), den(0.);
+        for(unsigned int i = 0; i < SampleDYJetsToLL.size(); i++) {
+            den += hPartons[SampleDYJetsToLL[i]]->GetBinContent(binPartons);
+            den += hBPartons[SampleDYJetsToLL[i]]->GetBinContent(binBPartons);
+            den += hHT[SampleDYJetsToLL[i]]->GetBinContent(binHT);
+            den += hPtZ[SampleDYJetsToLL[i]]->GetBinContent(binPtZ);
+        }
+        num += hPartons[Sample]->GetBinContent(binPartons);
+        num += hBPartons[Sample]->GetBinContent(binBPartons);
+        num += hHT[Sample]->GetBinContent(binHT);
+        num += hPtZ[Sample]->GetBinContent(binPtZ);
+        if(!(den != den || num != num) && den > 0.) StitchWeight = num / den;
+    }
+    return StitchWeight;
 }
-*/
+

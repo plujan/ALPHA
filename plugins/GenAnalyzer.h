@@ -32,7 +32,7 @@ class GenAnalyzer {
         virtual reco::GenParticle* FindLastDaughterGen(reco::GenParticle*);
         virtual const reco::Candidate* FindMother(reco::GenParticle*);
         virtual reco::Candidate* FindGenParticleByIdAndStatus(std::vector<reco::GenParticle>&, int, int);
-        //virtual float GetDYWeight(const edm::Event&);
+        virtual float GetStitchWeight(const edm::Event&);
         virtual float GetPUWeight(const edm::Event&);
     //    virtual float GetPDFWeight(const edm::Event&);
         virtual std::pair<float, float> GetQ2Weight(const edm::Event&);
@@ -43,16 +43,18 @@ class GenAnalyzer {
         edm::EDGetTokenT<LHEEventProduct> LheToken;
         edm::EDGetTokenT<std::vector<reco::GenParticle> > GenParticlesToken;
         std::vector<int> ParticleList;
-        /*
-        bool isDYFile;
-        int npMax;
-        float ptMax, htMax;
+        std::vector<std::string> SampleDYJetsToLL;
+        std::vector<std::string> SampleZJetsToNuNu;
+        std::vector<std::string> SampleWJetsToLNu;
+        std::string SampleDir;
         std::string Sample;
         
-        TH1* Sum;
-        TH1* Num;
-        TFile* DYFile;
-        */
+        std::map<std::string, TFile*> Files;
+        std::map<std::string, TH1F*> hPartons;
+        std::map<std::string, TH1F*> hBPartons;
+        std::map<std::string, TH1F*> hHT;
+        std::map<std::string, TH1F*> hPtZ;
+        
         edm::LumiReWeighting* LumiWeights;
 };
 
