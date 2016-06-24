@@ -749,9 +749,6 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
             Phi1         = Utilities::ReturnPhi1(theA.p4(), theV.daughter(0)->p4(), theV.daughter(1)->p4());
         }
         
-        // Max b-tagged jet in the event
-        for(unsigned int i = 2; i < JetsVect.size(); i++) if(JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag")) > MaxJetBTag) MaxJetBTag = JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag"));
-        
         Hist["a_nEvents"]->Fill(5., EventWeight);
         if(isZtoEE) Hist["e_nEvents"]->Fill(5., EventWeight);
         if(isZtoMM) Hist["m_nEvents"]->Fill(5., EventWeight);
@@ -766,13 +763,26 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         theX.addDaughter(theV);
         theX.addDaughter(FatJetsVect.at(0));
         addP4.set(theX);
-        
-        // Max b-tagged jet in the event
-        for(unsigned int i = 0; i < JetsVect.size(); i++) if(JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag")) > MaxFatJetBTag && deltaR(FatJetsVect.at(0), JetsVect[i])>0.8) MaxFatJetBTag = JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag"));
     }
     else {if(Verbose) std::cout << " - N fat jets < 1" << std::endl;}
     
+    
+    
+    // ---------- Event Variables ----------
+    
+    // Max b-tagged jet in the event
+    for(unsigned int i = 2; i < JetsVect.size(); i++) if(JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag")) > MaxJetBTag) MaxJetBTag = JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag"));
+    // Max b-tagged jet in the event
+    for(unsigned int i = 0; i < JetsVect.size(); i++) if(FatJetsVect.size() > 0 && JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag")) > MaxFatJetBTag && deltaR(FatJetsVect.at(0), JetsVect[i])>0.8) MaxFatJetBTag = JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag"));
+    
     for(unsigned int i = 0; i < JetsVect.size(); i++) if(fabs(reco::deltaPhi(JetsVect[i].phi(), MET.phi())) < MinJetMetDPhi) MinJetMetDPhi = fabs(reco::deltaPhi(JetsVect[i].phi(), MET.phi()));
+    
+    // Jet variables
+    theJetAnalyzer->AddVariables(JetsVect, MET);
+    theFatJetAnalyzer->AddVariables(FatJetsVect, MET);
+    // Leptons
+    theElectronAnalyzer->AddVariables(ElecVect, MET);
+    theMuonAnalyzer->AddVariables(MuonVect, MET);
     
     // Highest CSV bjet in the event
 
