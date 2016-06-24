@@ -6,7 +6,7 @@ options = VarParsing ('analysis')
 options.parseArguments()
 
 # Determine sample name for MC stitching
-sample = (options.inputFiles[0]).split("/")[2].replace(".txt", "") if len(options.inputFiles) > 0 else ""
+sample = (options.inputFiles[0]).split("/")[-1].replace(".txt", "") if len(options.inputFiles) > 0 else ""
 
 process = cms.Process("ALPHA")
 
