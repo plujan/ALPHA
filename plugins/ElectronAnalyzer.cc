@@ -238,6 +238,14 @@ std::vector<pat::Electron> ElectronAnalyzer::FillElectronVector(const edm::Event
     return Vect;
 }
 
+
+void ElectronAnalyzer::AddVariables(std::vector<pat::Electron>& Vect, pat::MET& MET) {
+    for(unsigned int i = 0; i < Vect.size(); ) {
+        Vect[i].addUserFloat("dPhi_met", fabs(reco::deltaPhi(Vect[i].phi(), MET.phi())));
+    }
+}
+
+
 float ElectronAnalyzer::GetElectronIdSF(pat::Electron& el, int id) {
     if(id==0 && isEleVetoIdFile){
         double pt = std::min( std::max( ElectronIdVeto->GetYaxis()->GetXmin(), el.pt() ) , ElectronIdVeto->GetYaxis()->GetXmax() - 0.000001 );
