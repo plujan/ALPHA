@@ -26,6 +26,7 @@ if len(options.inputFiles) == 0:
 #            'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/PromptReco-v1/000/273/013/00000/C09E75A4-3519-E611-8BA9-02163E014476.root', # SingleMuon
     #        'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/DoubleEG/MINIAOD/PromptReco-v2/000/273/725/00000/72118358-B620-E611-9C76-02163E012211.root', # DoubleEle
 #            'file:/lustre/cmswork/zucchett/CMSSW_8_0_5/src/GluGluToAToZhToLLBB_M300_13TeV-amcatnlo_MINIAODv2.root', # DEBUG
+#            'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISpring16MiniAODv2/WJetsToLNu_HT-1200To2500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_ext1-v1/10000/AC51B7C5-7829-E611-AF89-6CC2173DA9E0.root', #DEBUG
         )
     )
 # production: read externally provided filelist
@@ -52,7 +53,7 @@ print "Running on", ("data" if isData else "MC"), ", sample is", sample
 # JSON filter
 import FWCore.PythonUtilities.LumiList as LumiList
 if isData:
-    process.source.lumisToProcess = LumiList.LumiList(filename = '%s/src/Analysis/ALPHA/data/JSON/Cert_271036-274443_13TeV_PromptReco_Collisions16_JSON.txt' % os.environ['CMSSW_BASE']).getVLuminosityBlockRange() #2.6
+    process.source.lumisToProcess = LumiList.LumiList(filename = '%s/src/Analysis/ALPHA/data/JSON/Cert_271036-275125_13TeV_PromptReco_Collisions16_JSON.txt' % os.environ['CMSSW_BASE']).getVLuminosityBlockRange() #3.99
 
 
 process.counter = cms.EDAnalyzer('CounterAnalyzer',
