@@ -295,11 +295,11 @@ def getPrimaryDataset(cut):
     if 'HLT_PFMET' in cut: pd += [x for x in samples['data_obs']['files'] if "MET" in x]
     return pd
 
-def getNm1Cut(cut):
-    try:
-        cut = float(cut.split(var, 1)[1].split(" ")[0][1:])
-    except:
-        print "n-1 cut value not found"
+def getNm1Cut(var, cut):
+#    try:
+#        value = string(cut.split(var, 1)[1].split(" ")[0][1:])
+#    except:
+#        print "n-1 cut value not found"
     if ' '+var+'>' in cut: cut = cut.replace(var, "1e99")
     elif ' '+var+'<' in cut: cut = cut.replace(var, "-1e99")
     elif ' '+var+'==' in cut: cut = cut.replace(var+'==', "-9!=")
@@ -403,12 +403,12 @@ def drawRegion(channel, left=False):
     else: #if channel.startswith('X') or channel.startswith('A'):
         # leptons
         if 'ee' in channel: text += "2e"
+        elif 'mm' in channel: text += "2#mu"
         elif 'e' in channel: text += "1e"
-        if 'mm' in channel: text += "2#mu"
         elif 'm' in channel: text += "1#mu"
-        if 'll' in channel: text += "2l"
+        elif 'll' in channel: text += "2l"
         elif 'l' in channel: text += "1l"
-        if 'nn' in channel: text += "0l"
+        elif 'nn' in channel: text += "0l"
         if 'Top' in channel: text += "top"
         # b-tag
         if 'bb' in channel: text += ", 2 b-tag"
