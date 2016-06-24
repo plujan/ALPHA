@@ -76,6 +76,16 @@ def draw(hist, data, back, sign, snorm=1, ratio=0, poisson=False, log=False):
         for i, s in enumerate(back): hist['BkgSum'].Add(hist[s])
     hist['BkgSum'].SetMarkerStyle(0)
     
+    # Some style
+    for i, s in enumerate(data):
+        hist[s].SetMarkerStyle(20)
+        hist[s].SetMarkerSize(1.25)
+    for i, s in enumerate(sign):
+        hist[s].SetLineWidth(3)
+        
+    for i, s in enumerate(data+back+sign+['BkgSum']):
+        addOverflow(hist[s], False) # Add overflow
+    
     # Set Poisson error bars
     #if len(data) > 0: hist['data_obs'].SetBinErrorOption(1) # doesn't work
     
