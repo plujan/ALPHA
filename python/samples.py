@@ -100,26 +100,26 @@ sample = {
     
     'DY1JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0-v1' : {
         'nevents' : 65485168,
-        'xsec'    : 1.,
-        'matcheff': 1.,
-        'kfactor' : 1.,
+        'xsec'    : 1016.,
+        'matcheff': 0.272,
+        'kfactor' : 1085.95/1016.,
     },
     'DY2JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0-v1' : {
         'nevents' : 19695514,
-        'xsec'    : 1.,
-        'matcheff': 1.,
-        'kfactor' : 1.,
+        'xsec'    : 331.4,
+        'matcheff': 0.041,
+        'kfactor' : 379.28/331.4,
     },
     'DY3JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0-v1' : {
         'nevents' : 5753813,
-        'xsec'    : 1.,
-        'matcheff': 1.,
+        'xsec'    : 96.36,
+        'matcheff': 0.056,
         'kfactor' : 1.,
     },
     'DY4JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0-v1' : {
         'nevents' : 4101383,
-        'xsec'    : 1.,
-        'matcheff': 1.,
+        'xsec'    : 51.4,
+        'matcheff': 0.041,
         'kfactor' : 1.,
     },
 #    'DYBBJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0-v1' : {
@@ -131,48 +131,48 @@ sample = {
         'nevents' : 2384424,
         'xsec'    : 11.37,
         'matcheff': 0.07,
-        'kfactor' : 1.,
+        'kfactor' : 7.47793/11.37,
     },
     'DYBJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0-v1' : {
         'nevents' : 1464655,
         'xsec'    : 71.77, #69.73 
         'matcheff': 0.128,
-        'kfactor' : 1.,
+        'kfactor' : 74.923/71.77,
     },
     
     'DYJetsToLL_M-50_HT-100to200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0_ext1-v1' : {
         'nevents' : 8434125,
         'xsec'    : 147.4,
         'matcheff': 0.093,
-        'kfactor' : 1.588,
+        'kfactor' : 194.777/147.4, #1.588
     },
     
     'DYJetsToLL_M-50_HT-200to400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0_ext1-v1' : {
         'nevents' : 8683719,
         'xsec'    : 40.99,
         'matcheff': 0.086,
-        'kfactor' : 1.438,
+        'kfactor' : 45.609/40.99, #1.438
     },
     
     'DYJetsToLL_M-50_HT-400to600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0_ext1-v1' : {
         'nevents' : 8045263,
         'xsec'    : 5.678,
         'matcheff': 1.494,
-        'kfactor' : 1.,
+        'kfactor' : 4.8772/5.678, #
     },
     
     'DYJetsToLL_M-50_HT-600toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0-v1' : {
         'nevents' : 1034084,
         'xsec'    : 2.198,
         'matcheff': 0.075,
-        'kfactor' : 1.139,
+        'kfactor' : 1.5759/2.198, #1.139
     },
     
     'DYJetsToLL_M-50_HT-600toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0_ext1-v1' : {
         'nevents' : 4116330,
         'xsec'    : 2.198,
         'matcheff': 0.074,
-        'kfactor' : 1.139,
+        'kfactor' : 1.5759/2.198, #1.139
     },
     #600-800: 1.363 0.07 ///  1200-2500: 0.116     0.06 /// 2500ToInf 0.002592 0.1 /// 800-1200 0.6759     0.08
     
@@ -258,32 +258,32 @@ sample = {
         'nevents' : 27546978,
         'xsec'    : 1292.,
         'matcheff': 1.,
-        'kfactor' : 1.459,
+        'kfactor' : 1721.83/1292., #1.459
     },
     'WJetsToLNu_HT-200To400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0-v1' : {
         'nevents' : 4963240,
         'xsec'    : 385.9,
         'matcheff': 1.,
-        'kfactor' : 1.434,
+        'kfactor' : 392.68/385.9, #1.434
     },
     'WJetsToLNu_HT-200To400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0_ext1-v1' : {
         'nevents' : 14888384,
         'xsec'    : 385.9,
         'matcheff': 1.,
-        'kfactor' : 1.434,
+        'kfactor' : 392.68/385.9, #1.434
     },
     
     'WJetsToLNu_HT-400To600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0-v1' : {
         'nevents' : 1963464,
         'xsec'    : 47.9,
         'matcheff': 1.,
-        'kfactor' : 1.532,
+        'kfactor' : 42.89/47.9, #1.532
     },
     'WJetsToLNu_HT-600To800_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0-v1' : {
         'nevents' : 3722395,
         'xsec'    : 12.8,
         'matcheff': 1.,
-        'kfactor' : 1.,
+        'kfactor' : 8.74/12.8,
     },
 #    'WJetsToLNu_HT-800To1200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0-v1' : {
 #        'nevents' : 1.,
@@ -294,31 +294,31 @@ sample = {
         'nevents' : 1540477,
         'xsec'    : 5.261,
         'matcheff': 1.,
-        'kfactor' : 1.,
+        'kfactor' : 3.2684/5.261,
     },
     'WJetsToLNu_HT-800To1200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0_ext1-v1' : {
         'nevents' : 6314257,
         'xsec'    : 5.261,
         'matcheff': 1.,
-        'kfactor' : 1.,
+        'kfactor' : 3.2684/5.261,
     },
     'WJetsToLNu_HT-1200To2500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0-v1' : {
         'nevents' : 246737,
         'xsec'    : 1.334,
         'matcheff': 1.,
-        'kfactor' : 1.,
+        'kfactor' : 0.7082/1.334,
     },
     'WJetsToLNu_HT-1200To2500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0_ext1-v1' : {
         'nevents' : 6817172,
         'xsec'    : 1.334,
         'matcheff': 1.,
-        'kfactor' : 1.,
+        'kfactor' : 0.7082/1.334,
     },
     'WJetsToLNu_HT-2500ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0-v1' : {
         'nevents' : 253561,
         'xsec'    : 0.03089,
         'matcheff': 1.,
-        'kfactor' : 1.,
+        'kfactor' : 0.01816/0.03089,
     },
     
 #    'TT_TuneCUETP8M1_13TeV-powheg-pythia8_v0_ext3-v1' : {
