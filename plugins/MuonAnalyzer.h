@@ -16,6 +16,7 @@
 #include "DataFormats/MuonReco/interface/MuonPFIsolation.h"
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
 #include "DataFormats/VertexReco/interface/Vertex.h"
+#include "DataFormats/PatCandidates/interface/MET.h"
 
 #include "TFile.h"
 #include "TH2.h"
@@ -26,6 +27,7 @@ class MuonAnalyzer {
         MuonAnalyzer(edm::ParameterSet&, edm::ConsumesCollector&&);
         ~MuonAnalyzer();
         virtual std::vector<pat::Muon> FillMuonVector(const edm::Event&);
+        virtual void AddVariables(std::vector<pat::Muon>&, pat::MET&);
         virtual bool IsTrackerHighPtMuon(pat::Muon&, const reco::Vertex*);
         virtual std::vector<float> FixTrackerIsolation(pat::Muon&, pat::Muon&);
         virtual std::string GetMuon1Id(pat::Muon&);
