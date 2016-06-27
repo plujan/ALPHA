@@ -396,7 +396,7 @@ def drawCMS(lumi, text, onTop=False):
 #    latex.DrawLatex(0.45, 0.98, "DM monojet")
 
 def drawAnalysis(s, center=False):
-    analyses = {"VH" : "X #rightarrow Vh #rightarrow (ll,l#nu,#nu#nu)bb", "Vh" : "X #rightarrow Vh #rightarrow (ll,l#nu,#nu#nu)bb", "Zh" : "Z' #rightarrow Zh #rightarrow (ll,#nu#nu)bb", "Wh" : "W' #rightarrow Wh #rightarrow l#nu bb", "DM": "DM + heavy flavour", "AZh" : "A #rightarrow Zh #rightarrow llbb"}
+    analyses = {"VZ" : "X #rightarrow VZ #rightarrow llqq", "VH" : "X #rightarrow Vh #rightarrow (ll,l#nu,#nu#nu)bb", "Vh" : "X #rightarrow Vh #rightarrow (ll,l#nu,#nu#nu)bb", "Zh" : "Z' #rightarrow Zh #rightarrow (ll,#nu#nu)bb", "Wh" : "W' #rightarrow Wh #rightarrow l#nu bb", "DM": "DM + heavy flavour", "AZh" : "A #rightarrow Zh #rightarrow llbb"}
     latex = TLatex()
     latex.SetNDC()
     latex.SetTextSize(0.04)
