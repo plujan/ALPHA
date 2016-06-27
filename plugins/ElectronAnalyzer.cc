@@ -240,7 +240,7 @@ std::vector<pat::Electron> ElectronAnalyzer::FillElectronVector(const edm::Event
 
 
 void ElectronAnalyzer::AddVariables(std::vector<pat::Electron>& Vect, pat::MET& MET) {
-    for(unsigned int i = 0; i < Vect.size(); ) {
+    for(unsigned int i = 0; i < Vect.size(); i++) {
         Vect[i].addUserFloat("dPhi_met", fabs(reco::deltaPhi(Vect[i].phi(), MET.phi())));
     }
 }
