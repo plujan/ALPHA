@@ -212,7 +212,7 @@ void JetAnalyzer::CleanJetsFromElectrons(std::vector<pat::Jet>& Jets, std::vecto
 }
 
 void JetAnalyzer::AddVariables(std::vector<pat::Jet>& Jets, pat::MET& MET) {
-    for(unsigned int j = 0; j < Jets.size(); ) {
+    for(unsigned int j = 0; j < Jets.size(); j++) {
         Jets[j].addUserFloat("dPhi_met", fabs(reco::deltaPhi(Jets[j].phi(), MET.phi())));
         Jets[j].addUserFloat("dPhi_Jet1", fabs(reco::deltaPhi(Jets[j].phi(), Jets[0].phi())));
     }
