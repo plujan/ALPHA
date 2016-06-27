@@ -144,6 +144,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     RunNumber = iEvent.id().run();
     
     EventWeight = StitchWeight = ZewkWeight = WewkWeight = PUWeight = TriggerWeight = LeptonWeight = 1.;
+    FacWeightUp = FacWeightDown = RenWeightUp = RenWeightDown = ScaleWeightUp = ScaleWeightDown = 1.;
     isZtoEE = isZtoMM = isTtoEM = isWtoEN = isWtoMN = isZtoNN = false;
     nPV = nElectrons = nMuons = nTaus = nPhotons = nJets = nFatJets = nBTagJets = 1;
     MaxJetBTag = MaxFatJetBTag = Chi2 = -1.;
@@ -239,11 +240,17 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     // Gen weights
     std::map<std::string, float> GenWeight = theGenAnalyzer->FillWeightsMap(iEvent);
     EventWeight *= GenWeight["event"];
+    if(GenWeight.find("2") != GenWeight.end()) FacWeightUp     = GenWeight["2"];
+    if(GenWeight.find("3") != GenWeight.end()) FacWeightDown   = GenWeight["3"];
+    if(GenWeight.find("4") != GenWeight.end()) RenWeightUp     = GenWeight["4"];
+    if(GenWeight.find("7") != GenWeight.end()) RenWeightDown   = GenWeight["7"];
+    if(GenWeight.find("5") != GenWeight.end()) ScaleWeightUp   = GenWeight["5"];
+    if(GenWeight.find("9") != GenWeight.end()) ScaleWeightDown = GenWeight["9"];
     // Lhe Particles
     std::map<std::string, float> LheMap = theGenAnalyzer->FillLheMap(iEvent);
     // Mc Stitching
     StitchWeight = theGenAnalyzer->GetStitchWeight(LheMap);
-    //EventWeight *= StitchWeight; // Not yet
+    EventWeight *= StitchWeight; // Not yet
     // Gen Particles
     std::vector<reco::GenParticle> GenPVect = theGenAnalyzer->FillGenVector(iEvent);
     // Gen candidates
@@ -913,6 +920,12 @@ void Diboson::beginJob() {
     tree->Branch("LumiNumber", &LumiNumber, "LumiNumber/L");
     tree->Branch("RunNumber", &RunNumber, "RunNumber/L");
     tree->Branch("EventWeight", &EventWeight, "EventWeight/F");
+    tree->Branch("FacWeightUp", &FacWeightUp, "FacWeightUp/F");
+    tree->Branch("FacWeightDown", &FacWeightDown, "FacWeightDown/F");
+    tree->Branch("RenWeightUp", &RenWeightUp, "RenWeightUp/F");
+    tree->Branch("RenWeightDown", &RenWeightDown, "RenWeightDown/F");
+    tree->Branch("ScaleWeightUp", &ScaleWeightUp, "ScaleWeightUp/F");
+    tree->Branch("ScaleWeightDown", &ScaleWeightDown, "ScaleWeightDown/F");
     tree->Branch("StitchWeight", &StitchWeight, "StitchWeight/F");
     tree->Branch("ZewkWeight", &ZewkWeight, "ZewkWeight/F");
     tree->Branch("WewkWeight", &WewkWeight, "WewkWeight/F");
