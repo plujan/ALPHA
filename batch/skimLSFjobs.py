@@ -23,10 +23,10 @@ jobs = []
 
 
 def skim(name):
-    oldFile = TFile(name+'.root', "READ")
+    oldFile = TFile(name, "READ")
     oldTree = oldFile.Get("ntuple/tree")
     
-    newFile = TFile("Skim/"+name+'.root', "RECREATE")
+    newFile = TFile("Skim/"+name, "RECREATE")
     newFile.mkdir("ntuple/")
     newFile.cd("ntuple/")
     newTree = oldTree.CopyTree("V.pt>200 && FatJet1.pt>200")
@@ -36,14 +36,15 @@ def skim(name):
     newFile.Close()
 
 
-
-subdirs = [x for x in os.listdir(args.folder) if os.path.isdir(os.path.join(args.folder, x))]
+print args.folder
+subfiles = [x for x in os.listdir(args.folder) if os.path.isfile(os.path.join(args.folder, x))]
 
 os.chdir(args.folder)
 
 os.mkdir('Skim')
 
-for s in subdirs:
+for s in subfiles:
+    print s
 #    skim(s)
     p = multiprocessing.Process(target=skim, args=(s,))
     jobs.append(p)
