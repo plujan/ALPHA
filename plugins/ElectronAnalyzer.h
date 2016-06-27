@@ -8,7 +8,6 @@
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/Framework/interface/EDConsumerBase.h"
 #include "FWCore/Framework/interface/ConsumesCollector.h"
-
 #include "DataFormats/PatCandidates/interface/Electron.h"
 #include "RecoEgamma/EgammaTools/interface/ConversionTools.h"
 #include "DataFormats/PatCandidates/interface/Conversion.h"
@@ -19,6 +18,7 @@
 #include "DataFormats/EgammaCandidates/interface/GsfElectron.h"
 #include "DataFormats/Common/interface/ValueMap.h"
 #include "DataFormats/PatCandidates/interface/VIDCutFlowResult.h"
+#include "DataFormats/PatCandidates/interface/MET.h"
 
 #include "TFile.h"
 #include "TH2.h"
@@ -28,6 +28,7 @@ class ElectronAnalyzer {
         ElectronAnalyzer(const edm::ParameterSet&, edm::ConsumesCollector&&);
         ~ElectronAnalyzer();
         virtual std::vector<pat::Electron> FillElectronVector(const edm::Event&);
+        virtual void AddVariables(std::vector<pat::Electron>&, pat::MET&);
         virtual float GetDoubleElectronTriggerSF(pat::Electron&, pat::Electron&);
         //virtual float GetLooseElectronSF(pat::Electron&);
         virtual float GetElectronIdSF(pat::Electron&, int);
@@ -39,22 +40,22 @@ class ElectronAnalyzer {
       
         edm::EDGetTokenT<std::vector<pat::Electron> > ElectronToken;
         edm::EDGetTokenT<reco::VertexCollection> VertexToken;
-	edm::EDGetTokenT<edm::ValueMap<bool>> EleVetoIdMapToken;
-	edm::EDGetTokenT<edm::ValueMap<bool>> EleLooseIdMapToken;
-	edm::EDGetTokenT<edm::ValueMap<bool>> EleMediumIdMapToken;
-	edm::EDGetTokenT<edm::ValueMap<bool>> EleTightIdMapToken;
-	edm::EDGetTokenT<edm::ValueMap<bool>> EleHEEPIdMapToken;
-	edm::EDGetTokenT<edm::ValueMap<bool>> EleMVANonTrigMediumIdMapToken;
-	edm::EDGetTokenT<edm::ValueMap<bool>> EleMVANonTrigTightIdMapToken;
-	edm::EDGetTokenT<edm::ValueMap<bool>> EleMVATrigMediumIdMapToken;
-	edm::EDGetTokenT<edm::ValueMap<bool>> EleMVATrigTightIdMapToken;
-	std::string EleVetoIdFileName;
-	std::string EleLooseIdFileName;
-	std::string EleMediumIdFileName;
-	std::string EleTightIdFileName;
-	std::string EleMVATrigMediumIdFileName;
-	std::string EleMVATrigTightIdFileName;
-	std::string EleRecoEffFileName;
+        edm::EDGetTokenT<edm::ValueMap<bool>> EleVetoIdMapToken;
+        edm::EDGetTokenT<edm::ValueMap<bool>> EleLooseIdMapToken;
+        edm::EDGetTokenT<edm::ValueMap<bool>> EleMediumIdMapToken;
+        edm::EDGetTokenT<edm::ValueMap<bool>> EleTightIdMapToken;
+        edm::EDGetTokenT<edm::ValueMap<bool>> EleHEEPIdMapToken;
+        edm::EDGetTokenT<edm::ValueMap<bool>> EleMVANonTrigMediumIdMapToken;
+        edm::EDGetTokenT<edm::ValueMap<bool>> EleMVANonTrigTightIdMapToken;
+        edm::EDGetTokenT<edm::ValueMap<bool>> EleMVATrigMediumIdMapToken;
+        edm::EDGetTokenT<edm::ValueMap<bool>> EleMVATrigTightIdMapToken;
+        std::string EleVetoIdFileName;
+        std::string EleLooseIdFileName;
+        std::string EleMediumIdFileName;
+        std::string EleTightIdFileName;
+        std::string EleMVATrigMediumIdFileName;
+        std::string EleMVATrigTightIdFileName;
+        std::string EleRecoEffFileName;
 
         int Electron1Id, Electron2Id;// Electron1Iso, Electron2Iso;
         float Electron1Pt, Electron2Pt;

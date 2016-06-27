@@ -15,6 +15,7 @@ JetAnalyzer::JetAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl
     AddQG(PSet.getParameter<bool>("addQGdiscriminator")),
     RecalibrateJets(PSet.getParameter<bool>("recalibrateJets")),
     RecalibrateMass(PSet.getParameter<bool>("recalibrateMass")),
+    JECUncertainty(PSet.getParameter<std::string>("jecUncertainty")),
     UseReshape(PSet.getParameter<bool>("reshapeBTag")),
     BTag(PSet.getParameter<std::string>("btag")),
     Jet1BTag(PSet.getParameter<int>("jet1btag")),
@@ -26,6 +27,7 @@ JetAnalyzer::JetAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl
 {
   
     isJESFile=false;
+    jecUnc = new JetCorrectionUncertainty(JECUncertainty);
 
 //    JESFile=new TFile("data/JESUncertainty.root", "READ");
 //    JESFile->cd();
@@ -33,7 +35,6 @@ JetAnalyzer::JetAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl
 //      hist=(TH2F*)JESFile->Get("test/AK5PFchs");
 //      isJESFile=true;
 //    }
-    
     
     // BTag calibrator
     if(UseReshape) {
@@ -83,6 +84,7 @@ JetAnalyzer::~JetAnalyzer() {
 //        delete reader_down_jes;
 //        delete calib;
 //    }
+    delete jecUnc;
     if(UseRecoil) delete recoilCorr;
 }
 
@@ -128,6 +130,11 @@ std::vector<pat::Jet> JetAnalyzer::FillJetVector(const edm::Event& iEvent) {
                 jet.setP4(smearedP4);
             }
         }
+        // JEC Uncertainty
+        jecUnc->setJetEta(jet.eta());
+        jecUnc->setJetPt(jet.pt()); // here you must use the CORRECTED jet pt
+        jet.addUserFloat("JESUncertainty", jecUnc->getUncertainty(true));
+        
         // Pt and eta cut
         if(jet.pt()<PtTh || fabs(jet.eta())>EtaTh) continue;
         // Quality cut
@@ -140,7 +147,6 @@ std::vector<pat::Jet> JetAnalyzer::FillJetVector(const edm::Event& iEvent) {
         jet.addUserInt("isLoose", isLooseJet(jet) ? 1 : 0);
         jet.addUserInt("isTight", isTightJet(jet) ? 1 : 0);
         jet.addUserInt("isTightLepVeto", isTightLepVetoJet(jet) ? 1 : 0);
-        jet.addUserFloat("JESUncertainty", jet.pt()*GetScaleUncertainty(jet));
         jet.addUserFloat("ReshapedDiscriminator", ReshapeBtagDiscriminator(jet)[0]);
         jet.addUserFloat("ReshapedDiscriminatorUp", ReshapeBtagDiscriminator(jet)[1]);
         jet.addUserFloat("ReshapedDiscriminatorDown", ReshapeBtagDiscriminator(jet)[2]);
@@ -206,7 +212,7 @@ void JetAnalyzer::CleanJetsFromElectrons(std::vector<pat::Jet>& Jets, std::vecto
 }
 
 void JetAnalyzer::AddVariables(std::vector<pat::Jet>& Jets, pat::MET& MET) {
-    for(unsigned int j = 0; j < Jets.size(); ) {
+    for(unsigned int j = 0; j < Jets.size(); j++) {
         Jets[j].addUserFloat("dPhi_met", fabs(reco::deltaPhi(Jets[j].phi(), MET.phi())));
         Jets[j].addUserFloat("dPhi_Jet1", fabs(reco::deltaPhi(Jets[j].phi(), Jets[0].phi())));
     }

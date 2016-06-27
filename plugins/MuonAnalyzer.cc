@@ -159,6 +159,13 @@ std::vector<pat::Muon> MuonAnalyzer::FillMuonVector(const edm::Event& iEvent) {
 }
 
 
+void MuonAnalyzer::AddVariables(std::vector<pat::Muon>& Vect, pat::MET& MET) {
+    for(unsigned int i = 0; i < Vect.size(); i++) {
+        Vect[i].addUserFloat("dPhi_met", fabs(reco::deltaPhi(Vect[i].phi(), MET.phi())));
+    }
+}
+
+
 bool MuonAnalyzer::IsTrackerHighPtMuon(pat::Muon& mu, const reco::Vertex* vertex) {
     if(!(mu.isMuon())) return false;
     if(!(mu.isTrackerMuon())) return false;

@@ -143,7 +143,8 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     LumiNumber = iEvent.luminosityBlock();
     RunNumber = iEvent.id().run();
     
-    EventWeight = PUWeight = TriggerWeight = LeptonWeight = 1.;
+    EventWeight = StitchWeight = ZewkWeight = WewkWeight = PUWeight = TriggerWeight = LeptonWeight = 1.;
+    FacWeightUp = FacWeightDown = RenWeightUp = RenWeightDown = ScaleWeightUp = ScaleWeightDown = 1.;
     isZtoEE = isZtoMM = isTtoEM = isWtoEN = isWtoMN = isZtoNN = false;
     nPV = nElectrons = nMuons = nTaus = nPhotons = nJets = nFatJets = nBTagJets = 1;
     MaxJetBTag = MaxFatJetBTag = Chi2 = -1.;
@@ -239,11 +240,38 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     // Gen weights
     std::map<std::string, float> GenWeight = theGenAnalyzer->FillWeightsMap(iEvent);
     EventWeight *= GenWeight["event"];
+    if(GenWeight.find("2") != GenWeight.end()) FacWeightUp     = GenWeight["2"];
+    if(GenWeight.find("3") != GenWeight.end()) FacWeightDown   = GenWeight["3"];
+    if(GenWeight.find("4") != GenWeight.end()) RenWeightUp     = GenWeight["4"];
+    if(GenWeight.find("7") != GenWeight.end()) RenWeightDown   = GenWeight["7"];
+    if(GenWeight.find("5") != GenWeight.end()) ScaleWeightUp   = GenWeight["5"];
+    if(GenWeight.find("9") != GenWeight.end()) ScaleWeightDown = GenWeight["9"];
+    // Lhe Particles
+    std::map<std::string, float> LheMap = theGenAnalyzer->FillLheMap(iEvent);
+    // Mc Stitching
+    StitchWeight = theGenAnalyzer->GetStitchWeight(LheMap);
+    //EventWeight *= StitchWeight; // Not yet
     // Gen Particles
     std::vector<reco::GenParticle> GenPVect = theGenAnalyzer->FillGenVector(iEvent);
     // Gen candidates
-    //reco::Candidate* theGenZ = theGenAnalyzer->FindGenParticle(GenPVect, 23);
-
+    reco::Candidate* theGenZ = theGenAnalyzer->FindGenParticle(GenPVect, 23);
+    reco::Candidate* theGenW = theGenAnalyzer->FindGenParticle(GenPVect, 24);
+    // EWK corrections
+    if(theGenZ) ZewkWeight = theGenAnalyzer->GetZewkWeight(theGenZ->pt());
+    if(theGenW) WewkWeight = theGenAnalyzer->GetWewkWeight(theGenW->pt());
+    
+//    if(LheMap.find("lhePtZ")!=LheMap.end()) ZewkWeight = theGenAnalyzer->GetZewkWeight(LheMap["lhePtZ"]);
+//    if(LheMap.find("lhePtW")!=LheMap.end()) WewkWeight = theGenAnalyzer->GetWewkWeight(LheMap["lhePtW"]);
+    
+    EventWeight *= ZewkWeight * WewkWeight;
+    
+    
+//        float genPtZ(-1.), genPtW(-1.);
+//    if(!genZ && genL1 && genL2) genPtZ = (!genZ) ? genZ->pt() : (*genL1 + *genL2).pt();
+//    if(!genW && ((genL1 && genN1) || (genL2 && genN2))) genPtW = (!genW) ? genW->pt() : ( (genL1 && genN1) ? (*genL1 + *genN1).pt() : (*genL2 + *genN2).pt() );
+//    if(genZ) genPtZ = genZ->pt();
+//    if(genW) genPtW = genW->pt();
+    
     reco::GenParticle* genL1 = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, std::vector<int>{-11, -13}, 23);
     reco::GenParticle* genL2 = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, std::vector<int>{+11, +13}, 23);
     reco::GenParticle* genQ1 = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, std::vector<int>{5}, 25);
@@ -728,9 +756,6 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
             Phi1         = Utilities::ReturnPhi1(theA.p4(), theV.daughter(0)->p4(), theV.daughter(1)->p4());
         }
         
-        // Max b-tagged jet in the event
-        for(unsigned int i = 2; i < JetsVect.size(); i++) if(JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag")) > MaxJetBTag) MaxJetBTag = JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag"));
-        
         Hist["a_nEvents"]->Fill(5., EventWeight);
         if(isZtoEE) Hist["e_nEvents"]->Fill(5., EventWeight);
         if(isZtoMM) Hist["m_nEvents"]->Fill(5., EventWeight);
@@ -745,13 +770,26 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         theX.addDaughter(theV);
         theX.addDaughter(FatJetsVect.at(0));
         addP4.set(theX);
-        
-        // Max b-tagged jet in the event
-        for(unsigned int i = 0; i < JetsVect.size(); i++) if(JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag")) > MaxFatJetBTag && deltaR(FatJetsVect.at(0), JetsVect[i])>0.8) MaxFatJetBTag = JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag"));
     }
     else {if(Verbose) std::cout << " - N fat jets < 1" << std::endl;}
     
+    
+    
+    // ---------- Event Variables ----------
+    
+    // Max b-tagged jet in the event
+    for(unsigned int i = 2; i < JetsVect.size(); i++) if(JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag")) > MaxJetBTag) MaxJetBTag = JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag"));
+    // Max b-tagged jet in the event
+    for(unsigned int i = 0; i < JetsVect.size(); i++) if(FatJetsVect.size() > 0 && JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag")) > MaxFatJetBTag && deltaR(FatJetsVect.at(0), JetsVect[i])>0.8) MaxFatJetBTag = JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag"));
+    
     for(unsigned int i = 0; i < JetsVect.size(); i++) if(fabs(reco::deltaPhi(JetsVect[i].phi(), MET.phi())) < MinJetMetDPhi) MinJetMetDPhi = fabs(reco::deltaPhi(JetsVect[i].phi(), MET.phi()));
+    
+    // Jet variables
+    theJetAnalyzer->AddVariables(JetsVect, MET);
+    theFatJetAnalyzer->AddVariables(FatJetsVect, MET);
+    // Leptons
+    theElectronAnalyzer->AddVariables(ElecVect, MET);
+    theMuonAnalyzer->AddVariables(MuonVect, MET);
     
     // Highest CSV bjet in the event
 
@@ -882,6 +920,15 @@ void Diboson::beginJob() {
     tree->Branch("LumiNumber", &LumiNumber, "LumiNumber/L");
     tree->Branch("RunNumber", &RunNumber, "RunNumber/L");
     tree->Branch("EventWeight", &EventWeight, "EventWeight/F");
+    tree->Branch("FacWeightUp", &FacWeightUp, "FacWeightUp/F");
+    tree->Branch("FacWeightDown", &FacWeightDown, "FacWeightDown/F");
+    tree->Branch("RenWeightUp", &RenWeightUp, "RenWeightUp/F");
+    tree->Branch("RenWeightDown", &RenWeightDown, "RenWeightDown/F");
+    tree->Branch("ScaleWeightUp", &ScaleWeightUp, "ScaleWeightUp/F");
+    tree->Branch("ScaleWeightDown", &ScaleWeightDown, "ScaleWeightDown/F");
+    tree->Branch("StitchWeight", &StitchWeight, "StitchWeight/F");
+    tree->Branch("ZewkWeight", &ZewkWeight, "ZewkWeight/F");
+    tree->Branch("WewkWeight", &WewkWeight, "WewkWeight/F");
     tree->Branch("PUWeight", &PUWeight, "PUWeight/F");
     tree->Branch("TriggerWeight", &TriggerWeight, "TriggerWeight/F");
     tree->Branch("LeptonWeight", &LeptonWeight, "LeptonWeight/F");

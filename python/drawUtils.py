@@ -76,6 +76,16 @@ def draw(hist, data, back, sign, snorm=1, ratio=0, poisson=False, log=False):
         for i, s in enumerate(back): hist['BkgSum'].Add(hist[s])
     hist['BkgSum'].SetMarkerStyle(0)
     
+    # Some style
+    for i, s in enumerate(data):
+        hist[s].SetMarkerStyle(20)
+        hist[s].SetMarkerSize(1.25)
+    for i, s in enumerate(sign):
+        hist[s].SetLineWidth(3)
+        
+    for i, s in enumerate(data+back+sign+['BkgSum']):
+        addOverflow(hist[s], False) # Add overflow
+    
     # Set Poisson error bars
     #if len(data) > 0: hist['data_obs'].SetBinErrorOption(1) # doesn't work
     
@@ -295,11 +305,11 @@ def getPrimaryDataset(cut):
     if 'HLT_PFMET' in cut: pd += [x for x in samples['data_obs']['files'] if "MET" in x]
     return pd
 
-def getNm1Cut(cut):
-    try:
-        cut = float(cut.split(var, 1)[1].split(" ")[0][1:])
-    except:
-        print "n-1 cut value not found"
+def getNm1Cut(var, cut):
+#    try:
+#        value = string(cut.split(var, 1)[1].split(" ")[0][1:])
+#    except:
+#        print "n-1 cut value not found"
     if ' '+var+'>' in cut: cut = cut.replace(var, "1e99")
     elif ' '+var+'<' in cut: cut = cut.replace(var, "-1e99")
     elif ' '+var+'==' in cut: cut = cut.replace(var+'==', "-9!=")
@@ -386,7 +396,7 @@ def drawCMS(lumi, text, onTop=False):
 #    latex.DrawLatex(0.45, 0.98, "DM monojet")
 
 def drawAnalysis(s, center=False):
-    analyses = {"VH" : "X #rightarrow Vh #rightarrow (ll,l#nu,#nu#nu)bb", "Vh" : "X #rightarrow Vh #rightarrow (ll,l#nu,#nu#nu)bb", "Zh" : "Z' #rightarrow Zh #rightarrow (ll,#nu#nu)bb", "Wh" : "W' #rightarrow Wh #rightarrow l#nu bb", "DM": "DM + heavy flavour", "AZh" : "A #rightarrow Zh #rightarrow llbb"}
+    analyses = {"VZ" : "X #rightarrow VZ #rightarrow llqq", "VH" : "X #rightarrow Vh #rightarrow (ll,l#nu,#nu#nu)bb", "Vh" : "X #rightarrow Vh #rightarrow (ll,l#nu,#nu#nu)bb", "Zh" : "Z' #rightarrow Zh #rightarrow (ll,#nu#nu)bb", "Wh" : "W' #rightarrow Wh #rightarrow l#nu bb", "DM": "DM + heavy flavour", "AZh" : "A #rightarrow Zh #rightarrow llbb"}
     latex = TLatex()
     latex.SetNDC()
     latex.SetTextSize(0.04)
@@ -403,12 +413,12 @@ def drawRegion(channel, left=False):
     else: #if channel.startswith('X') or channel.startswith('A'):
         # leptons
         if 'ee' in channel: text += "2e"
+        elif 'mm' in channel: text += "2#mu"
         elif 'e' in channel: text += "1e"
-        if 'mm' in channel: text += "2#mu"
         elif 'm' in channel: text += "1#mu"
-        if 'll' in channel: text += "2l"
+        elif 'll' in channel: text += "2l"
         elif 'l' in channel: text += "1l"
-        if 'nn' in channel: text += "0l"
+        elif 'nn' in channel: text += "0l"
         if 'Top' in channel: text += "top"
         # b-tag
         if 'bb' in channel: text += ", 2 b-tag"
