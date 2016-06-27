@@ -7,6 +7,7 @@ options.parseArguments()
 
 # Determine sample name for MC stitching
 sample = (options.inputFiles[0]).split("/")[-1].replace(".txt", "") if len(options.inputFiles) > 0 else ""
+if sample=="list": sample = (options.inputFiles[0]).split("/")[-3]
 
 process = cms.Process("ALPHA")
 
@@ -89,6 +90,23 @@ process.HLTFilter = cms.EDFilter("HLTHighLevel",
     ),
     eventSetupPathsKey = cms.string(''), # not empty => use read paths from AlCaRecoTriggerBitsRcd via this key
     andOr = cms.bool(True),    # how to deal with multiple triggers: True (OR) accept if ANY is true, False (AND) accept if ALL are true
+    throw = cms.bool(False)    # throw exception on unknown path names
+)
+
+process.METFilter = cms.EDFilter("HLTHighLevel",
+    TriggerResultsTag = cms.InputTag("TriggerResults", "", "HLT"),
+    HLTPaths = cms.vstring(
+        'Flag_HBHENoiseFilter',
+        'Flag_HBHENoiseIsoFilter',
+        'Flag_EcalDeadCellTriggerPrimitiveFilter',
+        'Flag_goodVertices',
+        'Flag_eeBadScFilter',
+        'Flag_globalTightHalo2016Filter',
+#badMuon
+#badCharged hadron
+    ),
+    eventSetupPathsKey = cms.string(''), # not empty => use read paths from AlCaRecoTriggerBitsRcd via this key
+    andOr = cms.bool(False),    # how to deal with multiple triggers: True (OR) accept if ANY is true, False (AND) accept if ALL are true
     throw = cms.bool(False)    # throw exception on unknown path names
 )
 
@@ -321,8 +339,8 @@ process.ntuple = cms.EDAnalyzer('Diboson',
     fatJetSet = cms.PSet(
         jets = cms.InputTag("slimmedJetsAK8"),#("slimmedJetsAK8"), #selectedPatJetsAK8PFCHSPrunedPacked
         jetid = cms.int32(1), # 0: no selection, 1: loose, 2: medium, 3: tight
-        jet1pt = cms.double(200.),
-        jet2pt = cms.double(200.),
+        jet1pt = cms.double(150.),
+        jet2pt = cms.double(150.),
         jeteta = cms.double(2.5),
         addQGdiscriminator = cms.bool(True),
         recalibrateJets = cms.bool(False),
@@ -364,6 +382,7 @@ if isData:
     process.seq = cms.Sequence(
         process.counter *
         process.HLTFilter *
+#        process.METFilter *
         process.primaryVertexFilter *
         process.egmGsfElectronIDSequence *
         process.egmPhotonIDSequence *
