@@ -36,10 +36,8 @@ GenAnalyzer::GenAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl
         hPtV[SampleWJetsToLNu[i]] = (TH1F*)Files[SampleWJetsToLNu[i]]->Get("counter/c_lhePtZ");
     }
     
-    std::cout << EWKFileName.c_str() <<std::endl;
     EWKFile = new TFile(EWKFileName.c_str(), "READ");
     
-//    std::cout << "     " << EWKFile->ls()  << std::endl;
     fZEWK = (TF1*)EWKFile->Get("z_ewkcorr/z_ewkcorr_func");
     fWEWK = (TF1*)EWKFile->Get("w_ewkcorr/w_ewkcorr_func");
     
@@ -70,6 +68,8 @@ GenAnalyzer::GenAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl
 //    LumiWeights=new edm::LumiReWeighting("data/MC_True.root", "data/Prod6.root", "S10", "pileup");
     
     std::cout << " --- GenAnalyzer initialization ---" << std::endl;
+    std::cout << "  sample            :\t" << Sample << std::endl;
+    std::cout << "  EWK file          :\t" << EWKFileName << std::endl;
     std::cout << std::endl;
 }
 
@@ -91,8 +91,17 @@ std::map<std::string, float> GenAnalyzer::FillWeightsMap(const edm::Event& iEven
     // Declare and open collection
     edm::Handle<LHEEventProduct> LheEventCollection;
     iEvent.getByToken(LheToken, LheEventCollection);
+    const LHEEventProduct* Product = LheEventCollection.product();
     
-    Weights["event"] = fabs(LheEventCollection.product()->originalXWGTUP()) / LheEventCollection.product()->originalXWGTUP();
+    Weights["event"] = fabs(Product->originalXWGTUP()) / Product->originalXWGTUP();
+    
+    for(unsigned int i = 0; i < 10 && i < Product->weights().size(); i++) {
+        Weights[ Product->weights()[i].id ] = Product->weights()[i].wgt / Product->originalXWGTUP();
+    }
+//    for(auto it = Product->weights().begin(); it != Product->weights().end(), i<10; ++it, i++) {
+//        std::cout << it->id << "     " << it->wgt << std::endl;
+//        Weights[it->id] = it->wgt;
+//    }
     return Weights;
 }
 
@@ -313,9 +322,10 @@ std::pair<float, float> GenAnalyzer::GetQ2Weight(const edm::Event& iEvent) {
 
 float GenAnalyzer::GetStitchWeight(std::map<std::string, float> Map) {
 
-    if(Map.size() <= 0) return 1.;
+    if(Map.size() <= 1) return 1.;
     if(Sample=="" || (SampleDYJetsToLL.size()==0 && SampleZJetsToNuNu.size()==0 && SampleWJetsToLNu.size()==0)) return 1.;
     if(Sample.find("JetsToLL") == std::string::npos && Sample.find("JetsToNuNu") == std::string::npos && Sample.find("JetsToLNu") == std::string::npos) return 1.;
+    if(hPartons.find(Sample) == hPartons.end()) return 1.;
     
     // Find bins
     float StitchWeight(1.);
