@@ -250,7 +250,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     std::map<std::string, float> LheMap = theGenAnalyzer->FillLheMap(iEvent);
     // Mc Stitching
     StitchWeight = theGenAnalyzer->GetStitchWeight(LheMap);
-    EventWeight *= StitchWeight; // Not yet
+    //EventWeight *= StitchWeight; // Not yet
     // Gen Particles
     std::vector<reco::GenParticle> GenPVect = theGenAnalyzer->FillGenVector(iEvent);
     // Gen candidates
