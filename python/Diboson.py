@@ -22,8 +22,8 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 if len(options.inputFiles) == 0:
     process.source = cms.Source("PoolSource",
         fileNames = cms.untracked.vstring(
-            'file:/lustre/cmswork/zucchett/CMSSW_8_0_5/src/00F0B3DC-211B-E611-A6A0-001E67248A39.root' # DYJets
-#            'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/user/lbenato/BulkGraviton_ZZ_ZlepZhad_narrow_M1000_13TeV-madgraph_MINIAODv2_805_10000ev/BulkGravToZZToZlepZhad_narrow_M-1000_13TeV-madgraph_PRIVATE-MC/BulkGraviton_ZZ_ZlepZhad_narrow_M1000_13TeV-madgraph_MINIAODv2_805_10000ev/160525_131443/0000/BulkGraviton_ZZ_ZlepZhad_narrow_M1000_13TeV-madgraph_MINIAODv2_1.root'
+            #'file:/lustre/cmswork/zucchett/CMSSW_8_0_5/src/00F0B3DC-211B-E611-A6A0-001E67248A39.root' # DYJets
+           'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/user/lbenato/BulkGraviton_ZZ_ZlepZhad_narrow_M1000_13TeV-madgraph_MINIAODv2_805_10000ev/BulkGravToZZToZlepZhad_narrow_M-1000_13TeV-madgraph_PRIVATE-MC/BulkGraviton_ZZ_ZlepZhad_narrow_M1000_13TeV-madgraph_MINIAODv2_805_10000ev/160525_131443/0000/BulkGraviton_ZZ_ZlepZhad_narrow_M1000_13TeV-madgraph_MINIAODv2_1.root'
 #            'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/PromptReco-v1/000/273/013/00000/C09E75A4-3519-E611-8BA9-02163E014476.root', # SingleMuon
     #        'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/DoubleEG/MINIAOD/PromptReco-v2/000/273/725/00000/72118358-B620-E611-9C76-02163E012211.root', # DoubleEle
 #            'file:/lustre/cmswork/zucchett/CMSSW_8_0_5/src/GluGluToAToZhToLLBB_M300_13TeV-amcatnlo_MINIAODv2.root', # DEBUG
@@ -326,7 +326,7 @@ process.ntuple = cms.EDAnalyzer('Diboson',
         recalibrateMass = cms.bool(False),
         corrector = cms.InputTag("ak4PFL2L3ResidualCorrector"),
         jecUncertainty = cms.string('%s/src/Analysis/ALPHA/data/Spring16_25nsV3_MC/Spring16_25nsV3_MC_Uncertainty_AK4PFchs.txt' % os.environ['CMSSW_BASE']),
-        reshapeBTag = cms.bool(True),
+        reshapeBTag = cms.bool(False),
         btag = cms.string("pfCombinedInclusiveSecondaryVertexV2BJetTags"),
         btagDB = cms.string('%s/src/Analysis/ALPHA/data/CSVv2.csv' % os.environ['CMSSW_BASE']),
         jet1btag = cms.int32(0), # 0: no selection, 1: loose, 2: medium, 3: tight
@@ -347,7 +347,7 @@ process.ntuple = cms.EDAnalyzer('Diboson',
         recalibrateMass = cms.bool(True),
         corrector = cms.InputTag("ak4PFL2L3ResidualCorrector"),
         jecUncertainty = cms.string('%s/src/Analysis/ALPHA/data/Spring16_25nsV3_MC/Spring16_25nsV3_MC_Uncertainty_AK8PFchs.txt' % os.environ['CMSSW_BASE']),
-        reshapeBTag = cms.bool(True),
+        reshapeBTag = cms.bool(False),
         btag = cms.string("pfCombinedInclusiveSecondaryVertexV2BJetTags"),
         btagDB = cms.string('%s/src/Analysis/ALPHA/data/CSVv2.csv' % os.environ['CMSSW_BASE']),
         jet1btag = cms.int32(0), # 0: no selection, 1: loose, 2: medium, 3: tight
