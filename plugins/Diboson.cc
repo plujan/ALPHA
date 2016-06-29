@@ -152,6 +152,14 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     
     Lepton1_isMuon = Lepton1_isElectron = Lepton1_isLoose = Lepton1_isHighPt = Lepton1_isTrackerHighPt = Lepton1_isTight = false;
     Lepton1_pt = Lepton1_trkIso = -1.;
+    Lepton2_isMuon = Lepton2_isElectron = Lepton2_isLoose = Lepton2_isHighPt = Lepton2_isTrackerHighPt = Lepton2_isTight = false;
+    Lepton2_pt = Lepton2_trkIso = -1.;
+    MEt_pt = -1.;
+    V_pt = V_dPhi = V_mass = V_tmass = -1.;
+    X_pt = X_dPhi = X_mass = X_tmass = -1.;
+    FatJet1_isTight = false;
+    FatJet1_pt = FatJet1_prunedMass = FatJet1_softdropMass = FatJet1_softdropPuppiMass = FatJet1_prunedMassCorr = FatJet1_softdropMassCorr = FatJet1_softdropPuppiMassCorr = FatJet1_tau21 = FatJet1_CSV1 = FatJet1_CSV2 = -1.;
+    
     
     AddFourMomenta addP4;
     
