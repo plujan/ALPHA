@@ -150,6 +150,17 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     MaxJetBTag = MaxFatJetBTag = Chi2 = -1.;
     MinJetMetDPhi = 10.;
     
+    Lepton1_isMuon = Lepton1_isElectron = Lepton1_isLoose = Lepton1_isHighPt = Lepton1_isTrackerHighPt = Lepton1_isTight = false;
+    Lepton1_pt = Lepton1_trkIso = -1.;
+    Lepton2_isMuon = Lepton2_isElectron = Lepton2_isLoose = Lepton2_isHighPt = Lepton2_isTrackerHighPt = Lepton2_isTight = false;
+    Lepton2_pt = Lepton2_trkIso = -1.;
+    MEt_pt = -1.;
+    V_pt = V_dPhi = V_mass = V_tmass = -1.;
+    X_pt = X_dPhi = X_mass = X_tmass = -1.;
+    FatJet1_isTight = false;
+    FatJet1_pt = FatJet1_prunedMass = FatJet1_softdropMass = FatJet1_softdropPuppiMass = FatJet1_prunedMassCorr = FatJet1_softdropMassCorr = FatJet1_softdropPuppiMassCorr = FatJet1_tau21 = FatJet1_CSV1 = FatJet1_CSV2 = -1.;
+    
+    
     AddFourMomenta addP4;
     
     // Initialize types
@@ -994,6 +1005,56 @@ void Diboson::beginJob() {
     tree->Branch("XResolvedHpt", &XResolvedHpt, ObjectsFormat::ListCandidateType().c_str());
     tree->Branch("XResolvedDZ", &XResolvedDZ, ObjectsFormat::ListCandidateType().c_str());
     tree->Branch("XResolvedDR", &XResolvedDR, ObjectsFormat::ListCandidateType().c_str());
+    
+    // Lepton1
+    tree->Branch("Lepton1_isMuon", &Leptons[0].isMuon, "Lepton1_isMuon/O");
+    tree->Branch("Lepton1_isElectron", &Leptons[0].isElectron, "Lepton1_isElectron/O");
+    tree->Branch("Lepton1_isLoose", &Leptons[0].isLoose, "Lepton1_isLoose/O");
+    tree->Branch("Lepton1_isHighPt", &Leptons[0].isHighPt, "Lepton1_isHighPt/O");
+    tree->Branch("Lepton1_isTrackerHighPt", &Leptons[0].isTrackerHighPt, "Lepton1_isTrackerHighPt/O");
+    tree->Branch("Lepton1_isTight", &Leptons[0].isTight, "Lepton1_isTight/O");
+    tree->Branch("Lepton1_isMuon", &Leptons[0].isMuon, "Lepton1_isMuon/O");
+    tree->Branch("Lepton1_pt", &Leptons[0].pt, "Lepton1_pt/F");
+    tree->Branch("Lepton1_trkIso", &Leptons[0].trkIso, "Lepton1_trkIso/F");
+
+    // Lepton2
+    tree->Branch("Lepton2_isMuon", &Leptons[0].isMuon, "Lepton2_isMuon/O");
+    tree->Branch("Lepton2_isElectron", &Leptons[0].isElectron, "Lepton2_isElectron/O");
+    tree->Branch("Lepton2_isLoose", &Leptons[0].isLoose, "Lepton2_isLoose/O");
+    tree->Branch("Lepton2_isHighPt", &Leptons[0].isHighPt, "Lepton2_isHighPt/O");
+    tree->Branch("Lepton2_isTrackerHighPt", &Leptons[0].isTrackerHighPt, "Lepton2_isTrackerHighPt/O");
+    tree->Branch("Lepton2_isTight", &Leptons[0].isTight, "Lepton2_isTight/O");
+    tree->Branch("Lepton2_isMuon", &Leptons[0].isMuon, "Lepton2_isMuon/O");
+    tree->Branch("Lepton2_pt", &Leptons[0].pt, "Lepton2_pt/F");
+    tree->Branch("Lepton2_trkIso", &Leptons[0].trkIso, "Lepton2_trkIso/F");
+
+    // MET        
+    tree->Branch("MEt_pt", &MEt.pt, "MEt_pt/F");
+
+    // V        
+    tree->Branch("V_pt", &V.pt, "V_pt/F");
+    tree->Branch("V_dPhi", &V.dPhi, "V_dPhi/F");
+    tree->Branch("V_mass", &V.mass, "V_mass/F");
+    tree->Branch("V_tmass", &V.tmass, "V_tmass/F");
+
+    // X        
+    tree->Branch("X_pt", &X.pt, "X_pt/F");
+    tree->Branch("X_dPhi", &X.dPhi, "X_dPhi/F");
+    tree->Branch("X_mass", &X.mass, "X_mass/F");
+    tree->Branch("X_tmass", &X.tmass, "X_tmass/F");
+
+    // FatJet1
+    tree->Branch("FatJet1_isTight", &FatJets[0].isTight, "FatJet1_isTight/O");
+    tree->Branch("FatJet1_pt", &FatJets[0].pt, "FatJet1_pt/F");
+    tree->Branch("FatJet1_prunedMass", &FatJets[0].prunedMass, "FatJet1_prunedMass/F");
+    tree->Branch("FatJet1_softdropMass", &FatJets[0].softdropMass, "FatJet1_softdropMass/F");
+    tree->Branch("FatJet1_softdropPuppiMass", &FatJets[0].softdropPuppiMass, "FatJet1_softdropPuppiMass/F");
+    tree->Branch("FatJet1_prunedMassCorr", &FatJets[0].prunedMassCorr, "FatJet1_prunedMassCorr/F");
+    tree->Branch("FatJet1_softdropMassCorr", &FatJets[0].softdropMassCorr, "FatJet1_softdropMassCorr/F");
+    tree->Branch("FatJet1_softdropPuppiMassCorr", &FatJets[0].softdropPuppiMassCorr, "FatJet1_softdropPuppiMassCorr/F");
+    tree->Branch("FatJet1_tau21", &FatJets[0].tau21, "FatJet1_tau21/F");
+    tree->Branch("FatJet1_CSV1", &FatJets[0].CSV1, "FatJet1_CSV1/F");
+    tree->Branch("FatJet1_CSV2", &FatJets[0].CSV2, "FatJet1_CSV2/F");
     
 }
 
