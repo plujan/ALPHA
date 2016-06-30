@@ -7,35 +7,37 @@ selection = {
     "triggerEle" : "(isMC?1:(HLT_Ele105_CaloIdVT_GsfTrkIdT_v))",
     "triggerMuo" : "(isMC?1:(HLT_Mu45_eta2p1_v||HLT_Mu50_v))",
     # Leptons
-    "singleEle" : "isWtoEN && Lepton1.pt>135 && Lepton1.tightId && V.dPhi<2 && X.dPhi>2 && MEt.pt>80", #  && nTaus==0
-    "singleMuo" : "isWtoMN && Lepton1.pt>55 && Lepton1.highptId && Lepton1.trkIso<0.1 && V.dPhi<2 && X.dPhi>2", # && nTaus==0
-    "singleIsoLep" : "((isWtoEN && Lepton1.isElectron && Lepton1.looseId && Lepton2.isMuon && Lepton2.highptId) || (isWtoMN && Lepton2.isElectron && Lepton2.looseId && Lepton1.isMuon && Lepton1.highptId))",
-    "doubleEle" : "isZtoEE && Lepton1.pt>135 && Lepton2.pt>35 && Lepton1.looseId && Lepton2.looseId", # && Lepton1.highptId && Lepton2.highptId && Lepton1.miniIso<0.1 && Lepton2.miniIso<0.1",
-    "doubleMuo" : "isZtoMM && (Lepton1.highptId || Lepton2.highptId) && Lepton1.pt>55 && Lepton2.pt>20 && Lepton1.trkIso<0.1 && Lepton2.trkIso<0.1",
-    "doubleIsoEle" : "isZtoEE && Lepton1.pt>25 && Lepton2.pt>10 && Lepton1.looseId && Lepton2.looseId",
-    "doubleIsoMuo" : "isZtoMM && (Lepton1.highptId || Lepton2.highptId) && Lepton1.pt>25 && Lepton2.pt>10 && Lepton1.trkIso<0.1 && Lepton2.trkIso<0.1",
-    "noLeptons" : "MEt.pt>200 && nMuons==0 && nElectrons==0 && nPhotons==0 && FatJet1.tightId && MinJetMetDPhi>0.5 && X.dPhi>2", #nTaus==0 && 
+    "singleEle" : "isWtoEN && Lepton1.pt>135 && Lepton1.isTight && V.dPhi<2 && X.dPhi>2 && MEt.pt>80", #  && nTaus==0
+    "singleMuo" : "isWtoMN && Lepton1.pt>55 && Lepton1.isHighPt && Lepton1.trkIso<0.1 && V.dPhi<2 && X.dPhi>2", # && nTaus==0
+    "singleIsoLep" : "((isWtoEN && Lepton1.isElectron && Lepton1.isLoose && Lepton2.isMuon && Lepton2.isHighPt) || (isWtoMN && Lepton2.isElectron && Lepton2.isLoose && Lepton1.isMuon && Lepton1.isHighPt))",
+    "doubleEle" : "isZtoEE && Lepton1.pt>135 && Lepton2.pt>35 && Lepton1.isLoose && Lepton2.isLoose", # && Lepton1.isHighPt && Lepton2.isHighPt && Lepton1.miniIso<0.1 && Lepton2.miniIso<0.1",
+    "doubleMuo" : "isZtoMM && (Lepton1.isHighPt || Lepton2.isHighPt) && Lepton1.pt>55 && Lepton2.pt>20 && Lepton1.trkIso<0.1 && Lepton2.trkIso<0.1",
+    "doubleIsoEle" : "isZtoEE && Lepton1.pt>25 && Lepton2.pt>10 && Lepton1.isLoose && Lepton2.isLoose",
+    "doubleIsoMuo" : "isZtoMM && (Lepton1.isHighPt || Lepton2.isHighPt) && Lepton1.pt>25 && Lepton2.pt>10 && Lepton1.trkIso<0.1 && Lepton2.trkIso<0.1",
+    "noLeptons" : "MEt.pt>200 && nMuons==0 && nElectrons==0 && nPhotons==0 && FatJet1.isTight && MinJetMetDPhi>0.5 && X.dPhi>2", #nTaus==0 && 
     # V
     "Boost" : "V.pt>200 && FatJet1.pt>200",
     "Zcut" : "V.mass>70 && V.mass<110",
     "Topcut" : "MaxFatJetBTag>0.460",
     "TopVetocut" : "MaxFatJetBTag<0.460",
-    "SRcut" : "(FatJet1.prunedMassCorr>105 && FatJet1.prunedMassCorr<135)",
-    "SBcut" : "((FatJet1.prunedMassCorr>30 && FatJet1.prunedMassCorr<65) || (FatJet1.prunedMassCorr>135))", # && FatJet1.prunedMassCorr<300
-    "VRcut" : "(FatJet1.prunedMassCorr>65 && FatJet1.prunedMassCorr<105)",
-    "LSBcut" : "FatJet1.prunedMassCorr>30 && FatJet1.prunedMassCorr<65",
-    "HSBcut" : "FatJet1.prunedMassCorr>135 && FatJet1.prunedMassCorr<300",
+    "SRcut" : "(FatJet1.softdropPuppiMassCorr>105 && FatJet1.softdropPuppiMassCorr<135)",
+    "SBcut" : "((FatJet1.softdropPuppiMassCorr>30 && FatJet1.softdropPuppiMassCorr<65) || (FatJet1.softdropPuppiMassCorr>135))", # && FatJet1.softdropPuppiMassCorr<300
+    "VRcut" : "(FatJet1.softdropPuppiMassCorr>65 && FatJet1.softdropPuppiMassCorr<105)",
+    "LSBcut" : "FatJet1.softdropPuppiMassCorr>30 && FatJet1.softdropPuppiMassCorr<65",
+    "HSBcut" : "FatJet1.softdropPuppiMassCorr>135 && FatJet1.softdropPuppiMassCorr<300",
     "HPcut" : "FatJet1.tau21<0.55",
     "LPcut" : "FatJet1.tau21>0.55",
     "1Btag" : "((FatJet1.CSV1>0.460 && FatJet1.CSV2<0.460) || (FatJet1.CSV1<0.460 && FatJet1.CSV2>0.460))",
     "2Btag" : "(FatJet1.CSV1>0.460 && FatJet1.CSV2>0.460)",
     
-        #------------------------------#
+    #------------------------------#
     #----------    VZ    ----------#
     #------------------------------#
     # 2 electrons
     "XVZeePre"  : "triggerEle && doubleEle && Boost && Zcut",
-    "XVZeeInc"  : "triggerEle && doubleEle && Boost && Zcut && (FatJet1.prunedMassCorr<65 || FatJet1.prunedMassCorr>135)",
+    "XVZeeInc"  : "triggerEle && doubleEle && Boost && Zcut && (FatJet1.softdropPuppiMassCorr<65 || FatJet1.softdropPuppiMassCorr>135)",
+    "XVZeelp"   : "triggerEle && doubleEle && Boost && Zcut && LPcut",
+    "XVZeehp"   : "triggerEle && doubleEle && Boost && Zcut && HPcut",
     #
     "XVZeelpSB" : "triggerEle && doubleEle && Boost && Zcut && LPcut && SBcut",
     "XVZeehpSB" : "triggerEle && doubleEle && Boost && Zcut && HPcut && SBcut",
@@ -44,7 +46,9 @@ selection = {
     "XVZeehpSR" : "triggerEle && doubleEle && Boost && Zcut && HPcut && SRcut",
     # 2 muons
     "XVZmmPre"  : "triggerMuo && doubleMuo && Boost && Zcut",
-    "XVZmmInc"  : "triggerMuo && doubleMuo && Boost && Zcut && (FatJet1.prunedMassCorr<65 || FatJet1.prunedMassCorr>135)",
+    "XVZmmInc"  : "triggerMuo && doubleMuo && Boost && Zcut && (FatJet1.softdropPuppiMassCorr<65 || FatJet1.softdropPuppiMassCorr>135)",
+    "XVZmmlp"   : "triggerMuo && doubleMuo && Boost && Zcut && LPcut",
+    "XVZmmhp"   : "triggerMuo && doubleMuo && Boost && Zcut && HPcut",
     #
     "XVZmmlpSB" : "triggerMuo && doubleMuo && Boost && Zcut && LPcut && SBcut",
     "XVZmmhpSB" : "triggerMuo && doubleMuo && Boost && Zcut && HPcut && SBcut",
@@ -53,7 +57,7 @@ selection = {
     "XVZmmhpSR" : "triggerMuo && doubleMuo && Boost && Zcut && HPcut && SRcut",
     # 0 leptons
     "XVZnnPre"  : "triggerMET && noLeptons && Boost",
-    "XVZnnInc"  : "triggerMET && noLeptons && Boost && TopVetocut && (FatJet1.prunedMassCorr<65 || FatJet1.prunedMassCorr>135)",
+    "XVZnnInc"  : "triggerMET && noLeptons && Boost && TopVetocut && (FatJet1.softdropPuppiMassCorr<65 || FatJet1.softdropPuppiMassCorr>135)",
     #
     "XVZnnlpSB" : "triggerMET && noLeptons && Boost && TopVetocut && LPcut && SBcut",
     "XVZnnhpSB" : "triggerMET && noLeptons && Boost && TopVetocut && HPcut && SBcut",
@@ -73,7 +77,7 @@ selection = {
     #------------------------------#
     # 2 electrons
     "XZheePre"  : "triggerEle && doubleEle && Boost && Zcut",
-    "XZheeInc"  : "triggerEle && doubleEle && Boost && Zcut && (FatJet1.prunedMassCorr<65 || FatJet1.prunedMassCorr>135)",
+    "XZheeInc"  : "triggerEle && doubleEle && Boost && Zcut && (FatJet1.softdropPuppiMassCorr<65 || FatJet1.softdropPuppiMassCorr>135)",
     #
     "XZheebSB"  : "triggerEle && doubleEle && Boost && Zcut && 1Btag && SBcut",
     "XZheebbSB" : "triggerEle && doubleEle && Boost && Zcut && 2Btag && SBcut",
@@ -82,7 +86,7 @@ selection = {
     "XZheebbSR" : "triggerEle && doubleEle && Boost && Zcut && 2Btag && SRcut",
     # 2 muons
     "XZhmmPre"  : "triggerMuo && doubleMuo && Boost && Zcut",
-    "XZhmmInc"  : "triggerMuo && doubleMuo && Boost && Zcut && (FatJet1.prunedMassCorr<65 || FatJet1.prunedMassCorr>135)",
+    "XZhmmInc"  : "triggerMuo && doubleMuo && Boost && Zcut && (FatJet1.softdropPuppiMassCorr<65 || FatJet1.softdropPuppiMassCorr>135)",
     #
     "XZhmmbSB"  : "triggerMuo && doubleMuo && Boost && Zcut && 1Btag && SBcut",
     "XZhmmbbSB" : "triggerMuo && doubleMuo && Boost && Zcut && 2Btag && SBcut",
@@ -91,7 +95,7 @@ selection = {
     "XZhmmbbSR" : "triggerMuo && doubleMuo && Boost && Zcut && 2Btag && SRcut",
     # 1 electron
     "XWhenPre"  : "triggerEle && singleEle && Boost",
-    "XWhenInc"  : "triggerEle && singleEle && Boost && TopVetocut && (FatJet1.prunedMassCorr<65 || FatJet1.prunedMassCorr>135)",
+    "XWhenInc"  : "triggerEle && singleEle && Boost && TopVetocut && (FatJet1.softdropPuppiMassCorr<65 || FatJet1.softdropPuppiMassCorr>135)",
     #
     "XWhenbSB"  : "triggerEle && singleEle && Boost && TopVetocut && 1Btag && SBcut",
     "XWhenbbSB" : "triggerEle && singleEle && Boost && TopVetocut && 2Btag && SBcut",
@@ -100,7 +104,7 @@ selection = {
     "XWhenbbSR" : "triggerEle && singleEle && Boost && TopVetocut && 2Btag && SRcut",
     # 1 muon
     "XWhmnPre"  : "triggerMuo && singleMuo && Boost",
-    "XWhmnInc"  : "triggerMuo && singleMuo && Boost && TopVetocut && (FatJet1.prunedMassCorr<65 || FatJet1.prunedMassCorr>135)",
+    "XWhmnInc"  : "triggerMuo && singleMuo && Boost && TopVetocut && (FatJet1.softdropPuppiMassCorr<65 || FatJet1.softdropPuppiMassCorr>135)",
     #
     "XWhmnbSB"  : "triggerMuo && singleMuo && Boost && TopVetocut && 1Btag && SBcut",
     "XWhmnbbSB" : "triggerMuo && singleMuo && Boost && TopVetocut && 2Btag && SBcut",
@@ -109,7 +113,7 @@ selection = {
     "XWhmnbbSR" : "triggerMuo && singleMuo && Boost && TopVetocut && 2Btag && SRcut",
     # 0 leptons
     "XZhnnPre"  : "triggerMET && noLeptons && Boost",
-    "XZhnnInc"  : "triggerMET && noLeptons && Boost && TopVetocut && (FatJet1.prunedMassCorr<65 || FatJet1.prunedMassCorr>135)",
+    "XZhnnInc"  : "triggerMET && noLeptons && Boost && TopVetocut && (FatJet1.softdropPuppiMassCorr<65 || FatJet1.softdropPuppiMassCorr>135)",
     #
     "XZhnnbSB"  : "triggerMET && noLeptons && Boost && TopVetocut && 1Btag && SBcut",
     "XZhnnbbSB" : "triggerMET && noLeptons && Boost && TopVetocut && 2Btag && SBcut",
