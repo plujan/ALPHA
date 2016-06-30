@@ -280,15 +280,15 @@ def drawKolmogorov(data, bkg):
     latex.DrawLatex(0.55, 0.85, "#chi^{2}/ndf = %.2f,   K-S = %.3f" % (data.Chi2Test(bkg, "CHI2/NDF"), data.KolmogorovTest(bkg)))
 
 def printTable(hist, sign=[]):
-    samples = [x for x in hist.keys() if not 'data' in x and not 'BkgSum' in x and not x in sign and not x=="files"]
+    samplelist = [x for x in hist.keys() if not 'data' in x and not 'BkgSum' in x and not x in sign and not x=="files"]
     print "Sample                  Events          Entries         %"
     print "-"*80
-    for i, s in enumerate(['data_obs']+samples+['BkgSum']):
-        if i==1 or i==len(samples)+1: print "-"*80
+    for i, s in enumerate(['data_obs']+samplelist+['BkgSum']):
+        if i==1 or i==len(samplelist)+1: print "-"*80
         print "%-20s" % s, "\t%-10.2f" % hist[s].Integral(), "\t%-10.0f" % (hist[s].GetEntries()-2), "\t%-10.2f" % (100.*hist[s].Integral()/hist['BkgSum'].Integral()) if hist['BkgSum'].Integral() > 0 else 0, "%"
     print "-"*80
     for i, s in enumerate(sign):
-        if not sample[s]['plot']: continue
+        if not samples[s]['plot']: continue
         print "%-20s" % s, "\t%-10.2f" % hist[s].Integral(), "\t%-10.0f" % (hist[s].GetEntries()-2), "\t%-10.2f" % (100.*hist[s].GetEntries()/float(hist[s].GetOption())) if float(hist[s].GetOption()) > 0 else 0, "%"    
     print "-"*80
 
@@ -423,6 +423,9 @@ def drawRegion(channel, left=False):
         # b-tag
         if 'bb' in channel: text += ", 2 b-tag"
         elif 'b' in channel: text += ", 1 b-tag"
+        # purity
+        if 'lp' in channel: text += ", low purity"
+        elif 'hp' in channel: text += ", high purity"
         # region
         if 'TR' in channel: text += ", top control region"
         elif 'Inc' in channel: text += ", inclusive region"
@@ -440,3 +443,43 @@ def drawRegion(channel, left=False):
         latex.SetTextAlign(22)
         latex.DrawLatex(0.5, 0.85, text)
 
+def drawBox(x1, y1, x2, y2, t=""):
+    box = TBox(x1, y1, x2, y2)
+    box.SetFillColor(1)
+    box.SetFillStyle(3005)
+    box.Draw()
+    if not t=="":
+        text = TLatex()
+        text.SetTextColor(1)
+        text.SetTextFont(42)
+        text.SetTextAlign(23)
+        text.SetTextSize(0.04)
+        text.DrawLatex((x1+x2)/2., y2/1.15, t)
+        text.Draw()
+    return box
+
+def drawLine(x1, y1, x2, y2):
+    line = TLine(x1, y1, x2, y2)
+    line.SetLineStyle(2)
+    line.SetLineWidth(2)
+    line.Draw()
+    return line
+
+def drawText(x, y, t):
+    text = TLatex()
+    text.SetTextColor(1)
+    text.SetTextFont(42)
+    text.SetTextAlign(23)
+    text.SetTextSize(0.04)
+    text.DrawLatex(x, y, t)
+    text.Draw()
+    return text
+
+def drawMass(m):
+    latex = TLatex()
+    latex.SetNDC()
+    latex.SetTextColor(1)
+    latex.SetTextFont(42)
+    latex.SetTextAlign(22)
+    latex.SetTextSize(0.04)
+    latex.DrawLatex(0.75, 0.85, "m_{X} = %.0f GeV" % m)
