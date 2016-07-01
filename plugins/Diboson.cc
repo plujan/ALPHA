@@ -328,7 +328,9 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     double GenZHadPt = -1.;
     double GenXMass = -1.;
     double GenHadDR = -9.;
+    double GenZHadFatJetDR = -9.;
     bool isGenZZ = false;
+    reco::Particle::LorentzVector p4GenZHad;
     if(theGenLep!=NULL && theGenHad!=NULL){
         const reco::Candidate* theGenZLep = theGenAnalyzer->FindMother(theGenLep);
         const reco::Candidate* theGenZHad = theGenAnalyzer->FindMother(theGenHad);
@@ -354,6 +356,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
             GenZHadMass = theGenZHad->mass();
             GenZHadPt = theGenZHad->pt();
             isGenZZ = true;
+            p4GenZHad = theGenZHad->p4();
         }
     }
 
@@ -599,19 +602,40 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         if(isMC && isGenZZ) {
             Hist["a_den_H_truth_Hpt"]->Fill(GenZHadPt, EventWeight);
             Hist["a_den_H_truth_HadDR"]->Fill(GenHadDR, EventWeight);
+            Hist["a_den_H_truth_XMass"]->Fill(GenXMass, EventWeight);
         }
- 
+
+	//MC truth merged topology
+	if(isMC && isGenZZ && isMerged) {
+            GenZHadFatJetDR = reco::deltaR(p4GenZHad.eta(),p4GenZHad.phi(),FatJetsVect.at(0).eta(),FatJetsVect.at(0).phi());
+            Hist["a_genZHad_recoFatJetDR"]->Fill(GenZHadFatJetDR, EventWeight);
+            if(GenZHadFatJetDR<0.4){
+	        Hist["a_num_HM_truth_Hpt0p4"]->Fill(GenZHadPt, EventWeight);
+	        Hist["a_num_HM_truth_HadDR0p4"]->Fill(GenHadDR, EventWeight);
+	        Hist["a_num_HM_truth_XMass0p4"]->Fill(GenXMass, EventWeight);
+            }
+            if(GenZHadFatJetDR<0.1){
+	        Hist["a_num_HM_truth_Hpt0p1"]->Fill(GenZHadPt, EventWeight);
+	        Hist["a_num_HM_truth_HadDR0p1"]->Fill(GenHadDR, EventWeight);
+	        Hist["a_num_HM_truth_XMass0p1"]->Fill(GenXMass, EventWeight);
+            }
+        }
+
+        //MC truth leading ak4 jets 
         if(isMC && JetsVect.at(0).genParton()!=NULL && JetsVect.at(1).genParton()!=NULL && isGenZZ){
             if(Utilities::FindMotherId(JetsVect.at(0).genParton())==23 && Utilities::FindMotherId(JetsVect.at(1).genParton())==23){
                 Hist["a_num_H_truth_Hpt"]->Fill(GenZHadPt, EventWeight);
                 Hist["a_num_H_truth_HadDR"]->Fill(GenHadDR, EventWeight);
+                Hist["a_num_H_truth_XMass"]->Fill(GenXMass, EventWeight);
             }
         }
 
+        //MC truth highest pT di-jet
         if(isMC && (ch1<=JetsVect.size() && ch2<=JetsVect.size())  && JetsVect.at(ch1).genParton()!=NULL && JetsVect.at(ch2).genParton()!=NULL && isGenZZ){
             if(Utilities::FindMotherId(JetsVect.at(ch1).genParton())==23 && Utilities::FindMotherId(JetsVect.at(ch2).genParton())==23){
-                Hist["a_num_HHpt_truth_Hpt"]->Fill(GenZHadPt, EventWeight);
-                Hist["a_num_HHpt_truth_HadDR"]->Fill(GenHadDR, EventWeight);
+	        Hist["a_num_HHpt_truth_Hpt"]->Fill(GenZHadPt, EventWeight);
+	        Hist["a_num_HHpt_truth_HadDR"]->Fill(GenHadDR, EventWeight);
+	        Hist["a_num_HHpt_truth_XMass"]->Fill(GenXMass, EventWeight);
             }
         }
         ch1 = 100;
@@ -637,10 +661,12 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         }
         
         //std::cout << "DZ: chosen jets " << ch1 << ", " << ch2 << ", mass " << theHResolvedDZ.mass()  << std::endl;
+        //MC truth closest to mZ jets
         if(isMC && (ch1<=JetsVect.size() && ch2<=JetsVect.size()) && JetsVect.at(ch1).genParton()!=NULL && JetsVect.at(ch2).genParton()!=NULL && isGenZZ){
             if(Utilities::FindMotherId(JetsVect.at(ch1).genParton())==23 && Utilities::FindMotherId(JetsVect.at(ch2).genParton())==23){
-                Hist["a_num_HDZ_truth_Hpt"]->Fill(GenZHadPt, EventWeight);
-                Hist["a_num_HDZ_truth_HadDR"]->Fill(GenHadDR, EventWeight);
+	        Hist["a_num_HDZ_truth_Hpt"]->Fill(GenZHadPt, EventWeight);
+	        Hist["a_num_HDZ_truth_HadDR"]->Fill(GenHadDR, EventWeight);
+	        Hist["a_num_HDZ_truth_XMass"]->Fill(GenXMass, EventWeight);
             }
         }
         ch1 = 100;
@@ -662,11 +688,13 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
                 }
             }
         }
-        
+
+        //MC truth closest in DR          
         if(isMC && (ch1<=JetsVect.size() && ch2<=JetsVect.size()) && JetsVect.at(ch1).genParton()!=NULL && JetsVect.at(ch2).genParton()!=NULL && isGenZZ){
             if(Utilities::FindMotherId(JetsVect.at(ch1).genParton())==23 && Utilities::FindMotherId(JetsVect.at(ch2).genParton())==23){
-                Hist["a_num_HDR_truth_Hpt"]->Fill(GenZHadPt, EventWeight);
-                Hist["a_num_HDR_truth_HadDR"]->Fill(GenHadDR, EventWeight);
+	        Hist["a_num_HDR_truth_Hpt"]->Fill(GenZHadPt, EventWeight);
+	        Hist["a_num_HDR_truth_HadDR"]->Fill(GenHadDR, EventWeight);
+	        Hist["a_num_HDR_truth_XMass"]->Fill(GenXMass, EventWeight);
             }
         }
         
