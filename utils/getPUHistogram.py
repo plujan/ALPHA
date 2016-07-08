@@ -19,7 +19,7 @@ parser.add_option("-b", "--batch", action="store_true", default=False, dest="bat
 if options.batch: gROOT.SetBatch(True)
 
 #scp lxplus.cern.ch:/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/PileUp/pileup_latest.txt data/JSON/
-#pileupCalc.py -i data/JSON/Cert_271036-274421_13TeV_PromptReco_Collisions16_JSON.txt --inputLumiJSON data/JSON/pileup_latest.txt --calcMode true --minBiasXsec 69000 --maxPileupBin 50 --numPileupBins 50 data/PU_69000.root
+#pileupCalc.py -i data/JSON/Cert_271036-275125_13TeV_PromptReco_Collisions16_JSON.txt --inputLumiJSON data/JSON/pileup_latest.txt --calcMode true --minBiasXsec 69000 --maxPileupBin 50 --numPileupBins 50 data/PU_69000.root
 
 
 # https://raw.githubusercontent.com/cms-sw/cmssw/CMSSW_7_4_X/SimGeneral/MixingModule/python/mix_2015_25ns_Startup_PoissonOOTPU_cfi.py
