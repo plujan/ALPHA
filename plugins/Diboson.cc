@@ -947,7 +947,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         FatJet1_CSV2 = FatJets[0].CSV2;
 
         treealpha->Fill();
-    }    
+    }     
 
     if(Verbose) std::cout << " - Tree filled, end of event" << std::endl;
     
