@@ -68,6 +68,7 @@ process.HLTFilter = cms.EDFilter("HLTHighLevel",
     HLTPaths = cms.vstring(
         'HLT_Mu45_eta2p1_v*',
         'HLT_Mu50_v*',
+        'HLT_TkMu50_v*',
         'HLT_IsoMu20_v*',
         'HLT_IsoTkMu20_v*',
         'HLT_IsoMu24_v*',
