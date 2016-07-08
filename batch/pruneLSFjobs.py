@@ -26,6 +26,10 @@ jobs = []
 def skim(name):
     
     isMC = array('b', [0]) 
+    HLT_Ele105_CaloIdVT_GsfTrkIdT_v = array('b', [0]) 
+    HLT_Mu45_eta2p1_v = array('b', [0]) 
+    HLT_Mu50_v = array('b', [0]) 
+    
     isZtoEE = array('b', [0]) 
     isZtoMM = array('b', [0]) 
     isTtoEM = array('b', [0]) 
@@ -120,7 +124,14 @@ def skim(name):
     oldFile = TFile(name, "READ")
     oldTree = oldFile.Get("ntuple/tree")
 
+    w = oldTree.GetWeight()
+
     oldTree.SetBranchAddress("isMC", isMC)
+
+    oldTree.SetBranchAddress("HLT_Ele105_CaloIdVT_GsfTrkIdT_v", HLT_Ele105_CaloIdVT_GsfTrkIdT_v)
+    oldTree.SetBranchAddress("HLT_Mu45_eta2p1_v", HLT_Mu45_eta2p1_v)
+    oldTree.SetBranchAddress("HLT_Mu50_v", HLT_Mu50_v)
+
     oldTree.SetBranchAddress("EventNumber", EventNumber)
     oldTree.SetBranchAddress("LumiNumber", LumiNumber)
     oldTree.SetBranchAddress("RunNumber", RunNumber)
@@ -222,6 +233,11 @@ def skim(name):
     oldTree.SetBranchStatus("*",0)
 
     oldTree.SetBranchStatus("isMC",1)
+
+    oldTree.SetBranchStatus("HLT_Ele105_CaloIdVT_GsfTrkIdT_v", 1)
+    oldTree.SetBranchStatus("HLT_Mu45_eta2p1_v", 1)
+    oldTree.SetBranchStatus("HLT_Mu50_v", 1)
+
     oldTree.SetBranchStatus("EventNumber",1)
     oldTree.SetBranchStatus("LumiNumber",1)
     oldTree.SetBranchStatus("RunNumber",1)
@@ -321,11 +337,23 @@ def skim(name):
     oldTree.SetBranchStatus("FatJet1_CSV2",1)
 
     
-    newFile = TFile("Pruned/"+name, "RECREATE")
+    newFile = TFile("Pruned_new/"+name, "RECREATE")
     newFile.mkdir("ntuple/")
     newFile.cd("ntuple/")
     
-    newTree = oldTree.CopyTree("V_pt>200 && FatJet1_pt>170")
+    newTree = oldTree.CopyTree("( (isZtoMM && ((Lepton1_isHighPt && Lepton2_isHighPt) || (Lepton1_isTrackerHighPt && Lepton2_isHighPt) || (Lepton1_isHighPt && Lepton2_isTrackerHighPt)) && Lepton1_pt>55 && Lepton2_pt>20 && Lepton1_trkIso<0.1 && Lepton2_trkIso<0.1) || (isZtoEE && Lepton1_pt>135 && Lepton2_pt>35 && Lepton1_isLoose && Lepton2_isLoose) ) && V_mass>70 && V_mass<110 && V_pt>100 && FatJet1_pt>100")
+
+    newEventWeight = array('f', [1.0])  # global event weight
+    newEventWeightBranch = newTree.Branch('newEventWeight', newEventWeight, 'newEventWeight/F')
+
+    for event in range(0, newTree.GetEntries()):
+        newTree.GetEntry(event)
+        newEventWeight[0] = w * getattr(newTree, 'EventWeight')
+        if event < 3:
+            print w, getattr(newTree, 'EventWeight'), newEventWeight[0]
+        newEventWeightBranch.Fill()
+
+    newTree.SetWeight(1.)
     newTree.AutoSave()
     
     oldFile.Close()
@@ -337,7 +365,7 @@ subfiles = [x for x in os.listdir(args.folder) if os.path.isfile(os.path.join(ar
 
 os.chdir(args.folder)
 
-os.mkdir('Pruned')
+os.mkdir('Pruned_new')
 
 for s in subfiles:
     print s
