@@ -2,14 +2,12 @@
 #define OBJECTS_H
 
 struct LeptonType {
-LeptonType(): pt(-1.), eta(-9.), phi(-9.), mass(-1.), energy(-1.), charge(0), pdgId(0), pfIso03(-1.), pfIso04(-1.), trkIso(-1.), miniIso(-1.), dxy(-99.), dz(-99.), ip3d(-99.), sip3d(-99.), nPixelHits(-1.), dPhi_met(-1.), isElectron(false), isMuon(false), isVeto(false), isLoose(false), isMedium(false), isTight(false), isHighPt(false), isTrackerHighPt(false), isMatched(false) {} // isHEEP(false), isMVANonTrigMedium(false), isMVANonTrigTight(false), isMVATrigMedium(false), isMVATrigTight(false)
+LeptonType(): pt(-1.), eta(-9.), phi(-9.), mass(-1.), energy(-1.), pfIso03(-1.), pfIso04(-1.), trkIso(-1.), miniIso(-1.), dxy(-99.), dz(-99.), ip3d(-99.), sip3d(-99.), nPixelHits(-1.), dPhi_met(-1.), charge(0), pdgId(0), isElectron(false), isMuon(false), isVeto(false), isLoose(false), isMedium(false), isTight(false), isHighPt(false), isTrackerHighPt(false), isMatched(false) {} // isHEEP(false), isMVANonTrigMedium(false), isMVANonTrigTight(false), isMVATrigMedium(false), isMVATrigTight(false)
     float pt;
     float eta;
     float phi;
     float mass;
     float energy;
-    int charge;
-    int pdgId;
     float pfIso03;
     float pfIso04;
     float trkIso;
@@ -20,6 +18,8 @@ LeptonType(): pt(-1.), eta(-9.), phi(-9.), mass(-1.), energy(-1.), charge(0), pd
     float sip3d;
     float nPixelHits;
     float dPhi_met;
+    int charge;
+    int pdgId;
     bool isElectron;
     bool isMuon;
     bool isVeto;
@@ -37,16 +37,16 @@ LeptonType(): pt(-1.), eta(-9.), phi(-9.), mass(-1.), energy(-1.), charge(0), pd
 };
 
 struct PhotonType {
-PhotonType(): pt(-1.), eta(-9.), phi(-9.), mass(-1.), energy(-1.), charge(0), pdgId(0), pfIso(-1.), dz(-99.), isLoose(false), isMedium(false), isTight(false), isMVANonTrigMedium(false), isMatched(false) {}
+PhotonType(): pt(-1.), eta(-9.), phi(-9.), mass(-1.), energy(-1.), pfIso(-1.), dz(-99.), charge(0), pdgId(0), isLoose(false), isMedium(false), isTight(false), isMVANonTrigMedium(false), isMatched(false) {}
     float pt;
     float eta;
     float phi;
     float mass;
     float energy;
-    int charge;
-    int pdgId;
     float pfIso;
     float dz;
+    int charge;
+    int pdgId;
     bool isLoose;
     bool isMedium;
     bool isTight;
@@ -55,16 +55,16 @@ PhotonType(): pt(-1.), eta(-9.), phi(-9.), mass(-1.), energy(-1.), charge(0), pd
 };
 
 struct TauType {
-TauType(): pt(-1.), eta(-9.), phi(-9.), mass(-1.), energy(-1.), charge(0), pdgId(0), pfIso(-1.), dz(-99.), isLoose(false), isMedium(false), isTight(false), isMatched(false) {}
+TauType(): pt(-1.), eta(-9.), phi(-9.), mass(-1.), energy(-1.), pfIso(-1.), dz(-99.), charge(0), pdgId(0), isLoose(false), isMedium(false), isTight(false), isMatched(false) {}
     float pt;
     float eta;
     float phi;
     float mass;
     float energy;
-    int charge;
-    int pdgId;
     float pfIso;
     float dz;
+    int charge;
+    int pdgId;
     bool isLoose;
     bool isMedium;
     bool isTight;
@@ -73,7 +73,7 @@ TauType(): pt(-1.), eta(-9.), phi(-9.), mass(-1.), energy(-1.), charge(0), pdgId
 
 
 struct JetType {
-    JetType(): pt(-1.), eta(-9.), phi(-9.), mass(-1.), energy(-1.), ptRaw(-1.), ptUnc(-1.), dPhi_met(-1.), dPhi_Jet1(-1.), puId(-1.), CSV(-99.), CSVR(-99.), CSVRUp(-99.), CSVRDown(-99.), CMVA(-99.), CMVAR(-99.), CMVARUp(-99.), CMVARDown(-99.), chf(-1.), nhf(-1.), phf(-1.), elf(-1.), muf(-1.), chm(-1), npr(-1), flavour(0), mother(0), isLoose(false), isMedium(false), isTight(false), isTightLepVeto(false), isCSVL(false), isCSVM(false), isCSVT(false), isMatched(false), QGLikelihood(-1.) {}
+    JetType(): pt(-1.), eta(-9.), phi(-9.), mass(-1.), energy(-1.), ptRaw(-1.), ptUnc(-1.), dPhi_met(-1.), dPhi_Jet1(-1.), puId(-1.), CSV(-99.), CSVR(-99.), CSVRUp(-99.), CSVRDown(-99.), CMVA(-99.), CMVAR(-99.), CMVARUp(-99.), CMVARDown(-99.), QGLikelihood(-1.), chf(-1.), nhf(-1.), phf(-1.), elf(-1.), muf(-1.), chm(-1), npr(-1), flavour(0), mother(0), isLoose(false), isMedium(false), isTight(false), isTightLepVeto(false), isCSVL(false), isCSVM(false), isCSVT(false), isMatched(false) {}
     float pt;
     float eta;
     float phi;
@@ -92,6 +92,7 @@ struct JetType {
     float CMVAR;
     float CMVARUp;
     float CMVARDown;
+    float QGLikelihood;
     float chf;
     float nhf;
     float phf;
@@ -109,13 +110,12 @@ struct JetType {
     bool isCSVM;
     bool isCSVT;
     bool isMatched;
-    float QGLikelihood;
 };
 
 
 
 struct FatJetType {
-    FatJetType(): pt(-1.), eta(-9.), phi(-9.), mass(-1.), energy(-1.), ptRaw(-1.), ptUnc(-1.), dPhi_met(-1.), dPhi_Jet1(-1.), puId(-1.), CSV(-99.), CSVR(-99.), CSVRUp(-99.), CSVRDown(-99.), chf(-1.), nhf(-1.), phf(-1.), elf(-1.), muf(-1.), chm(-1), npr(-1), flavour(0), mother(0), isLoose(false), isMedium(false), isTight(false), isTightLepVeto(false), isMatched(false), prunedMass(-1.), softdropMass(-1.), softdropPuppiMass(-1.), prunedMassCorr(-1.), softdropMassCorr(-1.), softdropPuppiMassCorr(-1.), pt1(-1.), eta1(-9.), phi1(-9.), mass1(-1.), CSV1(-99.), CSVR1(-99.), CSVR1Up(-99.), CSVR1Down(-99.), CMVA1(-99.), CMVAR1(-99.), CMVAR1Up(-99.), CMVAR1Down(-99.), flavour1(-1.), pt2(-1.), eta2(-9.), phi2(-9.), mass2(-1.), CSV2(-99.), CSVR2(-99.), CSVR2Up(-99.), CSVR2Down(-99.), CMVA2(-99.), CMVAR2(-99.), CMVAR2Up(-99.), CMVAR2Down(-99.), flavour2(-1.), dR(-1.), tau21(-1.), BDSV(-1.) {}
+    FatJetType(): pt(-1.), eta(-9.), phi(-9.), mass(-1.), energy(-1.), ptRaw(-1.), ptUnc(-1.), dPhi_met(-1.), dPhi_Jet1(-1.), puId(-1.), CSV(-99.), CSVR(-99.), CSVRUp(-99.), CSVRDown(-99.), prunedMass(-1.), softdropMass(-1.), softdropPuppiMass(-1.), prunedMassCorr(-1.), softdropMassCorr(-1.), softdropPuppiMassCorr(-1.), pt1(-1.), eta1(-9.), phi1(-9.), mass1(-1.), CSV1(-99.), CSVR1(-99.), CSVR1Up(-99.), CSVR1Down(-99.), CMVA1(-99.), CMVAR1(-99.), CMVAR1Up(-99.), CMVAR1Down(-99.), flavour1(-1.), pt2(-1.), eta2(-9.), phi2(-9.), mass2(-1.), CSV2(-99.), CSVR2(-99.), CSVR2Up(-99.), CSVR2Down(-99.), CMVA2(-99.), CMVAR2(-99.), CMVAR2Up(-99.), CMVAR2Down(-99.), flavour2(-1.), dR(-1.), tau21(-1.), BDSV(-1.), chf(-1.), nhf(-1.), phf(-1.), elf(-1.), muf(-1.), chm(-1), npr(-1), flavour(0), mother(0), isLoose(false), isMedium(false), isTight(false), isTightLepVeto(false), isMatched(false) {}
     float pt;
     float eta;
     float phi;
@@ -130,20 +130,6 @@ struct FatJetType {
     float CSVR;
     float CSVRUp;
     float CSVRDown;
-    float chf;
-    float nhf;
-    float phf;
-    float elf;
-    float muf;
-    int chm;
-    int npr;
-    int flavour;
-    int mother;
-    bool isLoose;
-    bool isMedium;
-    bool isTight;
-    bool isTightLepVeto;
-    bool isMatched;
     float prunedMass;
     float softdropMass;
     float softdropPuppiMass;
@@ -179,6 +165,20 @@ struct FatJetType {
     float dR;
     float tau21;
     float BDSV;
+    float chf;
+    float nhf;
+    float phf;
+    float elf;
+    float muf;
+    int chm;
+    int npr;
+    int flavour;
+    int mother;
+    bool isLoose;
+    bool isMedium;
+    bool isTight;
+    bool isTightLepVeto;
+    bool isMatched;
 };
 
 

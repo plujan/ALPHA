@@ -12,8 +12,6 @@ void ObjectsFormat::FillElectronType(LeptonType& I, const pat::Electron* R, bool
     I.phi         = R->phi();
     I.mass        = R->mass();
     I.energy      = R->energy();
-    I.charge      = R->charge();
-    I.pdgId       = R->pdgId();
     I.pfIso03     = R->hasUserFloat("pfIso03") ? R->userFloat("pfIso03") : -1.;
     I.pfIso04     = R->hasUserFloat("pfIso04") ? R->userFloat("pfIso04") : -1.;
     I.trkIso      = R->hasUserFloat("trkIso") ? R->userFloat("trkIso") : R->pfIsolationVariables().sumChargedHadronPt;
@@ -24,6 +22,8 @@ void ObjectsFormat::FillElectronType(LeptonType& I, const pat::Electron* R, bool
     I.sip3d       = R->dB(pat::Electron::PV3D)/R->edB(pat::Electron::PV3D);
     I.nPixelHits  = R->gsfTrack()->hitPattern().numberOfValidPixelHits();
     I.dPhi_met    = R->hasUserFloat("dPhi_met") ? R->userFloat("dPhi_met") : -1.;
+    I.charge      = R->charge();
+    I.pdgId       = R->pdgId();
     I.isElectron  = true;
     I.isMuon      = false;
     I.isVeto      = R->hasUserInt("isVeto") ? R->userInt("isVeto") : false;
@@ -45,8 +45,6 @@ void ObjectsFormat::FillMuonType(LeptonType& I, const pat::Muon* R, bool isMC) {
     I.phi         = R->phi();
     I.mass        = R->mass();
     I.energy      = R->energy();
-    I.charge      = R->charge();
-    I.pdgId       = R->pdgId();
     I.pfIso03     = R->hasUserFloat("pfIso03") ? R->userFloat("pfIso03") : -1.;
     I.pfIso04     = R->hasUserFloat("pfIso04") ? R->userFloat("pfIso04") : -1.;
     I.trkIso      = R->hasUserFloat("trkIso") ? R->userFloat("trkIso") : R->trackIso();
@@ -57,6 +55,8 @@ void ObjectsFormat::FillMuonType(LeptonType& I, const pat::Muon* R, bool isMC) {
     I.sip3d       = R->dB(pat::Muon::PV3D)/R->edB(pat::Muon::PV3D);
     I.nPixelHits  = R->innerTrack()->hitPattern().numberOfValidPixelHits();
     I.dPhi_met    = R->hasUserFloat("dPhi_met") ? R->userFloat("dPhi_met") : -1.;
+    I.charge      = R->charge();
+    I.pdgId       = R->pdgId();
     I.isElectron  = false;
     I.isMuon      = true;
     I.isVeto      = R->isPFMuon();
@@ -74,8 +74,6 @@ void ObjectsFormat::ResetLeptonType(LeptonType& I) {
     I.phi         = -9.;
     I.mass        = -1.;
     I.energy      = -1.;
-    I.charge      = 0;
-    I.pdgId       = 0;
     I.pfIso03     = -1.;
     I.pfIso04     = -1.;
     I.trkIso      = -1.;
@@ -86,6 +84,8 @@ void ObjectsFormat::ResetLeptonType(LeptonType& I) {
     I.sip3d       = -99.;
     I.nPixelHits  = -1.;
     I.dPhi_met    = -1.;
+    I.charge      = 0;
+    I.pdgId       = 0;
     I.isElectron  = false;
     I.isMuon      = false;
     I.isVeto      = false;
@@ -101,7 +101,7 @@ void ObjectsFormat::ResetLeptonType(LeptonType& I) {
     I.isMatched   = false;
 }
 
-std::string ObjectsFormat::ListLeptonType() {return "pt/F:eta/F:phi/F:mass/F:energy/F:charge/I:pdgId/I:pfIso03/F:pfIso04/F:trkIso/F:miniIso/F:dxy/F:dz/F:ip3d/f:nPixelHits/F:dPhi_met/F:isElectron/O:isMuon/O:isVeto/O:isLoose/O:isMedium/O:isTight/O:isHighPt/O:isTrackerHighPt/O:isMatched/O";} // isHEEP/O:isMVANonTrigMedium/O:isMVANonTrigTight/O:isMVATrigMedium/O:isMVATrigTight/O:
+std::string ObjectsFormat::ListLeptonType() {return "pt/F:eta/F:phi/F:mass/F:energy/F:pfIso03/F:pfIso04/F:trkIso/F:miniIso/F:dxy/F:dz/F:ip3d/F:sip3d/F:nPixelHits/F:dPhi_met/F:charge/I:pdgId/I:isElectron/O:isMuon/O:isVeto/O:isLoose/O:isMedium/O:isTight/O:isHighPt/O:isTrackerHighPt/O:isMatched/O";} // isHEEP/O:isMVANonTrigMedium/O:isMVANonTrigTight/O:isMVATrigMedium/O:isMVATrigTight/O:
 
 //********************//
 //    Photons         // 
@@ -114,10 +114,10 @@ void ObjectsFormat::FillPhotonType(PhotonType& I, const pat::Photon* R, bool isM
     I.phi         = R->phi();
     I.mass        = R->mass();
     I.energy      = R->energy();
-    I.charge      = R->charge();
-    I.pdgId       = R->pdgId();
     I.pfIso       = R->hasUserFloat("pfIso") ? R->userFloat("pfIso") : -1.;
     I.dz          = R->hasUserFloat("dz") ? R->userFloat("dz") : 0.;
+    I.charge      = R->charge();
+    I.pdgId       = R->pdgId();
     I.isLoose     = R->hasUserInt("isLoose") ? R->userInt("isLoose") : false;
     I.isMedium    = R->hasUserInt("isMedium") ? R->userInt("isMedium") : false;
     I.isTight     = R->hasUserInt("isTight") ? R->userInt("isTight") : false;
@@ -132,10 +132,10 @@ void ObjectsFormat::ResetPhotonType(PhotonType& I) {
     I.phi         = -9.;
     I.mass        = -1.;
     I.energy      = -1.;
-    I.charge      = 0;
-    I.pdgId       = 0;
     I.pfIso       = -1.;
     I.dz          = -99.;
+    I.charge      = 0;
+    I.pdgId       = 0;
     I.isLoose     = false;
     I.isMedium    = false;
     I.isTight     = false;
@@ -143,7 +143,7 @@ void ObjectsFormat::ResetPhotonType(PhotonType& I) {
     I.isMatched   = false;
 }
 
-std::string ObjectsFormat::ListPhotonType() {return "pt/F:eta/F:phi/F:mass/F:energy/F:charge/I:pdgId/I:pfIso/F:dz/F:isLoose/O:isMedium/O:isTight/O:isMVANonTrigMedium/O:isMatched/O";}
+std::string ObjectsFormat::ListPhotonType() {return "pt/F:eta/F:phi/F:mass/F:energy/F:pfIso/F:dz/F:charge/I:pdgId/I:isLoose/O:isMedium/O:isTight/O:isMVANonTrigMedium/O:isMatched/O";}
 
 
 //********************//
@@ -157,10 +157,10 @@ void ObjectsFormat::FillTauType(TauType& I, const pat::Tau* R, bool isMC) {
     I.phi         = R->phi();
     I.mass        = R->mass();
     I.energy      = R->energy();
-    I.charge      = R->charge();
-    I.pdgId       = R->pdgId();
     I.pfIso       = R->hasUserFloat("pfIso") ? R->userFloat("pfIso") : -1.;
     I.dz          = R->hasUserFloat("dz") ? R->userFloat("dz") : 0.;
+    I.charge      = R->charge();
+    I.pdgId       = R->pdgId();
     I.isLoose     = R->hasUserInt("isLoose") ? R->userInt("isLoose") : false;
     I.isMedium    = R->hasUserInt("isMedium") ? R->userInt("isMedium") : false;
     I.isTight     = R->hasUserInt("isTight") ? R->userInt("isTight") : false;
@@ -174,17 +174,17 @@ void ObjectsFormat::ResetTauType(TauType& I) {
     I.phi         = -9.;
     I.mass        = -1.;
     I.energy      = -1.;
-    I.charge      = 0;
-    I.pdgId       = 0;
     I.pfIso       = -1.;
     I.dz          = -99.;
+    I.charge      = 0;
+    I.pdgId       = 0;
     I.isLoose     = false;
     I.isMedium    = false;
     I.isTight     = false;
     I.isMatched   = false;
 }
 
-std::string ObjectsFormat::ListTauType() {return "pt/F:eta/F:phi/F:mass/F:energy/F:charge/I:pdgId/I:pfIso/F:dz/F:isLoose/O:isMedium/O:isTight/O:isMatched/O";}
+std::string ObjectsFormat::ListTauType() {return "pt/F:eta/F:phi/F:mass/F:energy/F:pfIso/F:dz/F:charge/I:pdgId/I:isLoose/O:isMedium/O:isTight/O:isMatched/O";}
 
 
 //*******************//
@@ -231,6 +231,7 @@ void ObjectsFormat::FillJetType(JetType& I, const pat::Jet* R, bool isMC) {
   //  I.CSVV1       = R->bDiscriminator("combinedSecondaryVertexV1BJetTags");
   //  I.CSVSL       = R->bDiscriminator("combinedSecondaryVertexSoftPFLeptonV1BJetTags");
   //  I.JPro        = R->bDiscriminator("jetProbabilityBJetTags"); // jetBProbabilityBJetTags
+    I.QGLikelihood = R->hasUserFloat("QGLikelihood") ? R->userFloat("QGLikelihood") : -1.;
   //  if(isMC) {
   //    if(abs(R->partonFlavour())==5 || abs(R->partonFlavour())==4) {
   //      I.LooseSF      = theBTagWeight->ReturnScaleFactor(1, R->pt(), R->eta());
@@ -266,7 +267,6 @@ void ObjectsFormat::FillJetType(JetType& I, const pat::Jet* R, bool isMC) {
     I.isCSVM      = false;//IsBTagged(Tagger, 2, I.CSV);
     I.isCSVT      = false;//IsBTagged(Tagger, 3, I.CSV);
     I.isMatched   = (I.mother==25);
-    I.QGLikelihood = R->hasUserFloat("QGLikelihood") ? R->userFloat("QGLikelihood") : -1.;  
 }
 
 void ObjectsFormat::ResetJetType(JetType& I) {
@@ -288,6 +288,7 @@ void ObjectsFormat::ResetJetType(JetType& I) {
     I.CMVAR       = -99.;
     I.CMVARUp     = -99.;
     I.CMVARDown   = -99.;
+    I.QGLikelihood = -1.;
     I.chf         = -1.;
     I.nhf         = -1.;
     I.phf         = -1.;
@@ -305,10 +306,9 @@ void ObjectsFormat::ResetJetType(JetType& I) {
     I.isCSVM      = false;
     I.isCSVT      = false;
     I.isMatched   = false;
-    I.QGLikelihood = -1.;
 }
 
-std::string ObjectsFormat::ListJetType() {return "pt/F:eta/F:phi/F:mass/F:energy/F:ptRaw/F:ptUnc/F:dPhi_met/F:dPhi_Jet1/F:puId/F:CSV/F:CSVR/F:CSVRUp/F:CSVRDown/F:CMVA/F:CMVAR/F:CMVARUp/F:CMVARDown/F:chf/F:nhf/F:phf/F:elf/F:muf/F:chm/I:npr/I:flavour/I:mother/I:isLoose/O:isMedium/O:isTight/O:isTightLepVeto/O:isCSVL/O:isCSVM/O:isCSVT/O:isMatched/O:QGLikelihood/F";}
+std::string ObjectsFormat::ListJetType() {return "pt/F:eta/F:phi/F:mass/F:energy/F:ptRaw/F:ptUnc/F:dPhi_met/F:dPhi_Jet1/F:puId/F:CSV/F:CSVR/F:CSVRUp/F:CSVRDown/F:CMVA/F:CMVAR/F:CMVARUp/F:CMVARDown/F:QGLikelihood/F:chf/F:nhf/F:phf/F:elf/F:muf/F:chm/I:npr/I:flavour/I:mother/I:isLoose/O:isMedium/O:isTight/O:isTightLepVeto/O:isCSVL/O:isCSVM/O:isCSVT/O:isMatched/O";}
 
 //*******************//
 //     Fat Jet       //
@@ -368,20 +368,6 @@ void ObjectsFormat::FillFatJetType(FatJetType& I, const pat::Jet* R, bool isMC) 
   //      I.TightSFa     = (1.-1.e-3*theBTagWeight->ReturnScaleFactorMistag(3, R->pt(), R->eta()))/(1.-1.e-3);
   //    }
   //  }
-    I.chf         = R->chargedHadronEnergyFraction();
-    I.nhf         = R->neutralHadronEnergyFraction();
-    I.phf         = R->neutralEmEnergyFraction();
-    I.elf         = R->chargedEmEnergyFraction();
-    I.muf         = R->muonEnergyFraction();
-    I.chm         = R->chargedHadronMultiplicity();
-    I.npr         = R->chargedMultiplicity() + R->neutralMultiplicity();
-    I.flavour     = R->partonFlavour();
-    if(isMC && R->genParton()) I.mother = false;//Utilities::FindMotherId(dynamic_cast<const reco::Candidate*>(R->genParton()));
-    I.isLoose     = R->hasUserInt("isLoose") ? R->userInt("isLoose") : false;
-    I.isMedium    = false;
-    I.isTight     = R->hasUserInt("isTight") ? R->userInt("isTight") : false;
-    I.isTightLepVeto     = R->hasUserInt("isTightLepVeto") ? R->userInt("isTightLepVeto") : false;
-    I.isMatched   = (I.mother==25);
     I.prunedMass            = R->hasUserFloat("ak8PFJetsCHSPrunedMass") ? R->userFloat("ak8PFJetsCHSPrunedMass") : -1.;
     I.softdropMass          = R->hasUserFloat("ak8PFJetsCHSSoftDropMass") ? R->userFloat("ak8PFJetsCHSSoftDropMass") : -1.;
     I.softdropPuppiMass     = R->hasUserFloat("ak8PFJetsCHSSoftDropPuppiMass") ? R->userFloat("ak8PFJetsCHSSoftDropPuppiMass") : -1.;
@@ -417,6 +403,20 @@ void ObjectsFormat::FillFatJetType(FatJetType& I, const pat::Jet* R, bool isMC) 
     I.dR          = R->subjets("SoftDrop").size() > 1 ? deltaR(*R->subjets("SoftDrop")[0], *R->subjets("SoftDrop")[1]) : -1.;
     I.tau21       = R->userFloat("NjettinessAK8:tau1") != 0 ? R->userFloat("NjettinessAK8:tau2")/R->userFloat("NjettinessAK8:tau1") : -1.;
     I.BDSV        = R->bDiscriminator("pfBoostedDoubleSecondaryVertexAK8BJetTags");
+    I.chf         = R->chargedHadronEnergyFraction();
+    I.nhf         = R->neutralHadronEnergyFraction();
+    I.phf         = R->neutralEmEnergyFraction();
+    I.elf         = R->chargedEmEnergyFraction();
+    I.muf         = R->muonEnergyFraction();
+    I.chm         = R->chargedHadronMultiplicity();
+    I.npr         = R->chargedMultiplicity() + R->neutralMultiplicity();
+    I.flavour     = R->partonFlavour();
+    if(isMC && R->genParton()) I.mother = false;//Utilities::FindMotherId(dynamic_cast<const reco::Candidate*>(R->genParton()));
+    I.isLoose     = R->hasUserInt("isLoose") ? R->userInt("isLoose") : false;
+    I.isMedium    = false;
+    I.isTight     = R->hasUserInt("isTight") ? R->userInt("isTight") : false;
+    I.isTightLepVeto     = R->hasUserInt("isTightLepVeto") ? R->userInt("isTightLepVeto") : false;
+    I.isMatched   = (I.mother==25);
 }
 
 void ObjectsFormat::ResetFatJetType(FatJetType& I) {
@@ -434,20 +434,6 @@ void ObjectsFormat::ResetFatJetType(FatJetType& I) {
     I.CSVR        = -99.;
     I.CSVRUp      = -99.;
     I.CSVRDown    = -99.;
-    I.chf         = -1.;
-    I.nhf         = -1.;
-    I.phf         = -1.;
-    I.elf         = -1.;
-    I.muf         = -1.;
-    I.chm         = -1.;
-    I.npr         = -1.;
-    I.flavour     = 0;
-    I.mother      = false;
-    I.isLoose     = false;
-    I.isMedium    = false;
-    I.isTight     = false;
-    I.isTightLepVeto     = false;
-    I.isMatched   = false;
     I.prunedMass            = -1.;
     I.softdropMass          = -1.;
     I.softdropPuppiMass     = -1.;
@@ -483,9 +469,23 @@ void ObjectsFormat::ResetFatJetType(FatJetType& I) {
     I.dR          = -1.;
     I.tau21       = -1.;
     I.BDSV        = -99.;
+    I.chf         = -1.;
+    I.nhf         = -1.;
+    I.phf         = -1.;
+    I.elf         = -1.;
+    I.muf         = -1.;
+    I.chm         = -1.;
+    I.npr         = -1.;
+    I.flavour     = 0;
+    I.mother      = false;
+    I.isLoose     = false;
+    I.isMedium    = false;
+    I.isTight     = false;
+    I.isTightLepVeto     = false;
+    I.isMatched   = false;
 }
 
-std::string ObjectsFormat::ListFatJetType() {return "pt/F:eta/F:phi/F:mass/F:energy/F:ptRaw/F:ptUnc/F:dPhi_met/F:dPhi_Jet1/F:puId/F:CSV/F:CSVR/F:CSVRUp/F:CSVRDown/F:chf/F:nhf/F:phf/F:elf/F:muf/F:chm/I:npr/I:flavour/I:mother/I:isLoose/O:isMedium/O:isTight/O:isTightLepVeto/O:isCSVL/O:isCSVM/O:isCSVT/O:isMatched/O:prunedMass/F:softdropMass/F:softdropPuppiMass/F:prunedMassCorr/F:softdropMassCorr/F:softdropPuppiMassCorr/F:pt1/F:eta1/F:phi1/F:mass1/F:CSV1/F:CSVR1/F:CSVR1Up/F:CSVR1Down/F:CMVA1/F:CMVAR1/F:CMVAR1Up/F:CMVAR1Down/F:flavour1/F:pt2/F:eta2/F:phi2/F:mass2/F:CSV2/F:CSVR2/F:CSVR2Up/F:CSVR2Down/F:CMVA2/F:CMVAR2/F:CMVAR2Up/F:CMVAR2Down/F:flavour2/F:dR/F:tau21/F:BDSV/F";}
+std::string ObjectsFormat::ListFatJetType() {return "pt/F:eta/F:phi/F:mass/F:energy/F:ptRaw/F:ptUnc/F:dPhi_met/F:dPhi_Jet1/F:puId/F:CSV/F:CSVR/F:CSVRUp/F:CSVRDown/F:prunedMass/F:softdropMass/F:softdropPuppiMass/F:prunedMassCorr/F:softdropMassCorr/F:softdropPuppiMassCorr/F:pt1/F:eta1/F:phi1/F:mass1/F:CSV1/F:CSVR1/F:CSVR1Up/F:CSVR1Down/F:CMVA1/F:CMVAR1/F:CMVAR1Up/F:CMVAR1Down/F:flavour1/F:pt2/F:eta2/F:phi2/F:mass2/F:CSV2/F:CSVR2/F:CSVR2Up/F:CSVR2Down/F:CMVA2/F:CMVAR2/F:CMVAR2Up/F:CMVAR2Down/F:flavour2/F:dR/F:tau21/F:BDSV/F:chf/F:nhf/F:phf/F:elf/F:muf/F:chm/I:npr/I:flavour/I:mother/I:isLoose/O:isMedium/O:isTight/O:isTightLepVeto/O:isCSVL/O:isCSVM/O:isCSVT/O:isMatched/O";}
 
 
 
