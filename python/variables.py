@@ -567,6 +567,13 @@ var_template = {
       "max" : 300,
       "log" : False,
     },
+    "FatJet[N]_softdropPuppiMassCorr": {
+      "title" : "jet PUPPI soft drop mass (GeV)",
+      "nbins" : 60,
+      "min" : 0,
+      "max" : 300,
+      "log" : False,
+    },
     "FatJet[N].dR": {
       "title" : "subjets #Delta R",
       "nbins" : 20,
@@ -927,7 +934,7 @@ var_template = {
       "nbins" : 50,
       "min" : 0,
       "max" : 3.14,
-      "log" : False,
+      "log" : True,
     },
     
     #
@@ -1137,7 +1144,7 @@ var_template = {
       "nbins" : 50,
       "min" : 0,
       "max" : 3.14,
-      "log" : False,
+      "log" : True,
     },
 
 }

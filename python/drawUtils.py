@@ -414,6 +414,7 @@ def drawRegion(channel, left=False):
         # leptons
         if 'ee' in channel: text += "2e"
         elif 'mm' in channel: text += "2#mu"
+        elif ( ('me' in channel) or ('em' in channel) ) : text += "1e 1#mu"
         elif 'e' in channel: text += "1e"
         elif 'm' in channel: text += "1#mu"
         elif 'll' in channel: text += "2l"
