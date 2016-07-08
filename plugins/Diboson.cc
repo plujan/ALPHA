@@ -898,6 +898,57 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     
     // Fill tree
     tree->Fill();
+
+//     Fill tree for alpha
+    
+//     if ( (isZtoMM || isZtoEE) && V.pt > 100 && nFatJets > 0 ){ 
+    if ( isZtoMM || isZtoEE ){ 
+        // Lepton1
+        Lepton1_isMuon = Leptons[0].isMuon;
+        Lepton1_isElectron = Leptons[0].isElectron;
+        Lepton1_isLoose = Leptons[0].isLoose;
+        Lepton1_isHighPt = Leptons[0].isHighPt;
+        Lepton1_isTrackerHighPt = Leptons[0].isTrackerHighPt;
+        Lepton1_isTight = Leptons[0].isTight;
+        Lepton1_pt = Leptons[0].pt;
+        Lepton1_trkIso = Leptons[0].trkIso;
+        // Lepton2        
+        Lepton2_isMuon = Leptons[1].isMuon;
+        Lepton2_isElectron = Leptons[1].isElectron;
+        Lepton2_isLoose = Leptons[1].isLoose;
+        Lepton2_isHighPt = Leptons[1].isHighPt;
+        Lepton2_isTrackerHighPt = Leptons[1].isTrackerHighPt;
+        Lepton2_isTight = Leptons[1].isTight;
+        Lepton2_pt = Leptons[1].pt;
+        Lepton2_trkIso = Leptons[1].trkIso;
+        // MET        
+        MEt_pt = MEt.pt;
+        // V        
+        V_pt  = V.pt;
+        V_dPhi = V.dPhi;
+        V_mass = V.mass;
+        V_tmass = V.tmass;
+        // X        
+        X_pt = X.pt;
+        X_dPhi = X.dPhi;
+        X_mass = X.mass;
+        X_tmass = X.tmass;
+        // FatJet1
+        FatJet1_isTight = FatJets[0].isTight;
+        FatJet1_pt = FatJets[0].pt;
+        FatJet1_prunedMass = FatJets[0].prunedMass;
+        FatJet1_softdropMass = FatJets[0].softdropMass;
+        FatJet1_softdropPuppiMass = FatJets[0].softdropPuppiMass;
+        FatJet1_prunedMassCorr = FatJets[0].prunedMassCorr;
+        FatJet1_softdropMassCorr = FatJets[0].softdropMassCorr;
+        FatJet1_softdropPuppiMassCorr = FatJets[0].softdropPuppiMassCorr;
+        FatJet1_tau21 = FatJets[0].tau21;
+        FatJet1_CSV1 = FatJets[0].CSV1;
+        FatJet1_CSV2 = FatJets[0].CSV2;
+
+        treealpha->Fill();
+    }     
+
     if(Verbose) std::cout << " - Tree filled, end of event" << std::endl;
     
     if(theV.mass()<80. || theV.mass()>100.) {if(Verbose) std::cout << " - Z off-shell" << std::endl; return;}
@@ -950,7 +1001,6 @@ void Diboson::beginJob() {
     for(int i = 0; i < WriteNPhotons; i++) Photons.push_back( PhotonType() );
     for(int i = 0; i < WriteNJets; i++) Jets.push_back( JetType() );
     for(int i = 0; i < WriteNFatJets; i++) FatJets.push_back( FatJetType() );
-    
     
     // Create Tree and set Branches
     tree=fs->make<TTree>("tree", "tree");
@@ -1007,83 +1057,95 @@ void Diboson::beginJob() {
     tree->Branch("Phi1", &Phi1, "Phi1/F");
   
     // Set Branches for objects
-    for(int i = 0; i < WriteNElectrons; i++) tree->Branch(("Electron"+std::to_string(i+1)).c_str(), &(Electrons[i]), ObjectsFormat::ListLeptonType().c_str());
-    for(int i = 0; i < WriteNMuons; i++) tree->Branch(("Muon"+std::to_string(i+1)).c_str(), &(Muons[i]), ObjectsFormat::ListLeptonType().c_str());
-    for(int i = 0; i < WriteNLeptons; i++) tree->Branch(("Lepton"+std::to_string(i+1)).c_str(), &(Leptons[i]), ObjectsFormat::ListLeptonType().c_str());
-    for(int i = 0; i < WriteNTaus; i++) tree->Branch(("Tau"+std::to_string(i+1)).c_str(), &(Taus[i]), ObjectsFormat::ListTauType().c_str());
-    for(int i = 0; i < WriteNPhotons; i++) tree->Branch(("Photon"+std::to_string(i+1)).c_str(), &(Photons[i]), ObjectsFormat::ListPhotonType().c_str());
-    for(int i = 0; i < WriteNJets; i++) tree->Branch(("Jet"+std::to_string(i+1)).c_str(), &(Jets[i]), ObjectsFormat::ListJetType().c_str());
-    for(int i = 0; i < WriteNFatJets; i++) tree->Branch(("FatJet"+std::to_string(i+1)).c_str(), &(FatJets[i]), ObjectsFormat::ListFatJetType().c_str());
-    tree->Branch("MEt", &MEt, ObjectsFormat::ListMEtType().c_str());
-    tree->Branch("V", &V, ObjectsFormat::ListCandidateType().c_str());
-    tree->Branch("H", &H, ObjectsFormat::ListCandidateType().c_str());
-    tree->Branch("A", &A, ObjectsFormat::ListCandidateType().c_str());
-    tree->Branch("X", &X, ObjectsFormat::ListCandidateType().c_str());
-    tree->Branch("kH", &kH, ObjectsFormat::ListLorentzType().c_str());
-    tree->Branch("kA", &kA, ObjectsFormat::ListLorentzType().c_str());
-    tree->Branch("HMerged", &HMerged, ObjectsFormat::ListCandidateType().c_str());
-    tree->Branch("XMerged", &XMerged, ObjectsFormat::ListCandidateType().c_str());
-    tree->Branch("HResolved", &HResolved, ObjectsFormat::ListCandidateType().c_str());
-    tree->Branch("HResolvedPt", &HResolvedPt, ObjectsFormat::ListCandidateType().c_str());
-    tree->Branch("HResolvedHpt", &HResolvedHpt, ObjectsFormat::ListCandidateType().c_str());
-    tree->Branch("HResolvedDZ", &HResolvedDZ, ObjectsFormat::ListCandidateType().c_str());
-    tree->Branch("HResolvedDR", &HResolvedDR, ObjectsFormat::ListCandidateType().c_str());
-    tree->Branch("XResolved", &XResolved, ObjectsFormat::ListCandidateType().c_str());
-    tree->Branch("XResolvedPt", &XResolvedPt, ObjectsFormat::ListCandidateType().c_str());
-    tree->Branch("XResolvedHpt", &XResolvedHpt, ObjectsFormat::ListCandidateType().c_str());
-    tree->Branch("XResolvedDZ", &XResolvedDZ, ObjectsFormat::ListCandidateType().c_str());
-    tree->Branch("XResolvedDR", &XResolvedDR, ObjectsFormat::ListCandidateType().c_str());
+    for(int i = 0; i < WriteNElectrons; i++) tree->Branch(("Electron"+std::to_string(i+1)).c_str(), &(Electrons[i].pt), ObjectsFormat::ListLeptonType().c_str());
+    for(int i = 0; i < WriteNMuons; i++) tree->Branch(("Muon"+std::to_string(i+1)).c_str(), &(Muons[i].pt), ObjectsFormat::ListLeptonType().c_str());
+    for(int i = 0; i < WriteNLeptons; i++) tree->Branch(("Lepton"+std::to_string(i+1)).c_str(), &(Leptons[i].pt), ObjectsFormat::ListLeptonType().c_str());
+    for(int i = 0; i < WriteNTaus; i++) tree->Branch(("Tau"+std::to_string(i+1)).c_str(), &(Taus[i].pt), ObjectsFormat::ListTauType().c_str());
+    for(int i = 0; i < WriteNPhotons; i++) tree->Branch(("Photon"+std::to_string(i+1)).c_str(), &(Photons[i].pt), ObjectsFormat::ListPhotonType().c_str());
+    for(int i = 0; i < WriteNJets; i++) tree->Branch(("Jet"+std::to_string(i+1)).c_str(), &(Jets[i].pt), ObjectsFormat::ListJetType().c_str());
+    for(int i = 0; i < WriteNFatJets; i++) tree->Branch(("FatJet"+std::to_string(i+1)).c_str(), &(FatJets[i].pt), ObjectsFormat::ListFatJetType().c_str());
+    tree->Branch("MEt", &MEt.pt, ObjectsFormat::ListMEtType().c_str());
+    tree->Branch("V", &V.pt, ObjectsFormat::ListCandidateType().c_str());
+    tree->Branch("H", &H.pt, ObjectsFormat::ListCandidateType().c_str());
+    tree->Branch("A", &A.pt, ObjectsFormat::ListCandidateType().c_str());
+    tree->Branch("X", &X.pt, ObjectsFormat::ListCandidateType().c_str());
+    tree->Branch("kH", &kH.pt, ObjectsFormat::ListLorentzType().c_str());
+    tree->Branch("kA", &kA.pt, ObjectsFormat::ListLorentzType().c_str());
+    tree->Branch("HMerged", &HMerged.pt, ObjectsFormat::ListCandidateType().c_str());
+    tree->Branch("XMerged", &XMerged.pt, ObjectsFormat::ListCandidateType().c_str());
+    tree->Branch("HResolved", &HResolved.pt, ObjectsFormat::ListCandidateType().c_str());
+    tree->Branch("HResolvedPt", &HResolvedPt.pt, ObjectsFormat::ListCandidateType().c_str());
+    tree->Branch("HResolvedHpt", &HResolvedHpt.pt, ObjectsFormat::ListCandidateType().c_str());
+    tree->Branch("HResolvedDZ", &HResolvedDZ.pt, ObjectsFormat::ListCandidateType().c_str());
+    tree->Branch("HResolvedDR", &HResolvedDR.pt, ObjectsFormat::ListCandidateType().c_str());
+    tree->Branch("XResolved", &XResolved.pt, ObjectsFormat::ListCandidateType().c_str());
+    tree->Branch("XResolvedPt", &XResolvedPt.pt, ObjectsFormat::ListCandidateType().c_str());
+    tree->Branch("XResolvedHpt", &XResolvedHpt.pt, ObjectsFormat::ListCandidateType().c_str());
+    tree->Branch("XResolvedDZ", &XResolvedDZ.pt, ObjectsFormat::ListCandidateType().c_str());
+    tree->Branch("XResolvedDR", &XResolvedDR.pt, ObjectsFormat::ListCandidateType().c_str());
+    
+    // -------------------    
+    
+    // Create Tree for alpha and set Branches    
+    treealpha=fs->make<TTree>("treealpha", "treealpha");
+
+    treealpha->Branch("isMC", &isMC, "isMC/O");
+    treealpha->Branch("EventWeight", &EventWeight, "EventWeight/F");
+    
+    // Set trigger branches
+    for(auto it = TriggerMap.begin(); it != TriggerMap.end(); it++) treealpha->Branch(it->first.c_str(), &(it->second), (it->first+"/O").c_str());
+    
+    // Analysis variables
+    treealpha->Branch("isZtoEE", &isZtoEE, "isZtoEE/O");
+    treealpha->Branch("isZtoMM", &isZtoMM, "isZtoMM/O");
+    
+    // Objects
+    treealpha->Branch("nElectrons", &nElectrons, "nElectrons/I");
+    treealpha->Branch("nMuons", &nMuons, "nMuons/I");
+    treealpha->Branch("nFatJets", &nFatJets, "nFatJets/I");
     
     // Lepton1
-    tree->Branch("Lepton1_isMuon", &Leptons[0].isMuon, "Lepton1_isMuon/O");
-    tree->Branch("Lepton1_isElectron", &Leptons[0].isElectron, "Lepton1_isElectron/O");
-    tree->Branch("Lepton1_isLoose", &Leptons[0].isLoose, "Lepton1_isLoose/O");
-    tree->Branch("Lepton1_isHighPt", &Leptons[0].isHighPt, "Lepton1_isHighPt/O");
-    tree->Branch("Lepton1_isTrackerHighPt", &Leptons[0].isTrackerHighPt, "Lepton1_isTrackerHighPt/O");
-    tree->Branch("Lepton1_isTight", &Leptons[0].isTight, "Lepton1_isTight/O");
-    tree->Branch("Lepton1_isMuon", &Leptons[0].isMuon, "Lepton1_isMuon/O");
-    tree->Branch("Lepton1_pt", &Leptons[0].pt, "Lepton1_pt/F");
-    tree->Branch("Lepton1_trkIso", &Leptons[0].trkIso, "Lepton1_trkIso/F");
+    treealpha->Branch("Lepton1_isMuon", &Lepton1_isMuon, "Lepton1_isMuon/O");
+    treealpha->Branch("Lepton1_isElectron", &Lepton1_isElectron, "Lepton1_isElectron/O");
+    treealpha->Branch("Lepton1_isLoose", &Lepton1_isLoose, "Lepton1_isLoose/O");
+    treealpha->Branch("Lepton1_isHighPt", &Lepton1_isHighPt, "Lepton1_isHighPt/O");
+    treealpha->Branch("Lepton1_isTrackerHighPt", &Lepton1_isTrackerHighPt, "Lepton1_isTrackerHighPt/O");
+    treealpha->Branch("Lepton1_pt", &Lepton1_pt, "Lepton1_pt/F");
+    treealpha->Branch("Lepton1_trkIso", &Lepton1_trkIso, "Lepton1_trkIso/F");
 
     // Lepton2
-    tree->Branch("Lepton2_isMuon", &Leptons[0].isMuon, "Lepton2_isMuon/O");
-    tree->Branch("Lepton2_isElectron", &Leptons[0].isElectron, "Lepton2_isElectron/O");
-    tree->Branch("Lepton2_isLoose", &Leptons[0].isLoose, "Lepton2_isLoose/O");
-    tree->Branch("Lepton2_isHighPt", &Leptons[0].isHighPt, "Lepton2_isHighPt/O");
-    tree->Branch("Lepton2_isTrackerHighPt", &Leptons[0].isTrackerHighPt, "Lepton2_isTrackerHighPt/O");
-    tree->Branch("Lepton2_isTight", &Leptons[0].isTight, "Lepton2_isTight/O");
-    tree->Branch("Lepton2_isMuon", &Leptons[0].isMuon, "Lepton2_isMuon/O");
-    tree->Branch("Lepton2_pt", &Leptons[0].pt, "Lepton2_pt/F");
-    tree->Branch("Lepton2_trkIso", &Leptons[0].trkIso, "Lepton2_trkIso/F");
+    treealpha->Branch("Lepton2_isMuon", &Lepton2_isMuon, "Lepton2_isMuon/O");
+    treealpha->Branch("Lepton2_isElectron", &Lepton2_isElectron, "Lepton2_isElectron/O");
+    treealpha->Branch("Lepton2_isLoose", &Lepton2_isLoose, "Lepton2_isLoose/O");
+    treealpha->Branch("Lepton2_isHighPt", &Lepton2_isHighPt, "Lepton2_isHighPt/O");
+    treealpha->Branch("Lepton2_isTrackerHighPt", &Lepton2_isTrackerHighPt, "Lepton2_isTrackerHighPt/O");
+    treealpha->Branch("Lepton2_pt", &Lepton2_pt, "Lepton2_pt/F");
+    treealpha->Branch("Lepton2_trkIso", &Lepton2_trkIso, "Lepton2_trkIso/F");
 
     // MET        
-    tree->Branch("MEt_pt", &MEt.pt, "MEt_pt/F");
+    treealpha->Branch("MEt_pt", &MEt_pt, "MEt_pt/F");
 
     // V        
-    tree->Branch("V_pt", &V.pt, "V_pt/F");
-    tree->Branch("V_dPhi", &V.dPhi, "V_dPhi/F");
-    tree->Branch("V_mass", &V.mass, "V_mass/F");
-    tree->Branch("V_tmass", &V.tmass, "V_tmass/F");
+    treealpha->Branch("V_pt", &V_pt, "V_pt/F");
+    treealpha->Branch("V_mass", &V_mass, "V_mass/F");
+    treealpha->Branch("V_tmass", &V_tmass, "V_tmass/F");
 
     // X        
-    tree->Branch("X_pt", &X.pt, "X_pt/F");
-    tree->Branch("X_dPhi", &X.dPhi, "X_dPhi/F");
-    tree->Branch("X_mass", &X.mass, "X_mass/F");
-    tree->Branch("X_tmass", &X.tmass, "X_tmass/F");
+    treealpha->Branch("X_pt", &X_pt, "X_pt/F");
+    treealpha->Branch("X_dPhi", &X_dPhi, "X_dPhi/F");
+    treealpha->Branch("X_mass", &X_mass, "X_mass/F");
+    treealpha->Branch("X_tmass", &X_tmass, "X_tmass/F");
 
     // FatJet1
-    tree->Branch("FatJet1_isTight", &FatJets[0].isTight, "FatJet1_isTight/O");
-    tree->Branch("FatJet1_pt", &FatJets[0].pt, "FatJet1_pt/F");
-    tree->Branch("FatJet1_prunedMass", &FatJets[0].prunedMass, "FatJet1_prunedMass/F");
-    tree->Branch("FatJet1_softdropMass", &FatJets[0].softdropMass, "FatJet1_softdropMass/F");
-    tree->Branch("FatJet1_softdropPuppiMass", &FatJets[0].softdropPuppiMass, "FatJet1_softdropPuppiMass/F");
-    tree->Branch("FatJet1_prunedMassCorr", &FatJets[0].prunedMassCorr, "FatJet1_prunedMassCorr/F");
-    tree->Branch("FatJet1_softdropMassCorr", &FatJets[0].softdropMassCorr, "FatJet1_softdropMassCorr/F");
-    tree->Branch("FatJet1_softdropPuppiMassCorr", &FatJets[0].softdropPuppiMassCorr, "FatJet1_softdropPuppiMassCorr/F");
-    tree->Branch("FatJet1_tau21", &FatJets[0].tau21, "FatJet1_tau21/F");
-    tree->Branch("FatJet1_CSV1", &FatJets[0].CSV1, "FatJet1_CSV1/F");
-    tree->Branch("FatJet1_CSV2", &FatJets[0].CSV2, "FatJet1_CSV2/F");
-    
+    treealpha->Branch("FatJet1_pt", &FatJet1_pt, "FatJet1_pt/F");
+    treealpha->Branch("FatJet1_prunedMass", &FatJet1_prunedMass, "FatJet1_prunedMass/F");
+    treealpha->Branch("FatJet1_softdropMass", &FatJet1_softdropMass, "FatJet1_softdropMass/F");
+    treealpha->Branch("FatJet1_softdropPuppiMass", &FatJet1_softdropPuppiMass, "FatJet1_softdropPuppiMass/F");
+    treealpha->Branch("FatJet1_prunedMassCorr", &FatJet1_prunedMassCorr, "FatJet1_prunedMassCorr/F");
+    treealpha->Branch("FatJet1_softdropMassCorr", &FatJet1_softdropMassCorr, "FatJet1_softdropMassCorr/F");
+    treealpha->Branch("FatJet1_softdropPuppiMassCorr", &FatJet1_softdropPuppiMassCorr, "FatJet1_softdropPuppiMassCorr/F");
+    treealpha->Branch("FatJet1_tau21", &FatJet1_tau21, "FatJet1_tau21/F");
+
 }
 
 // ------------ method called once each job just after ending the event loop  ------------

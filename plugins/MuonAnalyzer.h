@@ -73,7 +73,7 @@ class MuonAnalyzer {
         TH2F* MuonIsoLoose;
         TH2F* MuonIsoTight;
         TH2F* MuonIsoHighpt;
-};
+}; 
 
 
 #endif

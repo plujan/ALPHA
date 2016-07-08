@@ -86,7 +86,6 @@
 #include "TH2.h"
 #include "TH1.h"
 
-
 #include "Objects.h"
 #include "ObjectsFormat.h"
 #include "GenAnalyzer.h"
@@ -154,6 +153,7 @@ class Diboson : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
         
         edm::Service<TFileService> fs;
         TTree* tree;
+        TTree* treealpha;
         bool isMC, isZtoEE, isZtoMM, isTtoEM, isWtoEN, isWtoMN, isZtoNN, isMerged, isResolved;
         long int EventNumber, RunNumber, LumiNumber;
         float EventWeight, StitchWeight, ZewkWeight, WewkWeight, PUWeight, TriggerWeight, LeptonWeight;

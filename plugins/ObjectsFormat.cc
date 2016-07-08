@@ -39,8 +39,8 @@ void ObjectsFormat::FillElectronType(LeptonType& I, const pat::Electron* R, bool
 }
 
 void ObjectsFormat::FillMuonType(LeptonType& I, const pat::Muon* R, bool isMC) {
-    if(!R) return;
-    I.pt          = R->pt();
+    if(!R) return; 
+    I.pt          = R->tunePMuonBestTrack()->pt();
     I.eta         = R->eta();
     I.phi         = R->phi();
     I.mass        = R->mass();
