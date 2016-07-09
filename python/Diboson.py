@@ -24,9 +24,9 @@ if len(options.inputFiles) == 0:
         fileNames = cms.untracked.vstring(
             #'file:/lustre/cmswork/zucchett/CMSSW_8_0_5/src/00F0B3DC-211B-E611-A6A0-001E67248A39.root' # DYJets
 #           'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/user/lbenato/BulkGraviton_ZZ_ZlepZhad_narrow_M1000_13TeV-madgraph_MINIAODv2_805_10000ev/BulkGravToZZToZlepZhad_narrow_M-1000_13TeV-madgraph_PRIVATE-MC/BulkGraviton_ZZ_ZlepZhad_narrow_M1000_13TeV-madgraph_MINIAODv2_805_10000ev/160525_131443/0000/BulkGraviton_ZZ_ZlepZhad_narrow_M1000_13TeV-madgraph_MINIAODv2_1.root'
-#            'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/PromptReco-v1/000/273/013/00000/C09E75A4-3519-E611-8BA9-02163E014476.root', # SingleMuon
-    #        'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/DoubleEG/MINIAOD/PromptReco-v2/000/273/725/00000/72118358-B620-E611-9C76-02163E012211.root', # DoubleEle
-            'file:/lustre/cmswork/zucchett/CMSSW_8_0_5/src/GluGluToAToZhToLLBB_M300_13TeV-amcatnlo_MINIAODv2.root', # DEBUG
+           #'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/PromptReco-v1/000/273/013/00000/C09E75A4-3519-E611-8BA9-02163E014476.root', # SingleMuon
+           'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/DoubleEG/MINIAOD/PromptReco-v2/000/273/725/00000/72118358-B620-E611-9C76-02163E012211.root', # DoubleEle
+            #'file:/lustre/cmswork/zucchett/CMSSW_8_0_5/src/GluGluToAToZhToLLBB_M300_13TeV-amcatnlo_MINIAODv2.root', # DEBUG
 #            'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISpring16MiniAODv2/WJetsToLNu_HT-1200To2500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_ext1-v1/10000/AC51B7C5-7829-E611-AF89-6CC2173DA9E0.root', #DEBUG
         )
     )
@@ -54,7 +54,7 @@ print "Running on", ("data" if isData else "MC"), ", sample is", sample
 # JSON filter
 import FWCore.PythonUtilities.LumiList as LumiList
 if isData:
-    process.source.lumisToProcess = LumiList.LumiList(filename = '%s/src/Analysis/ALPHA/data/JSON/Cert_271036-275125_13TeV_PromptReco_Collisions16_JSON.txt' % os.environ['CMSSW_BASE']).getVLuminosityBlockRange() #3.99
+    process.source.lumisToProcess = LumiList.LumiList(filename = '%s/src/Analysis/ALPHA/data/JSON/Cert_271036-275783_13TeV_PromptReco_Collisions16_JSON.txt' % os.environ['CMSSW_BASE']).getVLuminosityBlockRange() #6.26
 
 
 process.counter = cms.EDAnalyzer('CounterAnalyzer',
@@ -250,7 +250,7 @@ process.ntuple = cms.EDAnalyzer('Diboson',
     ),
     triggerSet = cms.PSet(
         trigger = cms.InputTag("TriggerResults", "", "HLT"),
-        paths = cms.vstring('HLT_Mu45_eta2p1_v', 'HLT_Mu50_v', 'HLT_IsoMu20_v', 'HLT_IsoTkMu20_v', 'HLT_IsoMu24_v', 'HLT_IsoTkMu24_v', 'HLT_Mu27_TkMu8_v', 'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v', 'HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v', 'HLT_Ele105_CaloIdVT_GsfTrkIdT_v', 'HLT_Ele23_WPLoose_Gsf_v', 'HLT_Ele27_WPLoose_Gsf_v', 'HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v', 'HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_v', 'HLT_PFMETNoMu90_PFMHTNoMu90_IDTight_v', 'HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v', 'HLT_PFMETNoMu90_JetIdCleaned_PFMHTNoMu90_IDTight_v', 'HLT_PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight_v', 'HLT_PFMET120_BTagCSV_p067_v', 'HLT_PFMET170_NoiseCleaned_v', 'HLT_DoublePhoton60_v',),
+        paths = cms.vstring('HLT_Mu45_eta2p1_v', 'HLT_Mu50_v', 'HLT_TkMu50_v', 'HLT_IsoMu20_v', 'HLT_IsoTkMu20_v', 'HLT_IsoMu24_v', 'HLT_IsoTkMu24_v', 'HLT_Mu27_TkMu8_v', 'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v', 'HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v', 'HLT_Ele105_CaloIdVT_GsfTrkIdT_v', 'HLT_Ele23_WPLoose_Gsf_v', 'HLT_Ele27_WPLoose_Gsf_v', 'HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v', 'HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_v', 'HLT_PFMETNoMu90_PFMHTNoMu90_IDTight_v', 'HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v', 'HLT_PFMETNoMu90_JetIdCleaned_PFMHTNoMu90_IDTight_v', 'HLT_PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight_v', 'HLT_PFMET120_BTagCSV_p067_v', 'HLT_PFMET170_NoiseCleaned_v', 'HLT_DoublePhoton60_v',),
     ),
     electronSet = cms.PSet(
         electrons = cms.InputTag("slimmedElectrons"),
@@ -326,7 +326,8 @@ process.ntuple = cms.EDAnalyzer('Diboson',
         recalibrateJets = cms.bool(False),
         recalibrateMass = cms.bool(False),
         corrector = cms.InputTag("ak4PFL2L3ResidualCorrector"),
-        jecUncertainty = cms.string('%s/src/Analysis/ALPHA/data/Spring16_25nsV3_MC/Spring16_25nsV3_MC_Uncertainty_AK4PFchs.txt' % os.environ['CMSSW_BASE']),
+        jecUncertaintyDATA = cms.string('%s/src/Analysis/ALPHA/data/Spring16_25nsV6_DATA/Spring16_25nsV6_DATA_Uncertainty_AK4PFchs.txt' % os.environ['CMSSW_BASE']),
+        jecUncertaintyMC = cms.string('%s/src/Analysis/ALPHA/data/Spring16_25nsV6_MC/Spring16_25nsV6_MC_Uncertainty_AK4PFchs.txt' % os.environ['CMSSW_BASE']),
         reshapeBTag = cms.bool(True),
         btag = cms.string("pfCombinedInclusiveSecondaryVertexV2BJetTags"),
         btagDB = cms.string('%s/src/Analysis/ALPHA/data/CSVv2.csv' % os.environ['CMSSW_BASE']),
@@ -347,7 +348,8 @@ process.ntuple = cms.EDAnalyzer('Diboson',
         recalibrateJets = cms.bool(False),
         recalibrateMass = cms.bool(True),
         corrector = cms.InputTag("ak4PFL2L3ResidualCorrector"),
-        jecUncertainty = cms.string('%s/src/Analysis/ALPHA/data/Spring16_25nsV3_MC/Spring16_25nsV3_MC_Uncertainty_AK8PFchs.txt' % os.environ['CMSSW_BASE']),
+        jecUncertaintyDATA = cms.string('%s/src/Analysis/ALPHA/data/Spring16_25nsV6_DATA/Spring16_25nsV6_DATA_Uncertainty_AK8PFchs.txt' % os.environ['CMSSW_BASE']),
+        jecUncertaintyMC = cms.string('%s/src/Analysis/ALPHA/data/Spring16_25nsV6_MC/Spring16_25nsV6_MC_Uncertainty_AK8PFchs.txt' % os.environ['CMSSW_BASE']),
         reshapeBTag = cms.bool(True),
         btag = cms.string("pfCombinedInclusiveSecondaryVertexV2BJetTags"),
         btagDB = cms.string('%s/src/Analysis/ALPHA/data/CSVv2.csv' % os.environ['CMSSW_BASE']),
