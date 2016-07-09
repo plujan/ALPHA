@@ -94,8 +94,18 @@ process.HLTFilter = cms.EDFilter("HLTHighLevel",
     throw = cms.bool(False)    # throw exception on unknown path names
 )
 
+process.load('RecoMET.METFilters.metFilters_cff')
+
+process.load('RecoMET.METFilters.BadPFMuonFilter_cfi')
+process.BadPFMuonFilter.muons = cms.InputTag("slimmedMuons")
+process.BadPFMuonFilter.PFCandidates = cms.InputTag("packedPFCandidates")
+
+process.load('RecoMET.METFilters.BadChargedCandidateFilter_cfi')
+process.BadChargedCandidateFilter.muons = cms.InputTag("slimmedMuons")
+process.BadChargedCandidateFilter.PFCandidates = cms.InputTag("packedPFCandidates")
+
 process.METFilter = cms.EDFilter("HLTHighLevel",
-    TriggerResultsTag = cms.InputTag("TriggerResults", "", "HLT"),
+    TriggerResultsTag = cms.InputTag("TriggerResults", "", "RECO"),
     HLTPaths = cms.vstring(
         'Flag_HBHENoiseFilter',
         'Flag_HBHENoiseIsoFilter',
@@ -103,11 +113,7 @@ process.METFilter = cms.EDFilter("HLTHighLevel",
         'Flag_goodVertices',
         'Flag_eeBadScFilter',
         'Flag_globalTightHalo2016Filter',
-#badMuon
-#badCharged hadron
     ),
-    eventSetupPathsKey = cms.string(''), # not empty => use read paths from AlCaRecoTriggerBitsRcd via this key
-    andOr = cms.bool(False),    # how to deal with multiple triggers: True (OR) accept if ANY is true, False (AND) accept if ALL are true
     throw = cms.bool(False)    # throw exception on unknown path names
 )
 
@@ -385,7 +391,11 @@ if isData:
     process.seq = cms.Sequence(
         process.counter *
         process.HLTFilter *
-#        process.METFilter *
+
+        process.METFilter *
+        process.BadPFMuonFilter *
+        process.BadChargedCandidateFilter *
+
         process.primaryVertexFilter *
         process.egmGsfElectronIDSequence *
         process.egmPhotonIDSequence *
@@ -397,6 +407,10 @@ if isData:
 else:
     process.seq = cms.Sequence(
         process.counter *
+
+        process.BadPFMuonFilter *
+        process.BadChargedCandidateFilter *
+
         process.primaryVertexFilter *
         process.egmGsfElectronIDSequence *
         process.egmPhotonIDSequence *
