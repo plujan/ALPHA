@@ -16,6 +16,12 @@ sample = {
         'matcheff': 1.,
         'kfactor' : 1.,
     },
+    'SingleMuonRun2016C-PromptReco-v2' : {
+        'nevents' : 68492270,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
     
     'DoubleMuonRun2016B-PromptReco-v1' : {
         'nevents' : 4201017,
@@ -25,6 +31,12 @@ sample = {
     },
     'DoubleMuonRun2016B-PromptReco-v2' : {
         'nevents' : 19821894,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'DoubleMuonRun2016C-PromptReco-v2' : {
+        'nevents' : 28055320,
         'xsec'    : 1.,
         'matcheff': 1.,
         'kfactor' : 1.,
@@ -42,6 +54,12 @@ sample = {
         'matcheff': 1.,
         'kfactor' : 1.,
     },
+    'SingleElectronRun2016C-PromptReco-v2' : {
+        'nevents' : 97292079,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
     
     'DoubleEGRun2016B-PromptReco-v1' : {
         'nevents' : 5704443,
@@ -51,6 +69,12 @@ sample = {
     },
     'DoubleEGRun2016B-PromptReco-v2' : {
         'nevents' : 29217360,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'DoubleEGRun2016C-PromptReco-v2' : {
+        'nevents' : 49193716,
         'xsec'    : 1.,
         'matcheff': 1.,
         'kfactor' : 1.,
@@ -68,6 +92,12 @@ sample = {
         'matcheff': 1.,
         'kfactor' : 1.,
     },
+    'METRun2016C-PromptReco-v2' : {
+        'nevents' : 18264956,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
     
     'SinglePhotonRun2016B-PromptReco-v1' : {
         'nevents' : 1000000,
@@ -76,6 +106,12 @@ sample = {
         'kfactor' : 1.,
     },
     'SinglePhotonRun2016B-PromptReco-v2' : {
+        'nevents' : 1000000,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'SinglePhotonRun2016C-PromptReco-v2' : {
         'nevents' : 1000000,
         'xsec'    : 1.,
         'matcheff': 1.,
@@ -363,6 +399,18 @@ sample = {
         'matcheff': 1.,
         'kfactor' : 1.,
     },
+    'TTToSemiLeptonic_13TeV-powheg_v0_ext1_red4-v1' : {
+        'nevents' : 82172328/10,
+        'xsec'    : 831.76*(6./9.)*(3./9.)*2.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'TTToSemiLeptonic_13TeV-powheg_v0_ext1_red4-v1' : {
+        'nevents' : 82172328/10,
+        'xsec'    : 831.76*(6./9.)*(3./9.)*2.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
     
     'TTTo2L2Nu_13TeV-powheg_v0_ext1-v1' : {
         'nevents' : 104607105,
@@ -383,6 +431,18 @@ sample = {
         'kfactor' : 1.,
     },
     'TTTo2L2Nu_13TeV-powheg_v0_ext1_red3-v1' : {
+        'nevents' : 104607105/10,
+        'xsec'    : 831.76*(3./9.)*(3./9.),
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'TTTo2L2Nu_13TeV-powheg_v0_ext1_red4-v1' : {
+        'nevents' : 104607105/10,
+        'xsec'    : 831.76*(3./9.)*(3./9.),
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'TTTo2L2Nu_13TeV-powheg_v0_ext1_red5-v1' : {
         'nevents' : 104607105/10,
         'xsec'    : 831.76*(3./9.)*(3./9.),
         'matcheff': 1.,

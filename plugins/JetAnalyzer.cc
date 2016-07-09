@@ -15,7 +15,8 @@ JetAnalyzer::JetAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl
     AddQG(PSet.getParameter<bool>("addQGdiscriminator")),
     RecalibrateJets(PSet.getParameter<bool>("recalibrateJets")),
     RecalibrateMass(PSet.getParameter<bool>("recalibrateMass")),
-    JECUncertainty(PSet.getParameter<std::string>("jecUncertainty")),
+    JECUncertaintyMC(PSet.getParameter<std::string>("jecUncertaintyMC")),
+    JECUncertaintyDATA(PSet.getParameter<std::string>("jecUncertaintyDATA")),
     UseReshape(PSet.getParameter<bool>("reshapeBTag")),
     BTag(PSet.getParameter<std::string>("btag")),
     Jet1BTag(PSet.getParameter<int>("jet1btag")),
@@ -27,7 +28,8 @@ JetAnalyzer::JetAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl
 {
   
     isJESFile=false;
-    jecUnc = new JetCorrectionUncertainty(JECUncertainty);
+    jecUncMC = new JetCorrectionUncertainty(JECUncertaintyMC);
+    jecUncDATA = new JetCorrectionUncertainty(JECUncertaintyDATA);
 
 //    JESFile=new TFile("data/JESUncertainty.root", "READ");
 //    JESFile->cd();
@@ -84,7 +86,8 @@ JetAnalyzer::~JetAnalyzer() {
 //        delete reader_down_jes;
 //        delete calib;
 //    }
-    delete jecUnc;
+    delete jecUncMC;
+    delete jecUncDATA;
     if(UseRecoil) delete recoilCorr;
 }
 
@@ -131,9 +134,16 @@ std::vector<pat::Jet> JetAnalyzer::FillJetVector(const edm::Event& iEvent) {
             }
         }
         // JEC Uncertainty
-        jecUnc->setJetEta(jet.eta());
-        jecUnc->setJetPt(jet.pt()); // here you must use the CORRECTED jet pt
-        jet.addUserFloat("JESUncertainty", jecUnc->getUncertainty(true));
+        if (!isMC){
+            jecUncDATA->setJetEta(jet.eta());
+            jecUncDATA->setJetPt(jet.pt()); // here you must use the CORRECTED jet pt
+            jet.addUserFloat("JESUncertainty", jecUncDATA->getUncertainty(true));
+        } else {
+            jecUncMC->setJetEta(jet.eta());
+            jecUncMC->setJetPt(jet.pt()); // here you must use the CORRECTED jet pt
+            jet.addUserFloat("JESUncertainty", jecUncMC->getUncertainty(true));
+        }
+        
         
         // Pt and eta cut
         if(jet.pt()<PtTh || fabs(jet.eta())>EtaTh) continue;
