@@ -133,6 +133,9 @@ class Diboson : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
         edm::ParameterSet PhotonPSet;
         edm::ParameterSet JetPSet;
         edm::ParameterSet FatJetPSet;
+        
+        boost::shared_ptr<FactorizedJetCorrector> jecAK8_;
+        
         int WriteNElectrons, WriteNMuons, WriteNLeptons, WriteNTaus, WriteNPhotons, WriteNJets, WriteNFatJets;
         std::string HistFile;
         bool Verbose;
@@ -149,8 +152,7 @@ class Diboson : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
         //BTagInterface* theBTagInterface;
         std::map<std::string, bool> TriggerMap;
         std::map<std::string, TH1F*> Hist;
-        
-        
+            
         edm::Service<TFileService> fs;
         TTree* tree;
         TTree* treealpha;

@@ -66,8 +66,7 @@ Diboson::Diboson(const edm::ParameterSet& iConfig):
     
     std::vector<std::string> TriggerList(TriggerPSet.getParameter<std::vector<std::string> >("paths"));
     for(unsigned int i = 0; i < TriggerList.size(); i++) TriggerMap[ TriggerList[i] ] = false;
-    
-    
+        
     // ---------- Plots Initialization ----------
     TFileDirectory allDir=fs->mkdir("All/");
     TFileDirectory genDir=fs->mkdir("Gen/");
@@ -159,7 +158,6 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     X_pt = X_dPhi = X_mass = X_tmass = -1.;
     FatJet1_isTight = false;
     FatJet1_pt = FatJet1_prunedMass = FatJet1_softdropMass = FatJet1_softdropPuppiMass = FatJet1_prunedMassCorr = FatJet1_softdropMassCorr = FatJet1_softdropPuppiMassCorr = FatJet1_tau21 = FatJet1_CSV1 = FatJet1_CSV2 = -1.;
-    
     
     AddFourMomenta addP4;
     
@@ -896,58 +894,62 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     
     if(nJets < 2 && nFatJets < 1) return;
     
+    
+    // cut for VZ analysis
+    if (!(isZtoMM || isZtoEE)) return;
+    if (!( V.mass > 60. && V.mass < 120)) return;
+    if (!(nFatJets>0)) return;
+    
     // Fill tree
     tree->Fill();
 
-//     Fill tree for alpha
+    // Fill tree for alpha only closer to the signal region
     
-//     if ( (isZtoMM || isZtoEE) && V.pt > 100 && nFatJets > 0 ){ 
-    if ( isZtoMM || isZtoEE ){ 
-        // Lepton1
-        Lepton1_isMuon = Leptons[0].isMuon;
-        Lepton1_isElectron = Leptons[0].isElectron;
-        Lepton1_isLoose = Leptons[0].isLoose;
-        Lepton1_isHighPt = Leptons[0].isHighPt;
-        Lepton1_isTrackerHighPt = Leptons[0].isTrackerHighPt;
-        Lepton1_isTight = Leptons[0].isTight;
-        Lepton1_pt = Leptons[0].pt;
-        Lepton1_trkIso = Leptons[0].trkIso;
-        // Lepton2        
-        Lepton2_isMuon = Leptons[1].isMuon;
-        Lepton2_isElectron = Leptons[1].isElectron;
-        Lepton2_isLoose = Leptons[1].isLoose;
-        Lepton2_isHighPt = Leptons[1].isHighPt;
-        Lepton2_isTrackerHighPt = Leptons[1].isTrackerHighPt;
-        Lepton2_isTight = Leptons[1].isTight;
-        Lepton2_pt = Leptons[1].pt;
-        Lepton2_trkIso = Leptons[1].trkIso;
-        // MET        
-        MEt_pt = MEt.pt;
-        // V        
-        V_pt  = V.pt;
-        V_dPhi = V.dPhi;
-        V_mass = V.mass;
-        V_tmass = V.tmass;
-        // X        
-        X_pt = X.pt;
-        X_dPhi = X.dPhi;
-        X_mass = X.mass;
-        X_tmass = X.tmass;
-        // FatJet1
-        FatJet1_isTight = FatJets[0].isTight;
-        FatJet1_pt = FatJets[0].pt;
-        FatJet1_prunedMass = FatJets[0].prunedMass;
-        FatJet1_softdropMass = FatJets[0].softdropMass;
-        FatJet1_softdropPuppiMass = FatJets[0].softdropPuppiMass;
-        FatJet1_prunedMassCorr = FatJets[0].prunedMassCorr;
-        FatJet1_softdropMassCorr = FatJets[0].softdropMassCorr;
-        FatJet1_softdropPuppiMassCorr = FatJets[0].softdropPuppiMassCorr;
-        FatJet1_tau21 = FatJets[0].tau21;
-        FatJet1_CSV1 = FatJets[0].CSV1;
-        FatJet1_CSV2 = FatJets[0].CSV2;
+    if (!(V.pt>100)) return;
+    // Lepton1
+    Lepton1_isMuon = Leptons[0].isMuon;
+    Lepton1_isElectron = Leptons[0].isElectron;
+    Lepton1_isLoose = Leptons[0].isLoose;
+    Lepton1_isHighPt = Leptons[0].isHighPt;
+    Lepton1_isTrackerHighPt = Leptons[0].isTrackerHighPt;
+    Lepton1_isTight = Leptons[0].isTight;
+    Lepton1_pt = Leptons[0].pt;
+    Lepton1_trkIso = Leptons[0].trkIso;
+    // Lepton2        
+    Lepton2_isMuon = Leptons[1].isMuon;
+    Lepton2_isElectron = Leptons[1].isElectron;
+    Lepton2_isLoose = Leptons[1].isLoose;
+    Lepton2_isHighPt = Leptons[1].isHighPt;
+    Lepton2_isTrackerHighPt = Leptons[1].isTrackerHighPt;
+    Lepton2_isTight = Leptons[1].isTight;
+    Lepton2_pt = Leptons[1].pt;
+    Lepton2_trkIso = Leptons[1].trkIso;
+    // MET        
+    MEt_pt = MEt.pt;
+    // V        
+    V_pt  = V.pt;
+    V_dPhi = V.dPhi;
+    V_mass = V.mass;
+    V_tmass = V.tmass;
+    // X        
+    X_pt = X.pt;
+    X_dPhi = X.dPhi;
+    X_mass = X.mass;
+    X_tmass = X.tmass;
+    // FatJet1
+    FatJet1_isTight = FatJets[0].isTight;
+    FatJet1_pt = FatJets[0].pt;
+    FatJet1_prunedMass = FatJets[0].prunedMass;
+    FatJet1_softdropMass = FatJets[0].softdropMass;
+    FatJet1_softdropPuppiMass = FatJets[0].softdropPuppiMass;
+    FatJet1_prunedMassCorr = FatJets[0].prunedMassCorr;
+    FatJet1_softdropMassCorr = FatJets[0].softdropMassCorr;
+    FatJet1_softdropPuppiMassCorr = FatJets[0].softdropPuppiMassCorr;
+    FatJet1_tau21 = FatJets[0].tau21;
+    FatJet1_CSV1 = FatJets[0].CSV1;
+    FatJet1_CSV2 = FatJets[0].CSV2;
 
-        treealpha->Fill();
-    }     
+    treealpha->Fill();
 
     if(Verbose) std::cout << " - Tree filled, end of event" << std::endl;
     
