@@ -15,8 +15,13 @@ JetAnalyzer::JetAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl
     AddQG(PSet.getParameter<bool>("addQGdiscriminator")),
     RecalibrateJets(PSet.getParameter<bool>("recalibrateJets")),
     RecalibrateMass(PSet.getParameter<bool>("recalibrateMass")),
+    isPuppi(PSet.getParameter<bool>("isPuppi")),
     JECUncertaintyMC(PSet.getParameter<std::string>("jecUncertaintyMC")),
     JECUncertaintyDATA(PSet.getParameter<std::string>("jecUncertaintyDATA")),
+    JECCorrectorMC(PSet.getParameter<std::vector<std::string> >("jecCorrectorMC")),
+    JECCorrectorDATA(PSet.getParameter<std::vector<std::string> >("jecCorrectorDATA")),
+    VertexToken(CColl.consumes<reco::VertexCollection>(PSet.getParameter<edm::InputTag>("vertices"))),
+    RhoToken(CColl.consumes<double>(PSet.getParameter<edm::InputTag>("rho"))),
     UseReshape(PSet.getParameter<bool>("reshapeBTag")),
     BTag(PSet.getParameter<std::string>("btag")),
     Jet1BTag(PSet.getParameter<int>("jet1btag")),
@@ -37,6 +42,22 @@ JetAnalyzer::JetAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl
 //      hist=(TH2F*)JESFile->Get("test/AK5PFchs");
 //      isJESFile=true;
 //    }
+        
+    std::vector<JetCorrectorParameters> vParMC;
+    for ( std::vector<std::string>::const_iterator payloadBegin = JECCorrectorMC.begin(), payloadEnd = JECCorrectorMC.end(), ipayload = payloadBegin; ipayload != payloadEnd; ++ipayload ) {
+        std::cout << *ipayload << "\n";
+        vParMC.push_back(JetCorrectorParameters(*ipayload));
+    }    
+    std::vector<JetCorrectorParameters> vParDATA;
+    for ( std::vector<std::string>::const_iterator payloadBegin = JECCorrectorDATA.begin(), payloadEnd = JECCorrectorDATA.end(), ipayload = payloadBegin; ipayload != payloadEnd; ++ipayload ) {
+        std::cout << *ipayload << "\n";
+        vParDATA.push_back(JetCorrectorParameters(*ipayload));
+    }    
+    
+    // Make the FactorizedJetCorrector
+    jecCorrMC = boost::shared_ptr<FactorizedJetCorrector> ( new FactorizedJetCorrector(vParMC) );    
+    jecCorrDATA = boost::shared_ptr<FactorizedJetCorrector> ( new FactorizedJetCorrector(vParDATA) );    
+    
     
     // BTag calibrator
     if(UseReshape) {
@@ -110,9 +131,18 @@ std::vector<pat::Jet> JetAnalyzer::FillJetVector(const edm::Event& iEvent) {
     // Open QG value maps
     edm::Handle<edm::ValueMap<float>> QGHandle;
     if(AddQG) iEvent.getByToken(QGToken, QGHandle);
+
+    // Vertex collection
+    edm::Handle<reco::VertexCollection> PVCollection;
+    iEvent.getByToken(VertexToken, PVCollection);
     
+    // Rho handle
+    edm::Handle<double> rho_handle;
+    iEvent.getByToken(RhoToken, rho_handle);
+ 
     // Loop on Jet collection
     for(std::vector<pat::Jet>::const_iterator it=PFJetsCollection->begin(); it!=PFJetsCollection->end(); ++it) {
+
         if(Vect.size()>0) {
             PtTh=Jet2Pt;
             BTagTh=Jet2BTag;
@@ -121,6 +151,80 @@ std::vector<pat::Jet> JetAnalyzer::FillJetVector(const edm::Event& iEvent) {
         int idx=it-PFJetsCollection->begin();
         jet.addUserInt("Index", idx);
         pat::JetRef jetRef(PFJetsCollection, idx);
+
+        // FIXME -> CHECK IS NEEDED
+        double corr = 1;
+        reco::Candidate::LorentzVector uncorrJet=jet.p4();
+        uncorrJet = jet.correctedP4(0);
+
+        if (isPuppi) {
+//             double puppi_pt   = jet.userFloat("ak8PFJetsPuppiValueMap:pt");
+//             double puppi_mass = jet.userFloat("ak8PFJetsPuppiValueMap:mass");
+//             double puppi_eta  = jet.userFloat("ak8PFJetsPuppiValueMap:eta");
+//             double puppi_phi  = jet.userFloat("ak8PFJetsPuppiValueMap:phi");
+            double puppi_tau1 = jet.userFloat("ak8PFJetsPuppiValueMap:NjettinessAK8PuppiTau1");
+            double puppi_tau2 = jet.userFloat("ak8PFJetsPuppiValueMap:NjettinessAK8PuppiTau2");
+
+            TLorentzVector puppi_softdrop, puppi_softdrop_subjet;
+            auto const & sdSubjetsPuppi = jet.subjets("SoftDropPuppi");
+            for ( auto const & it : sdSubjetsPuppi ) {
+                puppi_softdrop_subjet.SetPtEtaPhiM(it->correctedP4(0).pt(),it->correctedP4(0).eta(),it->correctedP4(0).phi(),it->correctedP4(0).mass());
+                puppi_softdrop+=puppi_softdrop_subjet;
+            }
+
+            if(!isMC) {
+                jecCorrDATA->setJetEta( puppi_softdrop.Eta() );
+                jecCorrDATA->setJetPt ( puppi_softdrop.Pt() );
+                jecCorrDATA->setJetE  ( puppi_softdrop.Energy() );
+                jecCorrDATA->setJetA  ( jet.jetArea() );
+                jecCorrDATA->setRho   ( *rho_handle );
+                jecCorrDATA->setNPV   ( PVCollection->size() );
+                corr = jecCorrDATA->getCorrection();
+            } else {
+                jecCorrMC->setJetEta( puppi_softdrop.Eta() );
+                jecCorrMC->setJetPt ( puppi_softdrop.Pt() );
+                jecCorrMC->setJetE  ( puppi_softdrop.Energy() );
+                jecCorrMC->setJetA  ( jet.jetArea() );
+                jecCorrMC->setRho   ( *rho_handle );
+                jecCorrMC->setNPV   ( PVCollection->size() );
+                corr = jecCorrMC->getCorrection();
+            }
+
+//             double puppi_softdrop_masscorr = corr * puppi_softdrop.M();
+
+//             DUMP FOR SANITY CHECK...
+//             std::cout << "--- JET ---\n";
+//             std::cout << Form("pt  %f\t%f\t%f\t%f\n",jet.pt(),puppi_pt,puppi_softdrop.Pt(),corr*puppi_pt);
+//             std::cout << Form("eta %f\t%f\t%f\t%f\n",jet.eta(),puppi_eta,puppi_softdrop.Eta(),puppi_eta);
+//             std::cout << Form("phi %f\t%f\t%f\t%f\n",jet.phi(),puppi_phi,puppi_softdrop.Phi(),puppi_phi);
+//             std::cout << Form("E   %f\t%f\t%f\t%f\n",uncorrJet.energy(),-1.,puppi_softdrop.E(),corr*uncorrJet.energy());
+//             std::cout << Form("m   %f\t%f\t%f\t%f\n",uncorrJet.mass(),puppi_mass, puppi_softdrop.M(),corr*puppi_mass);
+// 
+//             bool myPuppiSoftdropWTagger = (puppi_tau2/puppi_tau1) < 0.5 && puppi_softdrop_masscorr > 65 && puppi_softdrop_masscorr < 105;
+        } else {
+            if(!isMC) {
+                jecCorrDATA->setJetEta( uncorrJet.Eta() );
+                jecCorrDATA->setJetPt ( uncorrJet.Pt() );
+                jecCorrDATA->setJetE  ( uncorrJet.E() );
+                jecCorrDATA->setJetA  ( jet.jetArea() );
+                jecCorrDATA->setRho   ( *rho_handle );
+                jecCorrDATA->setNPV   ( PVCollection->size() );
+                corr = jecCorrDATA->getCorrection();
+            } else {
+                jecCorrMC->setJetEta( uncorrJet.Eta() );
+                jecCorrMC->setJetPt ( uncorrJet.Pt() );
+                jecCorrMC->setJetE  ( uncorrJet.E() );
+                jecCorrMC->setJetA  ( jet.jetArea() );
+                jecCorrMC->setRho   ( *rho_handle );
+                jecCorrMC->setNPV   ( PVCollection->size() );
+                corr = jecCorrMC->getCorrection();
+            }
+        }
+        // NOTE :
+        //         here a new corrected Jet should be built (to be used in the future for JEC unc. and so on)
+        reco::Candidate::LorentzVector corrJet( corr*uncorrJet.Pt() , uncorrJet.Eta(), uncorrJet.Phi(), corr*uncorrJet.M() );
+        // FIXME -> END OF CHECK
+                
         // Jet Energy Smearing
         if(isMC) {
             const reco::GenJet* genJet=jet.genJet();
@@ -299,29 +403,53 @@ float JetAnalyzer::GetScaleUncertainty(pat::Jet& jet) {
 // https://twiki.cern.ch/twiki/bin/view/CMS/JetResolution
 float JetAnalyzer::GetResolutionRatio(float eta) {
     eta=fabs(eta);
-    if(eta>=0.0 && eta<0.5) return 1.052; // +-0.012+0.062-0.061
-    if(eta>=0.5 && eta<1.1) return 1.057; // +-0.012+0.056-0.055
-    if(eta>=1.1 && eta<1.7) return 1.096; // +-0.017+0.063-0.062
-    if(eta>=1.7 && eta<2.3) return 1.134; // +-0.035+0.087-0.085
-    if(eta>=2.3 && eta<5.0) return 1.288; // +-0.127+0.155-0.153
+    if(eta>=0.0 && eta<0.5) return 1.122; 
+    if(eta>=0.5 && eta<0.8) return 1.167;
+    if(eta>=0.8 && eta<1.1) return 1.168;
+    if(eta>=1.1 && eta<1.3) return 1.029;
+    if(eta>=1.3 && eta<1.7) return 1.115;
+    if(eta>=1.7 && eta<1.9) return 1.041;
+    if(eta>=1.9 && eta<2.1) return 1.167;
+    if(eta>=2.1 && eta<2.3) return 1.094;
+    if(eta>=2.3 && eta<2.5) return 1.168;
+    if(eta>=2.5 && eta<2.8) return 1.266;
+    if(eta>=2.8 && eta<3.0) return 1.595;
+    if(eta>=3.0 && eta<3.2) return 0.998;
+    if(eta>=3.2 && eta<5.0) return 1.226;
     return -1.;
 }
 float JetAnalyzer::GetResolutionErrorUp(float eta) {
     eta=fabs(eta);
-    if(eta>=0.0 && eta<0.5) return 1.115;
-    if(eta>=0.5 && eta<1.1) return 1.114;
-    if(eta>=1.1 && eta<1.7) return 1.161;
-    if(eta>=1.7 && eta<2.3) return 1.228;
-    if(eta>=2.3 && eta<5.0) return 1.488;
+    if(eta>=0.0 && eta<0.5) return 1.122 + 0.026; 
+    if(eta>=0.5 && eta<0.8) return 1.167 + 0.048;
+    if(eta>=0.8 && eta<1.1) return 1.168 + 0.046;
+    if(eta>=1.1 && eta<1.3) return 1.029 + 0.066;
+    if(eta>=1.3 && eta<1.7) return 1.115 + 0.030;
+    if(eta>=1.7 && eta<1.9) return 1.041 + 0.062;
+    if(eta>=1.9 && eta<2.1) return 1.167 + 0.086;
+    if(eta>=2.1 && eta<2.3) return 1.094 + 0.093;
+    if(eta>=2.3 && eta<2.5) return 1.168 + 0.120;
+    if(eta>=2.5 && eta<2.8) return 1.266 + 0.132;
+    if(eta>=2.8 && eta<3.0) return 1.595 + 0.175;
+    if(eta>=3.0 && eta<3.2) return 0.998 + 0.066;
+    if(eta>=3.2 && eta<5.0) return 1.226 + 0.145;
     return -1.;
 }
 float JetAnalyzer::GetResolutionErrorDown(float eta) {
     eta=fabs(eta);
-    if(eta>=0.0 && eta<0.5) return 0.990;
-    if(eta>=0.5 && eta<1.1) return 1.001;
-    if(eta>=1.1 && eta<1.7) return 1.032;
-    if(eta>=1.7 && eta<2.3) return 1.042;
-    if(eta>=2.3 && eta<5.0) return 1.089;
+    if(eta>=0.0 && eta<0.5) return 1.122 - 0.026; 
+    if(eta>=0.5 && eta<0.8) return 1.167 - 0.048;
+    if(eta>=0.8 && eta<1.1) return 1.168 - 0.046;
+    if(eta>=1.1 && eta<1.3) return 1.029 - 0.066;
+    if(eta>=1.3 && eta<1.7) return 1.115 - 0.030;
+    if(eta>=1.7 && eta<1.9) return 1.041 - 0.062;
+    if(eta>=1.9 && eta<2.1) return 1.167 - 0.086;
+    if(eta>=2.1 && eta<2.3) return 1.094 - 0.093;
+    if(eta>=2.3 && eta<2.5) return 1.168 - 0.120;
+    if(eta>=2.5 && eta<2.8) return 1.266 - 0.132;
+    if(eta>=2.8 && eta<3.0) return 1.595 - 0.175;
+    if(eta>=3.0 && eta<3.2) return 0.998 - 0.066;
+    if(eta>=3.2 && eta<5.0) return 1.226 - 0.145;
     return -1.;
 }
 
