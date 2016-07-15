@@ -446,8 +446,8 @@ if isData:
         process.HLTFilter *
 
         process.METFilter *
-        #process.BadPFMuonFilter *
-        #process.BadChargedCandidateFilter *
+        process.BadPFMuonFilter *
+        process.BadChargedCandidateFilter *
         
         process.primaryVertexFilter *
         process.egmGsfElectronIDSequence *
@@ -461,8 +461,8 @@ else:
     process.seq = cms.Sequence(
         process.counter *
 
-        #process.BadPFMuonFilter *
-        #process.BadChargedCandidateFilter *
+        process.BadPFMuonFilter *
+        process.BadChargedCandidateFilter *
         
         process.primaryVertexFilter *
         process.egmGsfElectronIDSequence *
