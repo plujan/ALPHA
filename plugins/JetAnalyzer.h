@@ -42,6 +42,8 @@ class JetAnalyzer {
         JetAnalyzer(edm::ParameterSet&, edm::ConsumesCollector&&);
         ~JetAnalyzer();
         virtual std::vector<pat::Jet> FillJetVector(const edm::Event&);
+        virtual void CorrectJet(pat::Jet&, bool);
+        virtual void CorrectMass(pat::Jet&, bool);
         virtual void CleanJetsFromMuons(std::vector<pat::Jet>&, std::vector<pat::Muon>&, float);
         virtual void CleanJetsFromElectrons(std::vector<pat::Jet>&, std::vector<pat::Electron>&, float);
         virtual void AddVariables(std::vector<pat::Jet>&, pat::MET&);
