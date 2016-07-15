@@ -164,107 +164,8 @@ std::vector<pat::Jet> JetAnalyzer::FillJetVector(const edm::Event& iEvent) {
         jet.addUserInt("Index", idx);
         pat::JetRef jetRef(PFJetsCollection, idx);
 
-        double corrL1L2L3(1.), corrL2L3(1.);
-        reco::Candidate::LorentzVector uncorrJet=jet.p4();
-        uncorrJet = jet.correctedP4(0);
-
-        if(RecalibrateJets) {
-            if(!isMC) {
-                jetCorrDATA->setJetEta( uncorrJet.Eta() );
-                jetCorrDATA->setJetPt ( uncorrJet.Pt() );
-                jetCorrDATA->setJetE  ( uncorrJet.E() );
-                jetCorrDATA->setJetA  ( jet.jetArea() );
-                jetCorrDATA->setRho   ( *rho_handle );
-                jetCorrDATA->setNPV   ( PVCollection->size() );
-                corr = jetCorrDATA->getCorrection();
-            }
-            else {
-                jetCorrMC->setJetEta( uncorrJet.Eta() );
-                jetCorrMC->setJetPt ( uncorrJet.Pt() );
-                jetCorrMC->setJetE  ( uncorrJet.E() );
-                jetCorrMC->setJetA  ( jet.jetArea() );
-                jetCorrMC->setRho   ( *rho_handle );
-                jetCorrMC->setNPV   ( PVCollection->size() );
-                corr = jetCorrMC->getCorrection();
-            }
-            jet.setP4(uncorrJet * corr);
-        }
-        
-        if(RecalibrateMass) {
-            if(!isMC) {
-                massCorrDATA->setJetEta( uncorrJet.Eta() );
-                massCorrDATA->setJetPt ( uncorrJet.Pt() );
-                massCorrDATA->setJetE  ( uncorrJet.E() );
-                massCorrDATA->setJetA  ( jet.jetArea() );
-                massCorrDATA->setRho   ( *rho_handle );
-                massCorrDATA->setNPV   ( PVCollection->size() );
-                corr = jetCorrDATA->getCorrection();
-            }
-            else {
-                jetCorrMC->setJetEta( uncorrJet.Eta() );
-                jetCorrMC->setJetPt ( uncorrJet.Pt() );
-                jetCorrMC->setJetE  ( uncorrJet.E() );
-                jetCorrMC->setJetA  ( jet.jetArea() );
-                jetCorrMC->setRho   ( *rho_handle );
-                jetCorrMC->setNPV   ( PVCollection->size() );
-                corr = jetCorrMC->getCorrection();
-            }
-            jet.setP4(uncorrJet * corr);
-        }
-        
-        
-        {
-//             double puppi_pt   = jet.userFloat("ak8PFJetsPuppiValueMap:pt");
-//             double puppi_mass = jet.userFloat("ak8PFJetsPuppiValueMap:mass");
-//             double puppi_eta  = jet.userFloat("ak8PFJetsPuppiValueMap:eta");
-//             double puppi_phi  = jet.userFloat("ak8PFJetsPuppiValueMap:phi");
-            double puppi_tau1 = jet.userFloat("ak8PFJetsPuppiValueMap:NjettinessAK8PuppiTau1");
-            double puppi_tau2 = jet.userFloat("ak8PFJetsPuppiValueMap:NjettinessAK8PuppiTau2");
-
-            TLorentzVector puppi_softdrop, puppi_softdrop_subjet;
-            auto const & sdSubjetsPuppi = jet.subjets("SoftDropPuppi");
-            for ( auto const & it : sdSubjetsPuppi ) {
-                puppi_softdrop_subjet.SetPtEtaPhiM(it->correctedP4(0).pt(),it->correctedP4(0).eta(),it->correctedP4(0).phi(),it->correctedP4(0).mass());
-                puppi_softdrop+=puppi_softdrop_subjet;
-            }
-
-//             double puppi_softdrop_masscorr = corr * puppi_softdrop.M();
-
-//             DUMP FOR SANITY CHECK...
-//             std::cout << "--- JET ---\n";
-//             std::cout << Form("pt  %f\t%f\t%f\t%f\n",jet.pt(),puppi_pt,puppi_softdrop.Pt(),corr*puppi_pt);
-//             std::cout << Form("eta %f\t%f\t%f\t%f\n",jet.eta(),puppi_eta,puppi_softdrop.Eta(),puppi_eta);
-//             std::cout << Form("phi %f\t%f\t%f\t%f\n",jet.phi(),puppi_phi,puppi_softdrop.Phi(),puppi_phi);
-//             std::cout << Form("E   %f\t%f\t%f\t%f\n",uncorrJet.energy(),-1.,puppi_softdrop.E(),corr*uncorrJet.energy());
-//             std::cout << Form("m   %f\t%f\t%f\t%f\n",uncorrJet.mass(),puppi_mass, puppi_softdrop.M(),corr*puppi_mass);
-// 
-//             bool myPuppiSoftdropWTagger = (puppi_tau2/puppi_tau1) < 0.5 && puppi_softdrop_masscorr > 65 && puppi_softdrop_masscorr < 105;
-        } else {
-            if(!isMC) {
-                jetCorrDATA->setJetEta( uncorrJet.Eta() );
-                jetCorrDATA->setJetPt ( uncorrJet.Pt() );
-                jetCorrDATA->setJetE  ( uncorrJet.E() );
-                jetCorrDATA->setJetA  ( jet.jetArea() );
-                jetCorrDATA->setRho   ( *rho_handle );
-                jetCorrDATA->setNPV   ( PVCollection->size() );
-                corr = jetCorrDATA->getCorrection();
-            } else {
-                jetCorrMC->setJetEta( uncorrJet.Eta() );
-                jetCorrMC->setJetPt ( uncorrJet.Pt() );
-                jetCorrMC->setJetE  ( uncorrJet.E() );
-                jetCorrMC->setJetA  ( jet.jetArea() );
-                jetCorrMC->setRho   ( *rho_handle );
-                jetCorrMC->setNPV   ( PVCollection->size() );
-                corr = jetCorrMC->getCorrection();
-            }
-        }
-        // NOTE :
-        //         here a new corrected Jet should be built (to be used in the future for JEC unc. and so on)
-        reco::Candidate::LorentzVector corrJet( corr*uncorrJet.Pt() , uncorrJet.Eta(), uncorrJet.Phi(), corr*uncorrJet.M() );
-        std::cout << "corr    " << corr << ",      old " << uncorrJet.Pt() << "   new   " << corrJet.Pt() << std::endl;
-        reco::Candidate::LorentzVector corrJet2( corr*uncorrJet );
-        std::cout << "corr2   " << corr << ",      old " << uncorrJet.Pt() << "   new   " << corrJet2.Pt() << std::endl;
-        // FIXME -> END OF CHECK
+        if(RecalibrateJets) CalibrateJet(jet, isMC);
+        if(RecalibrateMass) CalibrateMass(jet, isMC);
         
         // JEC Uncertainty
         if (!isMC){
@@ -290,6 +191,17 @@ std::vector<pat::Jet> JetAnalyzer::FillJetVector(const edm::Event& iEvent) {
             }
         }
         
+        // PUPPI soft drop mass for AK8 jets
+        if(jet.hasSubjets("SoftDropPuppi")) {
+            TLorentzVector puppiSoftdrop, puppiSoftdropSubjet;
+            auto const & sdSubjetsPuppi = jet.subjets("SoftDropPuppi");
+            for (auto const & it : sdSubjetsPuppi) {
+                puppiSoftdropSubjet.SetPtEtaPhiM(it->pt(), it->eta(), it->phi(), it->mass());
+                puppiSoftdrop += puppiSoftdropSubjet;
+            }
+            jet.addUserFloat("ak8PFJetsCHSSoftDropPuppiMass", puppiSoftdrop.M());
+        }
+        
         
         
         // Pt and eta cut
@@ -308,17 +220,6 @@ std::vector<pat::Jet> JetAnalyzer::FillJetVector(const edm::Event& iEvent) {
         jet.addUserFloat("ReshapedDiscriminatorUp", ReshapeBtagDiscriminator(jet)[1]);
         jet.addUserFloat("ReshapedDiscriminatorDown", ReshapeBtagDiscriminator(jet)[2]);
 
-        // PUPPI soft drop mass for AK8 jets
-        if(jet.hasSubjets("SoftDropPuppi")) {
-            TLorentzVector puppiSoftdrop, puppiSoftdropSubjet;
-            auto const & sdSubjetsPuppi = jet.subjets("SoftDropPuppi");
-            for (auto const & it : sdSubjetsPuppi) {
-                puppiSoftdropSubjet.SetPtEtaPhiM(it->pt(), it->eta(), it->phi(), it->mass());
-                puppiSoftdrop += puppiSoftdropSubjet;
-            }
-            jet.addUserFloat("ak8PFJetsCHSSoftDropPuppiMass", puppiSoftdrop.M());
-        }
-        
         // CSV reshaping for soft drop subjets
         if(jet.hasSubjets("SoftDrop")) {
             auto const & sdSubjets = jet.subjets("SoftDrop");
@@ -331,14 +232,7 @@ std::vector<pat::Jet> JetAnalyzer::FillJetVector(const edm::Event& iEvent) {
                 ++nsj;
             }
         }
-                
-        // Mass correction
-        if(RecalibrateMass) {
-            float jec = Corrector->correction(jet);
-            if(jet.hasUserFloat("ak8PFJetsCHSPrunedMass")) jet.addUserFloat("ak8PFJetsCHSPrunedMassCorr", jet.userFloat("ak8PFJetsCHSPrunedMass") * jec);
-            if(jet.hasUserFloat("ak8PFJetsCHSSoftDropMass")) jet.addUserFloat("ak8PFJetsCHSSoftDropMassCorr", jet.userFloat("ak8PFJetsCHSSoftDropMass") * jec);
-            if(jet.hasUserFloat("ak8PFJetsCHSSoftDropPuppiMass")) jet.addUserFloat("ak8PFJetsCHSSoftDropPuppiMassCorr", jet.userFloat("ak8PFJetsCHSSoftDropPuppiMass") * jec);
-        }
+        
         //QG tagger for AK4 jets
         if(AddQG && jet.nSubjetCollections()<=0) {
             jet.addUserFloat("QGLikelihood", (*QGHandle)[jetRef]);
@@ -349,6 +243,34 @@ std::vector<pat::Jet> JetAnalyzer::FillJetVector(const edm::Event& iEvent) {
     return Vect;
 }
 
+
+/*        {
+//             double puppi_pt   = jet.userFloat("ak8PFJetsPuppiValueMap:pt");
+//             double puppi_mass = jet.userFloat("ak8PFJetsPuppiValueMap:mass");
+//             double puppi_eta  = jet.userFloat("ak8PFJetsPuppiValueMap:eta");
+//             double puppi_phi  = jet.userFloat("ak8PFJetsPuppiValueMap:phi");
+            double puppi_tau1 = jet.userFloat("ak8PFJetsPuppiValueMap:NjettinessAK8PuppiTau1");
+            double puppi_tau2 = jet.userFloat("ak8PFJetsPuppiValueMap:NjettinessAK8PuppiTau2");
+
+            TLorentzVector puppi_softdrop, puppi_softdrop_subjet;
+            auto const & sdSubjetsPuppi = jet.subjets("SoftDropPuppi");
+            for ( auto const & it : sdSubjetsPuppi ) {
+                puppi_softdrop_subjet.SetPtEtaPhiM(it->correctedP4(0).pt(),it->correctedP4(0).eta(),it->correctedP4(0).phi(),it->correctedP4(0).mass());
+                puppi_softdrop+=puppi_softdrop_subjet;
+            }
+
+//             double puppi_softdrop_masscorr = corr * puppi_softdrop.M();
+
+//             DUMP FOR SANITY CHECK...
+//             std::cout << "--- JET ---\n";
+//             std::cout << Form("pt  %f\t%f\t%f\t%f\n",jet.pt(),puppi_pt,puppi_softdrop.Pt(),corr*puppi_pt);
+//             std::cout << Form("eta %f\t%f\t%f\t%f\n",jet.eta(),puppi_eta,puppi_softdrop.Eta(),puppi_eta);
+//             std::cout << Form("phi %f\t%f\t%f\t%f\n",jet.phi(),puppi_phi,puppi_softdrop.Phi(),puppi_phi);
+//             std::cout << Form("E   %f\t%f\t%f\t%f\n",uncorrJet.energy(),-1.,puppi_softdrop.E(),corr*uncorrJet.energy());
+//             std::cout << Form("m   %f\t%f\t%f\t%f\n",uncorrJet.mass(),puppi_mass, puppi_softdrop.M(),corr*puppi_mass);
+// 
+//             bool myPuppiSoftdropWTagger = (puppi_tau2/puppi_tau1) < 0.5 && puppi_softdrop_masscorr > 65 && puppi_softdrop_masscorr < 105;
+*/
 
 void JetAnalyzer::CorrectJet(pat::Jet& jet, bool isMC) {
     double corr(1.);
