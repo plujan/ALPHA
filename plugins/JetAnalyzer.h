@@ -42,8 +42,8 @@ class JetAnalyzer {
         JetAnalyzer(edm::ParameterSet&, edm::ConsumesCollector&&);
         ~JetAnalyzer();
         virtual std::vector<pat::Jet> FillJetVector(const edm::Event&);
-        virtual void CorrectJet(pat::Jet&, bool);
-        virtual void CorrectMass(pat::Jet&, bool);
+        virtual void CorrectJet(pat::Jet&, float, float, bool);
+        virtual void CorrectMass(pat::Jet&, float, float, bool);
         virtual void CleanJetsFromMuons(std::vector<pat::Jet>&, std::vector<pat::Muon>&, float);
         virtual void CleanJetsFromElectrons(std::vector<pat::Jet>&, std::vector<pat::Electron>&, float);
         virtual void AddVariables(std::vector<pat::Jet>&, pat::MET&);
@@ -64,11 +64,10 @@ class JetAnalyzer {
     
         edm::EDGetTokenT<std::vector<pat::Jet> > JetToken;
         edm::EDGetTokenT<std::vector<pat::MET> > MetToken;
-        edm::EDGetTokenT<reco::JetCorrector> CorToken;
         edm::EDGetTokenT<edm::ValueMap<float>> QGToken;
         int JetId;
         float Jet1Pt, Jet2Pt, JetEta;
-        bool AddQG, RecalibrateJets, RecalibrateMass, isPuppi;
+        bool AddQG, RecalibrateJets, RecalibrateMass;
         std::string JECUncertaintyMC;
         std::string JECUncertaintyDATA;
         std::vector<std::string> JetCorrectorMC;
