@@ -24,8 +24,10 @@
 #include "CondFormats/JetMETObjects/interface/JetCorrectionUncertainty.h"
 #include "DataFormats/Common/interface/ValueMap.h"
 #include "JetMETCorrections/JetCorrector/interface/JetCorrector.h"
-
+#include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
 #include "RecoilCorrector.h" // From: https://github.com/cms-met/MetTools/tree/master/RecoilCorrections
+#include "DataFormats/VertexReco/interface/VertexFwd.h"
+#include "DataFormats/VertexReco/interface/Vertex.h"
 
 #include "BTagCalibrationStandalone.h"
 
@@ -40,6 +42,8 @@ class JetAnalyzer {
         JetAnalyzer(edm::ParameterSet&, edm::ConsumesCollector&&);
         ~JetAnalyzer();
         virtual std::vector<pat::Jet> FillJetVector(const edm::Event&);
+        virtual void CorrectJet(pat::Jet&, float, float, bool);
+        virtual void CorrectMass(pat::Jet&, float, float, bool);
         virtual void CleanJetsFromMuons(std::vector<pat::Jet>&, std::vector<pat::Muon>&, float);
         virtual void CleanJetsFromElectrons(std::vector<pat::Jet>&, std::vector<pat::Electron>&, float);
         virtual void AddVariables(std::vector<pat::Jet>&, pat::MET&);
@@ -60,13 +64,18 @@ class JetAnalyzer {
     
         edm::EDGetTokenT<std::vector<pat::Jet> > JetToken;
         edm::EDGetTokenT<std::vector<pat::MET> > MetToken;
-        edm::EDGetTokenT<reco::JetCorrector> CorToken;
         edm::EDGetTokenT<edm::ValueMap<float>> QGToken;
         int JetId;
         float Jet1Pt, Jet2Pt, JetEta;
         bool AddQG, RecalibrateJets, RecalibrateMass;
         std::string JECUncertaintyMC;
         std::string JECUncertaintyDATA;
+        std::vector<std::string> JetCorrectorMC;
+        std::vector<std::string> JetCorrectorDATA;
+        std::vector<std::string> MassCorrectorMC;
+        std::vector<std::string> MassCorrectorDATA;
+        edm::EDGetTokenT<reco::VertexCollection> VertexToken;        
+        edm::EDGetTokenT<double> RhoToken;
         bool UseReshape;
         std::string BTag;
         int Jet1BTag, Jet2BTag;
@@ -83,6 +92,11 @@ class JetAnalyzer {
         // JEC Uncertainty
         JetCorrectionUncertainty* jecUncMC;
         JetCorrectionUncertainty* jecUncDATA;
+        
+        boost::shared_ptr<FactorizedJetCorrector> jetCorrMC;
+        boost::shared_ptr<FactorizedJetCorrector> jetCorrDATA;
+        boost::shared_ptr<FactorizedJetCorrector> massCorrMC;
+        boost::shared_ptr<FactorizedJetCorrector> massCorrDATA;
         
         // Btag calibrations
         BTagCalibration       * calib;

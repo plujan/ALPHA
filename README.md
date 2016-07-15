@@ -4,9 +4,11 @@ A Light Post-Heppy Analyzer
 ## Git instructions
 In your working area, first set up the CMSSW release:
 ```bash
-cmsrel CMSSW_8_0_5
-cd CMSSW_8_0_5/src/
+cmsrel CMSSW_8_0_12
+cd CMSSW_8_0_12/src/
 cmsenv
+git cms-init
+git cms-merge-topic -u cms-met:CMSSW_8_0_X-METFilterUpdate
 mkdir Analysis
 cd Analysis
 ```
@@ -19,9 +21,9 @@ See also the TWiki for developers git instructions: [https://twiki.cern.ch/twiki
 ## Run instructions
 Compile the code:
 ```bash
-scram b
+scram b -j 8
 ```
 and run it:
 ```bash
-cmsRun python/ConfFile_cfg.py
+cmsRun python/Diboson.py
 ```

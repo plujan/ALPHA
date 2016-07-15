@@ -21,6 +21,9 @@
 #include "TFile.h"
 #include "TH2.h"
 #include "TGraphAsymmErrors.h"
+#include "TLorentzVector.h"
+#include "rochcor2016.h"
+#include "RoccoR.h"
 
 class MuonAnalyzer {
     public:
@@ -53,6 +56,9 @@ class MuonAnalyzer {
         int Muon1Id, Muon2Id, Muon1Iso, Muon2Iso;
         float Muon1Pt, Muon2Pt;
         float MuonPtMax, MuonPtMin;
+        bool UseTuneP, DoRochester;
+        
+        rochcor2016 *rmcor;
         
         bool isMuonTriggerFile, isDoubleMuonTriggerFile, isMuonIdFile, isMuonIsoFile, isMuonHighptFile;
         
