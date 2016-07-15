@@ -305,6 +305,8 @@ process.ntuple = cms.EDAnalyzer('Diboson',
         muon2iso = cms.int32(0),
         muon1pt = cms.double(20.),
         muon2pt = cms.double(10.),
+        useTuneP = cms.bool(True),
+        doRochester = cms.bool(True),
     ),
     tauSet = cms.PSet(
         taus = cms.InputTag("slimmedTaus"),
