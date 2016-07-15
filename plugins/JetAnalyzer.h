@@ -69,8 +69,10 @@ class JetAnalyzer {
         bool AddQG, RecalibrateJets, RecalibrateMass, isPuppi;
         std::string JECUncertaintyMC;
         std::string JECUncertaintyDATA;
-        std::vector<std::string> JECCorrectorMC;
-        std::vector<std::string> JECCorrectorDATA;
+        std::vector<std::string> JetCorrectorMC;
+        std::vector<std::string> JetCorrectorDATA;
+        std::vector<std::string> MassCorrectorMC;
+        std::vector<std::string> MassCorrectorDATA;
         edm::EDGetTokenT<reco::VertexCollection> VertexToken;        
         edm::EDGetTokenT<double> RhoToken;
         bool UseReshape;
@@ -90,8 +92,10 @@ class JetAnalyzer {
         JetCorrectionUncertainty* jecUncMC;
         JetCorrectionUncertainty* jecUncDATA;
         
-        boost::shared_ptr<FactorizedJetCorrector> jecCorrMC;        
-        boost::shared_ptr<FactorizedJetCorrector> jecCorrDATA;        
+        boost::shared_ptr<FactorizedJetCorrector> jetCorrMC;
+        boost::shared_ptr<FactorizedJetCorrector> jetCorrDATA;
+        boost::shared_ptr<FactorizedJetCorrector> massCorrMC;
+        boost::shared_ptr<FactorizedJetCorrector> massCorrDATA;
         
         // Btag calibrations
         BTagCalibration       * calib;

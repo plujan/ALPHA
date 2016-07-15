@@ -18,8 +18,10 @@ JetAnalyzer::JetAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl
     isPuppi(PSet.getParameter<bool>("isPuppi")),
     JECUncertaintyMC(PSet.getParameter<std::string>("jecUncertaintyMC")),
     JECUncertaintyDATA(PSet.getParameter<std::string>("jecUncertaintyDATA")),
-    JECCorrectorMC(PSet.getParameter<std::vector<std::string> >("jecCorrectorMC")),
-    JECCorrectorDATA(PSet.getParameter<std::vector<std::string> >("jecCorrectorDATA")),
+    JetCorrectorMC(PSet.getParameter<std::vector<std::string> >("jecCorrectorMC")),
+    JetCorrectorDATA(PSet.getParameter<std::vector<std::string> >("jecCorrectorDATA")),
+    MassCorrectorMC(PSet.getParameter<std::vector<std::string> >("massCorrectorMC")),
+    MassCorrectorDATA(PSet.getParameter<std::vector<std::string> >("massCorrectorDATA")),
     VertexToken(CColl.consumes<reco::VertexCollection>(PSet.getParameter<edm::InputTag>("vertices"))),
     RhoToken(CColl.consumes<double>(PSet.getParameter<edm::InputTag>("rho"))),
     UseReshape(PSet.getParameter<bool>("reshapeBTag")),
@@ -35,34 +37,44 @@ JetAnalyzer::JetAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl
     isJESFile=false;
     jecUncMC = new JetCorrectionUncertainty(JECUncertaintyMC);
     jecUncDATA = new JetCorrectionUncertainty(JECUncertaintyDATA);
-
-//    JESFile=new TFile("data/JESUncertainty.root", "READ");
-//    JESFile->cd();
-//    if(!JESFile->IsZombie()) {
-//      hist=(TH2F*)JESFile->Get("test/AK5PFchs");
-//      isJESFile=true;
-//    }
-        
-    std::vector<JetCorrectorParameters> vParMC;
-    for ( std::vector<std::string>::const_iterator payloadBegin = JECCorrectorMC.begin(), payloadEnd = JECCorrectorMC.end(), ipayload = payloadBegin; ipayload != payloadEnd; ++ipayload ) {
-        std::cout << *ipayload << "\n";
-        vParMC.push_back(JetCorrectorParameters(*ipayload));
-    }    
-    std::vector<JetCorrectorParameters> vParDATA;
-    for ( std::vector<std::string>::const_iterator payloadBegin = JECCorrectorDATA.begin(), payloadEnd = JECCorrectorDATA.end(), ipayload = payloadBegin; ipayload != payloadEnd; ++ipayload ) {
-        std::cout << *ipayload << "\n";
-        vParDATA.push_back(JetCorrectorParameters(*ipayload));
-    }    
     
-    // Make the FactorizedJetCorrector
-    jecCorrMC = boost::shared_ptr<FactorizedJetCorrector> ( new FactorizedJetCorrector(vParMC) );    
-    jecCorrDATA = boost::shared_ptr<FactorizedJetCorrector> ( new FactorizedJetCorrector(vParDATA) );    
+    
+    if(RecalibrateJets) {
+        std::vector<JetCorrectorParameters> jetParMC;
+        for ( std::vector<std::string>::const_iterator payloadBegin = JECCorrectorMC.begin(), payloadEnd = JECCorrectorMC.end(), ipayload = payloadBegin; ipayload != payloadEnd; ++ipayload ) {
+            //std::cout << *ipayload << "\n";
+            jetParMC.push_back(JetCorrectorParameters(*ipayload));
+        }    
+        std::vector<JetCorrectorParameters> jetParDATA;
+        for ( std::vector<std::string>::const_iterator payloadBegin = JECCorrectorDATA.begin(), payloadEnd = JECCorrectorDATA.end(), ipayload = payloadBegin; ipayload != payloadEnd; ++ipayload ) {
+            //std::cout << *ipayload << "\n";
+            jetParDATA.push_back(JetCorrectorParameters(*ipayload));
+        }
+        // Make the FactorizedJetCorrector
+        jetCorrMC = boost::shared_ptr<FactorizedJetCorrector> ( new FactorizedJetCorrector(jetParMC) );
+        jetCorrDATA = boost::shared_ptr<FactorizedJetCorrector> ( new FactorizedJetCorrector(jetParDATA) );
+    }
+    
+    if(RecalibrateMass) {
+        std::vector<JetCorrectorParameters> massParMC;
+        for ( std::vector<std::string>::const_iterator payloadBegin = JECCorrectorMC.begin(), payloadEnd = JECCorrectorMC.end(), ipayload = payloadBegin; ipayload != payloadEnd; ++ipayload ) {
+            massParMC.push_back(JetCorrectorParameters(*ipayload));
+        }    
+        std::vector<JetCorrectorParameters> massParDATA;
+        for ( std::vector<std::string>::const_iterator payloadBegin = JECCorrectorDATA.begin(), payloadEnd = JECCorrectorDATA.end(), ipayload = payloadBegin; ipayload != payloadEnd; ++ipayload ) {
+            massParDATA.push_back(JetCorrectorParameters(*ipayload));
+        }
+        // Make the FactorizedJetCorrector
+        massCorrMC = boost::shared_ptr<FactorizedJetCorrector> ( new FactorizedJetCorrector(massParMC) );
+        massCorrDATA = boost::shared_ptr<FactorizedJetCorrector> ( new FactorizedJetCorrector(massParDATA) );
+    }
+    
+    
     
     
     // BTag calibrator
     if(UseReshape) {
         calib           = new BTagCalibration("CSVv2", BTagDB);
-        
         reader          = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","central");
         reader_up_jes   = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","up_jes");
         reader_down_jes = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","down_jes");
@@ -152,12 +164,11 @@ std::vector<pat::Jet> JetAnalyzer::FillJetVector(const edm::Event& iEvent) {
         jet.addUserInt("Index", idx);
         pat::JetRef jetRef(PFJetsCollection, idx);
 
-        // FIXME -> CHECK IS NEEDED
-        double corr = 1;
+        double corrL1L2L3(1.), corrL2L3(1.);
         reco::Candidate::LorentzVector uncorrJet=jet.p4();
         uncorrJet = jet.correctedP4(0);
 
-        if (isPuppi) {
+        if(isPuppi) {
 //             double puppi_pt   = jet.userFloat("ak8PFJetsPuppiValueMap:pt");
 //             double puppi_mass = jet.userFloat("ak8PFJetsPuppiValueMap:mass");
 //             double puppi_eta  = jet.userFloat("ak8PFJetsPuppiValueMap:eta");
@@ -173,21 +184,21 @@ std::vector<pat::Jet> JetAnalyzer::FillJetVector(const edm::Event& iEvent) {
             }
 
             if(!isMC) {
-                jecCorrDATA->setJetEta( puppi_softdrop.Eta() );
-                jecCorrDATA->setJetPt ( puppi_softdrop.Pt() );
-                jecCorrDATA->setJetE  ( puppi_softdrop.Energy() );
-                jecCorrDATA->setJetA  ( jet.jetArea() );
-                jecCorrDATA->setRho   ( *rho_handle );
-                jecCorrDATA->setNPV   ( PVCollection->size() );
-                corr = jecCorrDATA->getCorrection();
+                jetCorrDATA->setJetEta( puppi_softdrop.Eta() );
+                jetCorrDATA->setJetPt ( puppi_softdrop.Pt() );
+                jetCorrDATA->setJetE  ( puppi_softdrop.Energy() );
+                jetCorrDATA->setJetA  ( jet.jetArea() );
+                jetCorrDATA->setRho   ( *rho_handle );
+                jetCorrDATA->setNPV   ( PVCollection->size() );
+                corr = jetCorrDATA->getCorrection();
             } else {
-                jecCorrMC->setJetEta( puppi_softdrop.Eta() );
-                jecCorrMC->setJetPt ( puppi_softdrop.Pt() );
-                jecCorrMC->setJetE  ( puppi_softdrop.Energy() );
-                jecCorrMC->setJetA  ( jet.jetArea() );
-                jecCorrMC->setRho   ( *rho_handle );
-                jecCorrMC->setNPV   ( PVCollection->size() );
-                corr = jecCorrMC->getCorrection();
+                jetCorrMC->setJetEta( puppi_softdrop.Eta() );
+                jetCorrMC->setJetPt ( puppi_softdrop.Pt() );
+                jetCorrMC->setJetE  ( puppi_softdrop.Energy() );
+                jetCorrMC->setJetA  ( jet.jetArea() );
+                jetCorrMC->setRho   ( *rho_handle );
+                jetCorrMC->setNPV   ( PVCollection->size() );
+                corr = jetCorrMC->getCorrection();
             }
 
 //             double puppi_softdrop_masscorr = corr * puppi_softdrop.M();
@@ -203,28 +214,42 @@ std::vector<pat::Jet> JetAnalyzer::FillJetVector(const edm::Event& iEvent) {
 //             bool myPuppiSoftdropWTagger = (puppi_tau2/puppi_tau1) < 0.5 && puppi_softdrop_masscorr > 65 && puppi_softdrop_masscorr < 105;
         } else {
             if(!isMC) {
-                jecCorrDATA->setJetEta( uncorrJet.Eta() );
-                jecCorrDATA->setJetPt ( uncorrJet.Pt() );
-                jecCorrDATA->setJetE  ( uncorrJet.E() );
-                jecCorrDATA->setJetA  ( jet.jetArea() );
-                jecCorrDATA->setRho   ( *rho_handle );
-                jecCorrDATA->setNPV   ( PVCollection->size() );
-                corr = jecCorrDATA->getCorrection();
+                jetCorrDATA->setJetEta( uncorrJet.Eta() );
+                jetCorrDATA->setJetPt ( uncorrJet.Pt() );
+                jetCorrDATA->setJetE  ( uncorrJet.E() );
+                jetCorrDATA->setJetA  ( jet.jetArea() );
+                jetCorrDATA->setRho   ( *rho_handle );
+                jetCorrDATA->setNPV   ( PVCollection->size() );
+                corr = jetCorrDATA->getCorrection();
             } else {
-                jecCorrMC->setJetEta( uncorrJet.Eta() );
-                jecCorrMC->setJetPt ( uncorrJet.Pt() );
-                jecCorrMC->setJetE  ( uncorrJet.E() );
-                jecCorrMC->setJetA  ( jet.jetArea() );
-                jecCorrMC->setRho   ( *rho_handle );
-                jecCorrMC->setNPV   ( PVCollection->size() );
-                corr = jecCorrMC->getCorrection();
+                jetCorrMC->setJetEta( uncorrJet.Eta() );
+                jetCorrMC->setJetPt ( uncorrJet.Pt() );
+                jetCorrMC->setJetE  ( uncorrJet.E() );
+                jetCorrMC->setJetA  ( jet.jetArea() );
+                jetCorrMC->setRho   ( *rho_handle );
+                jetCorrMC->setNPV   ( PVCollection->size() );
+                corr = jetCorrMC->getCorrection();
             }
         }
         // NOTE :
         //         here a new corrected Jet should be built (to be used in the future for JEC unc. and so on)
         reco::Candidate::LorentzVector corrJet( corr*uncorrJet.Pt() , uncorrJet.Eta(), uncorrJet.Phi(), corr*uncorrJet.M() );
+        std::cout << "corr    " << corr << ",      old " << uncorrJet.Pt() << "   new   " << corrJet.Pt() << std::endl;
+        reco::Candidate::LorentzVector corrJet2( corr*uncorrJet );
+        std::cout << "corr2   " << corr << ",      old " << uncorrJet.Pt() << "   new   " << corrJet2.Pt() << std::endl;
         // FIXME -> END OF CHECK
-                
+        
+        // JEC Uncertainty
+        if (!isMC){
+            jecUncDATA->setJetEta(jet.eta());
+            jecUncDATA->setJetPt(jet.pt()); // here you must use the CORRECTED jet pt
+            jet.addUserFloat("JESUncertainty", jecUncDATA->getUncertainty(true));
+        } else {
+            jecUncMC->setJetEta(jet.eta());
+            jecUncMC->setJetPt(jet.pt()); // here you must use the CORRECTED jet pt
+            jet.addUserFloat("JESUncertainty", jecUncMC->getUncertainty(true));
+        }
+        
         // Jet Energy Smearing
         if(isMC) {
             const reco::GenJet* genJet=jet.genJet();
@@ -237,16 +262,7 @@ std::vector<pat::Jet> JetAnalyzer::FillJetVector(const edm::Event& iEvent) {
                 jet.setP4(smearedP4);
             }
         }
-        // JEC Uncertainty
-        if (!isMC){
-            jecUncDATA->setJetEta(jet.eta());
-            jecUncDATA->setJetPt(jet.pt()); // here you must use the CORRECTED jet pt
-            jet.addUserFloat("JESUncertainty", jecUncDATA->getUncertainty(true));
-        } else {
-            jecUncMC->setJetEta(jet.eta());
-            jecUncMC->setJetPt(jet.pt()); // here you must use the CORRECTED jet pt
-            jet.addUserFloat("JESUncertainty", jecUncMC->getUncertainty(true));
-        }
+        
         
         
         // Pt and eta cut
