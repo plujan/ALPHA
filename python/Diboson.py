@@ -23,14 +23,14 @@ if len(options.inputFiles) == 0:
     process.source = cms.Source("PoolSource",
         fileNames = cms.untracked.vstring(
             #'file:/lustre/cmswork/zucchett/CMSSW_8_0_5/src/00F0B3DC-211B-E611-A6A0-001E67248A39.root' # DYJets
-#           'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/user/lbenato/BulkGraviton_ZZ_ZlepZhad_narrow_M1000_13TeV-madgraph_MINIAODv2_805_10000ev/BulkGravToZZToZlepZhad_narrow_M-1000_13TeV-madgraph_PRIVATE-MC/BulkGraviton_ZZ_ZlepZhad_narrow_M1000_13TeV-madgraph_MINIAODv2_805_10000ev/160525_131443/0000/BulkGraviton_ZZ_ZlepZhad_narrow_M1000_13TeV-madgraph_MINIAODv2_1.root'
+           'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/user/lbenato/BulkGraviton_ZZ_ZlepZhad_narrow_M1000_13TeV-madgraph_MINIAODv2_805_10000ev/BulkGravToZZToZlepZhad_narrow_M-1000_13TeV-madgraph_PRIVATE-MC/BulkGraviton_ZZ_ZlepZhad_narrow_M1000_13TeV-madgraph_MINIAODv2_805_10000ev/160525_131443/0000/BulkGraviton_ZZ_ZlepZhad_narrow_M1000_13TeV-madgraph_MINIAODv2_1.root'
            #'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/PromptReco-v1/000/273/013/00000/C09E75A4-3519-E611-8BA9-02163E014476.root', # SingleMuon
            #'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/DoubleEG/MINIAOD/PromptReco-v2/000/273/725/00000/72118358-B620-E611-9C76-02163E012211.root', # DoubleEle
             #'file:/lustre/cmswork/zucchett/CMSSW_8_0_5/src/GluGluToAToZhToLLBB_M300_13TeV-amcatnlo_MINIAODv2.root', # DEBUG
 #            'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISpring16MiniAODv2/WJetsToLNu_HT-1200To2500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_ext1-v1/10000/AC51B7C5-7829-E611-AF89-6CC2173DA9E0.root', #DEBUG
 
-            'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/PromptReco-v2/000/275/001/00000/E8366493-E034-E611-8A7E-02163E0146AE.root',
-            'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/PromptReco-v2/000/275/067/00000/C08E7539-AE34-E611-9C9A-02163E011A43.root',
+#            'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/PromptReco-v2/000/275/001/00000/E8366493-E034-E611-8A7E-02163E0146AE.root',
+#            'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/PromptReco-v2/000/275/067/00000/C08E7539-AE34-E611-9C9A-02163E011A43.root',
 
 
         )
@@ -340,20 +340,29 @@ process.ntuple = cms.EDAnalyzer('Diboson',
         jet2pt = cms.double(30.),
         jeteta = cms.double(2.5),
         addQGdiscriminator = cms.bool(True),
-        recalibrateJets = cms.bool(False),
+        recalibrateJets = cms.bool(True),
         recalibrateMass = cms.bool(False),
-        isPuppi = cms.bool(False),
         vertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
         rho = cms.InputTag("fixedGridRhoFastjetAll"),        
-        corrector = cms.InputTag("ak4PFL2L3ResidualCorrector"),
         jecUncertaintyDATA = cms.string('%s/src/Analysis/ALPHA/data/Spring16_25nsV6_DATA/Spring16_25nsV6_DATA_Uncertainty_AK4PFchs.txt' % os.environ['CMSSW_BASE']),
         jecUncertaintyMC = cms.string('%s/src/Analysis/ALPHA/data/Spring16_25nsV6_MC/Spring16_25nsV6_MC_Uncertainty_AK4PFchs.txt' % os.environ['CMSSW_BASE']),
         jecCorrectorDATA = cms.vstring(
+            '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_DATA/Spring16_25nsV6_DATA_L1FastJet_AK4PFchs.txt' % os.environ['CMSSW_BASE'],
             '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_DATA/Spring16_25nsV6_DATA_L2Relative_AK4PFchs.txt' % os.environ['CMSSW_BASE'],
             '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_DATA/Spring16_25nsV6_DATA_L3Absolute_AK4PFchs.txt' % os.environ['CMSSW_BASE'],
             '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_DATA/Spring16_25nsV6_DATA_L2L3Residual_AK4PFchs.txt' % os.environ['CMSSW_BASE'],
         ),
         jecCorrectorMC = cms.vstring(
+            '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_MC/Spring16_25nsV6_MC_L1FastJet_AK4PFchs.txt' % os.environ['CMSSW_BASE'],
+            '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_MC/Spring16_25nsV6_MC_L2Relative_AK4PFchs.txt' % os.environ['CMSSW_BASE'],
+            '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_MC/Spring16_25nsV6_MC_L3Absolute_AK4PFchs.txt' % os.environ['CMSSW_BASE'],
+        ),
+        massCorrectorDATA = cms.vstring(
+            '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_DATA/Spring16_25nsV6_DATA_L2Relative_AK4PFchs.txt' % os.environ['CMSSW_BASE'],
+            '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_DATA/Spring16_25nsV6_DATA_L3Absolute_AK4PFchs.txt' % os.environ['CMSSW_BASE'],
+            '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_DATA/Spring16_25nsV6_DATA_L2L3Residual_AK4PFchs.txt' % os.environ['CMSSW_BASE'],
+        ),
+        massCorrectorMC = cms.vstring(
             '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_MC/Spring16_25nsV6_MC_L2Relative_AK4PFchs.txt' % os.environ['CMSSW_BASE'],
             '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_MC/Spring16_25nsV6_MC_L3Absolute_AK4PFchs.txt' % os.environ['CMSSW_BASE'],
         ),
@@ -374,22 +383,31 @@ process.ntuple = cms.EDAnalyzer('Diboson',
         jet2pt = cms.double(150.),
         jeteta = cms.double(2.5),
         addQGdiscriminator = cms.bool(True),
-        recalibrateJets = cms.bool(False),
+        recalibrateJets = cms.bool(True),
         recalibrateMass = cms.bool(True),
-        isPuppi = cms.bool(True),
         vertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
         rho = cms.InputTag("fixedGridRhoFastjetAll"),        
-        corrector = cms.InputTag("ak4PFL2L3ResidualCorrector"),
         jecUncertaintyDATA = cms.string('%s/src/Analysis/ALPHA/data/Spring16_25nsV6_DATA/Spring16_25nsV6_DATA_Uncertainty_AK8PFPuppi.txt' % os.environ['CMSSW_BASE']),
         jecUncertaintyMC = cms.string('%s/src/Analysis/ALPHA/data/Spring16_25nsV6_MC/Spring16_25nsV6_MC_Uncertainty_AK8PFPuppi.txt' % os.environ['CMSSW_BASE']),
         jecCorrectorDATA = cms.vstring(
-            '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_DATA/Spring16_25nsV6_DATA_L2Relative_AK8PFPuppi.txt' % os.environ['CMSSW_BASE'],
-            '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_DATA/Spring16_25nsV6_DATA_L3Absolute_AK8PFPuppi.txt' % os.environ['CMSSW_BASE'],
-            '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_DATA/Spring16_25nsV6_DATA_L2L3Residual_AK8PFPuppi.txt' % os.environ['CMSSW_BASE'],
+            '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_DATA/Spring16_25nsV6_DATA_L1FastJet_AK8PFchs.txt' % os.environ['CMSSW_BASE'],
+            '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_DATA/Spring16_25nsV6_DATA_L2Relative_AK8PFchs.txt' % os.environ['CMSSW_BASE'],
+            '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_DATA/Spring16_25nsV6_DATA_L3Absolute_AK8PFchs.txt' % os.environ['CMSSW_BASE'],
+            '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_DATA/Spring16_25nsV6_DATA_L2L3Residual_AK8PFchs.txt' % os.environ['CMSSW_BASE'],
         ),
         jecCorrectorMC = cms.vstring(
-            '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_MC/Spring16_25nsV6_MC_L2Relative_AK8PFPuppi.txt' % os.environ['CMSSW_BASE'],
-            '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_MC/Spring16_25nsV6_MC_L3Absolute_AK8PFPuppi.txt' % os.environ['CMSSW_BASE'],
+            '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_MC/Spring16_25nsV6_MC_L1FastJet_AK8PFchs.txt' % os.environ['CMSSW_BASE'],
+            '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_MC/Spring16_25nsV6_MC_L2Relative_AK8PFchs.txt' % os.environ['CMSSW_BASE'],
+            '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_MC/Spring16_25nsV6_MC_L3Absolute_AK8PFchs.txt' % os.environ['CMSSW_BASE'],
+        ),
+        massCorrectorDATA = cms.vstring(
+            '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_DATA/Spring16_25nsV6_DATA_L2Relative_AK8PFchs.txt' % os.environ['CMSSW_BASE'],
+            '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_DATA/Spring16_25nsV6_DATA_L3Absolute_AK8PFchs.txt' % os.environ['CMSSW_BASE'],
+            '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_DATA/Spring16_25nsV6_DATA_L2L3Residual_AK8PFchs.txt' % os.environ['CMSSW_BASE'],
+        ),
+        massCorrectorMC = cms.vstring(
+            '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_MC/Spring16_25nsV6_MC_L2Relative_AK8PFchs.txt' % os.environ['CMSSW_BASE'],
+            '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_MC/Spring16_25nsV6_MC_L3Absolute_AK8PFchs.txt' % os.environ['CMSSW_BASE'],
         ),
         reshapeBTag = cms.bool(True),
         btag = cms.string("pfCombinedInclusiveSecondaryVertexV2BJetTags"),
@@ -428,8 +446,8 @@ if isData:
         process.HLTFilter *
 
         process.METFilter *
-        process.BadPFMuonFilter *
-        process.BadChargedCandidateFilter *
+        #process.BadPFMuonFilter *
+        #process.BadChargedCandidateFilter *
         
         process.primaryVertexFilter *
         process.egmGsfElectronIDSequence *
@@ -443,8 +461,8 @@ else:
     process.seq = cms.Sequence(
         process.counter *
 
-        process.BadPFMuonFilter *
-        process.BadChargedCandidateFilter *
+        #process.BadPFMuonFilter *
+        #process.BadChargedCandidateFilter *
         
         process.primaryVertexFilter *
         process.egmGsfElectronIDSequence *
