@@ -12,6 +12,7 @@ void ObjectsFormat::FillElectronType(LeptonType& I, const pat::Electron* R, bool
     I.phi         = R->phi();
     I.mass        = R->mass();
     I.energy      = R->energy();
+    I.inTrkPt     = R->hasUserFloat("inTrkPt") ? R->userFloat("inTrkPt") : -1.;
     I.pfIso03     = R->hasUserFloat("pfIso03") ? R->userFloat("pfIso03") : -1.;
     I.pfIso04     = R->hasUserFloat("pfIso04") ? R->userFloat("pfIso04") : -1.;
     I.trkIso      = R->hasUserFloat("trkIso") ? R->userFloat("trkIso") : R->pfIsolationVariables().sumChargedHadronPt;
@@ -40,11 +41,12 @@ void ObjectsFormat::FillElectronType(LeptonType& I, const pat::Electron* R, bool
 
 void ObjectsFormat::FillMuonType(LeptonType& I, const pat::Muon* R, bool isMC) {
     if(!R) return; 
-    I.pt          = R->tunePMuonBestTrack()->pt();
+    I.pt          = R->pt();
     I.eta         = R->eta();
     I.phi         = R->phi();
     I.mass        = R->mass();
     I.energy      = R->energy();
+    I.inTrkPt     = R->hasUserFloat("inTrkPt") ? R->userFloat("inTrkPt") : -1.;
     I.pfIso03     = R->hasUserFloat("pfIso03") ? R->userFloat("pfIso03") : -1.;
     I.pfIso04     = R->hasUserFloat("pfIso04") ? R->userFloat("pfIso04") : -1.;
     I.trkIso      = R->hasUserFloat("trkIso") ? R->userFloat("trkIso") : R->trackIso();
@@ -74,6 +76,7 @@ void ObjectsFormat::ResetLeptonType(LeptonType& I) {
     I.phi         = -9.;
     I.mass        = -1.;
     I.energy      = -1.;
+    I.inTrkPt     = -1.;
     I.pfIso03     = -1.;
     I.pfIso04     = -1.;
     I.trkIso      = -1.;
@@ -101,7 +104,7 @@ void ObjectsFormat::ResetLeptonType(LeptonType& I) {
     I.isMatched   = false;
 }
 
-std::string ObjectsFormat::ListLeptonType() {return "pt/F:eta/F:phi/F:mass/F:energy/F:pfIso03/F:pfIso04/F:trkIso/F:miniIso/F:dxy/F:dz/F:ip3d/F:sip3d/F:nPixelHits/F:dPhi_met/F:charge/I:pdgId/I:isElectron/O:isMuon/O:isVeto/O:isLoose/O:isMedium/O:isTight/O:isHighPt/O:isTrackerHighPt/O:isMatched/O";} // isHEEP/O:isMVANonTrigMedium/O:isMVANonTrigTight/O:isMVATrigMedium/O:isMVATrigTight/O:
+std::string ObjectsFormat::ListLeptonType() {return "pt/F:eta/F:phi/F:mass/F:energy/F:inTrkPt/F:pfIso03/F:pfIso04/F:trkIso/F:miniIso/F:dxy/F:dz/F:ip3d/F:sip3d/F:nPixelHits/F:dPhi_met/F:charge/I:pdgId/I:isElectron/O:isMuon/O:isVeto/O:isLoose/O:isMedium/O:isTight/O:isHighPt/O:isTrackerHighPt/O:isMatched/O";} // isHEEP/O:isMVANonTrigMedium/O:isMVANonTrigTight/O:isMVATrigMedium/O:isMVATrigTight/O:
 
 //********************//
 //    Photons         // 

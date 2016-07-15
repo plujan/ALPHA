@@ -13,10 +13,6 @@ using std::endl;
 using std::vector;
 
 struct CrystalBall{
-    static const double pi;
-    static const double SPiO2;
-    static const double S2;
-
     double m;
     double s;
     double a;
@@ -54,7 +50,7 @@ struct CrystalBall{
 	double expa = exp(-fa*fa/2);
 	double A    = pow(n/fa, n)*expa;
 	double C1   = n/fa/(n-1)*expa; 
-	double D1   = 2*SPiO2*erf(fa/S2);
+	double D1   = 2*sqrt(TMath::Pi()/2.0)*erf(fa/sqrt(2.0));
 
 	B  = n/fa-fa;
 	C  = (D1+2*C1)/C1;   
@@ -84,18 +80,15 @@ struct CrystalBall{
 	double d = (x-m)/s;
 	if(d<-a) return NC / pow(F-s*d/G, n-1);
 	if(d> a) return NC * (C - pow(F+s*d/G, 1-n) );
-	return Ns*(D-SPiO2*erf(-d/S2));
+	return Ns*(D-sqrt(TMath::Pi()/2.0)*erf(-d/sqrt(2.0)));
     }
 
     double invcdf(double u){
 	if(u<cdfMa) return m + G*(F - pow(NC/u,    k) );
 	if(u>cdfPa) return m - G*(F - pow(C-u/NC, -k) );
-	return m - S2*s*TMath::ErfInverse((D - u/Ns ) / SPiO2);
+	return m - sqrt(2.0)*s*TMath::ErfInverse((D - u/Ns ) / sqrt(TMath::Pi()/2.0));
     }
 };
-const double CrystalBall::pi    = TMath::Pi();
-const double CrystalBall::SPiO2 = sqrt(TMath::Pi()/2.0);
-const double CrystalBall::S2    = sqrt(2.0);
 
 class RocRes{
     private:

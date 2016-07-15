@@ -265,7 +265,7 @@ rochcor2016::rochcor2016(int seed){
   }
 }
 
-void rochcor2016::momcor_mc( TLorentzVector& mu, float charge, int ntrk, float& qter){
+void rochcor2016::momcor_mc( TLorentzVector& mu, float charge, int ntrk, float qter){
   
   //sysdev == num : deviation = num
   double mupt_bfcor = mu.Pt();
@@ -315,7 +315,7 @@ void rochcor2016::momcor_mc( TLorentzVector& mu, float charge, int ntrk, float& 
 }
 
 
-void rochcor2016::momcor_data( TLorentzVector& mu, float charge, int runopt, float& qter){
+void rochcor2016::momcor_data( TLorentzVector& mu, float charge, int runopt, float qter){
   
   double mupt_bfcor = mu.Pt();
   double mupt = mu.Pt();

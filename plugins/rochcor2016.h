@@ -21,8 +21,8 @@ class rochcor2016 {
   rochcor2016(int seed);
   ~rochcor2016();
   
-  void momcor_mc(TLorentzVector&, float, int, float&);
-  void momcor_data(TLorentzVector&, float, int, float&);
+  void momcor_mc(TLorentzVector&, float, int, float);
+  void momcor_data(TLorentzVector&, float, int, float);
   
   int aetabin(double);
   int etabin(double);
