@@ -894,63 +894,64 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     
     if(nJets < 2 && nFatJets < 1) return;
     
-    
-    // cut for VZ analysis
-    if (!(isZtoMM || isZtoEE)) return;
-    if (!( V.mass > 60. && V.mass < 120)) return;
-    if (!(nFatJets>0)) return;
-    
     // Fill tree
     tree->Fill();
 
     // Fill tree for alpha only closer to the signal region
     
-    if (!(V.pt>100)) return;
-    // Lepton1
-    Lepton1_isMuon = Leptons[0].isMuon;
-    Lepton1_isElectron = Leptons[0].isElectron;
-    Lepton1_isLoose = Leptons[0].isLoose;
-    Lepton1_isHighPt = Leptons[0].isHighPt;
-    Lepton1_isTrackerHighPt = Leptons[0].isTrackerHighPt;
-    Lepton1_isTight = Leptons[0].isTight;
-    Lepton1_pt = Leptons[0].pt;
-    Lepton1_trkIso = Leptons[0].trkIso;
-    // Lepton2        
-    Lepton2_isMuon = Leptons[1].isMuon;
-    Lepton2_isElectron = Leptons[1].isElectron;
-    Lepton2_isLoose = Leptons[1].isLoose;
-    Lepton2_isHighPt = Leptons[1].isHighPt;
-    Lepton2_isTrackerHighPt = Leptons[1].isTrackerHighPt;
-    Lepton2_isTight = Leptons[1].isTight;
-    Lepton2_pt = Leptons[1].pt;
-    Lepton2_trkIso = Leptons[1].trkIso;
-    // MET        
-    MEt_pt = MEt.pt;
-    // V        
-    V_pt  = V.pt;
-    V_dPhi = V.dPhi;
-    V_mass = V.mass;
-    V_tmass = V.tmass;
-    // X        
-    X_pt = X.pt;
-    X_dPhi = X.dPhi;
-    X_mass = X.mass;
-    X_tmass = X.tmass;
-    // FatJet1
-    FatJet1_isTight = FatJets[0].isTight;
-    FatJet1_pt = FatJets[0].pt;
-    FatJet1_prunedMass = FatJets[0].prunedMass;
-    FatJet1_softdropMass = FatJets[0].softdropMass;
-    FatJet1_softdropPuppiMass = FatJets[0].softdropPuppiMass;
-    FatJet1_prunedMassCorr = FatJets[0].prunedMassCorr;
-    FatJet1_softdropMassCorr = FatJets[0].softdropMassCorr;
-    FatJet1_softdropPuppiMassCorr = FatJets[0].softdropPuppiMassCorr;
-    FatJet1_tau21 = FatJets[0].tau21;
-    FatJet1_CSV1 = FatJets[0].CSV1;
-    FatJet1_CSV2 = FatJets[0].CSV2;
+    // cut for VZ analysis
+    if ( 
+        (isZtoMM || isZtoEE) &&
+        (V.mass > 60. && V.mass < 120.) && 
+        (nFatJets > 0.) && 
+        (V.pt > 100.)
+    ){
+        // Lepton1
+        Lepton1_isMuon = Leptons[0].isMuon;
+        Lepton1_isElectron = Leptons[0].isElectron;
+        Lepton1_isLoose = Leptons[0].isLoose;
+        Lepton1_isHighPt = Leptons[0].isHighPt;
+        Lepton1_isTrackerHighPt = Leptons[0].isTrackerHighPt;
+        Lepton1_isTight = Leptons[0].isTight;
+        Lepton1_pt = Leptons[0].pt;
+        Lepton1_trkIso = Leptons[0].trkIso;
+        // Lepton2        
+        Lepton2_isMuon = Leptons[1].isMuon;
+        Lepton2_isElectron = Leptons[1].isElectron;
+        Lepton2_isLoose = Leptons[1].isLoose;
+        Lepton2_isHighPt = Leptons[1].isHighPt;
+        Lepton2_isTrackerHighPt = Leptons[1].isTrackerHighPt;
+        Lepton2_isTight = Leptons[1].isTight;
+        Lepton2_pt = Leptons[1].pt;
+        Lepton2_trkIso = Leptons[1].trkIso;
+        // MET        
+        MEt_pt = MEt.pt;
+        // V        
+        V_pt  = V.pt;
+        V_dPhi = V.dPhi;
+        V_mass = V.mass;
+        V_tmass = V.tmass;
+        // X        
+        X_pt = X.pt;
+        X_dPhi = X.dPhi;
+        X_mass = X.mass;
+        X_tmass = X.tmass;
+        // FatJet1
+        FatJet1_isTight = FatJets[0].isTight;
+        FatJet1_pt = FatJets[0].pt;
+        FatJet1_prunedMass = FatJets[0].prunedMass;
+        FatJet1_softdropMass = FatJets[0].softdropMass;
+        FatJet1_softdropPuppiMass = FatJets[0].softdropPuppiMass;
+        FatJet1_prunedMassCorr = FatJets[0].prunedMassCorr;
+        FatJet1_softdropMassCorr = FatJets[0].softdropMassCorr;
+        FatJet1_softdropPuppiMassCorr = FatJets[0].softdropPuppiMassCorr;
+        FatJet1_tau21 = FatJets[0].tau21;
+        FatJet1_CSV1 = FatJets[0].CSV1;
+        FatJet1_CSV2 = FatJets[0].CSV2;
 
-    treealpha->Fill();
-
+        treealpha->Fill();
+    }
+    
     if(Verbose) std::cout << " - Tree filled, end of event" << std::endl;
     
     if(theV.mass()<80. || theV.mass()>100.) {if(Verbose) std::cout << " - Z off-shell" << std::endl; return;}
@@ -1094,17 +1095,16 @@ void Diboson::beginJob() {
     treealpha->Branch("isMC", &isMC, "isMC/O");
     treealpha->Branch("EventWeight", &EventWeight, "EventWeight/F");
     
+    treealpha->Branch("EventNumber", &EventNumber, "EventNumber/L");
+    treealpha->Branch("LumiNumber", &LumiNumber, "LumiNumber/L");
+    treealpha->Branch("RunNumber", &RunNumber, "RunNumber/L");
+
     // Set trigger branches
     for(auto it = TriggerMap.begin(); it != TriggerMap.end(); it++) treealpha->Branch(it->first.c_str(), &(it->second), (it->first+"/O").c_str());
     
     // Analysis variables
     treealpha->Branch("isZtoEE", &isZtoEE, "isZtoEE/O");
     treealpha->Branch("isZtoMM", &isZtoMM, "isZtoMM/O");
-    
-    // Objects
-    treealpha->Branch("nElectrons", &nElectrons, "nElectrons/I");
-    treealpha->Branch("nMuons", &nMuons, "nMuons/I");
-    treealpha->Branch("nFatJets", &nFatJets, "nFatJets/I");
     
     // Lepton1
     treealpha->Branch("Lepton1_isMuon", &Lepton1_isMuon, "Lepton1_isMuon/O");
