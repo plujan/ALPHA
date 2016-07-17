@@ -14,15 +14,15 @@ selection = {
     "doubleMuo" : "isZtoMM && ((Lepton1.isHighPt && Lepton2.isHighPt) || (Lepton1.isTrackerHighPt && Lepton2.isHighPt) || (Lepton1.isHighPt && Lepton2.isTrackerHighPt)) && Lepton1.pt>55 && Lepton2.pt>20 && Lepton1.trkIso<0.1 && Lepton2.trkIso<0.1",
 
 
-    "MuonEle" : "( Lepton1.isHighPt && Lepton1.pt>55 && Lepton1.trkIso<0.1 ) && (Lepton2.isElectron && Lepton2.pt>35 && Lepton2.isLoose)", # && Lepton1.isHighPt && Lepton2.isHighPt && Lepton1.miniIso<0.1 && Lepton2.miniIso<0.1",
+    "MuonEle" : "((Lepton1.isMuon && Lepton1.isHighPt && Lepton1.pt>55 && Lepton1.trkIso<0.1 && Lepton2.isElectron && Lepton2.pt>35 && Lepton2.isLoose) || (Lepton1.isElectron && Lepton1.pt>35 && Lepton1.isLoose && Lepton2.isMuon && Lepton2.isHighPt && Lepton2.pt>55 && Lepton2.trkIso<0.1))", # && Lepton1.isHighPt && Lepton2.isHighPt && Lepton1.miniIso<0.1 && Lepton2.miniIso<0.1",
 
 
     "doubleIsoEle" : "isZtoEE && Lepton1.pt>25 && Lepton2.pt>10 && Lepton1.isLoose && Lepton2.isLoose",
     "doubleIsoMuo" : "isZtoMM && ((Lepton1.isHighPt && Lepton2.isHighPt) || (Lepton1.isTrackerHighPt && Lepton2.isHighPt) || (Lepton1.isHighPt && Lepton2.isTrackerHighPt)) && Lepton1.pt>25 && Lepton2.pt>10 && Lepton1.trkIso<0.1 && Lepton2.trkIso<0.1",
     "noLeptons" : "MEt.pt>200 && nMuons==0 && nElectrons==0 && nPhotons==0 && FatJet1.isTight && MinJetMetDPhi>0.5 && X.dPhi>2", #nTaus==0 && 
     # V
-    "Boost" : "V.pt>200 && FatJet1.pt>200",
-    #"Boost" : "V.pt>200 && FatJet1.pt>170",
+#    "Boost" : "V.pt>200 && FatJet1.pt>200",
+    "Boost" : "V.pt>150 && FatJet1.pt>170",
     "Zcut" : "V.mass>70 && V.mass<110",
     "Topcut" : "MaxFatJetBTag>0.460",
     "TopVetocut" : "MaxFatJetBTag<0.460",
@@ -31,8 +31,8 @@ selection = {
     "SRcut" : "(FatJet1.softdropPuppiMassCorr>65 && FatJet1.softdropPuppiMassCorr<105)",
     "LSBcut" : "FatJet1.softdropPuppiMassCorr>30 && FatJet1.softdropPuppiMassCorr<65",
     "HSBcut" : "FatJet1.softdropPuppiMassCorr>135 && FatJet1.softdropPuppiMassCorr<300",
-    "HPcut" : "FatJet1.tau21<0.45",
-    "LPcut" : "FatJet1.tau21>0.45 && FatJet1.tau21>0.75",
+    "HPcut" : "FatJet1.tau21<0.40",
+    "LPcut" : "FatJet1.tau21>0.40 && FatJet1.tau21>0.75",
     "1Btag" : "((FatJet1.CSV1>0.460 && FatJet1.CSV2<0.460) || (FatJet1.CSV1<0.460 && FatJet1.CSV2>0.460))",
     "2Btag" : "(FatJet1.CSV1>0.460 && FatJet1.CSV2>0.460)",
     

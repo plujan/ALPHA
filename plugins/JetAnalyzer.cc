@@ -160,7 +160,6 @@ std::vector<pat::Jet> JetAnalyzer::FillJetVector(const edm::Event& iEvent) {
         pat::JetRef jetRef(PFJetsCollection, idx);
 
         if(RecalibrateJets) CorrectJet(jet, *rho_handle, PVCollection->size(), isMC);
-        if(RecalibrateMass) CorrectMass(jet, *rho_handle, PVCollection->size(), isMC);
 
         // JEC Uncertainty
         if (!isMC){
@@ -197,7 +196,7 @@ std::vector<pat::Jet> JetAnalyzer::FillJetVector(const edm::Event& iEvent) {
             jet.addUserFloat("ak8PFJetsCHSSoftDropPuppiMass", puppiSoftdrop.M());
         }
         
-        
+        if(RecalibrateMass) CorrectMass(jet, *rho_handle, PVCollection->size(), isMC);        
         
         // Pt and eta cut
         if(jet.pt()<PtTh || fabs(jet.eta())>EtaTh) continue;
