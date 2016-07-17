@@ -6,12 +6,12 @@ options = VarParsing ('analysis')
 options.parseArguments()
 
 # Determine sample name for MC stitching
-sample = (options.inputFiles[0]).split("/")[-1].replace(".txt", "") if len(options.inputFiles) > 0 else ""
-if sample=="list": sample = (options.inputFiles[0]).split("/")[-3]
+sample = (options.inputFiles[0]).split('/')[-1].replace('.txt', '') if len(options.inputFiles) > 0 else ''
+if sample=='list': sample = (options.inputFiles[0]).split('/')[-3]
 
-process = cms.Process("ALPHA")
+process = cms.Process('ALPHA')
 
-process.load("FWCore.MessageService.MessageLogger_cfi")
+process.load('FWCore.MessageService.MessageLogger_cfi')
 process.MessageLogger.cerr.threshold = 'ERROR'
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
@@ -20,7 +20,7 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 # default: if no filelist from command line, run on specified samples
 
 if len(options.inputFiles) == 0:
-    process.source = cms.Source("PoolSource",
+    process.source = cms.Source('PoolSource',
         fileNames = cms.untracked.vstring(
             #'file:/lustre/cmswork/zucchett/CMSSW_8_0_5/src/00F0B3DC-211B-E611-A6A0-001E67248A39.root' # DYJets
            #'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/user/lbenato/BulkGraviton_ZZ_ZlepZhad_narrow_M1000_13TeV-madgraph_MINIAODv2_805_10000ev/BulkGravToZZToZlepZhad_narrow_M-1000_13TeV-madgraph_PRIVATE-MC/BulkGraviton_ZZ_ZlepZhad_narrow_M1000_13TeV-madgraph_MINIAODv2_805_10000ev/160525_131443/0000/BulkGraviton_ZZ_ZlepZhad_narrow_M1000_13TeV-madgraph_MINIAODv2_1.root'
@@ -38,18 +38,20 @@ if len(options.inputFiles) == 0:
 # production: read externally provided filelist
 else:
     filelist = open(options.inputFiles[0], 'r').readlines()
-    process.source = cms.Source ("PoolSource", fileNames = cms.untracked.vstring(filelist) )
+    process.source = cms.Source ('PoolSource', fileNames = cms.untracked.vstring(filelist) )
 
 #output
-process.TFileService = cms.Service("TFileService",
-    fileName = cms.string("output.root" if len(options.outputFile) == 0 else options.outputFile),
+process.TFileService = cms.Service('TFileService',
+    fileName = cms.string('output.root' if len(options.outputFile) == 0 else options.outputFile),
     closeFileFast = cms.untracked.bool(True)
 )
 
 # Determine whether we are running on data or MC
 isData = ('/store/data/' in process.source.fileNames[0])
 isCustom = ('GluGluToAToZhToLLBB' in process.source.fileNames[0])
-print "Running on", ("data" if isData else "MC"), ", sample is", sample
+isReHLT = ('_reHLT_' in process.source.fileNames[0])
+print 'Running on', ('data' if isData else 'MC'), ', sample is', sample
+if isReHLT: print '-> re-HLT sample'
 #isData = False
 
 #-----------------------#
@@ -64,13 +66,14 @@ if isData:
 
 
 process.counter = cms.EDAnalyzer('CounterAnalyzer',
-    lheProduct = cms.InputTag("externalLHEProducer" if not isCustom else "source"),
+    lheProduct = cms.InputTag('externalLHEProducer' if not isCustom else 'source'),
 )
 
 # Trigger filter
 import HLTrigger.HLTfilters.hltHighLevel_cfi
-process.HLTFilter = cms.EDFilter("HLTHighLevel",
-    TriggerResultsTag = cms.InputTag("TriggerResults", "", "HLT"),
+triggerTag = 'HLT2' if isReHLT else 'HLT'
+process.HLTFilter = cms.EDFilter('HLTHighLevel',
+    TriggerResultsTag = cms.InputTag('TriggerResults', '', triggerTag),
     HLTPaths = cms.vstring(
         'HLT_Mu45_eta2p1_v*',
         'HLT_Mu50_v*',
@@ -104,15 +107,15 @@ process.HLTFilter = cms.EDFilter("HLTHighLevel",
 #process.load('RecoMET.METFilters.metFilters_cff')
 
 process.load('RecoMET.METFilters.BadPFMuonFilter_cfi')
-process.BadPFMuonFilter.muons = cms.InputTag("slimmedMuons")
-process.BadPFMuonFilter.PFCandidates = cms.InputTag("packedPFCandidates")
+process.BadPFMuonFilter.muons = cms.InputTag('slimmedMuons')
+process.BadPFMuonFilter.PFCandidates = cms.InputTag('packedPFCandidates')
 
 process.load('RecoMET.METFilters.BadChargedCandidateFilter_cfi')
-process.BadChargedCandidateFilter.muons = cms.InputTag("slimmedMuons")
-process.BadChargedCandidateFilter.PFCandidates = cms.InputTag("packedPFCandidates")
+process.BadChargedCandidateFilter.muons = cms.InputTag('slimmedMuons')
+process.BadChargedCandidateFilter.PFCandidates = cms.InputTag('packedPFCandidates')
 
-process.METFilter = cms.EDFilter("HLTHighLevel",
-    TriggerResultsTag = cms.InputTag("TriggerResults", "", "RECO"),
+process.METFilter = cms.EDFilter('HLTHighLevel',
+    TriggerResultsTag = cms.InputTag('TriggerResults', '', 'RECO'),
     HLTPaths = cms.vstring(
         'Flag_HBHENoiseFilter',
         'Flag_HBHENoiseIsoFilter',
@@ -128,7 +131,7 @@ process.METFilter = cms.EDFilter("HLTHighLevel",
 
 # Primary vertex
 import RecoVertex.PrimaryVertexProducer.OfflinePrimaryVertices_cfi
-process.primaryVertexFilter = cms.EDFilter("GoodVertexFilter",
+process.primaryVertexFilter = cms.EDFilter('GoodVertexFilter',
     vertexCollection = cms.InputTag('offlineSlimmedPrimaryVertices'),
     minimumNDOF = cms.uint32(4) ,
     maxAbsZ = cms.double(24), 
@@ -141,8 +144,8 @@ process.primaryVertexFilter = cms.EDFilter("GoodVertexFilter",
 #-----------------------#
 
 #electrons upstream modules
-process.load("Configuration.StandardSequences.GeometryRecoDB_cff")
-process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
+process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
+process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 from Configuration.AlCa.GlobalTag import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run2_mc', '')
 from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
@@ -162,10 +165,10 @@ for ph_idmod in ph_id_modules:
     setupAllVIDIdsInModule(process,ph_idmod,setupVIDPhotonSelection)
 
 #muons upstream modules
-process.cleanedMuons = cms.EDProducer("PATMuonCleanerBySegments",
-    src = cms.InputTag("slimmedMuons"),#("calibratedMuons"),
-    preselection = cms.string("track.isNonnull"),
-    passthrough = cms.string("isGlobalMuon && numberOfMatches >= 2"),
+process.cleanedMuons = cms.EDProducer('PATMuonCleanerBySegments',
+    src = cms.InputTag('slimmedMuons'),#('calibratedMuons'),
+    preselection = cms.string('track.isNonnull'),
+    passthrough = cms.string('isGlobalMuon && numberOfMatches >= 2'),
     fractionOfSharedSegments = cms.double(0.499)
 )
 
@@ -176,7 +179,7 @@ process.load('JetMETCorrections.Configuration.JetCorrectors_cff')
 #quark gluon likelihood upstream modules
 qgDatabaseVersion = 'v2b' # check https://twiki.cern.ch/twiki/bin/viewauth/CMS/QGDataBaseVersion
 from CondCore.DBCommon.CondDBSetup_cfi import *
-QGPoolDBESSource = cms.ESSource("PoolDBESSource",
+QGPoolDBESSource = cms.ESSource('PoolDBESSource',
       CondDBSetup,
       toGet = cms.VPSet(),
       connect = cms.string('frontier://FrontierProd/CMS_COND_PAT_000'),
@@ -193,20 +196,20 @@ process.QGTagger.jetsLabel = cms.string('QGL_AK4PFchs') # Other options: see htt
 
 #https://twiki.cern.ch/twiki/bin/view/CMS/EGMSmearer#ECAL_scale_and_resolution_correc
 process.load('EgammaAnalysis.ElectronTools.calibratedElectronsRun2_cfi')
-#process.selectedElectrons = cms.EDFilter("PATElectronSelector", 
-                                         #src = cms.InputTag("slimmedElectrons"), 
-                                         #cut = cms.string("pt > 5 && abs(eta)<2.5") 
+#process.selectedElectrons = cms.EDFilter('PATElectronSelector', 
+                                         #src = cms.InputTag('slimmedElectrons'), 
+                                         #cut = cms.string('pt > 5 && abs(eta)<2.5') 
                                          #)
-calibratedPatElectrons = cms.EDProducer("CalibratedPatElectronProducerRun2",
+calibratedPatElectrons = cms.EDProducer('CalibratedPatElectronProducerRun2',
                                         # input collections
                                         electrons = cms.InputTag('slimmedElectrons'),
-                                        gbrForestName = cms.string("gedelectron_p4combination_25ns"),
+                                        gbrForestName = cms.string('gedelectron_p4combination_25ns'),
                                         # data or MC corrections
                                         # if isMC is false, data corrections are applied
                                         isMC = cms.bool(False) if isData else cms.bool(True),
-                                        # set to True to get special "fake" smearing for synchronization. Use JUST in case of synchronization
+                                        # set to True to get special 'fake' smearing for synchronization. Use JUST in case of synchronization
                                         isSynchronization = cms.bool(False),
-                                        correctionFile = cms.string("80X_DCS05July_plus_Golden22")
+                                        correctionFile = cms.string('80X_DCS05July_plus_Golden22')
                                         )
 
 ## Update PAT jets
@@ -246,9 +249,9 @@ calibratedPatElectrons = cms.EDProducer("CalibratedPatElectronProducerRun2",
 
 process.ntuple = cms.EDAnalyzer('Diboson',
     genSet = cms.PSet(
-        genProduct = cms.InputTag("generator"),
-        lheProduct = cms.InputTag("externalLHEProducer" if not isCustom else "source"),
-        genParticles = cms.InputTag("prunedGenParticles"),
+        genProduct = cms.InputTag('generator'),
+        lheProduct = cms.InputTag('externalLHEProducer' if not isCustom else 'source'),
+        genParticles = cms.InputTag('prunedGenParticles'),
         pdgId = cms.vint32(1, 2, 3, 4, 5, 6, 11, 12, 13, 14, 15, 16, 21, 23, 24, 25, 36, 39, 1000022, 9100000, 9000001, 9000002, 9100012, 9100022, 9900032, 1023),
         samplesDYJetsToLL = cms.vstring(
             'DY1JetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0-v1',
@@ -266,13 +269,13 @@ process.ntuple = cms.EDAnalyzer('Diboson',
         ),
         samplesZJetsToNuNu = cms.vstring(),
         samplesWJetsToLNu = cms.vstring(),
-        samplesDir = cms.string("%s/src/Analysis/ALPHA/data/Stitch/" % os.environ['CMSSW_BASE']),
+        samplesDir = cms.string('%s/src/Analysis/ALPHA/data/Stitch/' % os.environ['CMSSW_BASE']),
         sample = cms.string( sample ),
-        ewkFile = cms.string("%s/src/Analysis/ALPHA/data/scalefactors_v4.root" % os.environ['CMSSW_BASE']),
+        ewkFile = cms.string('%s/src/Analysis/ALPHA/data/scalefactors_v4.root' % os.environ['CMSSW_BASE']),
     ),
     pileupSet = cms.PSet(
-        pileup = cms.InputTag("slimmedAddPileupInfo"),
-        vertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
+        pileup = cms.InputTag('slimmedAddPileupInfo'),
+        vertices = cms.InputTag('offlineSlimmedPrimaryVertices'),
         dataFileName = cms.string('%s/src/Analysis/ALPHA/data/PU_71300.root' % os.environ['CMSSW_BASE']),
 #        dataFileName = cms.string('%s/src/Analysis/ALPHA/data/Prod6.root' % os.environ['CMSSW_BASE']),
         mcFileName = cms.string('%s/src/Analysis/ALPHA/data/PU_MC.root' % os.environ['CMSSW_BASE']),
@@ -280,22 +283,22 @@ process.ntuple = cms.EDAnalyzer('Diboson',
         mcName = cms.string('2016_25ns_SpringMC_PUScenarioV1'),
     ),
     triggerSet = cms.PSet(
-        trigger = cms.InputTag("TriggerResults", "", "HLT"),
+        trigger = cms.InputTag('TriggerResults', '', triggerTag),
         paths = cms.vstring('HLT_Mu45_eta2p1_v', 'HLT_Mu50_v', 'HLT_TkMu50_v', 'HLT_IsoMu20_v', 'HLT_IsoTkMu20_v', 'HLT_IsoMu24_v', 'HLT_IsoTkMu24_v', 'HLT_Mu27_TkMu8_v', 'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v', 'HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v', 'HLT_Ele105_CaloIdVT_GsfTrkIdT_v', 'HLT_Ele115_CaloIdVT_GsfTrkIdT_v', 'HLT_Ele23_WPLoose_Gsf_v', 'HLT_Ele27_WPLoose_Gsf_v', 'HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v', 'HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_v', 'HLT_PFMETNoMu90_PFMHTNoMu90_IDTight_v', 'HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v', 'HLT_PFMETNoMu90_JetIdCleaned_PFMHTNoMu90_IDTight_v', 'HLT_PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight_v', 'HLT_PFMET120_BTagCSV_p067_v', 'HLT_PFMET170_NoiseCleaned_v', 'HLT_DoublePhoton60_v',),
     ),
     electronSet = cms.PSet(
-        #electrons = cms.InputTag("selectedElectrons"),
-        electrons = cms.InputTag("slimmedElectrons"),
-        vertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
-        eleVetoIdMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-veto"),
-        eleLooseIdMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-loose"),
-        eleMediumIdMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-medium"),
-        eleTightIdMap = cms.InputTag("egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-tight"),
-        eleHEEPIdMap = cms.InputTag("egmGsfElectronIDs:heepElectronID-HEEPV60"),
-        eleMVANonTrigMediumIdMap = cms.InputTag("egmGsfElectronIDs:mvaEleID-Spring15-25ns-nonTrig-V1-wp90"),
-        eleMVANonTrigTightIdMap = cms.InputTag("egmGsfElectronIDs:mvaEleID-Spring15-25ns-nonTrig-V1-wp80"),
-        eleMVATrigMediumIdMap = cms.InputTag("egmGsfElectronIDs:mvaEleID-Spring15-25ns-Trig-V1-wp90"),
-        eleMVATrigTightIdMap = cms.InputTag("egmGsfElectronIDs:mvaEleID-Spring15-25ns-Trig-V1-wp80"),
+        #electrons = cms.InputTag('selectedElectrons'),
+        electrons = cms.InputTag('slimmedElectrons'),
+        vertices = cms.InputTag('offlineSlimmedPrimaryVertices'),
+        eleVetoIdMap = cms.InputTag('egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-veto'),
+        eleLooseIdMap = cms.InputTag('egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-loose'),
+        eleMediumIdMap = cms.InputTag('egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-medium'),
+        eleTightIdMap = cms.InputTag('egmGsfElectronIDs:cutBasedElectronID-Spring15-25ns-V1-standalone-tight'),
+        eleHEEPIdMap = cms.InputTag('egmGsfElectronIDs:heepElectronID-HEEPV60'),
+        eleMVANonTrigMediumIdMap = cms.InputTag('egmGsfElectronIDs:mvaEleID-Spring15-25ns-nonTrig-V1-wp90'),
+        eleMVANonTrigTightIdMap = cms.InputTag('egmGsfElectronIDs:mvaEleID-Spring15-25ns-nonTrig-V1-wp80'),
+        eleMVATrigMediumIdMap = cms.InputTag('egmGsfElectronIDs:mvaEleID-Spring15-25ns-Trig-V1-wp90'),
+        eleMVATrigTightIdMap = cms.InputTag('egmGsfElectronIDs:mvaEleID-Spring15-25ns-Trig-V1-wp80'),
         eleVetoIdFileName = cms.string('%s/src/Analysis/ALPHA/data/runB_p2_passingVeto_egammaEffi_txt_SF2D.root' % os.environ['CMSSW_BASE']),
         eleLooseIdFileName = cms.string('%s/src/Analysis/ALPHA/data/runB_p2_passingLoose_egammaEffi_txt_SF2D.root' % os.environ['CMSSW_BASE']),
         eleMediumIdFileName = cms.string('%s/src/Analysis/ALPHA/data/runB_p2_passingMedium_egammaEffi_txt_SF2D.root' % os.environ['CMSSW_BASE']),
@@ -309,8 +312,8 @@ process.ntuple = cms.EDAnalyzer('Diboson',
         electron2pt = cms.double(10.),
     ),
     muonSet = cms.PSet(
-        muons = cms.InputTag("cleanedMuons"),#("slimmedMuons"),
-        vertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
+        muons = cms.InputTag('cleanedMuons'),#('slimmedMuons'),
+        vertices = cms.InputTag('offlineSlimmedPrimaryVertices'),
         muonIdFileName = cms.string('%s/src/Analysis/ALPHA/data/MuonID_Z_RunCD_Reco76X_Feb15.root' % os.environ['CMSSW_BASE']),
         #muonIsoFileName = cms.string('%s/src/Analysis/ALPHA/data/MuonIso_Z_RunCD_Reco76X_Feb15.root' % os.environ['CMSSW_BASE']),
         muonIsoFileName = cms.string('%s/src/Analysis/ALPHA/data/MuonISO_Z_2016runB_2p6fb.root' % os.environ['CMSSW_BASE']),
@@ -327,8 +330,8 @@ process.ntuple = cms.EDAnalyzer('Diboson',
         doRochester = cms.bool(True),
     ),
     tauSet = cms.PSet(
-        taus = cms.InputTag("slimmedTaus"),
-        vertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
+        taus = cms.InputTag('slimmedTaus'),
+        vertices = cms.InputTag('offlineSlimmedPrimaryVertices'),
         taupt = cms.double(20.),
         taueta = cms.double(2.3),
         tauIdByDecayMode = cms.int32(0),# 0: not set, 1: old, 2: new
@@ -338,12 +341,12 @@ process.ntuple = cms.EDAnalyzer('Diboson',
         tauIdByElectronRejection = cms.int32(0),# 0: not set, 1: V loose, 2: loose, 3: medium, 4: tight
     ),
     photonSet = cms.PSet(
-        photons = cms.InputTag("slimmedPhotons"),
-        vertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
-        phoLooseIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-loose"),
-        phoMediumIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-medium"),
-        phoTightIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-tight"),
-        phoMVANonTrigMediumIdMap = cms.InputTag("egmPhotonIDs:mvaPhoID-Spring15-25ns-nonTrig-V2-wp90"),
+        photons = cms.InputTag('slimmedPhotons'),
+        vertices = cms.InputTag('offlineSlimmedPrimaryVertices'),
+        phoLooseIdMap = cms.InputTag('egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-loose'),
+        phoMediumIdMap = cms.InputTag('egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-medium'),
+        phoTightIdMap = cms.InputTag('egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-tight'),
+        phoMVANonTrigMediumIdMap = cms.InputTag('egmPhotonIDs:mvaPhoID-Spring15-25ns-nonTrig-V2-wp90'),
         phoLooseIdFileName = cms.string('%s/src/Analysis/ALPHA/data/Loosenumbers.txt.egamma_SF2D.root' % os.environ['CMSSW_BASE']),
         phoMediumIdFileName = cms.string('%s/src/Analysis/ALPHA/data/Mediumnumbers.txt.egamma_SF2D.root' % os.environ['CMSSW_BASE']),
         phoTightIdFileName = cms.string('%s/src/Analysis/ALPHA/data/Tightnumbers.txt.egamma_SF2D.root' % os.environ['CMSSW_BASE']),
@@ -352,7 +355,7 @@ process.ntuple = cms.EDAnalyzer('Diboson',
         photonpt = cms.double(20.),
     ),
     jetSet = cms.PSet(
-        jets = cms.InputTag("slimmedJets"),#("slimmedJetsAK8"), #selectedPatJetsAK8PFCHSPrunedPacked
+        jets = cms.InputTag('slimmedJets'),#('slimmedJetsAK8'), #selectedPatJetsAK8PFCHSPrunedPacked
         jetid = cms.int32(1), # 0: no selection, 1: loose, 2: medium, 3: tight
         jet1pt = cms.double(30.),
         jet2pt = cms.double(30.),
@@ -360,8 +363,8 @@ process.ntuple = cms.EDAnalyzer('Diboson',
         addQGdiscriminator = cms.bool(True),
         recalibrateJets = cms.bool(True),
         recalibrateMass = cms.bool(False),
-        vertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
-        rho = cms.InputTag("fixedGridRhoFastjetAll"),        
+        vertices = cms.InputTag('offlineSlimmedPrimaryVertices'),
+        rho = cms.InputTag('fixedGridRhoFastjetAll'),        
         jecUncertaintyDATA = cms.string('%s/src/Analysis/ALPHA/data/Spring16_25nsV6_DATA/Spring16_25nsV6_DATA_Uncertainty_AK4PFchs.txt' % os.environ['CMSSW_BASE']),
         jecUncertaintyMC = cms.string('%s/src/Analysis/ALPHA/data/Spring16_25nsV6_MC/Spring16_25nsV6_MC_Uncertainty_AK4PFchs.txt' % os.environ['CMSSW_BASE']),
         jecCorrectorDATA = cms.vstring(
@@ -385,17 +388,17 @@ process.ntuple = cms.EDAnalyzer('Diboson',
             '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_MC/Spring16_25nsV6_MC_L3Absolute_AK4PFchs.txt' % os.environ['CMSSW_BASE'],
         ),
         reshapeBTag = cms.bool(True),
-        btag = cms.string("pfCombinedInclusiveSecondaryVertexV2BJetTags"),
+        btag = cms.string('pfCombinedInclusiveSecondaryVertexV2BJetTags'),
         btagDB = cms.string('%s/src/Analysis/ALPHA/data/CSVv2.csv' % os.environ['CMSSW_BASE']),
         jet1btag = cms.int32(0), # 0: no selection, 1: loose, 2: medium, 3: tight
         jet2btag = cms.int32(0),
-        met = cms.InputTag("slimmedMETs"),
+        met = cms.InputTag('slimmedMETs'),
         metRecoil = cms.bool(False),
         metRecoilMC = cms.string('%s/src/Analysis/ALPHA/data/recoilfit_gjetsMC_Zu1_pf_v5.root' % os.environ['CMSSW_BASE']),
         metRecoilData = cms.string('%s/src/Analysis/ALPHA/data/recoilfit_gjetsData_Zu1_pf_v5.root' % os.environ['CMSSW_BASE']),
     ),
     fatJetSet = cms.PSet(
-        jets = cms.InputTag("slimmedJetsAK8"),#("slimmedJetsAK8"), #selectedPatJetsAK8PFCHSPrunedPacked
+        jets = cms.InputTag('slimmedJetsAK8'),#('slimmedJetsAK8'), #selectedPatJetsAK8PFCHSPrunedPacked
         jetid = cms.int32(1), # 0: no selection, 1: loose, 2: medium, 3: tight
         jet1pt = cms.double(150.),
         jet2pt = cms.double(150.),
@@ -403,8 +406,8 @@ process.ntuple = cms.EDAnalyzer('Diboson',
         addQGdiscriminator = cms.bool(True),
         recalibrateJets = cms.bool(True),
         recalibrateMass = cms.bool(True),
-        vertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
-        rho = cms.InputTag("fixedGridRhoFastjetAll"),        
+        vertices = cms.InputTag('offlineSlimmedPrimaryVertices'),
+        rho = cms.InputTag('fixedGridRhoFastjetAll'),        
         jecUncertaintyDATA = cms.string('%s/src/Analysis/ALPHA/data/Spring16_25nsV6_DATA/Spring16_25nsV6_DATA_Uncertainty_AK8PFPuppi.txt' % os.environ['CMSSW_BASE']),
         jecUncertaintyMC = cms.string('%s/src/Analysis/ALPHA/data/Spring16_25nsV6_MC/Spring16_25nsV6_MC_Uncertainty_AK8PFPuppi.txt' % os.environ['CMSSW_BASE']),
         jecCorrectorDATA = cms.vstring(
@@ -428,11 +431,11 @@ process.ntuple = cms.EDAnalyzer('Diboson',
             '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_MC/Spring16_25nsV6_MC_L3Absolute_AK8PFchs.txt' % os.environ['CMSSW_BASE'],
         ),
         reshapeBTag = cms.bool(True),
-        btag = cms.string("pfCombinedInclusiveSecondaryVertexV2BJetTags"),
+        btag = cms.string('pfCombinedInclusiveSecondaryVertexV2BJetTags'),
         btagDB = cms.string('%s/src/Analysis/ALPHA/data/CSVv2.csv' % os.environ['CMSSW_BASE']),
         jet1btag = cms.int32(0), # 0: no selection, 1: loose, 2: medium, 3: tight
         jet2btag = cms.int32(0),
-        met = cms.InputTag("slimmedMETs"),
+        met = cms.InputTag('slimmedMETs'),
         metRecoil = cms.bool(False),
         metRecoilMC = cms.string(''),
         metRecoilData = cms.string(''),
@@ -449,7 +452,7 @@ process.ntuple = cms.EDAnalyzer('Diboson',
 )
 
 
-#process.output = cms.OutputModule("PoolOutputModule",
+#process.output = cms.OutputModule('PoolOutputModule',
 #  splitLevel = cms.untracked.int32(0),
 #  fileName = cms.untracked.string('deleteme.root'),
 #  dataset = cms.untracked.PSet(
@@ -471,7 +474,6 @@ if isData:
         process.egmGsfElectronIDSequence *
         process.calibratedPatElectrons *
         process.egmPhotonIDSequence *
-        #(process.selectedElectrons + process.calibratedPatElectrons) *
         process.cleanedMuons *
         process.ak4PFL2L3ResidualCorrectorChain *
         process.QGTagger *
@@ -488,7 +490,6 @@ else:
         process.egmGsfElectronIDSequence *
         process.calibratedPatElectrons *
         process.egmPhotonIDSequence *
-        #(process.selectedElectrons + process.calibratedPatElectrons) *
         process.cleanedMuons *
         process.ak4PFL2L3ResidualCorrectorChain *
         process.QGTagger *
