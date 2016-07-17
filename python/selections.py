@@ -4,8 +4,8 @@ selection = {
     "triggerMET" : "(isMC?1:(HLT_PFMETNoMu90_PFMHTNoMu90_IDTight_v||HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v||HLT_PFMETNoMu90_JetIdCleaned_PFMHTNoMu90_IDTight_v||HLT_PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight_v))",
     "triggerIsoEle" : "(isMC?1:HLT_Ele23_WPLoose_Gsf_v)",
     "triggerIsoMuo" : "(isMC?1:(HLT_IsoMu20_v||HLT_IsoTkMu20_v))",
-    "triggerEle" : "(isMC?1:(HLT_Ele105_CaloIdVT_GsfTrkIdT_v))",
-    "triggerMuo" : "(isMC?1:(HLT_Mu45_eta2p1_v||HLT_Mu50_v))",
+    "triggerEle" : "(isMC?1:(HLT_Ele105_CaloIdVT_GsfTrkIdT_v || HLT_Ele115_CaloIdVT_GsfTrkIdT_v))",
+    "triggerMuo" : "(isMC?1:(HLT_TkMu50_v||HLT_Mu50_v))",
     # Leptons
     "singleEle" : "isWtoEN && Lepton1.pt>135 && Lepton1.isTight && V.dPhi<2 && X.dPhi>2 && MEt.pt>80", #  && nTaus==0
     "singleMuo" : "isWtoMN && Lepton1.pt>55 && Lepton1.isHighPt && Lepton1.trkIso<0.1 && V.dPhi<2 && X.dPhi>2", # && nTaus==0
@@ -41,6 +41,7 @@ selection = {
     #------------------------------#
     "XVZllPre"  : "((triggerEle && doubleEle) || (triggerMuo && doubleMuo)) && Boost && Zcut",
     # 2 electrons
+    "XVZeeNoBoost"  : "triggerEle && doubleEle && Zcut",
     "XVZeePre"  : "triggerEle && doubleEle && Boost && Zcut",
     "XVZeeInc"  : "triggerEle && doubleEle && Boost && Zcut && (FatJet1.softdropPuppiMassCorr<65 || FatJet1.softdropPuppiMassCorr>135)",
     "XVZeelp"   : "triggerEle && doubleEle && Boost && Zcut && LPcut",
@@ -52,6 +53,7 @@ selection = {
     "XVZeelpSR" : "triggerEle && doubleEle && Boost && Zcut && LPcut && SRcut",
     "XVZeehpSR" : "triggerEle && doubleEle && Boost && Zcut && HPcut && SRcut",
     # 2 muons
+    "XVZmmNoBoost"  : "triggerMuo && doubleMuo && Zcut",
     "XVZmmPre"  : "triggerMuo && doubleMuo && Boost && Zcut",
     "XVZmmInc"  : "triggerMuo && doubleMuo && Boost && Zcut && (FatJet1.softdropPuppiMassCorr<65 || FatJet1.softdropPuppiMassCorr>135)",
     "XVZmmlp"   : "triggerMuo && doubleMuo && Boost && Zcut && LPcut",
@@ -63,6 +65,7 @@ selection = {
     "XVZmmlpSR" : "triggerMuo && doubleMuo && Boost && Zcut && LPcut && SRcut",
     "XVZmmhpSR" : "triggerMuo && doubleMuo && Boost && Zcut && HPcut && SRcut",
     # 1 muon 1 electron
+    "XVZmeNoBoost"   : "triggerMuo && MuonEle",
     "XVZmelp"   : "triggerMuo && MuonEle && FatJet1.pt>200 && LPcut",
     "XVZmehp"   : "triggerMuo && MuonEle && FatJet1.pt>200 && HPcut",
     "XVZmelpSR" : "triggerMuo && MuonEle && FatJet1.pt>200 && LPcut && SRcut",
