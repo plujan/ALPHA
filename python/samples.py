@@ -22,6 +22,12 @@ sample = {
         'matcheff': 1.,
         'kfactor' : 1.,
     },
+    'SingleMuonRun2016D-PromptReco-v2' : {
+        'nevents' : 68492270,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
     
     'DoubleMuonRun2016B-PromptReco-v1' : {
         'nevents' : 4201017,
@@ -55,6 +61,12 @@ sample = {
         'kfactor' : 1.,
     },
     'SingleElectronRun2016C-PromptReco-v2' : {
+        'nevents' : 97292079,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'SingleElectronRun2016D-PromptReco-v2' : {
         'nevents' : 97292079,
         'xsec'    : 1.,
         'matcheff': 1.,
