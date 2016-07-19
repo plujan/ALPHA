@@ -144,6 +144,7 @@ std::vector<pat::Muon> MuonAnalyzer::FillMuonVector(const edm::Event& iEvent) {
             else
                 rmcor->momcor_data(*mup4, float(mu.charge()), 0, float(1.0));      
             mu.setP4(reco::Candidate::PolarLorentzVector(mup4->Pt(), mu.eta(), mu.phi(), mu.mass()));
+            delete mup4;
         }
         if(mu.pt()<PtTh || fabs(mu.eta())>2.4) continue;
         // Muon Quality ID 2015-2016: see https://twiki.cern.ch/twiki/bin/view/CMS/SWGuideMuonIdRun2
