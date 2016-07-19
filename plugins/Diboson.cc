@@ -379,6 +379,25 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     Hist["e_nEvents"]->Fill(2., EventWeight);
     Hist["m_nEvents"]->Fill(2., EventWeight);
     
+    // Muon efficiency plots
+    float dRll = -1.;
+    if(genL1!=NULL && genL2!=NULL) dRll = reco::deltaR(genL1->eta(), genL1->phi(), genL2->eta(), genL2->phi());
+    Hist["m_dR_den"]->Fill(dRll, EventWeight);
+    if(MuonVect.size()>=2) {
+        Hist["m_dR_reco"]->Fill(dRll, EventWeight);
+        if(MuonVect[0].pt() > 55. && MuonVect[1].pt() > 20.) {
+            Hist["m_dR_pt"]->Fill(dRll, EventWeight);
+            if(MuonVect[0].userInt("isHighPt") + MuonVect[1].userInt("isHighPt") >= 1) {
+                Hist["m_dR_id1"]->Fill(dRll, EventWeight);
+                if((MuonVect[0].userInt("isHighPt")==1 && MuonVect[1].userInt("isTrackerHighPt")==1) || (MuonVect[1].userInt("isHighPt")==1 && MuonVect[0].userInt("isTrackerHighPt")==1)) {
+                    Hist["m_dR_id2"]->Fill(dRll, EventWeight);
+                    if(MuonVect[0].userFloat("trkIso") > 0.1 && MuonVect[1].userFloat("trkIso") > 0.1) {
+                        Hist["m_dR_iso"]->Fill(dRll, EventWeight);
+                    }
+                }
+            }
+        }
+    }
     
     
     // -----------------------------------
@@ -603,19 +622,19 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
             Hist["a_den_H_truth_XMass"]->Fill(GenXMass, EventWeight);
         }
 
-	//MC truth merged topology
-	if(isMC && isGenZZ && isMerged) {
+	      //MC truth merged topology
+	      if(isMC && isGenZZ && isMerged) {
             GenZHadFatJetDR = reco::deltaR(p4GenZHad.eta(),p4GenZHad.phi(),FatJetsVect.at(0).eta(),FatJetsVect.at(0).phi());
             Hist["a_genZHad_recoFatJetDR"]->Fill(GenZHadFatJetDR, EventWeight);
             if(GenZHadFatJetDR<0.4){
-	        Hist["a_num_HM_truth_Hpt0p4"]->Fill(GenZHadPt, EventWeight);
-	        Hist["a_num_HM_truth_HadDR0p4"]->Fill(GenHadDR, EventWeight);
-	        Hist["a_num_HM_truth_XMass0p4"]->Fill(GenXMass, EventWeight);
+	              Hist["a_num_HM_truth_Hpt0p4"]->Fill(GenZHadPt, EventWeight);
+	              Hist["a_num_HM_truth_HadDR0p4"]->Fill(GenHadDR, EventWeight);
+	              Hist["a_num_HM_truth_XMass0p4"]->Fill(GenXMass, EventWeight);
             }
             if(GenZHadFatJetDR<0.1){
-	        Hist["a_num_HM_truth_Hpt0p1"]->Fill(GenZHadPt, EventWeight);
-	        Hist["a_num_HM_truth_HadDR0p1"]->Fill(GenHadDR, EventWeight);
-	        Hist["a_num_HM_truth_XMass0p1"]->Fill(GenXMass, EventWeight);
+	              Hist["a_num_HM_truth_Hpt0p1"]->Fill(GenZHadPt, EventWeight);
+	              Hist["a_num_HM_truth_HadDR0p1"]->Fill(GenHadDR, EventWeight);
+	              Hist["a_num_HM_truth_XMass0p1"]->Fill(GenXMass, EventWeight);
             }
         }
 
@@ -688,11 +707,11 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         }
 
         //MC truth closest in DR          
-        if(isMC && (ch1<=JetsVect.size() && ch2<=JetsVect.size()) && JetsVect.at(ch1).genParton()!=NULL && JetsVect.at(ch2).genParton()!=NULL && isGenZZ){
-            if(Utilities::FindMotherId(JetsVect.at(ch1).genParton())==23 && Utilities::FindMotherId(JetsVect.at(ch2).genParton())==23){
-	        Hist["a_num_HDR_truth_Hpt"]->Fill(GenZHadPt, EventWeight);
-	        Hist["a_num_HDR_truth_HadDR"]->Fill(GenHadDR, EventWeight);
-	        Hist["a_num_HDR_truth_XMass"]->Fill(GenXMass, EventWeight);
+        if(isMC && (ch1<=JetsVect.size() && ch2<=JetsVect.size()) && JetsVect.at(ch1).genParton()!=NULL && JetsVect.at(ch2).genParton()!=NULL && isGenZZ) {
+            if(Utilities::FindMotherId(JetsVect.at(ch1).genParton())==23 && Utilities::FindMotherId(JetsVect.at(ch2).genParton())==23) {
+                Hist["a_num_HDR_truth_Hpt"]->Fill(GenZHadPt, EventWeight);
+                Hist["a_num_HDR_truth_HadDR"]->Fill(GenHadDR, EventWeight);
+                Hist["a_num_HDR_truth_XMass"]->Fill(GenXMass, EventWeight);
             }
         }
         
