@@ -123,6 +123,12 @@ m_ZmassEB               ;Z~Mass~[GeV]                              60    60   12
 m_ZmassBE               ;Z~Mass~[GeV]                              60    60   120   Lin
 m_ZmassEE               ;Z~Mass~[GeV]                              60    60   120   Lin
 m_dimuon                ;#mu~#mu~Mass~[GeV]                       100     0   200   Log
+m_dR_reco               ;Efficiency                                20     0   1.0   Lin
+m_dR_pt                 ;Efficiency                                20     0   1.0   Lin
+m_dR_id1                ;Efficiency                                20     0   1.0   Lin
+m_dR_id2                ;Efficiency                                20     0   1.0   Lin
+m_dR_iso                ;Efficiency                                20     0   1.0   Lin
+m_dR_den                ;Efficiency                                20     0   1.0   Lin
 m_number                ;Number~of~Muons                           10  -0.5   9.5   Lin
 m_pt                    ;Muon~p_{T}~[GeV]                         100     0   200   Log
 m_pt1                   ;Muon1~p_{T}~[GeV]                        100     0   200   Log
