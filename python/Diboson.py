@@ -272,6 +272,7 @@ process.ntuple = cms.EDAnalyzer('Diboson',
         samplesDir = cms.string('%s/src/Analysis/ALPHA/data/Stitch/' % os.environ['CMSSW_BASE']),
         sample = cms.string( sample ),
         ewkFile = cms.string('%s/src/Analysis/ALPHA/data/scalefactors_v4.root' % os.environ['CMSSW_BASE']),
+        applyEWK = cms.bool(True if sample.startswith('DYJets') or sample.startswith('WJets') else False),
     ),
     pileupSet = cms.PSet(
         pileup = cms.InputTag('slimmedAddPileupInfo'),
