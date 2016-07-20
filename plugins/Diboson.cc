@@ -379,6 +379,50 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     Hist["e_nEvents"]->Fill(2., EventWeight);
     Hist["m_nEvents"]->Fill(2., EventWeight);
     
+    // Muon efficiency plots
+    reco::GenParticle* genM1 = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, std::vector<int>{-13});
+    reco::GenParticle* genM2 = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, std::vector<int>{+13});
+    if(genL1!=NULL && genL2!=NULL) {
+        if(genM2->pt() > genM1->pt()) {
+            reco::GenParticle* tmp = genM2;
+            genM2 = genM1;
+            genM1 = tmp;
+        }
+        int m1(-1), m2(-1);
+        float dRll(-1.);
+        dRll = reco::deltaR(genL1->eta(), genL1->phi(), genL2->eta(), genL2->phi());
+        //pTll = (genL1->p4() + genL2->p4()).pt();
+        
+        for(unsigned int m = 0; m < MuonVect.size(); m++) {
+            if(reco::deltaR(genL1->eta(), genL1->phi(), MuonVect[m].eta(), MuonVect[m].phi()) < 0.1 && fabs(1.-MuonVect[m].pt()/genL1->pt()) < 0.3) m1 = m;
+            else if(((int)m)!=m1 && reco::deltaR(genL2->eta(), genL2->phi(), MuonVect[m].eta(), MuonVect[m].phi()) < 0.1 && fabs(1.-MuonVect[m].pt()/genL2->pt()) < 0.3) m2 = m;
+        }
+        if(m1 >= 0 && m2 >= 0) {
+            Hist["m_nEvents"]->Fill(3., EventWeight);
+            Hist["m_dR_reco"]->Fill(dRll);
+            if(MuonVect[m1].pt() > 55. && MuonVect[m2].pt() > 20.) {
+                Hist["m_nEvents"]->Fill(4., EventWeight);
+                Hist["m_dR_pt"]->Fill(dRll);
+                if(MuonVect[m1].charge() != MuonVect[m2].charge() && (MuonVect[m1].p4() + MuonVect[m2].p4()).mass() > 70 && (MuonVect[m1].p4() + MuonVect[m2].p4()).mass() < 110) {
+                    Hist["m_nEvents"]->Fill(5., EventWeight);
+                    Hist["m_dR_z"]->Fill(dRll);
+                    Hist["m_dR"]->Fill(dRll);
+                    if(MuonVect[m1].userInt("isHighPt") == 1 || MuonVect[m2].userInt("isHighPt") == 1) {
+                        Hist["m_nEvents"]->Fill(6., EventWeight);
+                        Hist["m_dR_id1"]->Fill(dRll);
+                        if((MuonVect[m1].userInt("isHighPt")==1 && MuonVect[m2].userInt("isTrackerHighPt")==1) || (MuonVect[m2].userInt("isHighPt")==1 && MuonVect[m1].userInt("isTrackerHighPt")==1)) {
+                            Hist["m_nEvents"]->Fill(7., EventWeight);
+                            Hist["m_dR_id2"]->Fill(dRll);
+                            if(MuonVect[m1].userFloat("trkIso") < 0.1 && MuonVect[m2].userFloat("trkIso") < 0.1) {
+                                Hist["m_nEvents"]->Fill(8., EventWeight);
+                                Hist["m_dR_iso"]->Fill(dRll);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
     
     
     // -----------------------------------
@@ -412,12 +456,15 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     else {if(Verbose) std::cout << " - No V candidate" << std::endl; return;}
     
     Hist["a_nEvents"]->Fill(3., EventWeight);
-    if(isZtoEE) Hist["e_nEvents"]->Fill(3., EventWeight);
-    if(isZtoMM) Hist["m_nEvents"]->Fill(3., EventWeight);
+    Hist["m_nEvents"]->Fill(8., EventWeight);
+//    if(isZtoEE) Hist["e_nEvents"]->Fill(3., EventWeight);
+//    if(isZtoMM) Hist["m_nEvents"]->Fill(3., EventWeight);
 
 
     // ---------- Reconstruct V candidate ----------
+    
     pat::CompositeCandidate theV;
+    /*
     if(isZtoMM) {
         if(Verbose) std::cout << " - Try to reconstruct Z -> mm" << std::endl;
         if(MuonVect.at(0).charge()*MuonVect.at(1).charge()<0 && (MuonVect[0].p4() + MuonVect[1].p4()).mass() > 50.) {
@@ -449,6 +496,72 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
             }
         }
         else { if(Verbose) std::cout << " - No OS electrons" << std::endl; return; }
+    }*/
+    if(isZtoMM) {
+        if(Verbose) std::cout << " - Try to reconstruct Z -> mm" << std::endl;
+        // Indentify leptons
+        int m1(-1), m2(-1);
+        float maxZpt(-1.);
+        for(unsigned int i = 0; i < MuonVect.size(); i++) {
+            for(unsigned int j = 1; j < MuonVect.size(); j++) {
+                if(i==j || MuonVect[i].charge() == MuonVect[j].charge()) continue;
+                float Zpt = (MuonVect[i].p4() + MuonVect[j].p4()).pt();
+                float Zmass = (MuonVect[i].p4() + MuonVect[j].p4()).mass();
+                if(Zmass > 70. && Zmass < 110. && Zpt > maxZpt) {m1 = i; m2 = j; maxZpt = Zpt;}
+            }
+        }
+        // Build candidate
+        if(m1 >= 0 && m2 >= 0) {
+            theV.addDaughter(MuonVect.at(m1).charge() < 0 ? MuonVect.at(m1) : MuonVect.at(m2));
+            theV.addDaughter(MuonVect.at(m1).charge() < 0 ? MuonVect.at(m2) : MuonVect.at(m1));
+            addP4.set(theV);
+            // SF
+            if(isMC) {
+                LeptonWeight *= theMuonAnalyzer->GetMuonIdSF(MuonVect.at(m1), MuonPSet.getParameter<int>("muon1id"));
+                LeptonWeight *= theMuonAnalyzer->GetMuonIdSF(MuonVect.at(m2), MuonPSet.getParameter<int>("muon2id"));
+                LeptonWeight *= theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(m1), MuonPSet.getParameter<int>("muon1iso"));
+                LeptonWeight *= theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(m2), MuonPSet.getParameter<int>("muon2iso"));
+            }
+        }
+        else { if(Verbose) std::cout << " - No OS muons" << std::endl; return; }
+        // Clean-up muon collection
+        pat::Muon Mu1 = MuonVect.at(m1), Mu2 = MuonVect.at(m2);
+        MuonVect.clear();
+        if(Mu1.pt() > Mu2.pt()) {MuonVect.push_back(Mu1); MuonVect.push_back(Mu2);}
+        else {MuonVect.push_back(Mu2); MuonVect.push_back(Mu1);}
+    }
+    else if(isZtoEE) {
+        if(Verbose) std::cout << " - Try to reconstruct Z -> ee" << std::endl;
+        // Indentify leptons
+        int e1(-1), e2(-1);
+        float maxZpt(-1.);
+        for(unsigned int i = 0; i < ElecVect.size(); i++) {
+            for(unsigned int j = 1; j < ElecVect.size(); j++) {
+                if(i==j || ElecVect[i].charge() == ElecVect[j].charge()) continue;
+                float Zpt = (ElecVect[i].p4() + ElecVect[j].p4()).pt();
+                float Zmass = (ElecVect[i].p4() + ElecVect[j].p4()).mass();
+                if(Zmass > 70. && Zmass < 110. && Zpt > maxZpt) {e1 = i; e2 = j; maxZpt = Zpt;}
+            }
+        }
+        // Build candidate
+        if(e1 >= 0 && e2 >= 0) {
+            theV.addDaughter(ElecVect.at(e1).charge() ? ElecVect.at(e1) : ElecVect.at(e2));
+            theV.addDaughter(ElecVect.at(e1).charge() ? ElecVect.at(e2) : ElecVect.at(e1));
+            addP4.set(theV);
+            // SF
+            if(isMC) {
+                LeptonWeight *= theElectronAnalyzer->GetElectronIdSF(ElecVect.at(0), ElectronPSet.getParameter<int>("electron1id"));
+                LeptonWeight *= theElectronAnalyzer->GetElectronIdSF(ElecVect.at(1), ElectronPSet.getParameter<int>("electron2id"));
+                LeptonWeight *= theElectronAnalyzer->GetElectronRecoEffSF(ElecVect.at(0));
+                LeptonWeight *= theElectronAnalyzer->GetElectronRecoEffSF(ElecVect.at(1));
+            }
+        }
+        else { if(Verbose) std::cout << " - No OS electrons" << std::endl; return; }
+        // Clean-up electron collection
+        pat::Electron Ele1 = ElecVect.at(e1), Ele2 = ElecVect.at(e2);
+        ElecVect.clear();
+        if(Ele1.pt() > Ele2.pt()) {ElecVect.push_back(Ele1); ElecVect.push_back(Ele2);}
+        else {ElecVect.push_back(Ele2); ElecVect.push_back(Ele1);}
     }
     else if(isTtoEM) {
         if(Verbose) std::cout << " - Try to reconstruct TT -> enmn" << std::endl;
@@ -495,8 +608,9 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     EventWeight *= LeptonWeight;
     
     Hist["a_nEvents"]->Fill(4., EventWeight);
-    if(isZtoEE) Hist["e_nEvents"]->Fill(4., EventWeight);
-    if(isZtoMM) Hist["m_nEvents"]->Fill(4., EventWeight);
+    Hist["m_nEvents"]->Fill(9., EventWeight);
+//    if(isZtoEE) Hist["e_nEvents"]->Fill(4., EventWeight);
+//    if(isZtoMM) Hist["m_nEvents"]->Fill(4., EventWeight);
     
     if(isZtoEE) {
         Hist["e_Zmass"]->Fill(theV.mass(), EventWeight);
@@ -603,19 +717,19 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
             Hist["a_den_H_truth_XMass"]->Fill(GenXMass, EventWeight);
         }
 
-	//MC truth merged topology
-	if(isMC && isGenZZ && isMerged) {
+	      //MC truth merged topology
+	      if(isMC && isGenZZ && isMerged) {
             GenZHadFatJetDR = reco::deltaR(p4GenZHad.eta(),p4GenZHad.phi(),FatJetsVect.at(0).eta(),FatJetsVect.at(0).phi());
             Hist["a_genZHad_recoFatJetDR"]->Fill(GenZHadFatJetDR, EventWeight);
             if(GenZHadFatJetDR<0.4){
-	        Hist["a_num_HM_truth_Hpt0p4"]->Fill(GenZHadPt, EventWeight);
-	        Hist["a_num_HM_truth_HadDR0p4"]->Fill(GenHadDR, EventWeight);
-	        Hist["a_num_HM_truth_XMass0p4"]->Fill(GenXMass, EventWeight);
+	              Hist["a_num_HM_truth_Hpt0p4"]->Fill(GenZHadPt, EventWeight);
+	              Hist["a_num_HM_truth_HadDR0p4"]->Fill(GenHadDR, EventWeight);
+	              Hist["a_num_HM_truth_XMass0p4"]->Fill(GenXMass, EventWeight);
             }
             if(GenZHadFatJetDR<0.1){
-	        Hist["a_num_HM_truth_Hpt0p1"]->Fill(GenZHadPt, EventWeight);
-	        Hist["a_num_HM_truth_HadDR0p1"]->Fill(GenHadDR, EventWeight);
-	        Hist["a_num_HM_truth_XMass0p1"]->Fill(GenXMass, EventWeight);
+	              Hist["a_num_HM_truth_Hpt0p1"]->Fill(GenZHadPt, EventWeight);
+	              Hist["a_num_HM_truth_HadDR0p1"]->Fill(GenHadDR, EventWeight);
+	              Hist["a_num_HM_truth_XMass0p1"]->Fill(GenXMass, EventWeight);
             }
         }
 
@@ -688,11 +802,11 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         }
 
         //MC truth closest in DR          
-        if(isMC && (ch1<=JetsVect.size() && ch2<=JetsVect.size()) && JetsVect.at(ch1).genParton()!=NULL && JetsVect.at(ch2).genParton()!=NULL && isGenZZ){
-            if(Utilities::FindMotherId(JetsVect.at(ch1).genParton())==23 && Utilities::FindMotherId(JetsVect.at(ch2).genParton())==23){
-	        Hist["a_num_HDR_truth_Hpt"]->Fill(GenZHadPt, EventWeight);
-	        Hist["a_num_HDR_truth_HadDR"]->Fill(GenHadDR, EventWeight);
-	        Hist["a_num_HDR_truth_XMass"]->Fill(GenXMass, EventWeight);
+        if(isMC && (ch1<=JetsVect.size() && ch2<=JetsVect.size()) && JetsVect.at(ch1).genParton()!=NULL && JetsVect.at(ch2).genParton()!=NULL && isGenZZ) {
+            if(Utilities::FindMotherId(JetsVect.at(ch1).genParton())==23 && Utilities::FindMotherId(JetsVect.at(ch2).genParton())==23) {
+                Hist["a_num_HDR_truth_Hpt"]->Fill(GenZHadPt, EventWeight);
+                Hist["a_num_HDR_truth_HadDR"]->Fill(GenHadDR, EventWeight);
+                Hist["a_num_HDR_truth_XMass"]->Fill(GenXMass, EventWeight);
             }
         }
         
@@ -794,8 +908,8 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         }
         
         Hist["a_nEvents"]->Fill(5., EventWeight);
-        if(isZtoEE) Hist["e_nEvents"]->Fill(5., EventWeight);
-        if(isZtoMM) Hist["m_nEvents"]->Fill(5., EventWeight);
+//        if(isZtoEE) Hist["e_nEvents"]->Fill(5., EventWeight);
+//        if(isZtoMM) Hist["m_nEvents"]->Fill(5., EventWeight);
     }
     else {if(Verbose) std::cout << " - N jets < 2" << std::endl;}
     
@@ -956,28 +1070,28 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     
     if(theV.mass()<80. || theV.mass()>100.) {if(Verbose) std::cout << " - Z off-shell" << std::endl; return;}
     Hist["a_nEvents"]->Fill(6., EventWeight);
-    if(isZtoEE) Hist["e_nEvents"]->Fill(6., EventWeight);
-    if(isZtoMM) Hist["m_nEvents"]->Fill(6., EventWeight);
+//    if(isZtoEE) Hist["e_nEvents"]->Fill(6., EventWeight);
+//    if(isZtoMM) Hist["m_nEvents"]->Fill(6., EventWeight);
     
     if(theH.mass()<90. || theH.mass()>140.) {if(Verbose) std::cout << " - No h candidate" << std::endl; return;}
     Hist["a_nEvents"]->Fill(7., EventWeight);
-    if(isZtoEE) Hist["e_nEvents"]->Fill(7., EventWeight);
-    if(isZtoMM) Hist["m_nEvents"]->Fill(7., EventWeight);
+//    if(isZtoEE) Hist["e_nEvents"]->Fill(7., EventWeight);
+//    if(isZtoMM) Hist["m_nEvents"]->Fill(7., EventWeight);
     
     if(MET.pt()>60.)  {if(Verbose) std::cout << " - Failed Top veto" << std::endl; return;}
     Hist["a_nEvents"]->Fill(8., EventWeight);
-    if(isZtoEE) Hist["e_nEvents"]->Fill(8., EventWeight);
-    if(isZtoMM) Hist["m_nEvents"]->Fill(8., EventWeight);
+//    if(isZtoEE) Hist["e_nEvents"]->Fill(8., EventWeight);
+//    if(isZtoMM) Hist["m_nEvents"]->Fill(8., EventWeight);
     
     if(!(nJets >= 2 && (JetsVect.at(0).bDiscriminator(JetPSet.getParameter<std::string>("btag")) > 0.800 || JetsVect.at(1).bDiscriminator(JetPSet.getParameter<std::string>("btag")) > 0.800)) ) {if(Verbose) std::cout << " - BTag < 1" << std::endl; return;}
     Hist["a_nEvents"]->Fill(9., EventWeight);
-    if(isZtoEE) Hist["e_nEvents"]->Fill(9., EventWeight);
-    if(isZtoMM) Hist["m_nEvents"]->Fill(9., EventWeight);
+//    if(isZtoEE) Hist["e_nEvents"]->Fill(9., EventWeight);
+//    if(isZtoMM) Hist["m_nEvents"]->Fill(9., EventWeight);
     
     if(!(nJets >= 2 && JetsVect.at(0).bDiscriminator(JetPSet.getParameter<std::string>("btag")) > 0.800 && JetsVect.at(1).bDiscriminator(JetPSet.getParameter<std::string>("btag")) > 0.800) ) {if(Verbose) std::cout << " - BTag < 2" << std::endl; return;}
     Hist["a_nEvents"]->Fill(10., EventWeight);
-    if(isZtoEE) Hist["e_nEvents"]->Fill(10., EventWeight);
-    if(isZtoMM) Hist["m_nEvents"]->Fill(10., EventWeight);
+//    if(isZtoEE) Hist["e_nEvents"]->Fill(10., EventWeight);
+//    if(isZtoMM) Hist["m_nEvents"]->Fill(10., EventWeight);
     
 }
 

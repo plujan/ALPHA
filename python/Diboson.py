@@ -272,6 +272,7 @@ process.ntuple = cms.EDAnalyzer('Diboson',
         samplesDir = cms.string('%s/src/Analysis/ALPHA/data/Stitch/' % os.environ['CMSSW_BASE']),
         sample = cms.string( sample ),
         ewkFile = cms.string('%s/src/Analysis/ALPHA/data/scalefactors_v4.root' % os.environ['CMSSW_BASE']),
+        applyEWK = cms.bool(True if sample.startswith('DYJets') or sample.startswith('WJets') else False),
     ),
     pileupSet = cms.PSet(
         pileup = cms.InputTag('slimmedAddPileupInfo'),
@@ -306,10 +307,10 @@ process.ntuple = cms.EDAnalyzer('Diboson',
         eleMVATrigMediumIdFileName = cms.string('%s/src/Analysis/ALPHA/data/ScaleFactor_GsfElectronToRECO_passingTrigWP90.txt.egamma_SF2D.root' % os.environ['CMSSW_BASE']),
         eleMVATrigTightIdFileName = cms.string('%s/src/Analysis/ALPHA/data/ScaleFactor_GsfElectronToRECO_passingTrigWP80.txt.egamma_SF2D.root' % os.environ['CMSSW_BASE']),
         eleRecoEffFileName = cms.string('%s/src/Analysis/ALPHA/data/eleRECO.txt.egamma_SF2D.root' % os.environ['CMSSW_BASE']),
-        electron1id = cms.int32(1), # 0: veto, 1: loose, 2: medium, 3: tight, 4: HEEP, 5: MVA medium nonTrig, 6: MVA tight nonTrig, 7: MVA medium Trig, 8: MVA tight Trig
-        electron2id = cms.int32(1),
+        electron1id = cms.int32(-1), # 0: veto, 1: loose, 2: medium, 3: tight, 4: HEEP, 5: MVA medium nonTrig, 6: MVA tight nonTrig, 7: MVA medium Trig, 8: MVA tight Trig
+        electron2id = cms.int32(-1),
         electron1pt = cms.double(20.),
-        electron2pt = cms.double(10.),
+        electron2pt = cms.double(20.),
     ),
     muonSet = cms.PSet(
         muons = cms.InputTag('cleanedMuons'),#('slimmedMuons'),
@@ -320,12 +321,12 @@ process.ntuple = cms.EDAnalyzer('Diboson',
         muonHighptFileName = cms.string('%s/src/Analysis/ALPHA/data/MuonHighPt_Z_RunCD_Reco74X_Dec17.root' % os.environ['CMSSW_BASE']),
         muonTriggerFileName = cms.string('%s/src/Analysis/ALPHA/data/SingleMuonTrigger_Z_RunCD_Reco76X_Feb15.root' % os.environ['CMSSW_BASE']),
         doubleMuonTriggerFileName = cms.string('%s/src/Analysis/ALPHA/data/MuHLTEfficiencies_Run_2012ABCD_53X_DR03-2.root' % os.environ['CMSSW_BASE']),#obsolete
-        muon1id = cms.int32(0), # 0: tracker high pt muon id, 1: loose, 2: medium, 3: tight, 4: high pt
-        muon2id = cms.int32(0),
-        muon1iso = cms.int32(0), # 0: trk iso (<0.1), 1: loose (<0.25), 2: tight (<0.15) (pfIso in cone 0.4)
-        muon2iso = cms.int32(0),
+        muon1id = cms.int32(-1), # 0: tracker high pt muon id, 1: loose, 2: medium, 3: tight, 4: high pt
+        muon2id = cms.int32(-1),
+        muon1iso = cms.int32(-1), # 0: trk iso (<0.1), 1: loose (<0.25), 2: tight (<0.15) (pfIso in cone 0.4)
+        muon2iso = cms.int32(-1),
         muon1pt = cms.double(20.),
-        muon2pt = cms.double(10.),
+        muon2pt = cms.double(20.),
         useTuneP = cms.bool(True),
         doRochester = cms.bool(True),
     ),
@@ -464,7 +465,7 @@ process.ntuple = cms.EDAnalyzer('Diboson',
 if isData:
     process.seq = cms.Sequence(
         process.counter *
-        process.HLTFilter *
+        #process.HLTFilter *
 
         process.METFilter *
         process.BadPFMuonFilter *
@@ -475,7 +476,7 @@ if isData:
         process.calibratedPatElectrons *
         process.egmPhotonIDSequence *
         process.cleanedMuons *
-        process.ak4PFL2L3ResidualCorrectorChain *
+        #process.ak4PFL2L3ResidualCorrectorChain *
         process.QGTagger *
         process.ntuple
     )
@@ -491,7 +492,7 @@ else:
         process.calibratedPatElectrons *
         process.egmPhotonIDSequence *
         process.cleanedMuons *
-        process.ak4PFL2L3ResidualCorrectorChain *
+        #process.ak4PFL2L3ResidualCorrectorChain *
         process.QGTagger *
         process.ntuple
     )
