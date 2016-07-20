@@ -380,19 +380,44 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     Hist["m_nEvents"]->Fill(2., EventWeight);
     
     // Muon efficiency plots
-    float dRll = -1.;
-    if(genL1!=NULL && genL2!=NULL) dRll = reco::deltaR(genL1->eta(), genL1->phi(), genL2->eta(), genL2->phi());
-    Hist["m_dR_den"]->Fill(dRll, EventWeight);
-    if(MuonVect.size()>=2) {
-        Hist["m_dR_reco"]->Fill(dRll, EventWeight);
-        if(MuonVect[0].pt() > 55. && MuonVect[1].pt() > 20.) {
-            Hist["m_dR_pt"]->Fill(dRll, EventWeight);
-            if(MuonVect[0].userInt("isHighPt") + MuonVect[1].userInt("isHighPt") >= 1) {
-                Hist["m_dR_id1"]->Fill(dRll, EventWeight);
-                if((MuonVect[0].userInt("isHighPt")==1 && MuonVect[1].userInt("isTrackerHighPt")==1) || (MuonVect[1].userInt("isHighPt")==1 && MuonVect[0].userInt("isTrackerHighPt")==1)) {
-                    Hist["m_dR_id2"]->Fill(dRll, EventWeight);
-                    if(MuonVect[0].userFloat("trkIso") > 0.1 && MuonVect[1].userFloat("trkIso") > 0.1) {
-                        Hist["m_dR_iso"]->Fill(dRll, EventWeight);
+    reco::GenParticle* genM1 = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, std::vector<int>{-13});
+    reco::GenParticle* genM2 = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, std::vector<int>{+13});
+    if(genL1!=NULL && genL2!=NULL) {
+        if(genM2->pt() > genM1->pt()) {
+            reco::GenParticle* tmp = genM2;
+            genM2 = genM1;
+            genM1 = tmp;
+        }
+        int m1(-1), m2(-1);
+        float dRll(-1.);
+        dRll = reco::deltaR(genL1->eta(), genL1->phi(), genL2->eta(), genL2->phi());
+        //pTll = (genL1->p4() + genL2->p4()).pt();
+        
+        for(unsigned int m = 0; m < MuonVect.size(); m++) {
+            if(reco::deltaR(genL1->eta(), genL1->phi(), MuonVect[m].eta(), MuonVect[m].phi()) < 0.1 && fabs(1.-MuonVect[m].pt()/genL1->pt()) < 0.3) m1 = m;
+            else if(((int)m)!=m1 && reco::deltaR(genL2->eta(), genL2->phi(), MuonVect[m].eta(), MuonVect[m].phi()) < 0.1 && fabs(1.-MuonVect[m].pt()/genL2->pt()) < 0.3) m2 = m;
+        }
+        if(m1 >= 0 && m2 >= 0) {
+            Hist["m_nEvents"]->Fill(3., EventWeight);
+            Hist["m_dR_reco"]->Fill(dRll);
+            if(MuonVect[m1].pt() > 55. && MuonVect[m2].pt() > 20.) {
+                Hist["m_nEvents"]->Fill(4., EventWeight);
+                Hist["m_dR_pt"]->Fill(dRll);
+                if(MuonVect[m1].charge() != MuonVect[m2].charge() && (MuonVect[m1].p4() + MuonVect[m2].p4()).mass() > 70 && (MuonVect[m1].p4() + MuonVect[m2].p4()).mass() < 110) {
+                    Hist["m_nEvents"]->Fill(5., EventWeight);
+                    Hist["m_dR_z"]->Fill(dRll);
+                    Hist["m_dR"]->Fill(dRll);
+                    if(MuonVect[m1].userInt("isHighPt") == 1 || MuonVect[m2].userInt("isHighPt") == 1) {
+                        Hist["m_nEvents"]->Fill(6., EventWeight);
+                        Hist["m_dR_id1"]->Fill(dRll);
+                        if((MuonVect[m1].userInt("isHighPt")==1 && MuonVect[m2].userInt("isTrackerHighPt")==1) || (MuonVect[m2].userInt("isHighPt")==1 && MuonVect[m1].userInt("isTrackerHighPt")==1)) {
+                            Hist["m_nEvents"]->Fill(7., EventWeight);
+                            Hist["m_dR_id2"]->Fill(dRll);
+                            if(MuonVect[m1].userFloat("trkIso") < 0.1 && MuonVect[m2].userFloat("trkIso") < 0.1) {
+                                Hist["m_nEvents"]->Fill(8., EventWeight);
+                                Hist["m_dR_iso"]->Fill(dRll);
+                            }
+                        }
                     }
                 }
             }
@@ -431,8 +456,9 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     else {if(Verbose) std::cout << " - No V candidate" << std::endl; return;}
     
     Hist["a_nEvents"]->Fill(3., EventWeight);
-    if(isZtoEE) Hist["e_nEvents"]->Fill(3., EventWeight);
-    if(isZtoMM) Hist["m_nEvents"]->Fill(3., EventWeight);
+    Hist["m_nEvents"]->Fill(8., EventWeight);
+//    if(isZtoEE) Hist["e_nEvents"]->Fill(3., EventWeight);
+//    if(isZtoMM) Hist["m_nEvents"]->Fill(3., EventWeight);
 
 
     // ---------- Reconstruct V candidate ----------
@@ -514,8 +540,9 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     EventWeight *= LeptonWeight;
     
     Hist["a_nEvents"]->Fill(4., EventWeight);
-    if(isZtoEE) Hist["e_nEvents"]->Fill(4., EventWeight);
-    if(isZtoMM) Hist["m_nEvents"]->Fill(4., EventWeight);
+    Hist["m_nEvents"]->Fill(9., EventWeight);
+//    if(isZtoEE) Hist["e_nEvents"]->Fill(4., EventWeight);
+//    if(isZtoMM) Hist["m_nEvents"]->Fill(4., EventWeight);
     
     if(isZtoEE) {
         Hist["e_Zmass"]->Fill(theV.mass(), EventWeight);
@@ -813,8 +840,8 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         }
         
         Hist["a_nEvents"]->Fill(5., EventWeight);
-        if(isZtoEE) Hist["e_nEvents"]->Fill(5., EventWeight);
-        if(isZtoMM) Hist["m_nEvents"]->Fill(5., EventWeight);
+//        if(isZtoEE) Hist["e_nEvents"]->Fill(5., EventWeight);
+//        if(isZtoMM) Hist["m_nEvents"]->Fill(5., EventWeight);
     }
     else {if(Verbose) std::cout << " - N jets < 2" << std::endl;}
     
@@ -975,28 +1002,28 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     
     if(theV.mass()<80. || theV.mass()>100.) {if(Verbose) std::cout << " - Z off-shell" << std::endl; return;}
     Hist["a_nEvents"]->Fill(6., EventWeight);
-    if(isZtoEE) Hist["e_nEvents"]->Fill(6., EventWeight);
-    if(isZtoMM) Hist["m_nEvents"]->Fill(6., EventWeight);
+//    if(isZtoEE) Hist["e_nEvents"]->Fill(6., EventWeight);
+//    if(isZtoMM) Hist["m_nEvents"]->Fill(6., EventWeight);
     
     if(theH.mass()<90. || theH.mass()>140.) {if(Verbose) std::cout << " - No h candidate" << std::endl; return;}
     Hist["a_nEvents"]->Fill(7., EventWeight);
-    if(isZtoEE) Hist["e_nEvents"]->Fill(7., EventWeight);
-    if(isZtoMM) Hist["m_nEvents"]->Fill(7., EventWeight);
+//    if(isZtoEE) Hist["e_nEvents"]->Fill(7., EventWeight);
+//    if(isZtoMM) Hist["m_nEvents"]->Fill(7., EventWeight);
     
     if(MET.pt()>60.)  {if(Verbose) std::cout << " - Failed Top veto" << std::endl; return;}
     Hist["a_nEvents"]->Fill(8., EventWeight);
-    if(isZtoEE) Hist["e_nEvents"]->Fill(8., EventWeight);
-    if(isZtoMM) Hist["m_nEvents"]->Fill(8., EventWeight);
+//    if(isZtoEE) Hist["e_nEvents"]->Fill(8., EventWeight);
+//    if(isZtoMM) Hist["m_nEvents"]->Fill(8., EventWeight);
     
     if(!(nJets >= 2 && (JetsVect.at(0).bDiscriminator(JetPSet.getParameter<std::string>("btag")) > 0.800 || JetsVect.at(1).bDiscriminator(JetPSet.getParameter<std::string>("btag")) > 0.800)) ) {if(Verbose) std::cout << " - BTag < 1" << std::endl; return;}
     Hist["a_nEvents"]->Fill(9., EventWeight);
-    if(isZtoEE) Hist["e_nEvents"]->Fill(9., EventWeight);
-    if(isZtoMM) Hist["m_nEvents"]->Fill(9., EventWeight);
+//    if(isZtoEE) Hist["e_nEvents"]->Fill(9., EventWeight);
+//    if(isZtoMM) Hist["m_nEvents"]->Fill(9., EventWeight);
     
     if(!(nJets >= 2 && JetsVect.at(0).bDiscriminator(JetPSet.getParameter<std::string>("btag")) > 0.800 && JetsVect.at(1).bDiscriminator(JetPSet.getParameter<std::string>("btag")) > 0.800) ) {if(Verbose) std::cout << " - BTag < 2" << std::endl; return;}
     Hist["a_nEvents"]->Fill(10., EventWeight);
-    if(isZtoEE) Hist["e_nEvents"]->Fill(10., EventWeight);
-    if(isZtoMM) Hist["m_nEvents"]->Fill(10., EventWeight);
+//    if(isZtoEE) Hist["e_nEvents"]->Fill(10., EventWeight);
+//    if(isZtoMM) Hist["m_nEvents"]->Fill(10., EventWeight);
     
 }
 
