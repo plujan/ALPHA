@@ -379,23 +379,59 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     Hist["e_nEvents"]->Fill(2., EventWeight);
     Hist["m_nEvents"]->Fill(2., EventWeight);
     
+    
+    // Electron efficiency plots
+    reco::GenParticle* genE1 = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, std::vector<int>{-11});
+    reco::GenParticle* genE2 = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, std::vector<int>{+11});
+    if(genE1!=NULL && genE2!=NULL) {
+        int e1(-1), e2(-1);
+        float dRll(-1.);
+        dRll = reco::deltaR(genE1->eta(), genE1->phi(), genE2->eta(), genE2->phi());
+        //pTll = (genE1->p4() + genE2->p4()).pt();
+        
+        for(unsigned int e = 0; e < ElecVect.size(); e++) {
+            if(reco::deltaR(genE1->eta(), genE1->phi(), ElecVect[e].eta(), ElecVect[e].phi()) < 0.1 && fabs(1.-ElecVect[e].pt()/genE1->pt()) < 0.3) e1 = e;
+            else if(((int)e)!=e1 && reco::deltaR(genE2->eta(), genE2->phi(), ElecVect[e].eta(), ElecVect[e].phi()) < 0.1 && fabs(1.-ElecVect[e].pt()/genE2->pt()) < 0.3) e2 = e;
+        }
+        if(e1 >= 0 && e2 >= 0) {
+            Hist["e_nEvents"]->Fill(3., EventWeight);
+            Hist["e_dR_reco"]->Fill(dRll);
+            if(ElecVect[e1].pt() > 55. && ElecVect[e2].pt() > 20.) {
+                Hist["e_nEvents"]->Fill(4., EventWeight);
+                Hist["e_dR_pt"]->Fill(dRll);
+                if(ElecVect[e1].charge() != ElecVect[e2].charge() && (ElecVect[e1].p4() + ElecVect[e2].p4()).mass() > 70 && (ElecVect[e1].p4() + ElecVect[e2].p4()).mass() < 110) {
+                    Hist["e_nEvents"]->Fill(5., EventWeight);
+                    Hist["e_dR_Z"]->Fill(dRll);
+                    Hist["e_dR"]->Fill(dRll);
+                    if(ElecVect[e1].userInt("isLoose") == 1 || ElecVect[e2].userInt("isLoose") == 1) {
+                        Hist["e_nEvents"]->Fill(6., EventWeight);
+                        Hist["e_dR_LooseId"]->Fill(dRll);
+                        if(ElecVect[e1].userInt("isLoose") == 1 && ElecVect[e2].userInt("isLoose") == 1) {
+                            Hist["e_nEvents"]->Fill(7., EventWeight);
+                            Hist["e_dR_LooseLooseId"]->Fill(dRll);
+                        }
+                    }
+                    if(ElecVect[e1].userInt("isVeto") == 1 && ElecVect[e2].userInt("isVeto") == 1) Hist["e_dR_VetoVetoId"]->Fill(dRll);
+                    if(ElecVect[e1].userInt("isMedium") == 1 && ElecVect[e2].userInt("isMedium") == 1) Hist["e_dR_MediumMediumId"]->Fill(dRll);
+                    if(ElecVect[e1].userInt("isTight") == 1 && ElecVect[e2].userInt("isTight") == 1) Hist["e_dR_TightTightId"]->Fill(dRll);
+                }
+            }
+        }
+    }
+    
+    
     // Muon efficiency plots
     reco::GenParticle* genM1 = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, std::vector<int>{-13});
     reco::GenParticle* genM2 = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, std::vector<int>{+13});
-    if(genL1!=NULL && genL2!=NULL) {
-        if(genM2->pt() > genM1->pt()) {
-            reco::GenParticle* tmp = genM2;
-            genM2 = genM1;
-            genM1 = tmp;
-        }
+    if(genM1!=NULL && genM2!=NULL) {
         int m1(-1), m2(-1);
         float dRll(-1.);
-        dRll = reco::deltaR(genL1->eta(), genL1->phi(), genL2->eta(), genL2->phi());
-        //pTll = (genL1->p4() + genL2->p4()).pt();
+        dRll = reco::deltaR(genM1->eta(), genM1->phi(), genM2->eta(), genM2->phi());
+        //pTll = (genM1->p4() + genM2->p4()).pt();
         
         for(unsigned int m = 0; m < MuonVect.size(); m++) {
-            if(reco::deltaR(genL1->eta(), genL1->phi(), MuonVect[m].eta(), MuonVect[m].phi()) < 0.1 && fabs(1.-MuonVect[m].pt()/genL1->pt()) < 0.3) m1 = m;
-            else if(((int)m)!=m1 && reco::deltaR(genL2->eta(), genL2->phi(), MuonVect[m].eta(), MuonVect[m].phi()) < 0.1 && fabs(1.-MuonVect[m].pt()/genL2->pt()) < 0.3) m2 = m;
+            if(reco::deltaR(genM1->eta(), genM1->phi(), MuonVect[m].eta(), MuonVect[m].phi()) < 0.1 && fabs(1.-MuonVect[m].pt()/genM1->pt()) < 0.3) m1 = m;
+            else if(((int)m)!=m1 && reco::deltaR(genM2->eta(), genM2->phi(), MuonVect[m].eta(), MuonVect[m].phi()) < 0.1 && fabs(1.-MuonVect[m].pt()/genM2->pt()) < 0.3) m2 = m;
         }
         if(m1 >= 0 && m2 >= 0) {
             Hist["m_nEvents"]->Fill(3., EventWeight);
@@ -405,20 +441,24 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
                 Hist["m_dR_pt"]->Fill(dRll);
                 if(MuonVect[m1].charge() != MuonVect[m2].charge() && (MuonVect[m1].p4() + MuonVect[m2].p4()).mass() > 70 && (MuonVect[m1].p4() + MuonVect[m2].p4()).mass() < 110) {
                     Hist["m_nEvents"]->Fill(5., EventWeight);
-                    Hist["m_dR_z"]->Fill(dRll);
+                    Hist["m_dR_Z"]->Fill(dRll);
                     Hist["m_dR"]->Fill(dRll);
                     if(MuonVect[m1].userInt("isHighPt") == 1 || MuonVect[m2].userInt("isHighPt") == 1) {
                         Hist["m_nEvents"]->Fill(6., EventWeight);
-                        Hist["m_dR_id1"]->Fill(dRll);
+                        Hist["m_dR_HighptId"]->Fill(dRll);
                         if((MuonVect[m1].userInt("isHighPt")==1 && MuonVect[m2].userInt("isTrackerHighPt")==1) || (MuonVect[m2].userInt("isHighPt")==1 && MuonVect[m1].userInt("isTrackerHighPt")==1)) {
                             Hist["m_nEvents"]->Fill(7., EventWeight);
-                            Hist["m_dR_id2"]->Fill(dRll);
+                            Hist["m_dR_HighptTrackerId"]->Fill(dRll);
                             if(MuonVect[m1].userFloat("trkIso") < 0.1 && MuonVect[m2].userFloat("trkIso") < 0.1) {
                                 Hist["m_nEvents"]->Fill(8., EventWeight);
-                                Hist["m_dR_iso"]->Fill(dRll);
+                                Hist["m_dR_HighptTrackerIdTrackerIso"]->Fill(dRll);
                             }
                         }
                     }
+                    if(MuonVect[m1].userInt("isHighPt") == 1 && MuonVect[m2].userInt("isHighPt") == 1) Hist["m_dR_HighptHighptId"]->Fill(dRll);
+                    if(MuonVect[m1].userInt("isTight") == 1 && MuonVect[m2].userInt("isTight") == 1) Hist["m_dR_TightTightId"]->Fill(dRll);
+                    if(MuonVect[m1].userInt("isMedium") == 1 && MuonVect[m2].userInt("isMedium") == 1) Hist["m_dR_MediumMediumId"]->Fill(dRll);
+                    if(MuonVect[m1].userInt("isLoose") == 1 && MuonVect[m2].userInt("isLoose") == 1) Hist["m_dR_LooseLooseId"]->Fill(dRll);
                 }
             }
         }
