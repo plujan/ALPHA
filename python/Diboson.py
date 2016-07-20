@@ -310,7 +310,7 @@ process.ntuple = cms.EDAnalyzer('Diboson',
         electron1id = cms.int32(-1), # 0: veto, 1: loose, 2: medium, 3: tight, 4: HEEP, 5: MVA medium nonTrig, 6: MVA tight nonTrig, 7: MVA medium Trig, 8: MVA tight Trig
         electron2id = cms.int32(-1),
         electron1pt = cms.double(20.),
-        electron2pt = cms.double(10.),
+        electron2pt = cms.double(20.),
     ),
     muonSet = cms.PSet(
         muons = cms.InputTag('cleanedMuons'),#('slimmedMuons'),
@@ -326,7 +326,7 @@ process.ntuple = cms.EDAnalyzer('Diboson',
         muon1iso = cms.int32(-1), # 0: trk iso (<0.1), 1: loose (<0.25), 2: tight (<0.15) (pfIso in cone 0.4)
         muon2iso = cms.int32(-1),
         muon1pt = cms.double(20.),
-        muon2pt = cms.double(10.),
+        muon2pt = cms.double(20.),
         useTuneP = cms.bool(True),
         doRochester = cms.bool(True),
     ),
