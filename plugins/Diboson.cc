@@ -1046,7 +1046,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     ObjectsFormat::FillCandidateType(HResolvedDR, &theHResolvedDR, isMC);
     ObjectsFormat::FillCandidateType(XResolvedDR, &theXResolvedDR, isMC);
     
-    if(nJets < 2 && nFatJets < 1) return;
+    //if(nJets < 2 && nFatJets < 1) return;
     
     // Fill tree
     tree->Fill();
@@ -1056,9 +1056,9 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     // cut for VZ analysis
     if ( 
         (isZtoMM || isZtoEE) &&
-        (V.mass > 60. && V.mass < 120.) && 
-        (nFatJets > 0.) && 
-        (V.pt > 100.)
+        (V.mass > 70. && V.mass < 110.) && 
+        (nFatJets >= 1) && 
+        (V.pt > 150.)
     ){
         // Lepton1
         Lepton1_isMuon = Leptons[0].isMuon;
