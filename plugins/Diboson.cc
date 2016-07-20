@@ -532,9 +532,21 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     }
     else if(isZtoEE) {
         if(Verbose) std::cout << " - Try to reconstruct Z -> ee" << std::endl;
-        if(ElecVect.at(0).charge()*ElecVect.at(1).charge()<0 && (ElecVect[0].p4() + ElecVect[1].p4()).mass() > 50.) {
-            theV.addDaughter(ElecVect.at(0).charge() ? ElecVect.at(0) : ElecVect.at(1));
-            theV.addDaughter(ElecVect.at(0).charge() ? ElecVect.at(1) : ElecVect.at(0));
+        // Indentify leptons
+        int e1(-1), e2(-1);
+        float maxZpt(-1.);
+        for(unsigned int i = 0; i < ElecVect.size(); i++) {
+            for(unsigned int j = 1; j < ElecVect.size(); j++) {
+                if(i==j || ElecVect[i].charge() == ElecVect[j].charge()) continue;
+                float Zpt = (ElecVect[i].p4() + ElecVect[j].p4()).pt();
+                float Zmass = (ElecVect[i].p4() + ElecVect[j].p4()).mass();
+                if(Zmass > 70. && Zmass < 110. && Zpt > maxZpt) {e1 = i; e2 = j; maxZpt = Zpt;}
+            }
+        }
+        // Build candidate
+        if(e1 >= 0 && e2 >= 0) {
+            theV.addDaughter(ElecVect.at(e1).charge() ? ElecVect.at(e1) : ElecVect.at(e2));
+            theV.addDaughter(ElecVect.at(e1).charge() ? ElecVect.at(e2) : ElecVect.at(e1));
             addP4.set(theV);
             // SF
             if(isMC) {
@@ -545,6 +557,11 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
             }
         }
         else { if(Verbose) std::cout << " - No OS electrons" << std::endl; return; }
+        // Clean-up electron collection
+        pat::Electron Ele1 = ElecVect.at(e1), Ele2 = ElecVect.at(e2);
+        ElecVect.clear();
+        if(Ele1.pt() > Ele2.pt()) {ElecVect.push_back(Ele1); ElecVect.push_back(Ele2);}
+        else {ElecVect.push_back(Ele2); ElecVect.push_back(Ele1);}
     }
     else if(isTtoEM) {
         if(Verbose) std::cout << " - Try to reconstruct TT -> enmn" << std::endl;
