@@ -462,7 +462,9 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
 
 
     // ---------- Reconstruct V candidate ----------
+    
     pat::CompositeCandidate theV;
+    /*
     if(isZtoMM) {
         if(Verbose) std::cout << " - Try to reconstruct Z -> mm" << std::endl;
         if(MuonVect.at(0).charge()*MuonVect.at(1).charge()<0 && (MuonVect[0].p4() + MuonVect[1].p4()).mass() > 50.) {
@@ -478,6 +480,55 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
             }
         }
         else { if(Verbose) std::cout << " - No OS muons" << std::endl; return; }
+    }
+    else if(isZtoEE) {
+        if(Verbose) std::cout << " - Try to reconstruct Z -> ee" << std::endl;
+        if(ElecVect.at(0).charge()*ElecVect.at(1).charge()<0 && (ElecVect[0].p4() + ElecVect[1].p4()).mass() > 50.) {
+            theV.addDaughter(ElecVect.at(0).charge() ? ElecVect.at(0) : ElecVect.at(1));
+            theV.addDaughter(ElecVect.at(0).charge() ? ElecVect.at(1) : ElecVect.at(0));
+            addP4.set(theV);
+            // SF
+            if(isMC) {
+                LeptonWeight *= theElectronAnalyzer->GetElectronIdSF(ElecVect.at(0), ElectronPSet.getParameter<int>("electron1id"));
+                LeptonWeight *= theElectronAnalyzer->GetElectronIdSF(ElecVect.at(1), ElectronPSet.getParameter<int>("electron2id"));
+                LeptonWeight *= theElectronAnalyzer->GetElectronRecoEffSF(ElecVect.at(0));
+                LeptonWeight *= theElectronAnalyzer->GetElectronRecoEffSF(ElecVect.at(1));
+            }
+        }
+        else { if(Verbose) std::cout << " - No OS electrons" << std::endl; return; }
+    }*/
+    if(isZtoMM) {
+        if(Verbose) std::cout << " - Try to reconstruct Z -> mm" << std::endl;
+        // Indentify leptons
+        int m1(-1), m2(-1);
+        float maxZpt(-1.);
+        for(unsigned int i = 0; i < MuonVect.size(); i++) {
+            for(unsigned int j = 1; j < MuonVect.size(); j++) {
+                if(i==j || MuonVect[i].charge() == MuonVect[j].charge()) continue;
+                float Zpt = (MuonVect[i].p4() + MuonVect[j].p4()).pt();
+                float Zmass = (MuonVect[i].p4() + MuonVect[j].p4()).mass();
+                if(Zmass > 70. && Zmass < 110. && Zpt > maxZpt) {m1 = i; m2 = j; maxZpt = Zpt;}
+            }
+        }
+        // Build candidate
+        if(m1 >= 0 && m2 >= 0) {
+            theV.addDaughter(MuonVect.at(m1).charge() < 0 ? MuonVect.at(m1) : MuonVect.at(m2));
+            theV.addDaughter(MuonVect.at(m1).charge() < 0 ? MuonVect.at(m2) : MuonVect.at(m1));
+            addP4.set(theV);
+            // SF
+            if(isMC) {
+                LeptonWeight *= theMuonAnalyzer->GetMuonIdSF(MuonVect.at(m1), MuonPSet.getParameter<int>("muon1id"));
+                LeptonWeight *= theMuonAnalyzer->GetMuonIdSF(MuonVect.at(m2), MuonPSet.getParameter<int>("muon2id"));
+                LeptonWeight *= theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(m1), MuonPSet.getParameter<int>("muon1iso"));
+                LeptonWeight *= theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(m2), MuonPSet.getParameter<int>("muon2iso"));
+            }
+        }
+        else { if(Verbose) std::cout << " - No OS muons" << std::endl; return; }
+        // Clean-up muon collection
+        pat::Muon Mu1 = MuonVect.at(m1), Mu2 = MuonVect.at(m2);
+        MuonVect.clear();
+        if(Mu1.pt() > Mu2.pt()) {MuonVect.push_back(Mu1); MuonVect.push_back(Mu2);}
+        else {MuonVect.push_back(Mu2); MuonVect.push_back(Mu1);}
     }
     else if(isZtoEE) {
         if(Verbose) std::cout << " - Try to reconstruct Z -> ee" << std::endl;
