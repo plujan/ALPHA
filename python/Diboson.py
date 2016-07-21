@@ -1,3 +1,7 @@
+#FIXME JSON file here
+# New electron SF
+# Check muon SF
+
 import FWCore.ParameterSet.Config as cms
 from FWCore.ParameterSet.VarParsing import VarParsing
 import os
@@ -328,7 +332,7 @@ process.ntuple = cms.EDAnalyzer('Diboson',
         muon1pt = cms.double(20.),
         muon2pt = cms.double(20.),
         useTuneP = cms.bool(True),
-        doRochester = cms.bool(True),
+        doRochester = cms.bool(False),
     ),
     tauSet = cms.PSet(
         taus = cms.InputTag('slimmedTaus'),
@@ -423,13 +427,13 @@ process.ntuple = cms.EDAnalyzer('Diboson',
             '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_MC/Spring16_25nsV6_MC_L3Absolute_AK8PFchs.txt' % os.environ['CMSSW_BASE'],
         ),
         massCorrectorDATA = cms.vstring(
-            '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_DATA/Spring16_25nsV6_DATA_L2Relative_AK8PFchs.txt' % os.environ['CMSSW_BASE'],
-            '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_DATA/Spring16_25nsV6_DATA_L3Absolute_AK8PFchs.txt' % os.environ['CMSSW_BASE'],
-            '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_DATA/Spring16_25nsV6_DATA_L2L3Residual_AK8PFchs.txt' % os.environ['CMSSW_BASE'],
+            '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_DATA/Spring16_25nsV6_DATA_L2Relative_AK8PFPuppi.txt' % os.environ['CMSSW_BASE'],
+            '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_DATA/Spring16_25nsV6_DATA_L3Absolute_AK8PFPuppi.txt' % os.environ['CMSSW_BASE'],
+            '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_DATA/Spring16_25nsV6_DATA_L2L3Residual_AK8PFPuppi.txt' % os.environ['CMSSW_BASE'],
         ),
         massCorrectorMC = cms.vstring(
-            '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_MC/Spring16_25nsV6_MC_L2Relative_AK8PFchs.txt' % os.environ['CMSSW_BASE'],
-            '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_MC/Spring16_25nsV6_MC_L3Absolute_AK8PFchs.txt' % os.environ['CMSSW_BASE'],
+            '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_MC/Spring16_25nsV6_MC_L2Relative_AK8PFPuppi.txt' % os.environ['CMSSW_BASE'],
+            '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_MC/Spring16_25nsV6_MC_L3Absolute_AK8PFPuppi.txt' % os.environ['CMSSW_BASE'],
         ),
         reshapeBTag = cms.bool(True),
         btag = cms.string('pfCombinedInclusiveSecondaryVertexV2BJetTags'),

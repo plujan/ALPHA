@@ -187,13 +187,19 @@ std::vector<pat::Jet> JetAnalyzer::FillJetVector(const edm::Event& iEvent) {
         
         // PUPPI soft drop mass for AK8 jets
         if(jet.hasSubjets("SoftDropPuppi")) {
-            TLorentzVector puppiSoftdrop, puppiSoftdropSubjet;
-            auto const & sdSubjetsPuppi = jet.subjets("SoftDropPuppi");
-            for (auto const & it : sdSubjetsPuppi) {
-                puppiSoftdropSubjet.SetPtEtaPhiM(it->pt(), it->eta(), it->phi(), it->mass());
-                puppiSoftdrop += puppiSoftdropSubjet;
-            }
-            jet.addUserFloat("ak8PFJetsCHSSoftDropPuppiMass", puppiSoftdrop.M());
+//            TLorentzVector puppiSoftdrop, puppiSoftdropSubjet;
+//            auto const & sdSubjetsPuppi = jet.subjets("SoftDropPuppi");
+//            for (auto const & it : sdSubjetsPuppi) {
+//                puppiSoftdropSubjet.SetPtEtaPhiM(it->pt(), it->eta(), it->phi(), it->mass());
+//                puppiSoftdrop += puppiSoftdropSubjet;
+//            }
+            reco::Particle::LorentzVector puppiSoftdrop;
+            for (auto const & it : jet.subjets("SoftDropPuppi")) puppiSoftdrop += it->p4();
+            jet.addUserFloat("ak8PFJetsPuppiSoftDropPt", puppiSoftdrop.pt());
+            jet.addUserFloat("ak8PFJetsPuppiSoftDropEta", puppiSoftdrop.eta());
+            jet.addUserFloat("ak8PFJetsPuppiSoftDropPhi", puppiSoftdrop.phi());
+            jet.addUserFloat("ak8PFJetsPuppiSoftDropEnergy", puppiSoftdrop.energy());
+            jet.addUserFloat("ak8PFJetsPuppiSoftDropMass", puppiSoftdrop.mass());
         }
         
         if(RecalibrateMass) CorrectMass(jet, *rho_handle, PVCollection->size(), isMC);        
@@ -295,29 +301,28 @@ void JetAnalyzer::CorrectJet(pat::Jet& jet, float rho, float nPV, bool isMC) {
 
 void JetAnalyzer::CorrectMass(pat::Jet& jet, float rho, float nPV, bool isMC) {
     double corr(1.);
-    reco::Candidate::LorentzVector uncorrJet = jet.correctedP4(0);
     
     if(!isMC) {
-        massCorrDATA->setJetEta( uncorrJet.Eta() );
-        massCorrDATA->setJetPt ( uncorrJet.Pt() );
-        massCorrDATA->setJetE  ( uncorrJet.E() );
-        massCorrDATA->setJetA  ( jet.jetArea() );
-        massCorrDATA->setRho   ( rho );
-        massCorrDATA->setNPV   ( nPV );
-        corr = massCorrDATA->getCorrection();
+        jetCorrDATA->setJetEta( jet.userFloat("ak8PFJetsPuppiSoftDropEta") );
+        jetCorrDATA->setJetPt ( jet.userFloat("ak8PFJetsPuppiSoftDropPt") );
+        jetCorrDATA->setJetE  ( jet.userFloat("ak8PFJetsPuppiSoftDropEnergy") );
+        jetCorrDATA->setJetA  ( jet.jetArea() );
+        jetCorrDATA->setRho   ( rho );
+        jetCorrDATA->setNPV   ( nPV );
+        corr = jetCorrDATA->getCorrection();
     }
     else {
-        massCorrMC->setJetEta( uncorrJet.Eta() );
-        massCorrMC->setJetPt ( uncorrJet.Pt() );
-        massCorrMC->setJetE  ( uncorrJet.E() );
-        massCorrMC->setJetA  ( jet.jetArea() );
-        massCorrMC->setRho   ( rho );
-        massCorrMC->setNPV   ( nPV );
-        corr = massCorrMC->getCorrection();
+        jetCorrMC->setJetEta( jet.userFloat("ak8PFJetsPuppiSoftDropEta") );
+        jetCorrMC->setJetPt ( jet.userFloat("ak8PFJetsPuppiSoftDropPt") );
+        jetCorrMC->setJetE  ( jet.userFloat("ak8PFJetsPuppiSoftDropEnergy") );
+        jetCorrMC->setJetA  ( jet.jetArea() );
+        jetCorrMC->setRho   ( rho );
+        jetCorrMC->setNPV   ( nPV );
+        corr = jetCorrMC->getCorrection();
     }
     if(jet.hasUserFloat("ak8PFJetsCHSPrunedMass")) jet.addUserFloat("ak8PFJetsCHSPrunedMassCorr", jet.userFloat("ak8PFJetsCHSPrunedMass") * corr);
     if(jet.hasUserFloat("ak8PFJetsCHSSoftDropMass")) jet.addUserFloat("ak8PFJetsCHSSoftDropMassCorr", jet.userFloat("ak8PFJetsCHSSoftDropMass") * corr);
-    if(jet.hasUserFloat("ak8PFJetsCHSSoftDropPuppiMass")) jet.addUserFloat("ak8PFJetsCHSSoftDropPuppiMassCorr", jet.userFloat("ak8PFJetsCHSSoftDropPuppiMass") * corr);
+    if(jet.hasUserFloat("ak8PFJetsPuppiSoftDropMass")) jet.addUserFloat("ak8PFJetsPuppiSoftDropMassCorr", jet.userFloat("ak8PFJetsPuppiSoftDropMass") * corr);
 }
 
 void JetAnalyzer::CleanJetsFromMuons(std::vector<pat::Jet>& Jets, std::vector<pat::Muon>& Muons, float angle) {
