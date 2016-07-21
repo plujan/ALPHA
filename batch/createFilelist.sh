@@ -13,7 +13,7 @@ then
     python2.6 batch/get_ds_file_info.py -d "/*/*RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2*/MINIAOD*" > query.txt   # for MC
 else
 #     python2.6 batch/get_ds_file_info.py -d "/*/Run2016B*/MINIAOD" > query.txt   # for Data
-    python2.6 batch/get_ds_file_info.py -d "/*/Run2016C*/MINIAOD" > query.txt   # for Data
+    python2.6 batch/get_ds_file_info.py -d "/*/Run2016*/MINIAOD" > query.txt   # for Data
 fi
 
 # step 1: get name of the temporary file

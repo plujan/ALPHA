@@ -166,6 +166,7 @@ struct FatJetType {
     float dR;
     float chsTau21;
     float puppiTau21;
+    float ddtTau21;
     float BDSV;
     float chf;
     float nhf;
