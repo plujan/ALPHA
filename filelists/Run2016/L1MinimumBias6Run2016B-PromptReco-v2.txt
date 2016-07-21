@@ -389,8 +389,8 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/L1Mi
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/L1MinimumBias6/MINIAOD/PromptReco-v2/000/274/108/00000/EE9AF5F1-D026-E611-82A0-02163E011868.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/L1MinimumBias6/MINIAOD/PromptReco-v2/000/274/104/00000/B0E1A3BA-CE26-E611-9EEE-02163E011C52.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/L1MinimumBias6/MINIAOD/PromptReco-v2/000/274/102/00000/F243A9A0-CB26-E611-B0AD-02163E011B60.root
-dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/L1MinimumBias6/MINIAOD/PromptReco-v2/000/274/104/00000/C8963BBF-CE26-E611-9977-02163E012BE5.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/L1MinimumBias6/MINIAOD/PromptReco-v2/000/274/102/00000/34D1CD8E-CB26-E611-A81D-02163E014603.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/L1MinimumBias6/MINIAOD/PromptReco-v2/000/274/104/00000/C8963BBF-CE26-E611-9977-02163E012BE5.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/L1MinimumBias6/MINIAOD/PromptReco-v2/000/274/106/00000/E25F065B-D026-E611-A73F-02163E0145A6.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/L1MinimumBias6/MINIAOD/PromptReco-v2/000/273/526/00000/40036212-731F-E611-AF1E-02163E011A7D.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/L1MinimumBias6/MINIAOD/PromptReco-v2/000/273/526/00000/50EB6B3D-731F-E611-AC6A-02163E0146B4.root
