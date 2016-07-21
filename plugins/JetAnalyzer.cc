@@ -206,6 +206,10 @@ std::vector<pat::Jet> JetAnalyzer::FillJetVector(const edm::Event& iEvent) {
             jet.addUserFloat("ak8PFJetsPuppiSoftDropPhi", puppiSoftdrop.phi());
             jet.addUserFloat("ak8PFJetsPuppiSoftDropEnergy", puppiSoftdrop.energy());
             jet.addUserFloat("ak8PFJetsPuppiSoftDropMass", puppiSoftdrop.mass());
+            
+            float tau21 = jet.userFloat("ak8PFJetsPuppiValueMap:NjettinessAK8PuppiTau2")/jet.userFloat("ak8PFJetsPuppiValueMap:NjettinessAK8PuppiTau1");
+            float ddt = tau21 + 0.063 * log( jet.userFloat("ak8PFJetsPuppiSoftDropMass")*jet.userFloat("ak8PFJetsPuppiSoftDropMass")/jet.userFloat("ak8PFJetsPuppiSoftDropPt") );
+            jet.addUserFloat("ddtTau21", ddt);
         }
         
         if(RecalibrateMass) CorrectMass(jet, *rho_handle, PVCollection->size(), isMC);
