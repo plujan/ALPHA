@@ -312,20 +312,21 @@ void JetAnalyzer::CorrectJet(pat::Jet& jet, float rho, float nPV, bool isMC) {
 
 void JetAnalyzer::CorrectMass(pat::Jet& jet, float rho, float nPV, bool isMC) {
     double corr(1.);
+    reco::Candidate::LorentzVector uncorrJet = jet.correctedP4(0);
     
     if(!isMC) {
-        jetCorrDATA->setJetEta( jet.userFloat("ak8PFJetsPuppiSoftDropEta") );
-        jetCorrDATA->setJetPt ( jet.userFloat("ak8PFJetsPuppiSoftDropPt") );
-        jetCorrDATA->setJetE  ( jet.userFloat("ak8PFJetsPuppiSoftDropEnergy") );
+        jetCorrDATA->setJetEta( uncorrJet.Eta() );
+        jetCorrDATA->setJetPt ( uncorrJet.Pt() );
+        jetCorrDATA->setJetE  ( uncorrJet.E() );
         jetCorrDATA->setJetA  ( jet.jetArea() );
         jetCorrDATA->setRho   ( rho );
         jetCorrDATA->setNPV   ( nPV );
         corr = jetCorrDATA->getCorrection();
     }
     else {
-        jetCorrMC->setJetEta( jet.userFloat("ak8PFJetsPuppiSoftDropEta") );
-        jetCorrMC->setJetPt ( jet.userFloat("ak8PFJetsPuppiSoftDropPt") );
-        jetCorrMC->setJetE  ( jet.userFloat("ak8PFJetsPuppiSoftDropEnergy") );
+        jetCorrMC->setJetEta( uncorrJet.Eta() );
+        jetCorrMC->setJetPt ( uncorrJet.Pt() );
+        jetCorrMC->setJetE  ( uncorrJet.E() );
         jetCorrMC->setJetA  ( jet.jetArea() );
         jetCorrMC->setRho   ( rho );
         jetCorrMC->setNPV   ( nPV );
