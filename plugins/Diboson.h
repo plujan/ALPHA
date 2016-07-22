@@ -179,7 +179,7 @@ class Diboson : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
         float X_pt, X_dPhi, X_mass, X_tmass;
         // FatJet1
         bool FatJet1_isTight;
-        float FatJet1_pt, FatJet1_prunedMass, FatJet1_softdropMass, FatJet1_softdropPuppiMass, FatJet1_prunedMassCorr, FatJet1_softdropMassCorr, FatJet1_softdropPuppiMassCorr, FatJet1_chsTau21, FatJet1_puppiTau21, FatJet1_CSV1, FatJet1_CSV2;
+        float FatJet1_pt, FatJet1_prunedMass, FatJet1_softdropMass, FatJet1_softdropPuppiMass, FatJet1_prunedMassCorr, FatJet1_softdropMassCorr, FatJet1_softdropPuppiMassCorr, FatJet1_chsTau21, FatJet1_puppiTau21, FatJet1_ddtTau21, FatJet1_CSV1, FatJet1_CSV2;
          
         //
         std::vector<LeptonType> Electrons;
