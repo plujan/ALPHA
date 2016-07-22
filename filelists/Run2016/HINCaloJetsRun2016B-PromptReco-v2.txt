@@ -11,8 +11,8 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/HINC
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/HINCaloJets/MINIAOD/PromptReco-v2/000/273/590/00000/F8222663-1720-E611-8A7E-02163E011D4B.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/HINCaloJets/MINIAOD/PromptReco-v2/000/273/590/00000/5092024C-1720-E611-B1CC-02163E012A25.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/HINCaloJets/MINIAOD/PromptReco-v2/000/273/590/00000/B0EB9A68-1720-E611-A668-02163E013638.root
-dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/HINCaloJets/MINIAOD/PromptReco-v2/000/273/590/00000/86E81651-1720-E611-B6C0-02163E0139E0.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/HINCaloJets/MINIAOD/PromptReco-v2/000/273/590/00000/845A324D-1720-E611-AC5E-02163E01382A.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/HINCaloJets/MINIAOD/PromptReco-v2/000/273/590/00000/86E81651-1720-E611-B6C0-02163E0139E0.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/HINCaloJets/MINIAOD/PromptReco-v2/000/273/590/00000/30F2C55C-1720-E611-8330-02163E014426.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/HINCaloJets/MINIAOD/PromptReco-v2/000/273/590/00000/0088F968-1720-E611-B267-02163E0143FF.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/HINCaloJets/MINIAOD/PromptReco-v2/000/273/590/00000/E6D81052-1720-E611-BDC6-02163E011F90.root
