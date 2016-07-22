@@ -33,13 +33,13 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/HLTP
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/HLTPhysics0/MINIAOD/PromptReco-v2/000/275/067/00000/B8769625-B734-E611-AD0E-02163E012249.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/HLTPhysics0/MINIAOD/PromptReco-v2/000/275/067/00000/7EF8A16B-AA34-E611-841A-02163E0137F3.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/HLTPhysics0/MINIAOD/PromptReco-v2/000/275/067/00000/B28AC920-B734-E611-BD5A-02163E0119A4.root
-dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/HLTPhysics0/MINIAOD/PromptReco-v2/000/275/067/00000/F2F55366-AA34-E611-8350-02163E01474D.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/HLTPhysics0/MINIAOD/PromptReco-v2/000/275/067/00000/EECF2C1E-B734-E611-8A30-02163E01346C.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/HLTPhysics0/MINIAOD/PromptReco-v2/000/275/067/00000/F2F55366-AA34-E611-8350-02163E01474D.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/HLTPhysics0/MINIAOD/PromptReco-v2/000/275/067/00000/4C058023-B734-E611-BFEF-02163E01438F.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/HLTPhysics0/MINIAOD/PromptReco-v2/000/275/067/00000/C6A7211A-B734-E611-9BCB-02163E011958.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/HLTPhysics0/MINIAOD/PromptReco-v2/000/275/067/00000/820DE714-B734-E611-B518-02163E0129B9.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/HLTPhysics0/MINIAOD/PromptReco-v2/000/275/067/00000/2286D169-AA34-E611-B69B-02163E014439.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/HLTPhysics0/MINIAOD/PromptReco-v2/000/275/067/00000/2CC1D513-B734-E611-B95C-02163E014575.root
-dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/HLTPhysics0/MINIAOD/PromptReco-v2/000/275/067/00000/820DE714-B734-E611-B518-02163E0129B9.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/HLTPhysics0/MINIAOD/PromptReco-v2/000/275/067/00000/BA86782C-B734-E611-9301-02163E014797.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/HLTPhysics0/MINIAOD/PromptReco-v2/000/275/001/00000/C88630FD-4334-E611-BBC7-02163E011DC8.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/HLTPhysics0/MINIAOD/PromptReco-v2/000/275/001/00000/76FB972D-4334-E611-82A5-02163E014588.root
@@ -95,8 +95,8 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/HLTP
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/HLTPhysics0/MINIAOD/PromptReco-v2/000/275/290/00000/76E35360-BE37-E611-A105-02163E0140FE.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/HLTPhysics0/MINIAOD/PromptReco-v2/000/275/290/00000/C8E25B61-BE37-E611-BABD-02163E014693.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/HLTPhysics0/MINIAOD/PromptReco-v2/000/275/290/00000/4601975B-BF37-E611-BFAF-02163E0133FC.root
-dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/HLTPhysics0/MINIAOD/PromptReco-v2/000/275/290/00000/8A737B02-8D37-E611-BF4E-02163E0139B4.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/HLTPhysics0/MINIAOD/PromptReco-v2/000/275/290/00000/727B9E3F-BF37-E611-945E-02163E01346E.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/HLTPhysics0/MINIAOD/PromptReco-v2/000/275/290/00000/8A737B02-8D37-E611-BF4E-02163E0139B4.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/HLTPhysics0/MINIAOD/PromptReco-v2/000/275/000/00000/E4A25BAA-1F34-E611-B333-02163E0139D5.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/HLTPhysics0/MINIAOD/PromptReco-v2/000/275/035/00000/E678946E-2C34-E611-BA88-02163E01417C.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/HLTPhysics0/MINIAOD/PromptReco-v2/000/275/000/00000/CA50E3AC-1F34-E611-B11D-02163E011BA0.root
@@ -166,8 +166,8 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/HLTP
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/HLTPhysics0/MINIAOD/PromptReco-v2/000/275/291/00000/4ACD67D8-6037-E611-A779-02163E013745.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/HLTPhysics0/MINIAOD/PromptReco-v2/000/275/286/00000/3CC7E6B5-5937-E611-82CF-02163E0137BF.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/HLTPhysics0/MINIAOD/PromptReco-v2/000/275/292/00000/C60A07E8-5237-E611-966A-02163E0144A1.root
-dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/HLTPhysics0/MINIAOD/PromptReco-v2/000/275/291/00000/CE7C13D1-6037-E611-87F6-02163E013849.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/HLTPhysics0/MINIAOD/PromptReco-v2/000/275/291/00000/44431CD2-6037-E611-840F-02163E011967.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/HLTPhysics0/MINIAOD/PromptReco-v2/000/275/291/00000/CE7C13D1-6037-E611-87F6-02163E013849.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/HLTPhysics0/MINIAOD/PromptReco-v2/000/275/291/00000/2C9A72CE-6037-E611-BF0B-02163E0123A1.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/HLTPhysics0/MINIAOD/PromptReco-v2/000/275/292/00000/D452C9F2-5237-E611-B375-02163E013749.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/HLTPhysics0/MINIAOD/PromptReco-v2/000/275/068/00000/A8774A61-3035-E611-A1D7-02163E01260D.root
