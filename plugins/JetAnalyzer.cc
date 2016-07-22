@@ -200,7 +200,7 @@ std::vector<pat::Jet> JetAnalyzer::FillJetVector(const edm::Event& iEvent) {
 //                puppiSoftdrop += puppiSoftdropSubjet;
 //            }
             reco::Particle::LorentzVector puppiSoftdrop;
-            for (auto const & it : jet.subjets("SoftDropPuppi")) puppiSoftdrop += it->p4();
+            for (auto const & it : jet.subjets("SoftDropPuppi")) puppiSoftdrop += it->correctedP4(0);
             jet.addUserFloat("ak8PFJetsPuppiSoftDropPt", puppiSoftdrop.pt());
             jet.addUserFloat("ak8PFJetsPuppiSoftDropEta", puppiSoftdrop.eta());
             jet.addUserFloat("ak8PFJetsPuppiSoftDropPhi", puppiSoftdrop.phi());
