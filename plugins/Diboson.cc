@@ -157,7 +157,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     V_pt = V_dPhi = V_mass = V_tmass = -1.;
     X_pt = X_dPhi = X_mass = X_tmass = -1.;
     FatJet1_isTight = false;
-    FatJet1_pt = FatJet1_prunedMass = FatJet1_softdropMass = FatJet1_softdropPuppiMass = FatJet1_prunedMassCorr = FatJet1_softdropMassCorr = FatJet1_softdropPuppiMassCorr = FatJet1_chsTau21 = FatJet1_puppiTau21 = FatJet1_CSV1 = FatJet1_CSV2 = -1.;
+    FatJet1_pt = FatJet1_prunedMass = FatJet1_softdropMass = FatJet1_softdropPuppiMass = FatJet1_prunedMassCorr = FatJet1_softdropMassCorr = FatJet1_softdropPuppiMassCorr = FatJet1_chsTau21 = FatJet1_puppiTau21 = FatJet1_ddtTau21 = FatJet1_CSV1 = FatJet1_CSV2 = -1.;
     
     AddFourMomenta addP4;
     
@@ -1101,6 +1101,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         FatJet1_softdropPuppiMassCorr = FatJets[0].softdropPuppiMassCorr;
         FatJet1_chsTau21 = FatJets[0].chsTau21;
         FatJet1_puppiTau21 = FatJets[0].puppiTau21;
+        FatJet1_ddtTau21 = FatJets[0].ddtTau21;
         FatJet1_CSV1 = FatJets[0].CSV1;
         FatJet1_CSV2 = FatJets[0].CSV2;
 
@@ -1303,6 +1304,7 @@ void Diboson::beginJob() {
     treealpha->Branch("FatJet1_softdropPuppiMassCorr", &FatJet1_softdropPuppiMassCorr, "FatJet1_softdropPuppiMassCorr/F");
     treealpha->Branch("FatJet1_chsTau21", &FatJet1_chsTau21, "FatJet1_chsTau21/F");
     treealpha->Branch("FatJet1_puppiTau21", &FatJet1_puppiTau21, "FatJet1_puppiTau21/F");
+    treealpha->Branch("FatJet1_ddtTau21", &FatJet1_ddtTau21, "FatJet1_ddtTau21/F");
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
