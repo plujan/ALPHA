@@ -513,6 +513,8 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
             addP4.set(theV);
             // SF
             if(isMC) {
+                LeptonWeight *= theMuonAnalyzer->GetMuonTrkSF(MuonVect.at(0));
+                LeptonWeight *= theMuonAnalyzer->GetMuonTrkSF(MuonVect.at(1));
                 LeptonWeight *= theMuonAnalyzer->GetMuonIdSF(MuonVect.at(0), MuonPSet.getParameter<int>("muon1id"));
                 LeptonWeight *= theMuonAnalyzer->GetMuonIdSF(MuonVect.at(1), MuonPSet.getParameter<int>("muon2id"));
                 LeptonWeight *= theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(0), MuonPSet.getParameter<int>("muon1iso"));
@@ -556,7 +558,14 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
             theV.addDaughter(MuonVect.at(m1).charge() < 0 ? MuonVect.at(m2) : MuonVect.at(m1));
             addP4.set(theV);
             // SF
-            if(isMC) {
+            if(isMC) {                
+                /// FIXME -> APPLYING THE SF FOR Mu45eta2p1 HADRCODED <- FIXME ///
+                if (MuonVect.at(m1).pt() > MuonVect.at(m2).pt() )
+                    LeptonWeight *= theMuonAnalyzer->GetMuonTriggerSFMu45eta2p1(MuonVect.at(m1));
+                else
+                    LeptonWeight *= theMuonAnalyzer->GetMuonTriggerSFMu45eta2p1(MuonVect.at(m2));
+                LeptonWeight *= theMuonAnalyzer->GetMuonTrkSF(MuonVect.at(m1));
+                LeptonWeight *= theMuonAnalyzer->GetMuonTrkSF(MuonVect.at(m2));
                 LeptonWeight *= theMuonAnalyzer->GetMuonIdSF(MuonVect.at(m1), MuonPSet.getParameter<int>("muon1id"));
                 LeptonWeight *= theMuonAnalyzer->GetMuonIdSF(MuonVect.at(m2), MuonPSet.getParameter<int>("muon2id"));
                 LeptonWeight *= theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(m1), MuonPSet.getParameter<int>("muon1iso"));
@@ -590,6 +599,11 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
             addP4.set(theV);
             // SF
             if(isMC) {
+                /// FIXME -> APPLYING THE SF FOR Ele105 HADRCODED <- FIXME ///
+                if (ElecVect.at(e1).pt() > ElecVect.at(e2).pt() )
+                    LeptonWeight *= theElectronAnalyzer->GetElectronTriggerSFEle105(ElecVect.at(e1));
+                else
+                    LeptonWeight *= theElectronAnalyzer->GetElectronTriggerSFEle105(ElecVect.at(e2));                
                 LeptonWeight *= theElectronAnalyzer->GetElectronIdSF(ElecVect.at(0), ElectronPSet.getParameter<int>("electron1id"));
                 LeptonWeight *= theElectronAnalyzer->GetElectronIdSF(ElecVect.at(1), ElectronPSet.getParameter<int>("electron2id"));
                 LeptonWeight *= theElectronAnalyzer->GetElectronRecoEffSF(ElecVect.at(0));
@@ -619,6 +633,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         addP4.set(theV);
         // SF
         if(isMC) {
+            LeptonWeight *= theMuonAnalyzer->GetMuonTrkSF(MuonVect.at(0));
             LeptonWeight *= theMuonAnalyzer->GetMuonIdSF(MuonVect.at(0), MuonPSet.getParameter<int>("muon1id"));
             LeptonWeight *= theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(0), MuonPSet.getParameter<int>("muon1iso"));
         }
