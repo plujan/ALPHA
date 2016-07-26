@@ -148,7 +148,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     nPV = nElectrons = nMuons = nTaus = nPhotons = nJets = nFatJets = nBTagJets = 1;
     MaxJetBTag = MaxFatJetBTag = Chi2 = -1.;
     MinJetMetDPhi = 10.;
-    
+    /*
     Lepton1_isMuon = Lepton1_isElectron = Lepton1_isLoose = Lepton1_isHighPt = Lepton1_isTrackerHighPt = Lepton1_isTight = false;
     Lepton1_pt = Lepton1_trkIso = -1.;
     Lepton2_isMuon = Lepton2_isElectron = Lepton2_isLoose = Lepton2_isHighPt = Lepton2_isTrackerHighPt = Lepton2_isTight = false;
@@ -158,7 +158,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     X_pt = X_dPhi = X_mass = X_tmass = -1.;
     FatJet1_isTight = false;
     FatJet1_pt = FatJet1_prunedMass = FatJet1_softdropMass = FatJet1_softdropPuppiMass = FatJet1_prunedMassCorr = FatJet1_softdropMassCorr = FatJet1_softdropPuppiMassCorr = FatJet1_chsTau21 = FatJet1_puppiTau21 = FatJet1_ddtTau21 = FatJet1_CSV1 = FatJet1_CSV2 = -1.;
-    
+    */
     AddFourMomenta addP4;
     
     // Initialize types
@@ -172,9 +172,9 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     ObjectsFormat::ResetMEtType(MEt);
     
     ObjectsFormat::ResetCandidateType(V);
-    ObjectsFormat::ResetCandidateType(H);
-    ObjectsFormat::ResetCandidateType(A);
     ObjectsFormat::ResetCandidateType(X);
+    /*ObjectsFormat::ResetCandidateType(H);
+    ObjectsFormat::ResetCandidateType(A);
     ObjectsFormat::ResetCandidateType(HMerged);
     ObjectsFormat::ResetCandidateType(XMerged);
     ObjectsFormat::ResetCandidateType(HResolved);
@@ -188,7 +188,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     ObjectsFormat::ResetCandidateType(HResolvedDR);
     ObjectsFormat::ResetCandidateType(XResolvedDR);
     ObjectsFormat::ResetLorentzType(kH);
-    ObjectsFormat::ResetLorentzType(kA);
+    ObjectsFormat::ResetLorentzType(kA);*/
     
     Hist["a_nEvents"]->Fill(1., EventWeight);
     Hist["e_nEvents"]->Fill(1., EventWeight);
@@ -1065,11 +1065,12 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     ObjectsFormat::FillCandidateType(HResolvedDR, &theHResolvedDR, isMC);
     ObjectsFormat::FillCandidateType(XResolvedDR, &theXResolvedDR, isMC);
     */
-    if(V.pt < 150.) return;
+    if(V.pt < 100.) return;
     
     // Fill tree
     tree->Fill();
-
+    
+    /*
     // Fill tree for alpha only closer to the signal region
     
     // cut for VZ analysis
@@ -1128,6 +1129,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     }
     
     if(Verbose) std::cout << " - Tree filled, end of event" << std::endl;
+    */
     /*
     if(theV.mass()<80. || theV.mass()>100.) {if(Verbose) std::cout << " - Z off-shell" << std::endl; return;}
     Hist["a_nEvents"]->Fill(6., EventWeight);
@@ -1244,9 +1246,9 @@ void Diboson::beginJob() {
     for(int i = 0; i < WriteNFatJets; i++) tree->Branch(("FatJet"+std::to_string(i+1)).c_str(), &(FatJets[i].pt), ObjectsFormat::ListFatJetType().c_str());
     tree->Branch("MEt", &MEt.pt, ObjectsFormat::ListMEtType().c_str());
     tree->Branch("V", &V.pt, ObjectsFormat::ListCandidateType().c_str());
-    tree->Branch("H", &H.pt, ObjectsFormat::ListCandidateType().c_str());
-    tree->Branch("A", &A.pt, ObjectsFormat::ListCandidateType().c_str());
     tree->Branch("X", &X.pt, ObjectsFormat::ListCandidateType().c_str());
+    /*tree->Branch("H", &H.pt, ObjectsFormat::ListCandidateType().c_str());
+    tree->Branch("A", &A.pt, ObjectsFormat::ListCandidateType().c_str());
     tree->Branch("kH", &kH.pt, ObjectsFormat::ListLorentzType().c_str());
     tree->Branch("kA", &kA.pt, ObjectsFormat::ListLorentzType().c_str());
     tree->Branch("HMerged", &HMerged.pt, ObjectsFormat::ListCandidateType().c_str());
@@ -1261,9 +1263,9 @@ void Diboson::beginJob() {
     tree->Branch("XResolvedHpt", &XResolvedHpt.pt, ObjectsFormat::ListCandidateType().c_str());
     tree->Branch("XResolvedDZ", &XResolvedDZ.pt, ObjectsFormat::ListCandidateType().c_str());
     tree->Branch("XResolvedDR", &XResolvedDR.pt, ObjectsFormat::ListCandidateType().c_str());
-    
+    */
     // -------------------    
-    
+    /*
     // Create Tree for alpha and set Branches    
     treealpha=fs->make<TTree>("treealpha", "treealpha");
 
@@ -1324,6 +1326,7 @@ void Diboson::beginJob() {
     treealpha->Branch("FatJet1_chsTau21", &FatJet1_chsTau21, "FatJet1_chsTau21/F");
     treealpha->Branch("FatJet1_puppiTau21", &FatJet1_puppiTau21, "FatJet1_puppiTau21/F");
     treealpha->Branch("FatJet1_ddtTau21", &FatJet1_ddtTau21, "FatJet1_ddtTau21/F");
+    */
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
