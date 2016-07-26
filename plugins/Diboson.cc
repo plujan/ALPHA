@@ -495,6 +495,8 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     }
     else {if(Verbose) std::cout << " - No V candidate" << std::endl; return;}
     
+    if(isWtoEN || isWtoMN) {if(Verbose) std::cout << " - W->lnu candidate" << std::endl; return;}
+    
     Hist["a_nEvents"]->Fill(3., EventWeight);
     Hist["m_nEvents"]->Fill(8., EventWeight);
 //    if(isZtoEE) Hist["e_nEvents"]->Fill(3., EventWeight);
