@@ -157,7 +157,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     V_pt = V_dPhi = V_mass = V_tmass = -1.;
     X_pt = X_dPhi = X_mass = X_tmass = -1.;
     FatJet1_isTight = false;
-    FatJet1_pt = FatJet1_prunedMass = FatJet1_softdropMass = FatJet1_softdropPuppiMass = FatJet1_prunedMassCorr = FatJet1_softdropMassCorr = FatJet1_softdropPuppiMassCorr = FatJet1_softdropPuppiMassGenCorr = FatJet1_chsTau21 = FatJet1_puppiTau21 = FatJet1_ddtTau21 = FatJet1_CSV1 = FatJet1_CSV2 = -1.;
+    FatJet1_pt = FatJet1_prunedMass = FatJet1_softdropMass = FatJet1_softdropPuppiMass = FatJet1_prunedMassCorr = FatJet1_softdropMassCorr = FatJet1_softdropPuppiMassCorr = FatJet1_chsTau21 = FatJet1_puppiTau21 = FatJet1_ddtTau21 = FatJet1_CSV1 = FatJet1_CSV2 = -1.;
     
     AddFourMomenta addP4;
     
@@ -232,8 +232,8 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     nBTagJets = theJetAnalyzer->GetNBJets(JetsVect);
     // Fat Jets
     std::vector<pat::Jet> FatJetsVect = theFatJetAnalyzer->FillJetVector(iEvent);
-    theFatJetAnalyzer->CleanJetsFromMuons(FatJetsVect, MuonVect, 1.);
-    theFatJetAnalyzer->CleanJetsFromElectrons(FatJetsVect, ElecVect, 1.);
+    //theFatJetAnalyzer->CleanJetsFromMuons(FatJetsVect, MuonVect, 1.); // Do NOT clean the fatjet now
+    //theFatJetAnalyzer->CleanJetsFromElectrons(FatJetsVect, ElecVect, 1.); // Do NOT clean the fatjet now
     nFatJets = FatJetsVect.size();
     // Missing Energy
     pat::MET MET = theJetAnalyzer->FillMetVector(iEvent);
@@ -274,7 +274,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     
     EventWeight *= ZewkWeight * WewkWeight;
     
-    
+    /*
 //        float genPtZ(-1.), genPtW(-1.);
 //    if(!genZ && genL1 && genL2) genPtZ = (!genZ) ? genZ->pt() : (*genL1 + *genL2).pt();
 //    if(!genW && ((genL1 && genN1) || (genL2 && genN2))) genPtW = (!genW) ? genW->pt() : ( (genL1 && genN1) ? (*genL1 + *genN1).pt() : (*genL2 + *genN2).pt() );
@@ -319,7 +319,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     std::vector<int> HadIds = {1,2,3,4,5,-1,-2,-3,-4,-5};
     reco::GenParticle* theGenLep = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, LepIds);
     reco::GenParticle* theGenHad = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, HadIds);
-
+    
     //Gen level plots and candidates
     double GenZLepMass = -1.;
     double GenZHadMass = -1.;
@@ -342,7 +342,6 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
             Hist["g_ZLepMass"]->Fill(theGenZLep->mass(), EventWeight);
             Hist["g_ZLepPt"]->Fill(theGenZLep->pt(), EventWeight);
             Hist["g_LepPt"]->Fill(theGenLep->pt(), EventWeight);
-            GenZLepMass = theGenZLep->mass();
             Hist["g_ZHadMass"]->Fill(theGenZHad->mass(), EventWeight);
             Hist["g_ZHadPt"]->Fill(theGenZHad->pt(), EventWeight);
             Hist["g_HadPt"]->Fill(theGenHad->pt(), EventWeight);
@@ -351,13 +350,14 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
             Hist["g_ZZDR"]->Fill(reco::deltaR(theGenZHad->eta(),theGenZHad->phi(),theGenZLep->eta(),theGenZLep->phi()), EventWeight);
             Hist["g_ZZDPhi"]->Fill(reco::deltaPhi(theGenZHad->phi(),theGenZLep->phi()), EventWeight);
             Hist["g_LepHadDR"]->Fill(reco::deltaR(theGenHad->eta(),theGenHad->phi(),theGenLep->eta(),theGenLep->phi()), EventWeight);
+            GenZLepMass = theGenZLep->mass();
             GenZHadMass = theGenZHad->mass();
             GenZHadPt = theGenZHad->pt();
             isGenZZ = true;
             p4GenZHad = theGenZHad->p4();
         }
     }
-
+    
     
     reco::Candidate* theGenX = theGenAnalyzer->FindGenParticleByIdAndStatus(GenPVect, 39, 62);
     if(!theGenX) theGenX = theGenAnalyzer->FindGenParticleByIdAndStatus(GenPVect, 36, 62);
@@ -366,7 +366,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         Hist["g_XPt"]->Fill(theGenX->pt(), EventWeight);
         GenXMass = theGenX->mass();
     }
-    
+    */
 
     // ---------- Trigger selections ----------
     // Dummy trigger
@@ -676,7 +676,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     //           HADRONIC BOSON
     // -----------------------------------
     
-    
+    /*
     // ---------- Z TO HADRONS ----------
     pat::CompositeCandidate theHMerged;
     pat::CompositeCandidate theHResolved;
@@ -901,25 +901,25 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
 //        return;
 //    }
 
-    /*
-    else if(theH.numberOfDaughters()>0){//if is Z to nu nu: apply recoil mass formula
-        theX = recoilMassFormula(theH,MET);
-    }
+    
+//    else if(theH.numberOfDaughters()>0){//if is Z to nu nu: apply recoil mass formula
+//        theX = recoilMassFormula(theH,MET);
+//    }
 
-    else{//no H, no X
-        if(Verbose) std::cout << "No H, no X" << std::endl;
-        return;
-    }
+//    else{//no H, no X
+//        if(Verbose) std::cout << "No H, no X" << std::endl;
+//        return;
+//    }
     */
     
     
     // ------------------------------
     // ----------    AZh   ----------
     // ------------------------------
-    
+    /*
+    pat::CompositeCandidate theX;
     pat::CompositeCandidate theH;
     pat::CompositeCandidate theA;
-    pat::CompositeCandidate theX;
     
     reco::Candidate::LorentzVector thekH;
     reco::Candidate::LorentzVector thekA;
@@ -957,19 +957,22 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
 //        if(isZtoMM) Hist["m_nEvents"]->Fill(5., EventWeight);
     }
     else {if(Verbose) std::cout << " - N jets < 2" << std::endl;}
-    
-    // ------------------------------
-    // ----------    VH    ----------
-    // ------------------------------
-    
-    if(nFatJets >= 1) {
-        theX.addDaughter(theV);
-        theX.addDaughter(FatJetsVect.at(0));
-        addP4.set(theX);
+    */
+    if(Verbose) std::cout << " - Cleaning FatJet" << std::endl;
+    for(unsigned int j = 0; j < FatJetsVect.size(); ) {
+        if((isZtoEE || isZtoMM) && (deltaR(FatJetsVect[j], *theV.daughter(0)) < 0.8 || deltaR(FatJetsVect[j], *theV.daughter(1)) < 0.8)) FatJetsVect.erase(FatJetsVect.begin() + j);
+        else j++;
     }
-    else {if(Verbose) std::cout << " - N fat jets < 1" << std::endl;}
-    
-    
+    if(FatJetsVect.size() < 1) {if(Verbose) std::cout << " - N fat jets < 1" << std::endl; return;}
+
+    // ------------------------------
+    // ------- RES CANDIDATE --------
+    // ------------------------------
+    pat::CompositeCandidate theX;
+    theX.addDaughter(theV);
+    theX.addDaughter(FatJetsVect.at(0));
+    addP4.set(theX);
+    if(Verbose) std::cout << " - Candidate built" << std::endl;
     
     // ---------- Event Variables ----------
     
@@ -1005,11 +1008,11 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         std::cout << "number of AK8 jets:  " << FatJetsVect.size() << std::endl;
         for(unsigned int i = 0; i < FatJetsVect.size(); i++) std::cout << "  AK8 jet  [" << i << "]\tpt: " << FatJetsVect[i].pt() << "\teta: " << FatJetsVect[i].eta() << "\tphi: " << FatJetsVect[i].phi() << "\tmass: " << FatJetsVect[i].mass() << std::endl;
         std::cout << "Missing energy:      " << MET.pt() << std::endl;
-        std::cout << "V leptonic mass:     " << theV.mass() << ", generated: " << GenZLepMass << std::endl;
-        std::cout << "Z merged hadronic mass:     " << theHMerged.mass() << ", generated: " << GenZHadMass << std::endl;
-        std::cout << "X merged candidate mass:    " << theXMerged.mass() << ", generated: " << GenXMass << std::endl;
-        std::cout << "Z resolved hadronic mass:     " << theHResolved.mass() << ", generated: " << GenZHadMass << std::endl;
-        std::cout << "X resolved candidate mass:    " << theXResolved.mass() << ", generated: " << GenXMass << std::endl;
+        std::cout << "V leptonic mass:     " << theV.mass() << std::endl;
+//        std::cout << "Z merged hadronic mass:     " << theHMerged.mass() << ", generated: " << GenZHadMass << std::endl;
+//        std::cout << "X merged candidate mass:    " << theXMerged.mass() << ", generated: " << GenXMass << std::endl;
+//        std::cout << "Z resolved hadronic mass:     " << theHResolved.mass() << ", generated: " << GenZHadMass << std::endl;
+//        std::cout << "X resolved candidate mass:    " << theXResolved.mass() << ", generated: " << GenXMass << std::endl;
     }
 
     
@@ -1033,9 +1036,10 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     for(unsigned int i = 0; i < FatJets.size() && i < FatJetsVect.size(); i++) ObjectsFormat::FillFatJetType(FatJets[i], &FatJetsVect[i], isMC);
     ObjectsFormat::FillMEtType(MEt, &MET, isMC);
     ObjectsFormat::FillCandidateType(V, &theV, isMC);
+    ObjectsFormat::FillCandidateType(X, &theX, isMC);
+    /*
     ObjectsFormat::FillCandidateType(H, &theH, isMC);
     ObjectsFormat::FillCandidateType(A, &theA, isMC);
-    ObjectsFormat::FillCandidateType(X, &theX, isMC);
     ObjectsFormat::FillLorentzType(kH, &thekH);
     ObjectsFormat::FillLorentzType(kA, &thekA);
     ObjectsFormat::FillCandidateType(HMerged, &theHMerged, isMC);
@@ -1050,8 +1054,8 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     ObjectsFormat::FillCandidateType(XResolvedDZ, &theXResolvedDZ, isMC);
     ObjectsFormat::FillCandidateType(HResolvedDR, &theHResolvedDR, isMC);
     ObjectsFormat::FillCandidateType(XResolvedDR, &theXResolvedDR, isMC);
-    
-    //if(nJets < 2 && nFatJets < 1) return;
+    */
+    if(V.pt < 150.) return;
     
     // Fill tree
     tree->Fill();
@@ -1059,12 +1063,12 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     // Fill tree for alpha only closer to the signal region
     
     // cut for VZ analysis
-    if ( 
+    if( 
         (isZtoMM || isZtoEE) &&
         (V.mass > 70. && V.mass < 110.) && 
         (nFatJets >= 1) && 
         (V.pt > 150.)
-    ){
+    ) {
         // Lepton1
         Lepton1_isMuon = Leptons[0].isMuon;
         Lepton1_isElectron = Leptons[0].isElectron;
@@ -1104,7 +1108,6 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         FatJet1_prunedMassCorr = FatJets[0].prunedMassCorr;
         FatJet1_softdropMassCorr = FatJets[0].softdropMassCorr;
         FatJet1_softdropPuppiMassCorr = FatJets[0].softdropPuppiMassCorr;
-        FatJet1_softdropPuppiMassGenCorr = FatJets[0].softdropPuppiMassGenCorr;
         FatJet1_chsTau21 = FatJets[0].chsTau21;
         FatJet1_puppiTau21 = FatJets[0].puppiTau21;
         FatJet1_ddtTau21 = FatJets[0].ddtTau21;
@@ -1115,7 +1118,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     }
     
     if(Verbose) std::cout << " - Tree filled, end of event" << std::endl;
-    
+    /*
     if(theV.mass()<80. || theV.mass()>100.) {if(Verbose) std::cout << " - Z off-shell" << std::endl; return;}
     Hist["a_nEvents"]->Fill(6., EventWeight);
 //    if(isZtoEE) Hist["e_nEvents"]->Fill(6., EventWeight);
@@ -1140,7 +1143,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     Hist["a_nEvents"]->Fill(10., EventWeight);
 //    if(isZtoEE) Hist["e_nEvents"]->Fill(10., EventWeight);
 //    if(isZtoMM) Hist["m_nEvents"]->Fill(10., EventWeight);
-    
+    */
 }
 
 //#ifdef THIS_IS_AN_EVENT_EXAMPLE
@@ -1308,7 +1311,6 @@ void Diboson::beginJob() {
     treealpha->Branch("FatJet1_prunedMassCorr", &FatJet1_prunedMassCorr, "FatJet1_prunedMassCorr/F");
     treealpha->Branch("FatJet1_softdropMassCorr", &FatJet1_softdropMassCorr, "FatJet1_softdropMassCorr/F");
     treealpha->Branch("FatJet1_softdropPuppiMassCorr", &FatJet1_softdropPuppiMassCorr, "FatJet1_softdropPuppiMassCorr/F");
-    treealpha->Branch("FatJet1_softdropPuppiMassGenCorr", &FatJet1_softdropPuppiMassGenCorr, "FatJet1_softdropPuppiMassGenCorr/F");
     treealpha->Branch("FatJet1_chsTau21", &FatJet1_chsTau21, "FatJet1_chsTau21/F");
     treealpha->Branch("FatJet1_puppiTau21", &FatJet1_puppiTau21, "FatJet1_puppiTau21/F");
     treealpha->Branch("FatJet1_ddtTau21", &FatJet1_ddtTau21, "FatJet1_ddtTau21/F");

@@ -137,7 +137,6 @@ struct FatJetType {
     float prunedMassCorr;
     float softdropMassCorr;
     float softdropPuppiMassCorr;
-    float softdropPuppiMassGenCorr;
     float pt1;
     float eta1;
     float phi1;
