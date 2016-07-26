@@ -953,7 +953,11 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     }
     else {if(Verbose) std::cout << " - N jets < 2" << std::endl;}
     */
-    
+    if(Verbose) std::cout << " - Cleaning FatJet" << std::endl;
+    for(unsigned int j = 0; j < FatJetsVect.size(); ) {
+        if((isZtoEE || isZtoMM) && (deltaR(FatJetsVect[j], *theV.daughter(0)) < 0.8 || deltaR(FatJetsVect[j], *theV.daughter(1)) < 0.8)) FatJetsVect.erase(FatJetsVect.begin() + j);
+        else j++;
+    }
     if(FatJetsVect.size() < 1) {if(Verbose) std::cout << " - N fat jets < 1" << std::endl; return;}
 
     // ------------------------------
