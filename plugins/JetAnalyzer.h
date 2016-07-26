@@ -45,7 +45,7 @@ class JetAnalyzer {
         virtual std::vector<pat::Jet> FillJetVector(const edm::Event&);
         virtual void CorrectJet(pat::Jet&, float, float, bool);
         virtual void CorrectMass(pat::Jet&, float, float, bool);
-        virtual void CorrectPuppiMass(pat::Jet&);
+        virtual void CorrectPuppiMass(pat::Jet&, bool);
         virtual void CleanJetsFromMuons(std::vector<pat::Jet>&, std::vector<pat::Muon>&, float);
         virtual void CleanJetsFromElectrons(std::vector<pat::Jet>&, std::vector<pat::Electron>&, float);
         virtual void AddVariables(std::vector<pat::Jet>&, pat::MET&);
