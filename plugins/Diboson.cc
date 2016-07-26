@@ -232,8 +232,8 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     nBTagJets = theJetAnalyzer->GetNBJets(JetsVect);
     // Fat Jets
     std::vector<pat::Jet> FatJetsVect = theFatJetAnalyzer->FillJetVector(iEvent);
-    theFatJetAnalyzer->CleanJetsFromMuons(FatJetsVect, MuonVect, 1.);
-    theFatJetAnalyzer->CleanJetsFromElectrons(FatJetsVect, ElecVect, 1.);
+    //theFatJetAnalyzer->CleanJetsFromMuons(FatJetsVect, MuonVect, 1.); // Do NOT clean the fatjet now
+    //theFatJetAnalyzer->CleanJetsFromElectrons(FatJetsVect, ElecVect, 1.); // Do NOT clean the fatjet now
     nFatJets = FatJetsVect.size();
     // Missing Energy
     pat::MET MET = theJetAnalyzer->FillMetVector(iEvent);
