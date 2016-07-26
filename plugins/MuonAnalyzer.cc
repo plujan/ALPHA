@@ -159,7 +159,7 @@ std::vector<pat::Muon> MuonAnalyzer::FillMuonVector(const edm::Event& iEvent) {
 	      // Tracker iso corrected with by-hand subtraction
         float trkIso = mu.trackIso();
         // Subtrack all muons from iso cone
-        for(auto mit=MuonCollection->begin(); mit!=MuonCollection->end(); ++mit) if(mit!=it && deltaR(*mit, mu)<0.3) trkIso -= mit->innerTrack()->pt();
+        for(auto mit=MuonCollection->begin(); mit!=MuonCollection->end(); ++mit) if(mit!=it && deltaR(*mit, mu)<0.3 && IsTrackerHighPtMuon(mu, vertex)) trkIso -= mit->innerTrack()->pt();
         //if(Vect.size() == 0 && std::next(it, 1)!=MuonCollection->end() && deltaR(*std::next(it, 1), mu) < 0.3) trkIso -= std::next(it, 1)->pt();
         //if(Vect.size() == 1 && deltaR(Vect[0], mu) < 0.3) trkIso -= Vect[0].tunePMuonBestTrack()->pt();
         if(trkIso < 0.) trkIso = 0.;
