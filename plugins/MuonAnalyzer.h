@@ -56,7 +56,7 @@ class MuonAnalyzer {
         std::string MuonTrkFileName;
         std::string MuonIdFileName;
         std::string MuonIsoFileName;
-        std::string MuonHighptFileName;
+        std::string MuonTrkHighptFileName;
         std::string MuonTriggerFileName;
         std::string DoubleMuonTriggerFileName;
         int Muon1Id, Muon2Id, Muon1Iso, Muon2Iso;
@@ -66,13 +66,13 @@ class MuonAnalyzer {
         
         rochcor2016 *rmcor;
         
-        bool isMuonTriggerFile, isDoubleMuonTriggerFile, isMuonTrkFile, isMuonIdFile, isMuonIsoFile, isMuonHighptFile;
+        bool isMuonTriggerFile, isDoubleMuonTriggerFile, isMuonTrkFile, isMuonIdFile, isMuonIsoFile, isMuonTrkHighptFile;
         
         TFile* MuonTriggerFile;
         TFile* DoubleMuonTriggerFile;
         TFile* MuonTrkFile;
         TFile* MuonIdFile;
-        TFile* MuonHighptFile;
+        TFile* MuonTrkHighptFile;
         TFile* MuonIsoFile;
         
         TH2F* MuonTriggerLt20;
@@ -86,6 +86,7 @@ class MuonAnalyzer {
         TH2F* MuonIdMedium;
         TH2F* MuonIdTight;
         TH2F* MuonIdHighpt;
+        TH2F* MuonIdTrkHighpt;
         TH2F* MuonIsoLoose;
         TH2F* MuonIsoTight;
         TH2F* MuonIsoHighpt;

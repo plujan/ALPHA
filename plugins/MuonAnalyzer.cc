@@ -6,7 +6,7 @@ MuonAnalyzer::MuonAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CCo
     MuonTrkFileName(PSet.getParameter<std::string>("muonTrkFileName")),
     MuonIdFileName(PSet.getParameter<std::string>("muonIdFileName")),
     MuonIsoFileName(PSet.getParameter<std::string>("muonIsoFileName")),
-    MuonHighptFileName(PSet.getParameter<std::string>("muonHighptFileName")),
+    MuonTrkHighptFileName(PSet.getParameter<std::string>("muonTrkHighptFileName")),
     MuonTriggerFileName(PSet.getParameter<std::string>("muonTriggerFileName")),
     DoubleMuonTriggerFileName(PSet.getParameter<std::string>("doubleMuonTriggerFileName")), //obsolete
     Muon1Id(PSet.getParameter<int>("muon1id")),
@@ -18,7 +18,7 @@ MuonAnalyzer::MuonAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CCo
     UseTuneP(PSet.getParameter<bool>("useTuneP")),
     DoRochester(PSet.getParameter<bool>("doRochester"))
 {
-    isMuonTriggerFile = isDoubleMuonTriggerFile = isMuonIdFile = isMuonTrkFile = isMuonHighptFile = false;
+    isMuonTriggerFile = isDoubleMuonTriggerFile = isMuonIdFile = isMuonTrkFile = isMuonTrkHighptFile = false;
     
     // Double Muon trigger: obsolete!
     // https://twiki.cern.ch/twiki/bin/viewauth/CMS/MuonReferenceEffs
@@ -42,11 +42,12 @@ MuonAnalyzer::MuonAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CCo
         return;
     }
 
-    //Single Muon Trigger, 2015-2016
+    //Single Muon Trigger, 2015-2016 
+    //NOTE -> DATA EFFICIENCIES DIRECTLY APPLIED TO MC (NO SF)
     MuonTriggerFile=new TFile(MuonTriggerFileName.c_str(), "READ");
     if(!MuonTriggerFile->IsZombie()) {
-        MuonTriggerIsoMu22=(TH2F*)MuonTriggerFile->Get("IsoMu22_OR_IsoTkMu22_PtEtaBins_Run274094_to_276097/pt_abseta_ratio");
-        MuonTriggerMu45eta2p1=(TH2F*)MuonTriggerFile->Get("Mu45_eta2p1_PtEtaBins_Run274094_to_276097/pt_abseta_ratio");
+        MuonTriggerIsoMu22=(TH2F*)MuonTriggerFile->Get("IsoMu22_OR_IsoTkMu22_PtEtaBins_Run274094_to_276097/efficienciesDATA/pt_abseta_DATA");
+        MuonTriggerMu45eta2p1=(TH2F*)MuonTriggerFile->Get("Mu45_eta2p1_PtEtaBins_Run274094_to_276097/efficienciesDATA/pt_abseta_DATA");
         isMuonTriggerFile=true;
     }
     else {
@@ -72,6 +73,7 @@ MuonAnalyzer::MuonAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CCo
         MuonIdLoose=(TH2F*)MuonIdFile->Get("MC_NUM_LooseID_DEN_genTracks_PAR_pt_spliteta_bin1/pt_abseta_ratio");
         MuonIdMedium=(TH2F*)MuonIdFile->Get("MC_NUM_MediumID_DEN_genTracks_PAR_pt_spliteta_bin1/pt_abseta_ratio");
         MuonIdTight=(TH2F*)MuonIdFile->Get("MC_NUM_TightIDandIPCut_DEN_genTracks_PAR_pt_spliteta_bin1/pt_abseta_ratio");
+        MuonIdHighpt=(TH2F*)MuonIdFile->Get("MC_NUM_HighPtIDPt20andIPCut_DEN_genTracks_PAR_pt_spliteta_bin1/pair_ne_ratio");
         isMuonIdFile=true;
     }
     else {
@@ -81,7 +83,8 @@ MuonAnalyzer::MuonAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CCo
 
     MuonIsoFile=new TFile(MuonIsoFileName.c_str(), "READ");
     if(!MuonIsoFile->IsZombie()) {
-        MuonIsoLoose=(TH2F*)MuonIsoFile->Get("MC_NUM_LooseRelIso_DEN_LooseID_PAR_pt_spliteta_bin1/pt_abseta_ratio");
+        MuonIsoHighpt=(TH2F*)MuonIsoFile->Get("MC_NUM_LooseRelTkIso_DEN_HighPtID_PAR_pt_spliteta_bin1/pair_ne_ratio");
+        MuonIsoLoose=(TH2F*)MuonIsoFile->Get("MC_NUM_LooseRelIso_DEN_TightID_PAR_pt_spliteta_bin1/pt_abseta_ratio");
         MuonIsoTight=(TH2F*)MuonIsoFile->Get("MC_NUM_TightRelIso_DEN_TightID_PAR_pt_spliteta_bin1/pt_abseta_ratio");
         isMuonIsoFile=true;
     }
@@ -90,14 +93,13 @@ MuonAnalyzer::MuonAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CCo
         return;
     }
 
-    MuonHighptFile=new TFile(MuonHighptFileName.c_str(), "READ");
-    if(!MuonHighptFile->IsZombie()) {
-        MuonIdHighpt=(TH2F*)MuonHighptFile->Get("HighPtID_PtEtaBins_Pt53/pTtuneP_abseta_ratio");
-        MuonIsoHighpt=(TH2F*)MuonHighptFile->Get("tkRelIsoID_PtEtaBins_Pt53/pTtuneP_abseta_ratio");
-        isMuonHighptFile=true;
+    MuonTrkHighptFile=new TFile(MuonTrkHighptFileName.c_str(), "READ");
+    if(!MuonTrkHighptFile->IsZombie()) {
+        MuonIdTrkHighpt=(TH2F*)MuonTrkHighptFile->Get("sf_trackHighPt_80X_pteta");
+        isMuonTrkHighptFile=true;
     }
     else {
-        throw cms::Exception("MuonAnalyzer", "No MuonHighpt Weight File");
+        throw cms::Exception("MuonAnalyzer", "No MuonTrkHighpt Weight File");
         return;
     }
 
@@ -118,7 +120,7 @@ MuonAnalyzer::~MuonAnalyzer() {
     MuonTrkFile->Close();
     MuonIdFile->Close();
     MuonIsoFile->Close();
-    MuonHighptFile->Close();
+    MuonTrkHighptFile->Close();
 }
 
 
@@ -257,8 +259,14 @@ std::string MuonAnalyzer::GetMuon1Id(pat::Muon& mu){
 
 //ID
 float MuonAnalyzer::GetMuonIdSF(pat::Muon& mu, int id) {
-    if(id==0){
-        return 1.;
+    if(id==0 && isMuonTrkHighptFile){
+        double pt = std::min( std::max( MuonIdTrkHighpt->GetYaxis()->GetXmin(), mu.pt() ) , MuonIdTrkHighpt->GetYaxis()->GetXmax() - 0.000001 );
+        double eta = 0.;       
+        if (mu.eta() > 0)
+            eta = std::min( MuonIdTrkHighpt->GetXaxis()->GetXmax() - 0.000001 , mu.eta() );
+        else
+            eta = std::max( MuonIdTrkHighpt->GetXaxis()->GetXmin() + 0.000001 , mu.eta() );
+        return MuonIdTrkHighpt->GetBinContent( MuonIdTrkHighpt->FindBin(eta,pt) );
     }
     if(id==1 && isMuonIdFile){
         double pt = std::min( std::max( MuonIdLoose->GetXaxis()->GetXmin(), mu.pt() ) , MuonIdLoose->GetXaxis()->GetXmax() - 0.000001 );
@@ -275,7 +283,7 @@ float MuonAnalyzer::GetMuonIdSF(pat::Muon& mu, int id) {
         double abseta = std::min( MuonIdTight->GetYaxis()->GetXmax() - 0.000001 , fabs(mu.eta()) );
         return MuonIdTight->GetBinContent( MuonIdTight->FindBin(pt,abseta) );
     }
-    if(id==4 && isMuonHighptFile){
+    if(id==4 && isMuonIdFile){
         double pt = std::min( std::max( MuonIdHighpt->GetXaxis()->GetXmin(), mu.pt() ) , MuonIdHighpt->GetXaxis()->GetXmax() - 0.000001 );
         double abseta = std::min( MuonIdHighpt->GetYaxis()->GetXmax() - 0.000001 , fabs(mu.eta()) );
         return MuonIdHighpt->GetBinContent( MuonIdHighpt->FindBin(pt,abseta) );
@@ -284,8 +292,14 @@ float MuonAnalyzer::GetMuonIdSF(pat::Muon& mu, int id) {
 }
 
 float MuonAnalyzer::GetMuonIdSFError(pat::Muon& mu, int id) {
-    if(id==0){
-        return 1.;
+    if(id==0 && isMuonTrkHighptFile){
+        double pt = std::min( std::max( MuonIdTrkHighpt->GetYaxis()->GetXmin(), mu.pt() ) , MuonIdTrkHighpt->GetYaxis()->GetXmax() - 0.000001 );
+        double eta = 0.;       
+        if (mu.eta() > 0)
+            eta = std::min( MuonIdTrkHighpt->GetXaxis()->GetXmax() - 0.000001 , mu.eta() );
+        else
+            eta = std::max( MuonIdTrkHighpt->GetXaxis()->GetXmin() + 0.000001 , mu.eta() );
+        return MuonIdTrkHighpt->GetBinError( MuonIdTrkHighpt->FindBin(eta,pt) );
     }
     if(id==1 && isMuonIdFile){
         double pt = std::min( std::max( MuonIdLoose->GetXaxis()->GetXmin(), mu.pt() ) , MuonIdLoose->GetXaxis()->GetXmax() - 0.000001 );
@@ -302,7 +316,7 @@ float MuonAnalyzer::GetMuonIdSFError(pat::Muon& mu, int id) {
         double abseta = std::min( MuonIdTight->GetYaxis()->GetXmax() - 0.000001 , fabs(mu.eta()) );
         return MuonIdTight->GetBinError( MuonIdTight->FindBin(pt,abseta) );
     }
-    if(id==4 && isMuonHighptFile){
+    if(id==4 && isMuonIdFile){
         double pt = std::min( std::max( MuonIdHighpt->GetXaxis()->GetXmin(), mu.pt() ) , MuonIdHighpt->GetXaxis()->GetXmax() - 0.000001 );
         double abseta = std::min( MuonIdHighpt->GetYaxis()->GetXmax() - 0.000001 , fabs(mu.eta()) );
         return MuonIdHighpt->GetBinError( MuonIdHighpt->FindBin(pt,abseta) );
@@ -337,7 +351,7 @@ float MuonAnalyzer::GetMuonTrkSFError(pat::Muon& mu) {
 
 //ISO
 float MuonAnalyzer::GetMuonIsoSF(pat::Muon& mu, int id) {
-    if(id==0 && isMuonHighptFile){
+    if(id==0 && isMuonIsoFile){
         double pt = std::min( std::max( MuonIsoHighpt->GetXaxis()->GetXmin(), mu.pt() ) , MuonIsoHighpt->GetXaxis()->GetXmax() - 0.000001 );
         double abseta = std::min( MuonIsoHighpt->GetYaxis()->GetXmax() - 0.000001 , fabs(mu.eta()) );
         return MuonIsoHighpt->GetBinContent( MuonIsoHighpt->FindBin(pt,abseta) );
@@ -356,7 +370,7 @@ float MuonAnalyzer::GetMuonIsoSF(pat::Muon& mu, int id) {
 }
 
 float MuonAnalyzer::GetMuonIsoSFError(pat::Muon& mu, int id) {
-    if(!isMuonIsoFile || !isMuonHighptFile) return 1.;
+    if(!isMuonIsoFile) return 1.;
     if(id==0){
         double pt = std::min( std::max( MuonIsoHighpt->GetXaxis()->GetXmin(), mu.pt() ) , MuonIsoHighpt->GetXaxis()->GetXmax() - 0.000001 );
         double abseta = std::min( MuonIsoHighpt->GetYaxis()->GetXmax() - 0.000001 , fabs(mu.eta()) );
