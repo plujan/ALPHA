@@ -3,6 +3,7 @@
 MuonAnalyzer::MuonAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl):
     MuonToken(CColl.consumes<std::vector<pat::Muon> >(PSet.getParameter<edm::InputTag>("muons"))),
     VertexToken(CColl.consumes<reco::VertexCollection>(PSet.getParameter<edm::InputTag>("vertices"))),
+    MuonTrkFileName(PSet.getParameter<std::string>("muonTrkFileName")),
     MuonIdFileName(PSet.getParameter<std::string>("muonIdFileName")),
     MuonIsoFileName(PSet.getParameter<std::string>("muonIsoFileName")),
     MuonHighptFileName(PSet.getParameter<std::string>("muonHighptFileName")),
@@ -17,7 +18,7 @@ MuonAnalyzer::MuonAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CCo
     UseTuneP(PSet.getParameter<bool>("useTuneP")),
     DoRochester(PSet.getParameter<bool>("doRochester"))
 {
-    isMuonTriggerFile = isDoubleMuonTriggerFile = isMuonIdFile = isMuonHighptFile = false;
+    isMuonTriggerFile = isDoubleMuonTriggerFile = isMuonIdFile = isMuonTrkFile = isMuonHighptFile = false;
     
     // Double Muon trigger: obsolete!
     // https://twiki.cern.ch/twiki/bin/viewauth/CMS/MuonReferenceEffs
@@ -44,7 +45,8 @@ MuonAnalyzer::MuonAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CCo
     //Single Muon Trigger, 2015-2016
     MuonTriggerFile=new TFile(MuonTriggerFileName.c_str(), "READ");
     if(!MuonTriggerFile->IsZombie()) {
-        MuonTriggerIsoMu20=(TH2F*)MuonTriggerFile->Get("runD_IsoMu20_OR_IsoTkMu20_HLTv4p3_PtEtaBins/pt_abseta_ratio");
+        MuonTriggerIsoMu22=(TH2F*)MuonTriggerFile->Get("IsoMu22_OR_IsoTkMu22_PtEtaBins_Run274094_to_276097/pt_abseta_ratio");
+        MuonTriggerMu45eta2p1=(TH2F*)MuonTriggerFile->Get("Mu45_eta2p1_PtEtaBins_Run274094_to_276097/pt_abseta_ratio");
         isMuonTriggerFile=true;
     }
     else {
@@ -52,6 +54,18 @@ MuonAnalyzer::MuonAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CCo
         return;
     }
     
+    //Muon tracker eff
+    MuonTrkFile=new TFile(MuonTrkFileName.c_str(), "READ");
+    if(!MuonTrkFile->IsZombie()) {
+        MuonTrkGraph=(TGraphAsymmErrors*)MuonTrkFile->Get("ratio_eta");
+        MuonTrk=(TH1F*)ConvertTGraph(MuonTrkGraph);
+        isMuonTrkFile=true;
+    }
+    else {
+        throw cms::Exception("MuonAnalyzer", "No MuonTrk Weight File");
+        return;
+    }
+
     //Muon id and iso, 2015-2016
     MuonIdFile=new TFile(MuonIdFileName.c_str(), "READ");
     if(!MuonIdFile->IsZombie()) {
@@ -101,6 +115,7 @@ MuonAnalyzer::MuonAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CCo
 MuonAnalyzer::~MuonAnalyzer() {
     DoubleMuonTriggerFile->Close();
     MuonTriggerFile->Close();
+    MuonTrkFile->Close();
     MuonIdFile->Close();
     MuonIsoFile->Close();
     MuonHighptFile->Close();
@@ -295,6 +310,31 @@ float MuonAnalyzer::GetMuonIdSFError(pat::Muon& mu, int id) {
     else return 1.;
 }
 
+//TRK
+float MuonAnalyzer::GetMuonTrkSF(pat::Muon& mu) {
+    if(isMuonTrkFile){
+        double eta = 0.;       
+        if (mu.eta() > 0)
+            eta = std::min( MuonTrk->GetXaxis()->GetXmax() - 0.000001 , mu.eta() );
+        else
+            eta = std::max( MuonTrk->GetXaxis()->GetXmin() + 0.000001 , mu.eta() );
+        return MuonTrk->GetBinContent( MuonTrk->FindBin(eta) );
+    }
+    else return 1.;
+}
+
+float MuonAnalyzer::GetMuonTrkSFError(pat::Muon& mu) {
+    if(isMuonTrkFile){
+        double eta = 0.;
+        if (mu.eta() > 0)
+            eta = std::min( MuonTrk->GetXaxis()->GetXmax() - 0.000001 , mu.eta() );
+        else
+            eta = std::max( MuonTrk->GetXaxis()->GetXmin() + 0.000001 , mu.eta() );
+        return MuonTrk->GetBinError( MuonTrk->FindBin(eta) );
+    }
+    else return 1.;
+}
+
 //ISO
 float MuonAnalyzer::GetMuonIsoSF(pat::Muon& mu, int id) {
     if(id==0 && isMuonHighptFile){
@@ -356,18 +396,32 @@ float MuonAnalyzer::GetDoubleMuonTriggerSFError(pat::Muon& mu1, pat::Muon& mu2) 
     return MuonTriggerGt20->GetBinError(MuonTriggerGt20->FindBin(eta2, eta1));
 }
 
-float MuonAnalyzer::GetMuonTriggerSFIsoMu20(pat::Muon& mu) {
+float MuonAnalyzer::GetMuonTriggerSFIsoMu22(pat::Muon& mu) {
     if(!isMuonTriggerFile) return 1.;
-    double pt = std::min( std::max( MuonTriggerIsoMu20->GetXaxis()->GetXmin(), mu.pt() ) , MuonTriggerIsoMu20->GetXaxis()->GetXmax() - 0.000001 );
-    double abseta = std::min( MuonTriggerIsoMu20->GetYaxis()->GetXmax() - 0.000001 , fabs(mu.eta()) );
-    return MuonTriggerIsoMu20->GetBinContent( MuonTriggerIsoMu20->FindBin(pt, abseta) );
+    double pt = std::min( std::max( MuonTriggerIsoMu22->GetXaxis()->GetXmin(), mu.pt() ) , MuonTriggerIsoMu22->GetXaxis()->GetXmax() - 0.000001 );
+    double abseta = std::min( MuonTriggerIsoMu22->GetYaxis()->GetXmax() - 0.000001 , fabs(mu.eta()) );
+    return MuonTriggerIsoMu22->GetBinContent( MuonTriggerIsoMu22->FindBin(pt, abseta) );
 }
 
-float MuonAnalyzer::GetMuonTriggerSFErrorIsoMu20(pat::Muon& mu) {
+float MuonAnalyzer::GetMuonTriggerSFErrorIsoMu22(pat::Muon& mu) {
     if(!isMuonTriggerFile) return 1.;
-    double pt = std::min( std::max( MuonTriggerIsoMu20->GetXaxis()->GetXmin(), mu.pt() ) , MuonTriggerIsoMu20->GetXaxis()->GetXmax() - 0.000001 );
-    double abseta = std::min( MuonTriggerIsoMu20->GetYaxis()->GetXmax() - 0.000001 , fabs(mu.eta()) );
-    return MuonTriggerIsoMu20->GetBinError( MuonTriggerIsoMu20->FindBin(pt,abseta) );
+    double pt = std::min( std::max( MuonTriggerIsoMu22->GetXaxis()->GetXmin(), mu.pt() ) , MuonTriggerIsoMu22->GetXaxis()->GetXmax() - 0.000001 );
+    double abseta = std::min( MuonTriggerIsoMu22->GetYaxis()->GetXmax() - 0.000001 , fabs(mu.eta()) );
+    return MuonTriggerIsoMu22->GetBinError( MuonTriggerIsoMu22->FindBin(pt,abseta) );
+}
+
+float MuonAnalyzer::GetMuonTriggerSFMu45eta2p1(pat::Muon& mu) {
+    if(!isMuonTriggerFile) return 1.;
+    double pt = std::min( std::max( MuonTriggerMu45eta2p1->GetXaxis()->GetXmin(), mu.pt() ) , MuonTriggerMu45eta2p1->GetXaxis()->GetXmax() - 0.000001 );
+    double abseta = std::min( MuonTriggerMu45eta2p1->GetYaxis()->GetXmax() - 0.000001 , fabs(mu.eta()) );
+    return MuonTriggerMu45eta2p1->GetBinContent( MuonTriggerMu45eta2p1->FindBin(pt, abseta) );
+}
+
+float MuonAnalyzer::GetMuonTriggerSFErrorMu45eta2p1(pat::Muon& mu) {
+    if(!isMuonTriggerFile) return 1.;
+    double pt = std::min( std::max( MuonTriggerMu45eta2p1->GetXaxis()->GetXmin(), mu.pt() ) , MuonTriggerMu45eta2p1->GetXaxis()->GetXmax() - 0.000001 );
+    double abseta = std::min( MuonTriggerMu45eta2p1->GetYaxis()->GetXmax() - 0.000001 , fabs(mu.eta()) );
+    return MuonTriggerMu45eta2p1->GetBinError( MuonTriggerMu45eta2p1->FindBin(pt,abseta) );
 }
 
 
@@ -384,5 +438,6 @@ TH1F* MuonAnalyzer::ConvertTGraph(TGraphAsymmErrors* g) {
       h->SetBinContent(i+1, g->GetY()[i]);
       h->SetBinError(i+1, g->GetEYhigh()[i]);
     }
+
     return h;
 }
