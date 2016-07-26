@@ -1050,7 +1050,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     ObjectsFormat::FillCandidateType(HResolvedDR, &theHResolvedDR, isMC);
     ObjectsFormat::FillCandidateType(XResolvedDR, &theXResolvedDR, isMC);
     */
-    if(!V.pt > 150.) return;
+    if(V.pt < 150.) return;
     
     // Fill tree
     tree->Fill();
