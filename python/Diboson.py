@@ -27,14 +27,14 @@ if len(options.inputFiles) == 0:
     process.source = cms.Source('PoolSource',
         fileNames = cms.untracked.vstring(
             #'file:/lustre/cmswork/zucchett/CMSSW_8_0_5/src/00F0B3DC-211B-E611-A6A0-001E67248A39.root' # DYJets
-           'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/user/lbenato/BulkGraviton_ZZ_ZlepZhad_narrow_M1000_13TeV-madgraph_MINIAODv2_805_10000ev/BulkGravToZZToZlepZhad_narrow_M-1000_13TeV-madgraph_PRIVATE-MC/BulkGraviton_ZZ_ZlepZhad_narrow_M1000_13TeV-madgraph_MINIAODv2_805_10000ev/160525_131443/0000/BulkGraviton_ZZ_ZlepZhad_narrow_M1000_13TeV-madgraph_MINIAODv2_1.root'
+           #'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/user/lbenato/BulkGraviton_ZZ_ZlepZhad_narrow_M1000_13TeV-madgraph_MINIAODv2_805_10000ev/BulkGravToZZToZlepZhad_narrow_M-1000_13TeV-madgraph_PRIVATE-MC/BulkGraviton_ZZ_ZlepZhad_narrow_M1000_13TeV-madgraph_MINIAODv2_805_10000ev/160525_131443/0000/BulkGraviton_ZZ_ZlepZhad_narrow_M1000_13TeV-madgraph_MINIAODv2_1.root'
            #'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/PromptReco-v1/000/273/013/00000/C09E75A4-3519-E611-8BA9-02163E014476.root', # SingleMuon
            #'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/DoubleEG/MINIAOD/PromptReco-v2/000/273/725/00000/72118358-B620-E611-9C76-02163E012211.root', # DoubleEle
             #'file:/lustre/cmswork/zucchett/CMSSW_8_0_5/src/GluGluToAToZhToLLBB_M300_13TeV-amcatnlo_MINIAODv2.root', # DEBUG
 #            'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISpring16MiniAODv2/WJetsToLNu_HT-1200To2500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_ext1-v1/10000/AC51B7C5-7829-E611-AF89-6CC2173DA9E0.root', #DEBUG
 
-           #'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/PromptReco-v2/000/275/001/00000/E8366493-E034-E611-8A7E-02163E0146AE.root',
-#            'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/PromptReco-v2/000/275/067/00000/C08E7539-AE34-E611-9C9A-02163E011A43.root',
+           'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/PromptReco-v2/000/275/001/00000/E8366493-E034-E611-8A7E-02163E0146AE.root',
+           #'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/PromptReco-v2/000/275/067/00000/C08E7539-AE34-E611-9C9A-02163E011A43.root',
 
 
         )
@@ -305,6 +305,7 @@ process.ntuple = cms.EDAnalyzer('Diboson',
         eleMVANonTrigTightIdMap = cms.InputTag('egmGsfElectronIDs:mvaEleID-Spring15-25ns-nonTrig-V1-wp80'),
         eleMVATrigMediumIdMap = cms.InputTag('egmGsfElectronIDs:mvaEleID-Spring15-25ns-Trig-V1-wp90'),
         eleMVATrigTightIdMap = cms.InputTag('egmGsfElectronIDs:mvaEleID-Spring15-25ns-Trig-V1-wp80'),
+        eleSingleTriggerFileName = cms.string('%s/src/Analysis/ALPHA/data/SingleEleTriggerEff.root' % os.environ['CMSSW_BASE']),
         eleVetoIdFileName = cms.string('%s/src/Analysis/ALPHA/data/runB_p2_passingVeto_egammaEffi_txt_SF2D.root' % os.environ['CMSSW_BASE']),
         eleLooseIdFileName = cms.string('%s/src/Analysis/ALPHA/data/runB_p2_passingLoose_egammaEffi_txt_SF2D.root' % os.environ['CMSSW_BASE']),
         eleMediumIdFileName = cms.string('%s/src/Analysis/ALPHA/data/runB_p2_passingMedium_egammaEffi_txt_SF2D.root' % os.environ['CMSSW_BASE']),
@@ -312,8 +313,8 @@ process.ntuple = cms.EDAnalyzer('Diboson',
         eleMVATrigMediumIdFileName = cms.string('%s/src/Analysis/ALPHA/data/ScaleFactor_GsfElectronToRECO_passingTrigWP90.txt.egamma_SF2D.root' % os.environ['CMSSW_BASE']),
         eleMVATrigTightIdFileName = cms.string('%s/src/Analysis/ALPHA/data/ScaleFactor_GsfElectronToRECO_passingTrigWP80.txt.egamma_SF2D.root' % os.environ['CMSSW_BASE']),
         eleRecoEffFileName = cms.string('%s/src/Analysis/ALPHA/data/eleRECO.txt.egamma_SF2D.root' % os.environ['CMSSW_BASE']),
-        electron1id = cms.int32(-1), # 0: veto, 1: loose, 2: medium, 3: tight, 4: HEEP, 5: MVA medium nonTrig, 6: MVA tight nonTrig, 7: MVA medium Trig, 8: MVA tight Trig
-        electron2id = cms.int32(-1),
+        electron1id = cms.int32(1), # 0: veto, 1: loose, 2: medium, 3: tight, 4: HEEP, 5: MVA medium nonTrig, 6: MVA tight nonTrig, 7: MVA medium Trig, 8: MVA tight Trig
+        electron2id = cms.int32(1),
         electron1pt = cms.double(20.),
         electron2pt = cms.double(20.),
     ),
@@ -321,16 +322,15 @@ process.ntuple = cms.EDAnalyzer('Diboson',
         muons = cms.InputTag('cleanedMuons'),#('slimmedMuons'),
         vertices = cms.InputTag('offlineSlimmedPrimaryVertices'),
         muonTrkFileName = cms.string('%s/src/Analysis/ALPHA/data/TrkEff.root' % os.environ['CMSSW_BASE']),
-        muonIdFileName = cms.string('%s/src/Analysis/ALPHA/data/MuonID_Z_RunCD_Reco76X_Feb15.root' % os.environ['CMSSW_BASE']),
-        #muonIsoFileName = cms.string('%s/src/Analysis/ALPHA/data/MuonIso_Z_RunCD_Reco76X_Feb15.root' % os.environ['CMSSW_BASE']),
-        muonIsoFileName = cms.string('%s/src/Analysis/ALPHA/data/MuonISO_Z_2016runB_2p6fb.root' % os.environ['CMSSW_BASE']),
-        muonHighptFileName = cms.string('%s/src/Analysis/ALPHA/data/MuonHighPt_Z_RunCD_Reco74X_Dec17.root' % os.environ['CMSSW_BASE']),
-        muonTriggerFileName = cms.string('%s/src/Analysis/ALPHA/data/SingleMuonTrigger_Z_RunCD_Reco76X_Feb15.root' % os.environ['CMSSW_BASE']),
+        muonIdFileName = cms.string('%s/src/Analysis/ALPHA/data/MuonID_Z_RunBCD_prompt80X_7p65.root' % os.environ['CMSSW_BASE']),
+        muonIsoFileName = cms.string('%s/src/Analysis/ALPHA/data/MuonIso_Z_RunBCD_prompt80X_7p65.root' % os.environ['CMSSW_BASE']),
+        muonTrkHighptFileName = cms.string('%s/src/Analysis/ALPHA/data/trackHighPtID_effSF_80X.root' % os.environ['CMSSW_BASE']),
+        muonTriggerFileName = cms.string('%s/src/Analysis/ALPHA/data/SingleMuonTrigger_Z_RunBCD_prompt80X_7p65.root' % os.environ['CMSSW_BASE']),
         doubleMuonTriggerFileName = cms.string('%s/src/Analysis/ALPHA/data/MuHLTEfficiencies_Run_2012ABCD_53X_DR03-2.root' % os.environ['CMSSW_BASE']),#obsolete
-        muon1id = cms.int32(-1), # 0: tracker high pt muon id, 1: loose, 2: medium, 3: tight, 4: high pt
-        muon2id = cms.int32(-1),
-        muon1iso = cms.int32(-1), # 0: trk iso (<0.1), 1: loose (<0.25), 2: tight (<0.15) (pfIso in cone 0.4)
-        muon2iso = cms.int32(-1),
+        muon1id = cms.int32(0), # 0: tracker high pt muon id, 1: loose, 2: medium, 3: tight, 4: high pt
+        muon2id = cms.int32(0),
+        muon1iso = cms.int32(0), # 0: trk iso (<0.1), 1: loose (<0.25), 2: tight (<0.15) (pfIso in cone 0.4)
+        muon2iso = cms.int32(0),
         muon1pt = cms.double(20.),
         muon2pt = cms.double(20.),
         useTuneP = cms.bool(True),
