@@ -347,6 +347,7 @@ void JetAnalyzer::CorrectPuppiMass(pat::Jet& jet, bool isMC) {
         else if(fabs(jet.userFloat("ak8PFJetsPuppiSoftDropEta")) > 1.3 ) recoCorr = PuppiJECcorr_reco_1v3eta2v5->Eval( jet.userFloat("ak8PFJetsPuppiSoftDropPt") );
         corr = genCorr * recoCorr;
     }
+    if(corr < 0.) corr = 0.;
     jet.addUserFloat("ak8PFJetsPuppiSoftDropMassCorr", jet.userFloat("ak8PFJetsPuppiSoftDropMass") * corr);
 }
 
