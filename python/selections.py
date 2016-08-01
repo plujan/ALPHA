@@ -5,16 +5,17 @@ selection = {
     "triggerIsoEle" : "(isMC?1:HLT_Ele23_WPLoose_Gsf_v)",
     "triggerIsoMuo" : "(isMC?1:(HLT_IsoMu20_v||HLT_IsoTkMu20_v))",
     "triggerEle" : "(isMC?1:(HLT_Ele105_CaloIdVT_GsfTrkIdT_v || HLT_Ele115_CaloIdVT_GsfTrkIdT_v))",
-    "triggerMuo" : "(isMC?1:(HLT_TkMu50_v||HLT_Mu50_v))",
+    "triggerMuo" : "(isMC?1:(HLT_Mu45_eta2p1_v))",
     # Leptons
     "singleEle" : "isWtoEN && Lepton1.pt>135 && Lepton1.isTight && V.dPhi<2 && X.dPhi>2 && MEt.pt>80", #  && nTaus==0
     "singleMuo" : "isWtoMN && Lepton1.pt>55 && Lepton1.isHighPt && Lepton1.trkIso<0.1 && V.dPhi<2 && X.dPhi>2", # && nTaus==0
     "singleIsoLep" : "((isWtoEN && Lepton1.isElectron && Lepton1.isLoose && Lepton2.isMuon && Lepton2.isHighPt) || (isWtoMN && Lepton2.isElectron && Lepton2.isLoose && Lepton1.isMuon && Lepton1.isHighPt))",
     "doubleEle" : "isZtoEE && Lepton1.pt>135 && Lepton2.pt>35 && Lepton1.isLoose && Lepton2.isLoose", # && Lepton1.isHighPt && Lepton2.isHighPt && Lepton1.miniIso<0.1 && Lepton2.miniIso<0.1",
-    "doubleMuo" : "isZtoMM && ((Lepton1.isHighPt && Lepton2.isHighPt) || (Lepton1.isTrackerHighPt && Lepton2.isHighPt) || (Lepton1.isHighPt && Lepton2.isTrackerHighPt)) && Lepton1.pt>55 && Lepton2.pt>20 && Lepton1.trkIso<0.1 && Lepton2.trkIso<0.1",
+    #"doubleMuo" : "isZtoMM && ((Lepton1.isHighPt && Lepton2.isHighPt) || (Lepton1.isTrackerHighPt && Lepton2.isHighPt) || (Lepton1.isHighPt && Lepton2.isTrackerHighPt)) && Lepton1.pt>55 && Lepton2.pt>20 && Lepton1.trkIso<0.1 && Lepton2.trkIso<0.1",
+    "doubleMuo" : "isZtoMM && ((Lepton1.isHighPt && Lepton2.isHighPt) || (Lepton1.isTrackerHighPt && Lepton2.isHighPt) || (Lepton1.isHighPt && Lepton2.isTrackerHighPt)) && Lepton1.pt>55 && Lepton2.pt>20 && abs(Lepton1.eta)<2.1 && abs(Lepton2.eta)<2.1 && !(Lepton1.pt>500 and abs(Lepton1.eta)>1.2) && !(Lepton2.pt>500 and abs(Lepton2.eta)>1.2) && Lepton1.trkIso<0.1 && Lepton2.trkIso<0.1",
 
 
-    "MuonEle" : "((Lepton1.isMuon && Lepton1.isHighPt && Lepton1.pt>55 && Lepton1.trkIso<0.1 && Lepton2.isElectron && Lepton2.pt>35 && Lepton2.isLoose) || (Lepton1.isElectron && Lepton1.pt>35 && Lepton1.isLoose && Lepton2.isMuon && Lepton2.isHighPt && Lepton2.pt>55 && Lepton2.trkIso<0.1))", # && Lepton1.isHighPt && Lepton2.isHighPt && Lepton1.miniIso<0.1 && Lepton2.miniIso<0.1",
+    "MuonEle" : "((Lepton1.isMuon && Lepton1.isHighPt && Lepton1.pt>55 && Lepton1.trkIso<0.1 && abs(Lepton1.eta)<2.1 && !(Lepton1.pt>500 and abs(Lepton1.eta)>1.2) && Lepton2.isElectron && Lepton2.pt>35 && Lepton2.isLoose) || (Lepton1.isElectron && Lepton1.pt>35 && Lepton1.isLoose && Lepton2.isMuon && Lepton2.isHighPt && Lepton2.pt>55 && abs(Lepton2.eta)<2.1 && !(Lepton2.pt>500 and abs(Lepton2.eta)>1.2) && Lepton2.trkIso<0.1))", # && Lepton1.isHighPt && Lepton2.isHighPt && Lepton1.miniIso<0.1 && Lepton2.miniIso<0.1",
 
 
     "doubleIsoEle" : "isZtoEE && Lepton1.pt>25 && Lepton2.pt>10 && Lepton1.isLoose && Lepton2.isLoose",

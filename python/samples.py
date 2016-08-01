@@ -1232,7 +1232,7 @@ samples = {
     },
     'TTbar' : {
         'order' : 3,
-        'files' : ['TTTo2L2Nu_13TeV-powheg_v0_ext1_red1-v1', 'TTToSemiLeptonic_13TeV-powheg_v0_ext1_red1-v1'],
+        'files' : ['TTTo2L2Nu_13TeV-powheg_v0_ext1-v1', 'TTToSemiLeptonic_13TeV-powheg_v0_ext1-v1'],
         'fillcolor' : 798,
         'fillstyle' : 1001,
         'linecolor' : 798,
@@ -1242,6 +1242,18 @@ samples = {
         'weight': 1.,
         'plot': True,
     },
+    'TTbar-red' : {
+        'order' : 3,
+        'files' : ['TTTo2L2Nu_13TeV-powheg_v0_ext1_red1-v1', 'TTToSemiLeptonic_13TeV-powheg_v0_ext1_red1-v1'],
+        'fillcolor' : 798,
+        'fillstyle' : 1001,
+        'linecolor' : 798,
+        'linewidth' : 2,
+        'linestyle' : 1,
+        'label' : "t#bar{t}",#, single t
+        'weight': 1.,
+        'plot': True,
+    },    
     'ST' : {
         'order' : 4,
         'files' : ['ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1-v1', 'ST_t-channel_antitop_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1-v1', 'ST_t-channel_top_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1-v1', 'ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1-v1', 'ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1-v2'],
@@ -1744,7 +1756,7 @@ samples = {
     },
     'XWZ_M2500' : {
         'order' : 1001,
-        'files' : ['WprimeToWZToWhadZlep_narrow_M-2500_13TeV-madgraph_v14-v2'],
+        'files' : ['WprimeToWZToWhadZlep_narrow_M-2500_13TeV-madgraph_v14-v1'],
         'fillcolor' : 633,
         'fillstyle' : 3005,
         'linecolor' : 634,
