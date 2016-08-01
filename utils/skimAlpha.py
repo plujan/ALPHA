@@ -35,12 +35,12 @@ X = CandidateType()
 
 # New variables
 EventNumber = array('l', [0])
+EventWeight = array('f', [0])
 RunNumber = array('l', [0])
 LumiNumber = array('l', [0])
 isZtoEE = array('b', [0])
 isZtoMM = array('b', [0])
 isMC = array('b', [0])
-EventWeight = array('f', [0])
 FatJet1_pt = array('f', [0])
 FatJet1_softdropPuppiMass = array('f', [0])
 FatJet1_softdropPuppiMassCorr = array('f', [0])
@@ -49,11 +49,9 @@ FatJet1_ddtTau21 = array('f', [0])
 V_mass = array('f', [0])
 V_pt = array('f', [0])
 X_mass = array('f', [0])
-    
-
 
 def skim(name):
-    
+        
     oldFile = TFile(name, "READ")
     oldTree = oldFile.Get("ntuple/tree")
     oldTree.SetBranchAddress("Lepton1", AddressOf(Lepton1, "pt") );
@@ -62,12 +60,14 @@ def skim(name):
     oldTree.SetBranchAddress("V",       AddressOf(V, "pt")       );
     oldTree.SetBranchAddress("X",       AddressOf(X, "pt")       );
     
+    print 'skimming file',oldFile.GetName(),'\tevents =',oldTree.GetEntries(),'\tweight =',oldTree.GetWeight()
     
     newFile = TFile("Skim/"+name, "RECREATE")
     newFile.cd()
     newTree = TTree("alpha", "alpha")
     
     EventNumberBranch = newTree.Branch('EventNumber', EventNumber, 'EventNumber/F')
+    EventWeightBranch = newTree.Branch('EventWeight', EventWeight, 'EventWeight/F')
     RunNumberBranch = newTree.Branch('RunNumber', RunNumber, 'RunNumber/F')
     LumiNumberBranch = newTree.Branch('LumiNumber', LumiNumber, 'LumiNumber/F')
     isZtoEEBranch = newTree.Branch('isZtoEE', isZtoEE, 'isZtoEE/O')
@@ -82,7 +82,7 @@ def skim(name):
     V_ptBranch = newTree.Branch('V_pt', V_pt, 'V_pt/F')
     X_massBranch = newTree.Branch('X_mass', X_mass, 'X_mass/F')    
     
-    
+    theweight = oldTree.GetWeight()
     
     for event in range(0, oldTree.GetEntries()-1):
         oldTree.GetEntry(event)
@@ -94,11 +94,14 @@ def skim(name):
         
         # Trigger
         if not oldTree.isMC:
-            if oldTree.isZtoMM and not (oldTree.HLT_TkMu50_v or oldTree.HLT_Mu50_v): continue
-            elif oldTree.isZtoEE and not (oldTree.HLT_Ele105_CaloIdVT_GsfTrkIdT_v or oldTree.HLT_Ele115_CaloIdVT_GsfTrkIdT_v): continue
+            if oldTree.isZtoMM:
+                #if not ( oldTree.HLT_TkMu50_v or oldTree.HLT_Mu50_v ): continue
+                if not ( oldTree.HLT_Mu45_eta2p1_v ): continue
+            elif oldTree.isZtoEE:
+                if not ( oldTree.HLT_Ele105_CaloIdVT_GsfTrkIdT_v or oldTree.HLT_Ele115_CaloIdVT_GsfTrkIdT_v ): continue
             else: continue
         # Leptons
-        if oldTree.isZtoMM and not ( ((Lepton1.isHighPt and Lepton2.isHighPt) or (Lepton1.isTrackerHighPt and Lepton2.isHighPt) or (Lepton1.isHighPt and Lepton2.isTrackerHighPt)) and Lepton1.pt>55 and Lepton2.pt>20 and Lepton1.trkIso<0.1 and Lepton2.trkIso<0.1): continue
+        if oldTree.isZtoMM and not ( ((Lepton1.isHighPt and Lepton2.isHighPt) or (Lepton1.isTrackerHighPt and Lepton2.isHighPt) or (Lepton1.isHighPt and Lepton2.isTrackerHighPt)) and Lepton1.pt>55 and Lepton2.pt>20 and abs(Lepton1.eta)<2.1 and abs(Lepton2.eta)<2.1 and not (Lepton1.pt>500 and abs(Lepton1.eta)>1.2) and not (Lepton2.pt>500 and abs(Lepton2.eta)>1.2) and Lepton1.trkIso<0.1 and Lepton2.trkIso<0.1): continue
 
         if oldTree.isZtoEE and not (Lepton1.pt>135 and Lepton2.pt>35 and Lepton1.isLoose and Lepton2.isLoose): continue
         
@@ -109,12 +112,12 @@ def skim(name):
         
         # Copy relevant variables
         EventNumber[0] = oldTree.EventNumber
+        EventWeight[0] = oldTree.EventWeight * theweight
         RunNumber[0] = oldTree.RunNumber
         LumiNumber[0] = oldTree.LumiNumber
         isZtoEE[0] = oldTree.isZtoEE
         isZtoMM[0] = oldTree.isZtoMM
         isMC[0] = oldTree.isMC
-        EventWeight[0] = oldTree.EventWeight * oldTree.GetWeight()
         FatJet1_pt[0] = FatJet1.pt
         FatJet1_softdropPuppiMass[0] = FatJet1.softdropPuppiMass
         FatJet1_softdropPuppiMassCorr[0] = FatJet1.softdropPuppiMassCorr
@@ -126,6 +129,8 @@ def skim(name):
         
         newTree.Fill()
     
+    print 'produced skimmed file',newFile.GetName(),'\tevents =',newTree.GetEntries(),'\tweight =',newTree.GetWeight()
+
     newFile.cd()
     newTree.Write()
     newFile.Close()
@@ -141,6 +146,7 @@ os.chdir(args.folder)
 if not os.path.isdir('Skim'): os.mkdir('Skim')
 
 for s in subfiles:
+    #if 'Run2016' not in s: continue
 #    print s
 #    skim(s)
     p = multiprocessing.Process(target=skim, args=(s,))

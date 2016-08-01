@@ -8,7 +8,7 @@ from ROOT import TObject, TFile, TH1, TH1F
 from Analysis.ALPHA.samples import sample
 from array import array
 
-LUMI        = 6260 # in pb-1
+LUMI        = 12900 # in pb-1
 
 # use the following lists to include/exclude samples to be merged
 
@@ -142,15 +142,6 @@ def hadd(name):
     tree.SetWeight(weight)
     tree.AutoSave()
     
-    treealpha = file.Get("ntuple/treealpha")
-    newEventWeight = array('f', [1.0])  # global event weight
-    newEventWeightBranch = treealpha.Branch('newEventWeight', newEventWeight, 'newEventWeight/F')
-    for event in range(0, treealpha.GetEntries()):
-        treealpha.GetEntry(event)
-        newEventWeight[0] = weight * getattr(treealpha, 'EventWeight')
-        newEventWeightBranch.Fill()
-    treealpha.SetWeight(1.)
-    treealpha.AutoSave()
     
 #    rescale(file, weight)
     
