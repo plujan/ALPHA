@@ -955,79 +955,79 @@ sample = {
     },
 
 #ZHadZinv
-    'BulkGravToZZToZhadZinv_narrow_M-600_13TeV-madgraph_PRIVATE-MC_v0-v1' : {
+    'BulkGravToZZToZhadZinv_narrow_M-600_13TeV-madgraph_v14-v1' : {
         'nevents' : 10000,
         'xsec'    : 1.,
         'matcheff': 1.,
         'kfactor' : 1.,
     },
-    'BulkGravToZZToZhadZinv_narrow_M-800_13TeV-madgraph_PRIVATE-MC_v0-v1' : {
+    'BulkGravToZZToZhadZinv_narrow_M-800_13TeV-madgraph_v14-v1' : {
         'nevents' : 10000,
         'xsec'    : 1.,
         'matcheff': 1.,
         'kfactor' : 1.,
     },
-    'BulkGravToZZToZhadZinv_narrow_M-1000_13TeV-madgraph_PRIVATE-MC_v0-v1' : {
+    'BulkGravToZZToZhadZinv_narrow_M-1000_13TeV-madgraph_v14-v1' : {
         'nevents' : 10000,
         'xsec'    : 1.,
         'matcheff': 1.,
         'kfactor' : 1.,
     },
-    'BulkGravToZZToZhadZinv_narrow_M-1200_13TeV-madgraph_PRIVATE-MC_v0-v1' : {
+    'BulkGravToZZToZhadZinv_narrow_M-1200_13TeV-madgraph_v14-v1' : {
         'nevents' : 10000,
         'xsec'    : 1.,
         'matcheff': 1.,
         'kfactor' : 1.,
     },
-    'BulkGravToZZToZhadZinv_narrow_M-1400_13TeV-madgraph_PRIVATE-MC_v0-v1' : {
+    'BulkGravToZZToZhadZinv_narrow_M-1400_13TeV-madgraph_v14-v1' : {
         'nevents' : 10000,
         'xsec'    : 1.,
         'matcheff': 1.,
         'kfactor' : 1.,
     },
-    'BulkGravToZZToZhadZinv_narrow_M-1600_13TeV-madgraph_PRIVATE-MC_v0-v1' : {
+    'BulkGravToZZToZhadZinv_narrow_M-1600_13TeV-madgraph_v14-v1' : {
         'nevents' : 10000,
         'xsec'    : 1.,
         'matcheff': 1.,
         'kfactor' : 1.,
     },
-    'BulkGravToZZToZhadZinv_narrow_M-1800_13TeV-madgraph_PRIVATE-MC_v0-v1' : {
+    'BulkGravToZZToZhadZinv_narrow_M-1800_13TeV-madgraph_v14-v1' : {
         'nevents' : 10000,
         'xsec'    : 1.,
         'matcheff': 1.,
         'kfactor' : 1.,
     },
-    'BulkGravToZZToZhadZinv_narrow_M-2000_13TeV-madgraph_PRIVATE-MC_v0-v1' : {
+    'BulkGravToZZToZhadZinv_narrow_M-2000_13TeV-madgraph_v14-v1' : {
         'nevents' : 10000,
         'xsec'    : 1.,
         'matcheff': 1.,
         'kfactor' : 1.,
     },
-    'BulkGravToZZToZhadZinv_narrow_M-2500_13TeV-madgraph_PRIVATE-MC_v0-v1' : {
+    'BulkGravToZZToZhadZinv_narrow_M-2500_13TeV-madgraph_v14-v1' : {
         'nevents' : 10000,
         'xsec'    : 1.,
         'matcheff': 1.,
         'kfactor' : 1.,
     },
-    'BulkGravToZZToZhadZinv_narrow_M-3000_13TeV-madgraph_PRIVATE-MC_v0-v1' : {
+    'BulkGravToZZToZhadZinv_narrow_M-3000_13TeV-madgraph_v14-v1' : {
         'nevents' : 10000,
         'xsec'    : 1.,
         'matcheff': 1.,
         'kfactor' : 1.,
     },
-    'BulkGravToZZToZhadZinv_narrow_M-3500_13TeV-madgraph_PRIVATE-MC_v0-v1' : {
+    'BulkGravToZZToZhadZinv_narrow_M-3500_13TeV-madgraph_v14-v1' : {
         'nevents' : 10000,
         'xsec'    : 1.,
         'matcheff': 1.,
         'kfactor' : 1.,
     },
-    'BulkGravToZZToZhadZinv_narrow_M-4000_13TeV-madgraph_PRIVATE-MC_v0-v1' : {
+    'BulkGravToZZToZhadZinv_narrow_M-4000_13TeV-madgraph_v14-v1' : {
         'nevents' : 10000,
         'xsec'    : 1.,
         'matcheff': 1.,
         'kfactor' : 1.,
     },
-    'BulkGravToZZToZhadZinv_narrow_M-4500_13TeV-madgraph_PRIVATE-MC_v0-v1' : {
+    'BulkGravToZZToZhadZinv_narrow_M-4500_13TeV-madgraph_v14-v1' : {
         'nevents' : 10000,
         'xsec'    : 1.,
         'matcheff': 1.,
