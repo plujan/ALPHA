@@ -314,19 +314,21 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         Hist["g_Phi1"]->Fill(genPhi1, EventWeight);
         
     }
-    
-    std::vector<int> LepIds = {11,13,-11,-13};
+    */
+
+    std::vector<int> LepIds = {12,14,16,-12,-14,-16};
     std::vector<int> HadIds = {1,2,3,4,5,-1,-2,-3,-4,-5};
     reco::GenParticle* theGenLep = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, LepIds);
     reco::GenParticle* theGenHad = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, HadIds);
     
     //Gen level plots and candidates
-    double GenZLepMass = -1.;
-    double GenZHadMass = -1.;
-    double GenZHadPt = -1.;
-    double GenXMass = -1.;
+    //double GenZLepMass = -1.;
+    //double GenZHadMass = -1.;
+    //double GenZHadPt = -1.;
+    //double GenXMass = -1.;
     double GenHadDR = -9.;
-    double GenZHadFatJetDR = -9.;
+    double GenLepDR = -9.;
+    //double GenZHadFatJetDR = -9.;
     bool isGenZZ = false;
     reco::Particle::LorentzVector p4GenZHad;
     if(theGenLep!=NULL && theGenHad!=NULL){
@@ -335,6 +337,12 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         for(unsigned int a = 0; a<=theGenZHad->numberOfDaughters(); a++) {
             if(theGenZHad!=NULL && theGenZHad->daughter(a)!=NULL && (theGenZHad->pdgId()==23 || theGenZHad->pdgId()==25) && (theGenZHad->daughter(a)->pdgId() == - theGenHad->pdgId())){
                 GenHadDR = reco::deltaR(theGenHad->eta(),theGenHad->phi(),theGenZHad->daughter(a)->eta(),theGenZHad->daughter(a)->phi());
+                break;
+            }
+        }
+        for(unsigned int b = 0; b<=theGenZLep->numberOfDaughters(); b++) {
+            if(theGenZLep!=NULL && theGenZLep->daughter(b)!=NULL && (theGenZLep->pdgId()==23 || theGenZLep->pdgId()==25) && (theGenZLep->daughter(b)->pdgId() == - theGenLep->pdgId())){
+                GenLepDR = reco::deltaR(theGenLep->eta(),theGenLep->phi(),theGenZLep->daughter(b)->eta(),theGenZLep->daughter(b)->phi());
                 break;
             }
         }
@@ -347,12 +355,14 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
             Hist["g_HadPt"]->Fill(theGenHad->pt(), EventWeight);
             Hist["g_HadEta"]->Fill(theGenHad->eta(), EventWeight);
             Hist["g_HadDR"]->Fill(GenHadDR, EventWeight);
+            Hist["g_LepDR"]->Fill(GenLepDR, EventWeight);
+            Hist["g_LepEta"]->Fill(theGenLep->eta(), EventWeight);
             Hist["g_ZZDR"]->Fill(reco::deltaR(theGenZHad->eta(),theGenZHad->phi(),theGenZLep->eta(),theGenZLep->phi()), EventWeight);
             Hist["g_ZZDPhi"]->Fill(reco::deltaPhi(theGenZHad->phi(),theGenZLep->phi()), EventWeight);
             Hist["g_LepHadDR"]->Fill(reco::deltaR(theGenHad->eta(),theGenHad->phi(),theGenLep->eta(),theGenLep->phi()), EventWeight);
-            GenZLepMass = theGenZLep->mass();
-            GenZHadMass = theGenZHad->mass();
-            GenZHadPt = theGenZHad->pt();
+            //GenZLepMass = theGenZLep->mass();
+            //GenZHadMass = theGenZHad->mass();
+            //GenZHadPt = theGenZHad->pt();
             isGenZZ = true;
             p4GenZHad = theGenZHad->p4();
         }
@@ -363,10 +373,12 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     if(!theGenX) theGenX = theGenAnalyzer->FindGenParticleByIdAndStatus(GenPVect, 36, 62);
     if(theGenX!=NULL && theGenLep!=NULL && theGenHad!=NULL && isGenZZ){
         Hist["g_XMass"]->Fill(theGenX->mass(), EventWeight);
+        Hist["g_XMT"]->Fill(theGenX->mt(), EventWeight);
         Hist["g_XPt"]->Fill(theGenX->pt(), EventWeight);
-        GenXMass = theGenX->mass();
+        Hist["g_XRapidity"]->Fill(theGenX->rapidity(), EventWeight);
+        //GenXMass = theGenX->mass();
     }
-    */
+    
 
     // ---------- Trigger selections ----------
     // Dummy trigger
