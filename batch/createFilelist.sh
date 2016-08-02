@@ -13,7 +13,12 @@ then
     python2.6 batch/get_ds_file_info.py -d "/*/*RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2*/MINIAOD*" > query.txt   # for MC
 else
     if [[ "$2" == "B" ]] || [[ "$2" == "C" ]] || [[ "$2" == "D" ]] || [[ "$2" == "E" ]]
+    then
         python2.6 batch/get_ds_file_info.py -d "/*/Run2016$2*/MINIAOD" > query.txt   # for Data
+    else
+        echo "for DATA also specify the era, e.g.:"
+        echo "sh batch/createFilelist.sh DATA D"
+        exit
     fi
 fi
 
