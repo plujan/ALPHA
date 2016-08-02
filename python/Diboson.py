@@ -18,7 +18,7 @@ process = cms.Process('ALPHA')
 process.load('FWCore.MessageService.MessageLogger_cfi')
 process.MessageLogger.cerr.threshold = 'ERROR'
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
 
 # input
 # default: if no filelist from command line, run on specified samples
@@ -33,10 +33,13 @@ if len(options.inputFiles) == 0:
             #'file:/lustre/cmswork/zucchett/CMSSW_8_0_5/src/GluGluToAToZhToLLBB_M300_13TeV-amcatnlo_MINIAODv2.root', # DEBUG
 #            'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISpring16MiniAODv2/WJetsToLNu_HT-1200To2500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_ext1-v1/10000/AC51B7C5-7829-E611-AF89-6CC2173DA9E0.root', #DEBUG
 
-           'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/PromptReco-v2/000/275/001/00000/E8366493-E034-E611-8A7E-02163E0146AE.root',
+           #'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/PromptReco-v2/000/275/001/00000/E8366493-E034-E611-8A7E-02163E0146AE.root',
            #'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/PromptReco-v2/000/275/067/00000/C08E7539-AE34-E611-9C9A-02163E011A43.root',
 
-
+#           'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms/store/user/lbenato/BulkGraviton_ZZ_ZhadZinv_narrow_M1000_13TeV-madgraph_MINIAODv2_805_10000ev/BulkGravToZZToZhadZinv_narrow_M-1000_13TeV-madgraph_PRIVATE-MC/BulkGraviton_ZZ_ZhadZinv_narrow_M1000_13TeV-madgraph_MINIAODv2_805_10000ev/160625_145554/0000/BulkGraviton_ZZ_ZhadZinv_narrow_M1000_13TeV-madgraph_MINIAODv2_3.root',
+#           'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms/store/user/lbenato/BulkGraviton_ZZ_ZhadZinv_narrow_M1000_13TeV-madgraph_MINIAODv2_805_10000ev/BulkGravToZZToZhadZinv_narrow_M-1000_13TeV-madgraph_PRIVATE-MC/BulkGraviton_ZZ_ZhadZinv_narrow_M1000_13TeV-madgraph_MINIAODv2_805_10000ev/160625_145554/0000/BulkGraviton_ZZ_ZhadZinv_narrow_M1000_13TeV-madgraph_MINIAODv2_4.root',
+#           'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms/store/user/lbenato/BulkGraviton_ZZ_ZhadZinv_narrow_M1000_13TeV-madgraph_MINIAODv2_805_10000ev/BulkGravToZZToZhadZinv_narrow_M-1000_13TeV-madgraph_PRIVATE-MC/BulkGraviton_ZZ_ZhadZinv_narrow_M1000_13TeV-madgraph_MINIAODv2_805_10000ev/160625_145554/0000/BulkGraviton_ZZ_ZhadZinv_narrow_M1000_13TeV-madgraph_MINIAODv2_5.root',
+            'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms/store/data/Run2016C/MET/MINIAOD/PromptReco-v2/000/275/657/00000/86209668-733B-E611-8E08-02163E0146E5.root'
         )
     )
 # production: read externally provided filelist
