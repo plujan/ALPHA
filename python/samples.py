@@ -1914,7 +1914,7 @@ samples = {
     },
     'XZZInv_M2500' : {
         'order' : 1001,
-        'files' : ['BulkGravToZZToZhadZinv_narrow_M-2500_13TeV-madgraph_v14-v2'],
+        'files' : ['BulkGravToZZToZhadZinv_narrow_M-2500_13TeV-madgraph_v14-v1'],
         'fillcolor' : 633,
         'fillstyle' : 3005,
         'linecolor' : 634,
