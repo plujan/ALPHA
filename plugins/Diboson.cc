@@ -146,8 +146,10 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     FacWeightUp = FacWeightDown = RenWeightUp = RenWeightDown = ScaleWeightUp = ScaleWeightDown = 1.;
     isZtoEE = isZtoMM = isTtoEM = isWtoEN = isWtoMN = isZtoNN = false;
     nPV = nElectrons = nMuons = nTaus = nPhotons = nJets = nFatJets = nBTagJets = 1;
+    nVetoElectrons = nLooseMuons = 0;
     MaxJetBTag = MaxFatJetBTag = Chi2 = -1.;
     MinJetMetDPhi = 10.;
+    massRecoilFormula = -1.;
     /*
     Lepton1_isMuon = Lepton1_isElectron = Lepton1_isLoose = Lepton1_isHighPt = Lepton1_isTrackerHighPt = Lepton1_isTight = false;
     Lepton1_pt = Lepton1_trkIso = -1.;
@@ -212,9 +214,19 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     // Electrons
     std::vector<pat::Electron> ElecVect = theElectronAnalyzer->FillElectronVector(iEvent);
     nElectrons = ElecVect.size();
+    for(unsigned int i =0; i<ElecVect.size(); i++){
+        if(ElecVect.at(i).userInt("isVeto")==1) nVetoElectrons++;
+    }
     // Muons
     std::vector<pat::Muon> MuonVect = theMuonAnalyzer->FillMuonVector(iEvent);
     nMuons = MuonVect.size();
+    std::vector<pat::Muon> LooseMuonVect;
+    for(unsigned int i =0; i<MuonVect.size(); i++){
+        if(MuonVect.at(i).userInt("isLoose")==1){
+	    LooseMuonVect.push_back(MuonVect.at(i));
+            nLooseMuons++;
+	}
+    }
     // Taus
     std::vector<pat::Tau> TauVect = theTauAnalyzer->FillTauVector(iEvent);
     theTauAnalyzer->CleanTausFromMuons(TauVect, MuonVect, 0.4);
@@ -500,14 +512,14 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         else if(MuonVect.size()==1) isWtoMN=true;
         else {if(Verbose) std::cout << " - No Iso Leptons" << std::endl;}
     }
-    // ----------- Z TO NEUTRINOS ---------------
-    else if(MET.pt() > 200.) {
-        isZtoNN=true;
-        if(Verbose) std::cout << " - No charged leptons" << std::endl;
-    }
     else {if(Verbose) std::cout << " - No V candidate" << std::endl; return;}
     
     if(isWtoEN || isWtoMN) {if(Verbose) std::cout << " - W->lnu candidate" << std::endl; return;}
+    // ----------- Z TO NEUTRINOS ---------------
+    if(MET.pt() > 100.) {
+        isZtoNN=true;
+        if(Verbose) std::cout << " - No charged leptons" << std::endl;
+    }
     
     Hist["a_nEvents"]->Fill(3., EventWeight);
     Hist["m_nEvents"]->Fill(8., EventWeight);
@@ -996,6 +1008,15 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     theX.addDaughter(theV);
     theX.addDaughter(FatJetsVect.at(0));
     addP4.set(theX);
+    if(isZtoNN && theX.numberOfDaughters()>0) {
+        float D = pow(FatJetsVect.at(0).energy(),2) - (pow(FatJetsVect.at(0).mass(),2) - pow(90.18,2));
+        if(D>0) {
+            float s1 = FatJetsVect.at(0).energy() + sqrt(D);
+            float s2 = FatJetsVect.at(0).energy() - sqrt(D);
+            massRecoilFormula = (fabs(s1)>fabs(s2))? s1 : s2;
+        }
+        else massRecoilFormula = FatJetsVect.at(0).energy();
+    }
     if(Verbose) std::cout << " - Candidate built" << std::endl;
     
     // ---------- Event Variables ----------
@@ -1232,7 +1253,9 @@ void Diboson::beginJob() {
     // Objects
     tree->Branch("nPV", &nPV, "nPV/I");
     tree->Branch("nElectrons", &nElectrons, "nElectrons/I");
+    tree->Branch("nVetoElectrons", &nVetoElectrons, "nVetoElectrons/I");
     tree->Branch("nMuons", &nMuons, "nMuons/I");
+    tree->Branch("nLooseMuons", &nLooseMuons, "nLooseMuons/I");
     tree->Branch("nTaus", &nTaus, "nTaus/I");
     tree->Branch("nPhotons", &nPhotons, "nPhotons/I");
     tree->Branch("nJets", &nJets, "nJets/I");
@@ -1249,6 +1272,8 @@ void Diboson::beginJob() {
     tree->Branch("CosTheta2", &CosTheta2, "CosTheta2/F");
     tree->Branch("Phi", &Phi, "Phi/F");
     tree->Branch("Phi1", &Phi1, "Phi1/F");
+    // Mass recoil formula
+    tree->Branch("massRecoilFormula", &massRecoilFormula, "massRecoilFormula/F");
   
     // Set Branches for objects
     for(int i = 0; i < WriteNElectrons; i++) tree->Branch(("Electron"+std::to_string(i+1)).c_str(), &(Electrons[i].pt), ObjectsFormat::ListLeptonType().c_str());
