@@ -250,6 +250,16 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     // Missing Energy
     pat::MET MET = theJetAnalyzer->FillMetVector(iEvent);
     pat::MET Neutrino(MET);
+    float metNoMupx = MET.px();
+    float metNoMupy = MET.py();
+    for(unsigned int i=0; i<LooseMuonVect.size();i++){
+      metNoMupx -= LooseMuonVect.at(i).px();
+      metNoMupy -= LooseMuonVect.at(i).py();
+    }
+    reco::Particle::LorentzVector metNoMup4(metNoMupx, metNoMupy, 0, 0 );
+    MET.addUserFloat("metNoMu",metNoMup4.px());
+    MET.addUserFloat("phiNoMu",metNoMup4.phi());
+
     //theJetAnalyzer->ApplyRecoilCorrections(MET, &MET.genMET()->p4(), &theV.p4(), 0);
     
     
@@ -512,14 +522,15 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         else if(MuonVect.size()==1) isWtoMN=true;
         else {if(Verbose) std::cout << " - No Iso Leptons" << std::endl;}
     }
-    else {if(Verbose) std::cout << " - No V candidate" << std::endl; return;}
     
-    if(isWtoEN || isWtoMN) {if(Verbose) std::cout << " - W->lnu candidate" << std::endl; return;}
     // ----------- Z TO NEUTRINOS ---------------
     if(MET.pt() > 100.) {
         isZtoNN=true;
         if(Verbose) std::cout << " - No charged leptons" << std::endl;
     }
+
+    if(isWtoEN || isWtoMN) {if(Verbose) std::cout << " - W->lnu candidate" << std::endl; return;}
+    if(not(isZtoEE || isZtoMM || isZtoNN || isWtoEN || isWtoMN)) {if(Verbose) std::cout << " - No V candidate" << std::endl; return;}
     
     Hist["a_nEvents"]->Fill(3., EventWeight);
     Hist["m_nEvents"]->Fill(8., EventWeight);
