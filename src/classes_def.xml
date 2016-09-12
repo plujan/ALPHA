@@ -1,0 +1,5 @@
+
+<lcgdict>
+  <class name="JetType"/>
+  <class name="std::vector<JetType>"/>
+</lcgdict>
