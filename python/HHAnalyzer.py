@@ -49,6 +49,9 @@ print 'Running on', ('data' if isData else 'MC'), ', sample is', sample
 if isReHLT: print '-> re-HLT sample'
 #isData = False
 
+#FIXME parse it as argument
+triggerCutOn = True
+
 #-----------------------#
 #        FILTERS        #
 #-----------------------#
@@ -71,29 +74,10 @@ triggerTag = 'HLT2' if isReHLT else 'HLT'
 process.HLTFilter = cms.EDFilter('HLTHighLevel',
     TriggerResultsTag = cms.InputTag('TriggerResults', '', triggerTag),
     HLTPaths = cms.vstring(
-        'HLT_Mu45_eta2p1_v*',
-        'HLT_Mu50_v*',
-        'HLT_TkMu50_v*',
-        'HLT_IsoMu20_v*',
-        'HLT_IsoTkMu20_v*',
-        'HLT_IsoMu24_v*',
-        'HLT_IsoTkMu24_v*',
-        'HLT_Mu27_TkMu8_v*',
-        'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v*',
-        'HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v*',
-        'HLT_Ele105_CaloIdVT_GsfTrkIdT_v*',
-        'HLT_Ele115_CaloIdVT_GsfTrkIdT_v*',
-        'HLT_Ele23_WPLoose_Gsf_v*',
-        'HLT_Ele27_WPLoose_Gsf_v*',
-        'HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*',
-        'HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_v*',
-        'HLT_PFMETNoMu90_PFMHTNoMu90_IDTight_v*',
-        'HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v*',
-        'HLT_PFMETNoMu90_JetIdCleaned_PFMHTNoMu90_IDTight_v*',
-        'HLT_PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight_v*',
-        'HLT_PFMET120_BTagCSV_p067_v*',
-        'HLT_PFMET170_NoiseCleaned_v*',
-        'HLT_DoublePhoton60_v*',
+        'HLT_QuadJet45_TripleBTagCSV0p67_v*',
+        'HLT_QuadJet45_DoubleBTagCSV0p67_v*',
+        'HLT_DoubleJet90_Double30_TripleBTagCSV0p67_v*',
+        'HLT_DoubleJet90_Double30_DoubleBTagCSV0p67_v*',
     ),
     eventSetupPathsKey = cms.string(''), # not empty => use read paths from AlCaRecoTriggerBitsRcd via this key
     andOr = cms.bool(True),    # how to deal with multiple triggers: True (OR) accept if ANY is true, False (AND) accept if ALL are true
@@ -281,7 +265,12 @@ process.ntuple = cms.EDAnalyzer('HHAnalyzer',
     ),
     triggerSet = cms.PSet(
         trigger = cms.InputTag('TriggerResults', '', triggerTag),
-        paths = cms.vstring('HLT_Mu45_eta2p1_v', 'HLT_Mu50_v', 'HLT_TkMu50_v', 'HLT_IsoMu20_v', 'HLT_IsoTkMu20_v', 'HLT_IsoMu24_v', 'HLT_IsoTkMu24_v', 'HLT_Mu27_TkMu8_v', 'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v', 'HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v', 'HLT_Ele105_CaloIdVT_GsfTrkIdT_v', 'HLT_Ele115_CaloIdVT_GsfTrkIdT_v', 'HLT_Ele23_WPLoose_Gsf_v', 'HLT_Ele27_WPLoose_Gsf_v', 'HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v', 'HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_v', 'HLT_PFMETNoMu90_PFMHTNoMu90_IDTight_v', 'HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v', 'HLT_PFMETNoMu90_JetIdCleaned_PFMHTNoMu90_IDTight_v', 'HLT_PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight_v', 'HLT_PFMET120_BTagCSV_p067_v', 'HLT_PFMET170_NoiseCleaned_v', 'HLT_DoublePhoton60_v',),
+        paths = cms.vstring(
+          'HLT_QuadJet45_TripleBTagCSV0p67_v',
+        	'HLT_QuadJet45_DoubleBTagCSV0p67_v',
+        	'HLT_DoubleJet90_Double30_TripleBTagCSV0p67_v',
+        	'HLT_DoubleJet90_Double30_DoubleBTagCSV0p67_v',
+        ),
     ),
     electronSet = cms.PSet(
         #electrons = cms.InputTag('selectedElectrons'),
@@ -469,6 +458,23 @@ if isData:
         #process.HLTFilter *
 
         process.METFilter *
+        process.BadPFMuonFilter *
+        process.BadChargedCandidateFilter *
+        
+        process.primaryVertexFilter *
+        process.egmGsfElectronIDSequence *
+        process.calibratedPatElectrons *
+        process.egmPhotonIDSequence *
+        process.cleanedMuons *
+        #process.ak4PFL2L3ResidualCorrectorChain *
+        process.QGTagger *
+        process.ntuple
+    )
+else if triggerCutOn:
+    process.seq = cms.Sequence(
+        process.counter *
+        process.HLTFilter *
+
         process.BadPFMuonFilter *
         process.BadChargedCandidateFilter *
         
