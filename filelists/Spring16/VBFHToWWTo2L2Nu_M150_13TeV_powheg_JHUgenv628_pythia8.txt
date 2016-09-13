@@ -1,0 +1,3 @@
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISpring16MiniAODv2/VBFHToWWTo2L2Nu_M150_13TeV_powheg_JHUgenv628_pythia8/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/80000/240A4861-233B-E611-8A32-BCEE7B2FE01D.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISpring16MiniAODv2/VBFHToWWTo2L2Nu_M150_13TeV_powheg_JHUgenv628_pythia8/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/10000/BC99EEC8-DE3A-E611-82CB-3085A9262DA0.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISpring16MiniAODv2/VBFHToWWTo2L2Nu_M150_13TeV_powheg_JHUgenv628_pythia8/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/10000/00F17E7E-DF3A-E611-B23D-F46D043B3D41.root
