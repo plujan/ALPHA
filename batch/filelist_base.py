@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# Base filelist taken from submitLSFjobs.py
 
 filelists = [ 
 ####### DATA
