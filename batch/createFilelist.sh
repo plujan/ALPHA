@@ -50,8 +50,8 @@ do
 done
 
 # final step: clean up
-#rm query.txt
-#rm samplelist.txt
+rm query.txt
+rm samplelist.txt
 
 # removed unused lists
 if [[ "$1" == "MC" ]]

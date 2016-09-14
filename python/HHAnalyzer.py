@@ -5,8 +5,11 @@
 import FWCore.ParameterSet.Config as cms
 from FWCore.ParameterSet.VarParsing import VarParsing
 import os
+import sys
 
 options = VarParsing ('analysis')
+options.register ('tCut', 0, options.multiplicity.singleton, options.varType.int,
+                  "Trigger cut on/off")
 options.parseArguments()
 
 # Determine sample name for MC stitching
@@ -27,7 +30,8 @@ if len(options.inputFiles) == 0:
     process.source = cms.Source('PoolSource',
         fileNames = cms.untracked.vstring(
             #/GluGluToHHTo4B_node_SM_13TeV-madgraph/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/MINIAODSIM
-            'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISpring16MiniAODv2/BulkGravToZZToZhadZinv_narrow_M-1000_13TeV-madgraph/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/80000/BC528619-CF3A-E611-9926-002590207C28.root'
+            #'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISpring16MiniAODv2/BulkGravToZZToZhadZinv_narrow_M-1000_13TeV-madgraph/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/80000/BC528619-CF3A-E611-9926-002590207C28.root'
+            'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISpring16MiniAODv2/GluGluToHHTo4B_node_SM_13TeV-madgraph/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/70000/205E4ECB-FE3A-E611-9870-0CC47A1E046A.root'
         )
     )
 # production: read externally provided filelist
@@ -49,8 +53,8 @@ print 'Running on', ('data' if isData else 'MC'), ', sample is', sample
 if isReHLT: print '-> re-HLT sample'
 #isData = False
 
-#FIXME parse it as argument
-triggerCutOn = True
+# Print trigger cut status
+if not isData: print 'Trigger cut is', ('off' if options.tCut == 0 else 'on')
 
 #-----------------------#
 #        FILTERS        #
@@ -74,10 +78,8 @@ triggerTag = 'HLT2' if isReHLT else 'HLT'
 process.HLTFilter = cms.EDFilter('HLTHighLevel',
     TriggerResultsTag = cms.InputTag('TriggerResults', '', triggerTag),
     HLTPaths = cms.vstring(
-        'HLT_QuadJet45_TripleBTagCSV0p67_v*',
-        'HLT_QuadJet45_DoubleBTagCSV0p67_v*',
-        'HLT_DoubleJet90_Double30_TripleBTagCSV0p67_v*',
-        'HLT_DoubleJet90_Double30_DoubleBTagCSV0p67_v*',
+        'HLT_QuadJet45_TripleBTagCSV_p087_v*',
+        'HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v*',
     ),
     eventSetupPathsKey = cms.string(''), # not empty => use read paths from AlCaRecoTriggerBitsRcd via this key
     andOr = cms.bool(True),    # how to deal with multiple triggers: True (OR) accept if ANY is true, False (AND) accept if ALL are true
@@ -266,10 +268,10 @@ process.ntuple = cms.EDAnalyzer('HHAnalyzer',
     triggerSet = cms.PSet(
         trigger = cms.InputTag('TriggerResults', '', triggerTag),
         paths = cms.vstring(
-          'HLT_QuadJet45_TripleBTagCSV0p67_v',
-        	'HLT_QuadJet45_DoubleBTagCSV0p67_v',
-        	'HLT_DoubleJet90_Double30_TripleBTagCSV0p67_v',
-        	'HLT_DoubleJet90_Double30_DoubleBTagCSV0p67_v',
+          'HLT_QuadJet45_TripleBTagCSV_p087_v',
+        	'HLT_QuadJet45_DoubleBTagCSV_p087_v',
+        	'HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v',
+        	'HLT_DoubleJet90_Double30_DoubleBTagCSV_p087_v',
         ),
     ),
     electronSet = cms.PSet(
@@ -455,8 +457,8 @@ process.ntuple = cms.EDAnalyzer('HHAnalyzer',
 if isData:
     process.seq = cms.Sequence(
         process.counter *
+        
         #process.HLTFilter *
-
         process.METFilter *
         process.BadPFMuonFilter *
         process.BadChargedCandidateFilter *
@@ -470,11 +472,11 @@ if isData:
         process.QGTagger *
         process.ntuple
     )
-else if triggerCutOn:
+elif not options.tCut == 0:
     process.seq = cms.Sequence(
         process.counter *
+        
         process.HLTFilter *
-
         process.BadPFMuonFilter *
         process.BadChargedCandidateFilter *
         
