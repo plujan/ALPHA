@@ -56,7 +56,7 @@ filelists = filelistmod.filelists
 
 for l in filelists:
     if not l in sample:
-        print l
+        print l, 'not in samples\n'
         continue
     dir= 'Run2016' if 'Run2016' in l else 'Spring16'
     file=open(os.path.expandvars(options.base+'filelists/'+dir+'/'+l+'.txt'),'r')
