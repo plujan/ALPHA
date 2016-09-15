@@ -1112,8 +1112,241 @@ sample = {
         'matcheff': 1.,
         'kfactor' : 1.,
     },
-
     
+    # HH
+    'GluGluToHHTo4B_node_2_13TeV-madgraph' : {
+        'nevents' : 300000,
+        'xsec'    : 1.*0.577*0.577, # to be updated
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'GluGluToHHTo4B_node_3_13TeV-madgraph' : {
+        'nevents' : 300000,
+        'xsec'    : 1.*0.577*0.577, # to be updated
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'GluGluToHHTo4B_node_4_13TeV-madgraph' : {
+        'nevents' : 300000,
+        'xsec'    : 1.*0.577*0.577, # to be updated
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'GluGluToHHTo4B_node_5_13TeV-madgraph' : {
+        'nevents' : 300000,
+        'xsec'    : 1.*0.577*0.577, # to be updated
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'GluGluToHHTo4B_node_6_13TeV-madgraph' : {
+        'nevents' : 300000,
+        'xsec'    : 1.*0.577*0.577, # to be updated
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'GluGluToHHTo4B_node_7_13TeV-madgraph' : {
+        'nevents' : 300000,
+        'xsec'    : 1.*0.577*0.577, # to be updated
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'GluGluToHHTo4B_node_8_13TeV-madgraph' : {
+        'nevents' : 300000,
+        'xsec'    : 1.*0.577*0.577, # to be updated
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'GluGluToHHTo4B_node_9_13TeV-madgraph' : {
+        'nevents' : 300000,
+        'xsec'    : 1.*0.577*0.577, # to be updated
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'GluGluToHHTo4B_node_10_13TeV-madgraph' : {
+        'nevents' : 300000,
+        'xsec'    : 1.*0.577*0.577, # to be updated
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'GluGluToHHTo4B_node_11_13TeV-madgraph' : {
+        'nevents' : 300000,
+        'xsec'    : 1.*0.577*0.577, # to be updated
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'GluGluToHHTo4B_node_12_13TeV-madgraph' : {
+        'nevents' : 300000,
+        'xsec'    : 1.*0.577*0.577, # to be updated
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'GluGluToHHTo4B_node_13_13TeV-madgraph' : {
+        'nevents' : 300000,
+        'xsec'    : 1.*0.577*0.577, # to be updated
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'GluGluToHHTo4B_node_box_13TeV-madgraph' : {
+        'nevents' : 300000,
+        'xsec'    : 1.*0.577*0.577, # to be updated
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'GluGluToHHTo4B_node_SM_13TeV-madgraph' : {
+        'nevents' : 300000,
+        'xsec'    : 0.03345*0.577*0.577,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    
+    # Background QCD
+    'QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0-v1' : {
+        'nevents' : 300000,
+        'xsec'    : 1207.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0-v2' : {
+        'nevents' : 300000,
+        'xsec'    : 1207.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0_ext1-v1' : {
+        'nevents' : 300000,
+        'xsec'    : 1207.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0-v1' : {
+        'nevents' : 300000,
+        'xsec'    : 119.9,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0-v3' : {
+        'nevents' : 300000,
+        'xsec'    : 119.9,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0_ext1-v1' : {
+        'nevents' : 300000,
+        'xsec'    : 119.9,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'QCD_HT2000toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0-v1' : {
+        'nevents' : 300000,
+        'xsec'    : 25.24,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'QCD_HT2000toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0_ext1-v1' : {
+        'nevents' : 300000,
+        'xsec'    : 25.24,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'QCD_HT200to300_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0-v1' : {
+        'nevents' : 300000,
+        'xsec'    : 1712000.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'QCD_HT200to300_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0_ext1-v1' : {
+        'nevents' : 300000,
+        'xsec'    : 1712000.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'QCD_HT300to500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0-v1' : {
+        'nevents' : 300000,
+        'xsec'    : 347700.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'QCD_HT300to500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0_ext1-v1' : {
+        'nevents' : 300000,
+        'xsec'    : 347700.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'QCD_HT500to700_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0-v1' : {
+        'nevents' : 300000,
+        'xsec'    : 32100.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'QCD_HT500to700_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0_ext1-v1' : {
+        'nevents' : 300000,
+        'xsec'    : 32100.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'QCD_HT700to1000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0-v1' : {
+        'nevents' : 300000,
+        'xsec'    : 6831.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'QCD_HT700to1000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0_ext1-v1' : {
+        'nevents' : 300000,
+        'xsec'    : 6831.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    
+    # Background QCD bEnriched
+    'QCD_bEnriched_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0-v1' : {
+        'nevents' : 300000,
+        'xsec'    : 1., # to be updated
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'QCD_bEnriched_HT100to200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0-v1' : {
+        'nevents' : 300000,
+        'xsec'    : 1., # to be updated
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'QCD_bEnriched_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0-v1' : {
+        'nevents' : 300000,
+        'xsec'    : 1., # to be updated
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'QCD_bEnriched_HT2000toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0-v1' : {
+        'nevents' : 300000,
+        'xsec'    : 1., # to be updated
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'QCD_bEnriched_HT200to300_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0-v1' : {
+        'nevents' : 300000,
+        'xsec'    : 1., # to be updated
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'QCD_bEnriched_HT300to500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0-v1' : {
+        'nevents' : 300000,
+        'xsec'    : 1., # to be updated
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'QCD_bEnriched_HT500to700_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0-v1' : {
+        'nevents' : 300000,
+        'xsec'    : 1., # to be updated
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'QCD_bEnriched_HT700to1000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0-v1' : {
+        'nevents' : 300000,
+        'xsec'    : 1., # to be updated
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+
 }
 
 

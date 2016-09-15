@@ -1,0 +1,2 @@
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISpring16MiniAODv2/DarkMatter_MonoPhoton_V_Mx-150_Mv-10_gDMgQ1_LO_13TeV-madgraph/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/10000/EE10307B-A63A-E611-A43E-782BCB5094C5.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISpring16MiniAODv2/DarkMatter_MonoPhoton_V_Mx-150_Mv-10_gDMgQ1_LO_13TeV-madgraph/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/10000/FCBD7401-A83A-E611-B0AC-FA163E751D51.root

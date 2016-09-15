@@ -1,0 +1,2 @@
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISpring16MiniAODv2/BlackHole_BH1_MD-4000_MBH-5000_n-4_TuneCUETP8M1_13TeV-blackmax/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/70000/F2DBD37B-7A3E-E611-AC0D-02163E00F553.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISpring16MiniAODv2/BlackHole_BH1_MD-4000_MBH-5000_n-4_TuneCUETP8M1_13TeV-blackmax/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/70000/445D1881-7B3E-E611-AD41-14187741208F.root

@@ -1,0 +1,4 @@
+# Ignore filelists that don't need to be shared
+/filelist_*.py
+!/filelist_base.py
+!/filelist_HH.py

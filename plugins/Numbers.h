@@ -2,7 +2,7 @@
 #define NUMBERS_H
 
 // --------- For Kinematic Fit
-float GetErrEt(float Et, float Eta) {
+inline float GetErrEt(float Et, float Eta) {
   float InvPerr2, a, b, c;
   if(fabs(Eta) < 1.4) {
     a = 0.00235;
@@ -18,7 +18,7 @@ float GetErrEt(float Et, float Eta) {
   return InvPerr2;
 }
 
-float GetErrEta(float Et, float Eta) {
+inline float GetErrEta(float Et, float Eta) {
   float InvPerr2, a, b, c;
   if(fabs(Eta) < 1.4) {
     a = 0.789;
@@ -34,7 +34,7 @@ float GetErrEta(float Et, float Eta) {
   return InvPerr2;
 }
 
-float GetErrPhi(float Et, float Eta) {
+inline float GetErrPhi(float Et, float Eta) {
   float InvPerr2, a, b, c;
   if(fabs(Eta) < 1.4) {
     a = 0.709;
