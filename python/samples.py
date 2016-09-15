@@ -1112,8 +1112,91 @@ sample = {
         'matcheff': 1.,
         'kfactor' : 1.,
     },
-
     
+    'GluGluToHHTo4B_node_2_13TeV-madgraph' : {
+        'nevents' : 300000,
+        'xsec'    : 1.*0.577*0.577, # to be updated
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'GluGluToHHTo4B_node_3_13TeV-madgraph' : {
+        'nevents' : 300000,
+        'xsec'    : 1.*0.577*0.577, # to be updated
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'GluGluToHHTo4B_node_4_13TeV-madgraph' : {
+        'nevents' : 300000,
+        'xsec'    : 1.*0.577*0.577, # to be updated
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'GluGluToHHTo4B_node_5_13TeV-madgraph' : {
+        'nevents' : 300000,
+        'xsec'    : 1.*0.577*0.577, # to be updated
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'GluGluToHHTo4B_node_6_13TeV-madgraph' : {
+        'nevents' : 300000,
+        'xsec'    : 1.*0.577*0.577, # to be updated
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'GluGluToHHTo4B_node_7_13TeV-madgraph' : {
+        'nevents' : 300000,
+        'xsec'    : 1.*0.577*0.577, # to be updated
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'GluGluToHHTo4B_node_8_13TeV-madgraph' : {
+        'nevents' : 300000,
+        'xsec'    : 1.*0.577*0.577, # to be updated
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'GluGluToHHTo4B_node_9_13TeV-madgraph' : {
+        'nevents' : 300000,
+        'xsec'    : 1.*0.577*0.577, # to be updated
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'GluGluToHHTo4B_node_10_13TeV-madgraph' : {
+        'nevents' : 300000,
+        'xsec'    : 1.*0.577*0.577, # to be updated
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'GluGluToHHTo4B_node_11_13TeV-madgraph' : {
+        'nevents' : 300000,
+        'xsec'    : 1.*0.577*0.577, # to be updated
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'GluGluToHHTo4B_node_12_13TeV-madgraph' : {
+        'nevents' : 300000,
+        'xsec'    : 1.*0.577*0.577, # to be updated
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'GluGluToHHTo4B_node_13_13TeV-madgraph' : {
+        'nevents' : 300000,
+        'xsec'    : 1.*0.577*0.577, # to be updated
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'GluGluToHHTo4B_node_box_13TeV-madgraph' : {
+        'nevents' : 300000,
+        'xsec'    : 1.*0.577*0.577, # to be updated
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'GluGluToHHTo4B_node_SM_13TeV-madgraph' : {
+        'nevents' : 300000,
+        'xsec'    : 0.03345*0.577*0.577,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
 }
 
 
