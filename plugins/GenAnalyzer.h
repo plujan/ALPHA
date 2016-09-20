@@ -61,6 +61,7 @@ class GenAnalyzer {
         
         std::string EWKFileName;
         bool ApplyEWK;
+        bool PythiaLOSample;
         
         TFile* EWKFile;
         TF1* fZEWK;

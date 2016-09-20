@@ -12,7 +12,8 @@ GenAnalyzer::GenAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl
     SampleDir(PSet.getParameter<std::string>("samplesDir")),
     Sample(PSet.getParameter<std::string>("sample")),
     EWKFileName(PSet.getParameter<std::string>("ewkFile")),
-    ApplyEWK(PSet.getParameter<bool>("applyEWK"))
+    ApplyEWK(PSet.getParameter<bool>("applyEWK")),
+    PythiaLOSample(PSet.getParameter<bool>("pythiaLOSample"))
 {
     
     for(unsigned int i = 0; i < SampleDYJetsToLL.size(); i++) {
@@ -70,7 +71,7 @@ GenAnalyzer::GenAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl
     
     std::cout << " --- GenAnalyzer initialization ---" << std::endl;
     std::cout << "  sample            :\t" << Sample << std::endl;
-    std::cout << "  EWK file          :\t" << EWKFileName << std::endl;
+    if(ApplyEWK) std::cout << "  EWK file          :\t" << EWKFileName << std::endl;
     std::cout << std::endl;
 }
 
@@ -85,7 +86,7 @@ GenAnalyzer::~GenAnalyzer() {
 std::map<std::string, float> GenAnalyzer::FillWeightsMap(const edm::Event& iEvent) {
     std::map<std::string, float> Weights;
     Weights["event"] = 1.;
-    if(iEvent.isRealData()) return Weights;
+    if(iEvent.isRealData() or PythiaLOSample) return Weights;
     // Declare and open collection
     edm::Handle<GenEventInfoProduct> GenEventCollection;
     iEvent.getByToken(GenToken, GenEventCollection);
@@ -111,7 +112,7 @@ std::map<std::string, float> GenAnalyzer::FillWeightsMap(const edm::Event& iEven
 
 std::vector<reco::GenParticle> GenAnalyzer::FillGenVector(const edm::Event& iEvent) {
     std::vector<reco::GenParticle> Vect;
-    if(iEvent.isRealData()) return Vect;
+    if(iEvent.isRealData() or PythiaLOSample) return Vect;
     // Declare and open collection
     edm::Handle<std::vector<reco::GenParticle> > GenCollection;
     iEvent.getByToken(GenParticlesToken, GenCollection);
@@ -130,7 +131,7 @@ std::vector<reco::GenParticle> GenAnalyzer::FillGenVector(const edm::Event& iEve
 
 std::map<std::string, float> GenAnalyzer::FillLheMap(const edm::Event& iEvent) {
     std::map<std::string, float> Var;
-    if(iEvent.isRealData()) return Var;
+    if(iEvent.isRealData() or PythiaLOSample) return Var;
     
     int lhePartons(0), lheBPartons(0);
     float lheHT(0.), lhePtZ(0.), lhePtW(0.), pt(0.);
