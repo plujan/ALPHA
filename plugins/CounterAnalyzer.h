@@ -77,5 +77,6 @@ class CounterAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
       TH1F* LheHT;
       TH1F* LhePtZ;
       TH3F* Bin;
+      bool PythiaLOSample;
 };
 

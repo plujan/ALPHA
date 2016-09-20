@@ -3,7 +3,8 @@
 
 
 CounterAnalyzer::CounterAnalyzer(const edm::ParameterSet& iConfig):
-    LheToken(consumes<LHEEventProduct>(iConfig.getParameter<edm::InputTag>("lheProduct")))
+    LheToken(consumes<LHEEventProduct>(iConfig.getParameter<edm::InputTag>("lheProduct"))),
+    PythiaLOSample(iConfig.getParameter<bool>("pythiaLOSample"))
 {
     //now do what ever initialization is needed
     usesResource("TFileService");
@@ -19,6 +20,7 @@ CounterAnalyzer::CounterAnalyzer(const edm::ParameterSet& iConfig):
     Bin = fs->make<TH3F>("c_bin", "Event Counter", 8, binHT, 5, binNp, 3, binNb); Bin->Sumw2();
     
     std::cout << " --- CounterAnalyzer initialization ---" << std::endl;
+    if(PythiaLOSample) std::cout << "  Pythia LO sample" << std::endl;
     std::cout << std::endl;
 }
 
@@ -42,7 +44,7 @@ void CounterAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& i
     int lhePartons(0), lheBPartons(0);
     float lheHT(0.), lhePtZ(0.), pt(0.);
     
-    if(!iEvent.isRealData()) {
+    if(!iEvent.isRealData() && !PythiaLOSample) {
         // Declare and open collection
         edm::Handle<LHEEventProduct> LheEventCollection;
         iEvent.getByToken(LheToken, LheEventCollection);
