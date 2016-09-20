@@ -55,8 +55,10 @@ process.TFileService = cms.Service('TFileService',
 isData = ('/store/data/' in process.source.fileNames[0])
 isCustom = ('GluGluToAToZhToLLBB' in process.source.fileNames[0])
 isReHLT = ('_reHLT_' in process.source.fileNames[0])
+isDibosonInclusive = (True if (sample=='WW_TuneCUETP8M1_13TeV-pythia8_v0-v1' or sample=='WZ_TuneCUETP8M1_13TeV-pythia8_v0-v1' or sample=='ZZ_TuneCUETP8M1_13TeV-pythia8_v0-v1') else False)
 print 'Running on', ('data' if isData else 'MC'), ', sample is', sample
 if isReHLT: print '-> re-HLT sample'
+if isDibosonInclusive: print '-> Pythia LO sample'
 #isData = False
 
 #-----------------------#
@@ -73,6 +75,7 @@ if isData:
 
 process.counter = cms.EDAnalyzer('CounterAnalyzer',
     lheProduct = cms.InputTag('externalLHEProducer' if not isCustom else 'source'),
+    pythiaLOSample = cms.bool(True if isDibosonInclusive else False),
 )
 
 # Trigger filter
@@ -279,6 +282,7 @@ process.ntuple = cms.EDAnalyzer('Diboson',
         sample = cms.string( sample ),
         ewkFile = cms.string('%s/src/Analysis/ALPHA/data/scalefactors_v4.root' % os.environ['CMSSW_BASE']),
         applyEWK = cms.bool(True if sample.startswith('DYJets') or sample.startswith('WJets') else False),
+        pythiaLOSample = cms.bool(True if isDibosonInclusive else False),
     ),
     pileupSet = cms.PSet(
         pileup = cms.InputTag('slimmedAddPileupInfo'),
