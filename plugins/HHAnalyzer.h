@@ -92,6 +92,7 @@
 #include "TriggerAnalyzer.h"
 #include "ElectronAnalyzer.h"
 #include "MuonAnalyzer.h"
+#include "JetAnalyzer.h"
 //#include "BTagInterface.h"
 #include "Utilities.h"
 
