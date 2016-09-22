@@ -441,7 +441,7 @@ process.ntuple = cms.EDAnalyzer('HHAnalyzer',
     writeNPhotons = cms.int32(0),
     writeNJets = cms.int32(0),
     writeNFatJets = cms.int32(1),
-    histFile = cms.string('%s/src/Analysis/ALPHA/data/HistList.dat' % os.environ['CMSSW_BASE']),
+    histFile = cms.string('%s/src/Analysis/ALPHA/data/HistList_HH.dat' % os.environ['CMSSW_BASE']),
     verbose  = cms.bool(False),
 )
 
