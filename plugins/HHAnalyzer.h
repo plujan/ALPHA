@@ -45,8 +45,6 @@
 #include "DataFormats/VertexReco/interface/Vertex.h"
 #include "DataFormats/PatCandidates/interface/Muon.h"
 #include "DataFormats/PatCandidates/interface/Electron.h"
-#include "DataFormats/PatCandidates/interface/Tau.h"
-#include "DataFormats/PatCandidates/interface/Photon.h"
 #include "DataFormats/PatCandidates/interface/Jet.h"
 #include "DataFormats/PatCandidates/interface/MET.h"
 #include "DataFormats/PatCandidates/interface/PackedCandidate.h"
@@ -94,10 +92,6 @@
 #include "TriggerAnalyzer.h"
 #include "ElectronAnalyzer.h"
 #include "MuonAnalyzer.h"
-#include "TauAnalyzer.h"
-#include "PhotonAnalyzer.h"
-#include "TauAnalyzer.h"
-#include "JetAnalyzer.h"
 //#include "BTagInterface.h"
 #include "Utilities.h"
 
@@ -130,14 +124,12 @@ class HHAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
         edm::ParameterSet TriggerPSet;
         edm::ParameterSet ElectronPSet;
         edm::ParameterSet MuonPSet;
-        edm::ParameterSet TauPSet;
-        edm::ParameterSet PhotonPSet;
         edm::ParameterSet JetPSet;
         edm::ParameterSet FatJetPSet;
         
         boost::shared_ptr<FactorizedJetCorrector> jecAK8_;
         
-        int WriteNElectrons, WriteNMuons, WriteNLeptons, WriteNTaus, WriteNPhotons, WriteNJets, WriteNFatJets;
+        int WriteNElectrons, WriteNMuons, WriteNLeptons, WriteNJets, WriteNFatJets;
         std::string HistFile;
         bool Verbose;
 
@@ -146,8 +138,6 @@ class HHAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
         TriggerAnalyzer* theTriggerAnalyzer;
         ElectronAnalyzer* theElectronAnalyzer;
         MuonAnalyzer* theMuonAnalyzer;
-        TauAnalyzer* theTauAnalyzer;
-        PhotonAnalyzer* thePhotonAnalyzer;
         JetAnalyzer* theJetAnalyzer;
         JetAnalyzer* theFatJetAnalyzer;
         //BTagInterface* theBTagInterface;
@@ -161,7 +151,7 @@ class HHAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
         long int EventNumber, RunNumber, LumiNumber;
         float EventWeight, StitchWeight, ZewkWeight, WewkWeight, PUWeight, TriggerWeight, LeptonWeight;
         float FacWeightUp, FacWeightDown, RenWeightUp, RenWeightDown, ScaleWeightUp, ScaleWeightDown;
-        int nPV, nElectrons, nVetoElectrons, nMuons, nLooseMuons, nTaus, nPhotons, nJets, nFatJets, nBTagJets;
+        int nPV, nElectrons, nVetoElectrons, nMuons, nLooseMuons, nJets, nFatJets, nBTagJets;
         float MaxJetBTag, MaxFatJetBTag, MinJetMetDPhi, Chi2;
         // Angular
         float CosThetaStar, CosTheta1, CosTheta2, Phi, Phi1, AngularLD;
@@ -188,8 +178,6 @@ class HHAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
         std::vector<LeptonType> Electrons;
         std::vector<LeptonType> Muons;
         std::vector<LeptonType> Leptons;
-        std::vector<TauType> Taus;
-        std::vector<PhotonType> Photons;
         std::vector<JetType> Jets;
         std::vector<FatJetType> FatJets;
         MEtType MEt;

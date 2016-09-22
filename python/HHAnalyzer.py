@@ -140,13 +140,6 @@ ele_id_modules = ['RecoEgamma.ElectronIdentification.Identification.cutBasedElec
 for ele_idmod in ele_id_modules:
     setupAllVIDIdsInModule(process,ele_idmod,setupVIDElectronSelection)
 
-#photons upstream modules
-switchOnVIDPhotonIdProducer(process, DataFormat.MiniAOD)
-ph_id_modules = ['RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_Spring15_25ns_V1_cff',
-                'RecoEgamma.PhotonIdentification.Identification.mvaPhotonID_Spring15_25ns_nonTrig_V2_cff']
-for ph_idmod in ph_id_modules:
-    setupAllVIDIdsInModule(process,ph_idmod,setupVIDPhotonSelection)
-
 #muons upstream modules
 process.cleanedMuons = cms.EDProducer('PATMuonCleanerBySegments',
     src = cms.InputTag('slimmedMuons'),#('calibratedMuons'),
@@ -319,31 +312,6 @@ process.ntuple = cms.EDAnalyzer('HHAnalyzer',
         useTuneP = cms.bool(True),
         doRochester = cms.bool(False),
     ),
-    tauSet = cms.PSet(
-        taus = cms.InputTag('slimmedTaus'),
-        vertices = cms.InputTag('offlineSlimmedPrimaryVertices'),
-        taupt = cms.double(20.),
-        taueta = cms.double(2.3),
-        tauIdByDecayMode = cms.int32(0),# 0: not set, 1: old, 2: new
-        tauIdByDeltaBetaIso = cms.int32(0),# 0: not set, 1: loose, 2: medium, 3: tight
-        tauIdByMVAIso = cms.int32(0),# 0: not set, 1: V loose, 2: loose, 3: medium, 4: tight, 5: V tight
-        tauIdByMuonRejection = cms.int32(0),# 0: not set, 1: loose, 2: tight
-        tauIdByElectronRejection = cms.int32(0),# 0: not set, 1: V loose, 2: loose, 3: medium, 4: tight
-    ),
-    photonSet = cms.PSet(
-        photons = cms.InputTag('slimmedPhotons'),
-        vertices = cms.InputTag('offlineSlimmedPrimaryVertices'),
-        phoLooseIdMap = cms.InputTag('egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-loose'),
-        phoMediumIdMap = cms.InputTag('egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-medium'),
-        phoTightIdMap = cms.InputTag('egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-tight'),
-        phoMVANonTrigMediumIdMap = cms.InputTag('egmPhotonIDs:mvaPhoID-Spring15-25ns-nonTrig-V2-wp90'),
-        phoLooseIdFileName = cms.string('%s/src/Analysis/ALPHA/data/Loosenumbers.txt.egamma_SF2D.root' % os.environ['CMSSW_BASE']),
-        phoMediumIdFileName = cms.string('%s/src/Analysis/ALPHA/data/Mediumnumbers.txt.egamma_SF2D.root' % os.environ['CMSSW_BASE']),
-        phoTightIdFileName = cms.string('%s/src/Analysis/ALPHA/data/Tightnumbers.txt.egamma_SF2D.root' % os.environ['CMSSW_BASE']),
-        phoMVANonTrigMediumIdFileName = cms.string('%s/src/Analysis/ALPHA/data/MVAnumbers.txt.egamma_SF2D.root' % os.environ['CMSSW_BASE']),
-        photonid = cms.int32(1), # 1: loose, 2: medium, 3: tight, 4:MVA NonTrig medium
-        photonpt = cms.double(20.),
-    ),
     jetSet = cms.PSet(
         jets = cms.InputTag('slimmedJets'),#('slimmedJetsAK8'), #selectedPatJetsAK8PFCHSPrunedPacked
         jetid = cms.int32(1), # 0: no selection, 1: loose, 2: medium, 3: tight
@@ -437,8 +405,6 @@ process.ntuple = cms.EDAnalyzer('HHAnalyzer',
     writeNElectrons = cms.int32(0),
     writeNMuons = cms.int32(0),
     writeNLeptons = cms.int32(2),
-    writeNTaus = cms.int32(0),
-    writeNPhotons = cms.int32(0),
     writeNJets = cms.int32(0),
     writeNFatJets = cms.int32(1),
     histFile = cms.string('%s/src/Analysis/ALPHA/data/HistList_HH.dat' % os.environ['CMSSW_BASE']),
@@ -467,7 +433,6 @@ if isData:
         process.primaryVertexFilter *
         process.egmGsfElectronIDSequence *
         process.calibratedPatElectrons *
-        process.egmPhotonIDSequence *
         process.cleanedMuons *
         #process.ak4PFL2L3ResidualCorrectorChain *
         process.QGTagger *
@@ -484,7 +449,6 @@ elif not options.tCut == 0:
         process.primaryVertexFilter *
         process.egmGsfElectronIDSequence *
         process.calibratedPatElectrons *
-        process.egmPhotonIDSequence *
         process.cleanedMuons *
         #process.ak4PFL2L3ResidualCorrectorChain *
         process.QGTagger *
@@ -500,7 +464,6 @@ else:
         process.primaryVertexFilter *
         process.egmGsfElectronIDSequence *
         process.calibratedPatElectrons *
-        process.egmPhotonIDSequence *
         process.cleanedMuons *
         #process.ak4PFL2L3ResidualCorrectorChain *
         process.QGTagger *

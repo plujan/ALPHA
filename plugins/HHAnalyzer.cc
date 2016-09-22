@@ -4,16 +4,13 @@
 // Class:      HHAnalyzer
 // 
 /**\class HHAnalyzer HHAnalyzer.cc Analysis/HHAnalyzer/plugins/HHAnalyzer.cc
-
  Description: [one line class summary]
-
- Implementation:
-     [Notes on implementation]
+ Implementation:     [Notes on implementation]
 */
 //
 // Original Author:  Alberto Zucchetta
-//         Created:  Thu, 28 Apr 2016 08:28:54 GMT
-//
+// Created:  Thu, 28 Apr 2016 08:28:54 GMT
+// Modified for HH analysis - Sept 2016
 //
 
 #include "HHAnalyzer.h"
@@ -35,15 +32,11 @@ HHAnalyzer::HHAnalyzer(const edm::ParameterSet& iConfig):
     TriggerPSet(iConfig.getParameter<edm::ParameterSet>("triggerSet")),
     ElectronPSet(iConfig.getParameter<edm::ParameterSet>("electronSet")),
     MuonPSet(iConfig.getParameter<edm::ParameterSet>("muonSet")),
-    TauPSet(iConfig.getParameter<edm::ParameterSet>("tauSet")),
-    PhotonPSet(iConfig.getParameter<edm::ParameterSet>("photonSet")),
     JetPSet(iConfig.getParameter<edm::ParameterSet>("jetSet")),
     FatJetPSet(iConfig.getParameter<edm::ParameterSet>("fatJetSet")),
     WriteNElectrons(iConfig.getParameter<int>("writeNElectrons")),
     WriteNMuons(iConfig.getParameter<int>("writeNMuons")),
     WriteNLeptons(iConfig.getParameter<int>("writeNLeptons")),
-    WriteNTaus(iConfig.getParameter<int>("writeNTaus")),
-    WriteNPhotons(iConfig.getParameter<int>("writeNPhotons")),
     WriteNJets(iConfig.getParameter<int>("writeNJets")),
     WriteNFatJets(iConfig.getParameter<int>("writeNFatJets")),
     HistFile(iConfig.getParameter<std::string>("histFile")),
@@ -58,8 +51,6 @@ HHAnalyzer::HHAnalyzer(const edm::ParameterSet& iConfig):
     theTriggerAnalyzer  = new TriggerAnalyzer(TriggerPSet, consumesCollector());
     theElectronAnalyzer = new ElectronAnalyzer(ElectronPSet, consumesCollector());
     theMuonAnalyzer     = new MuonAnalyzer(MuonPSet, consumesCollector());
-    theTauAnalyzer      = new TauAnalyzer(TauPSet, consumesCollector());
-    thePhotonAnalyzer   = new PhotonAnalyzer(PhotonPSet, consumesCollector());
     theJetAnalyzer      = new JetAnalyzer(JetPSet, consumesCollector());
     theFatJetAnalyzer   = new JetAnalyzer(FatJetPSet, consumesCollector());
     //theBTagAnalyzer     = new BTagAnalyzer(BTagAlgo);
@@ -72,8 +63,6 @@ HHAnalyzer::HHAnalyzer(const edm::ParameterSet& iConfig):
     TFileDirectory genDir=fs->mkdir("Gen/");
     TFileDirectory eleDir=fs->mkdir("Electrons/");
     TFileDirectory muoDir=fs->mkdir("Muons/");
-    TFileDirectory tauDir=fs->mkdir("Taus/");
-    TFileDirectory phoDir=fs->mkdir("Photons/");
     TFileDirectory jetDir=fs->mkdir("Jets/");
     TFileDirectory kinDir=fs->mkdir("Kin/");
     
@@ -95,8 +84,6 @@ HHAnalyzer::HHAnalyzer(const edm::ParameterSet& iConfig):
             if(name.substr(0, 2)=="g_") Hist[name] = genDir.make<TH1F>(name.c_str(), title.c_str(), nbins, min, max);
             if(name.substr(0, 2)=="e_") Hist[name] = eleDir.make<TH1F>(name.c_str(), title.c_str(), nbins, min, max);
             if(name.substr(0, 2)=="m_") Hist[name] = muoDir.make<TH1F>(name.c_str(), title.c_str(), nbins, min, max);
-            if(name.substr(0, 2)=="t_") Hist[name] = tauDir.make<TH1F>(name.c_str(), title.c_str(), nbins, min, max);
-            if(name.substr(0, 2)=="p_") Hist[name] = phoDir.make<TH1F>(name.c_str(), title.c_str(), nbins, min, max);
             if(name.substr(0, 2)=="j_") Hist[name] = jetDir.make<TH1F>(name.c_str(), title.c_str(), nbins, min, max);
             if(name.substr(0, 2)=="k_") Hist[name] = kinDir.make<TH1F>(name.c_str(), title.c_str(), nbins, min, max);
             Hist[name]->Sumw2();
@@ -116,18 +103,14 @@ HHAnalyzer::~HHAnalyzer() {
     // (e.g. close files, deallocate resources etc.)
     std::cout << "---------- ENDING  ----------" << std::endl;
     
-    
     delete theGenAnalyzer;
     delete thePileupAnalyzer;
     delete theTriggerAnalyzer;
     delete theElectronAnalyzer;
     delete theMuonAnalyzer;
-    delete theTauAnalyzer;
-    delete thePhotonAnalyzer;
     delete theJetAnalyzer;
     delete theFatJetAnalyzer;
-    //delete theBTagAnalyzer;
-    
+    //delete theBTagAnalyzer;    
 }
 
 
@@ -145,7 +128,7 @@ void HHAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
     EventWeight = StitchWeight = ZewkWeight = WewkWeight = PUWeight = TriggerWeight = LeptonWeight = 1.;
     FacWeightUp = FacWeightDown = RenWeightUp = RenWeightDown = ScaleWeightUp = ScaleWeightDown = 1.;
     isZtoEE = isZtoMM = isTtoEM = isWtoEN = isWtoMN = isZtoNN = false;
-    nPV = nElectrons = nMuons = nTaus = nPhotons = nJets = nFatJets = nBTagJets = 1;
+    nPV = nElectrons = nMuons = nJets = nFatJets = nBTagJets = 1;
     nVetoElectrons = nLooseMuons = 0;
     MaxJetBTag = MaxFatJetBTag = Chi2 = -1.;
     MinJetMetDPhi = 10.;
@@ -167,8 +150,6 @@ void HHAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
     for(int i = 0; i < WriteNElectrons; i++) ObjectsFormat::ResetLeptonType(Electrons[i]);
     for(int i = 0; i < WriteNMuons; i++) ObjectsFormat::ResetLeptonType(Muons[i]);
     for(int i = 0; i < WriteNLeptons; i++) ObjectsFormat::ResetLeptonType(Leptons[i]);
-    for(int i = 0; i < WriteNTaus; i++) ObjectsFormat::ResetTauType(Taus[i]);
-    for(int i = 0; i < WriteNPhotons; i++) ObjectsFormat::ResetPhotonType(Photons[i]);
     for(int i = 0; i < WriteNFatJets; i++) ObjectsFormat::ResetFatJetType(FatJets[i]);
     ObjectsFormat::ResetMEtType(MEt);
     
@@ -226,15 +207,6 @@ void HHAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
             nLooseMuons++;
 	}
     }
-    // Taus
-    std::vector<pat::Tau> TauVect = theTauAnalyzer->FillTauVector(iEvent);
-    theTauAnalyzer->CleanTausFromMuons(TauVect, MuonVect, 0.4);
-    theTauAnalyzer->CleanTausFromElectrons(TauVect, ElecVect, 0.4);
-    nTaus = TauVect.size();
-    // Photons
-    std::vector<pat::Photon> PhotonVect = thePhotonAnalyzer->FillPhotonVector(iEvent);
-    if(TriggerMap.find("HLT_DoublePhoton60_v") != TriggerMap.end() && TriggerMap["HLT_DoublePhoton60_v"]) thePhotonAnalyzer->PlotPhotons(PhotonVect, Hist, EventWeight);
-    nPhotons = PhotonVect.size();
     // Jets
     std::vector<pat::Jet> JetsVect = theJetAnalyzer->FillJetVector(iEvent);
     theJetAnalyzer->CleanJetsFromMuons(JetsVect, MuonVect, 0.4);
@@ -481,10 +453,6 @@ void HHAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
         for(unsigned int i = 0; i < ElecVect.size(); i++) std::cout << "  electron [" << i << "]\tpt: " << ElecVect[i].pt() << "\teta: " << ElecVect[i].eta() << "\tphi: " << ElecVect[i].phi() << "\tmass: " << ElecVect[i].mass() << "\tcharge: " << ElecVect[i].charge() << std::endl;
         std::cout << "number of muons:     " << MuonVect.size() << std::endl;
         for(unsigned int i = 0; i < MuonVect.size(); i++) std::cout << "  muon     [" << i << "]\tpt: " << MuonVect[i].pt() << "\teta: " << MuonVect[i].eta() << "\tphi: " << MuonVect[i].phi() << "\tmass: " << MuonVect[i].mass() << "\tcharge: " << MuonVect[i].charge() << std::endl;
-        std::cout << "number of taus:  " << TauVect.size() << std::endl;
-        for(unsigned int i = 0; i < TauVect.size(); i++) std::cout << "  tau  [" << i << "]\tpt: " << TauVect[i].pt() << "\teta: " << TauVect[i].eta() << "\tphi: " << TauVect[i].phi() << std::endl;
-        std::cout << "number of photons:  " << PhotonVect.size() << std::endl;
-        for(unsigned int i = 0; i < PhotonVect.size(); i++) std::cout << "  photon  [" << i << "]\tpt: " << PhotonVect[i].pt() << "\teta: " << PhotonVect[i].eta() << "\tphi: " << PhotonVect[i].phi() << std::endl;
         std::cout << "number of AK4 jets:  " << JetsVect.size() << std::endl;
         for(unsigned int i = 0; i < JetsVect.size(); i++) std::cout << "  AK4 jet  [" << i << "]\tpt: " << JetsVect[i].pt() << "\teta: " << JetsVect[i].eta() << "\tphi: " << JetsVect[i].phi() << "\tmass: " << JetsVect[i].mass() << std::endl;
         std::cout << "number of AK8 jets:  " << FatJetsVect.size() << std::endl;
@@ -507,8 +475,6 @@ void HHAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
             ObjectsFormat::FillElectronType(Leptons[1], &ElecVect[0], isMC);
         }
     }
-    for(unsigned int i = 0; i < Taus.size() && i < TauVect.size(); i++) ObjectsFormat::FillTauType(Taus[i], &TauVect[i], isMC);
-    for(unsigned int i = 0; i < Photons.size() && i < PhotonVect.size(); i++) ObjectsFormat::FillPhotonType(Photons[i], &PhotonVect[i], isMC);
     // clear previous vector
     Jets.clear();
     for(unsigned int i = 0; i < JetsVect.size(); i++) {
@@ -542,8 +508,6 @@ void HHAnalyzer::beginJob() {
     for(int i = 0; i < WriteNElectrons; i++) Electrons.push_back( LeptonType() );
     for(int i = 0; i < WriteNMuons; i++) Muons.push_back( LeptonType() );
     for(int i = 0; i < WriteNLeptons; i++) Leptons.push_back( LeptonType() );
-    for(int i = 0; i < WriteNTaus; i++) Taus.push_back( TauType() );
-    for(int i = 0; i < WriteNPhotons; i++) Photons.push_back( PhotonType() );
     for(int i = 0; i < WriteNFatJets; i++) FatJets.push_back( FatJetType() );
     
     // Create Tree and set Branches
@@ -585,8 +549,6 @@ void HHAnalyzer::beginJob() {
     tree->Branch("nVetoElectrons", &nVetoElectrons, "nVetoElectrons/I");
     tree->Branch("nMuons", &nMuons, "nMuons/I");
     tree->Branch("nLooseMuons", &nLooseMuons, "nLooseMuons/I");
-    tree->Branch("nTaus", &nTaus, "nTaus/I");
-    tree->Branch("nPhotons", &nPhotons, "nPhotons/I");
     tree->Branch("nJets", &nJets, "nJets/I");
     tree->Branch("nFatJets", &nFatJets, "nFatJets/I");
     tree->Branch("nBTagJets", &nBTagJets, "nBTagJets/I");
@@ -608,8 +570,6 @@ void HHAnalyzer::beginJob() {
     for(int i = 0; i < WriteNElectrons; i++) tree->Branch(("Electron"+std::to_string(i+1)).c_str(), &(Electrons[i].pt), ObjectsFormat::ListLeptonType().c_str());
     for(int i = 0; i < WriteNMuons; i++) tree->Branch(("Muon"+std::to_string(i+1)).c_str(), &(Muons[i].pt), ObjectsFormat::ListLeptonType().c_str());
     for(int i = 0; i < WriteNLeptons; i++) tree->Branch(("Lepton"+std::to_string(i+1)).c_str(), &(Leptons[i].pt), ObjectsFormat::ListLeptonType().c_str());
-    for(int i = 0; i < WriteNTaus; i++) tree->Branch(("Tau"+std::to_string(i+1)).c_str(), &(Taus[i].pt), ObjectsFormat::ListTauType().c_str());
-    for(int i = 0; i < WriteNPhotons; i++) tree->Branch(("Photon"+std::to_string(i+1)).c_str(), &(Photons[i].pt), ObjectsFormat::ListPhotonType().c_str());
     // save vector of jets
     tree->Branch("Jets", &(Jets), 64000, 2);
     for(int i = 0; i < WriteNFatJets; i++) tree->Branch(("FatJet"+std::to_string(i+1)).c_str(), &(FatJets[i].pt), ObjectsFormat::ListFatJetType().c_str());
