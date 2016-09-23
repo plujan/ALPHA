@@ -4,16 +4,13 @@
 // Class:      HHAnalyzer
 // 
 /**\class HHAnalyzer HHAnalyzer.cc Analysis/HHAnalyzer/plugins/HHAnalyzer.cc
-
  Description: [one line class summary]
-
- Implementation:
-     [Notes on implementation]
+ Implementation:     [Notes on implementation]
 */
 //
 // Original Author:  Alberto Zucchetta
-//         Created:  Thu, 28 Apr 2016 08:28:54 GMT
-//
+// Created:  Thu, 28 Apr 2016 08:28:54 GMT
+// Modified for HH analysis - Sept 2016
 //
 
 #include "HHAnalyzer.h"
@@ -35,15 +32,11 @@ HHAnalyzer::HHAnalyzer(const edm::ParameterSet& iConfig):
     TriggerPSet(iConfig.getParameter<edm::ParameterSet>("triggerSet")),
     ElectronPSet(iConfig.getParameter<edm::ParameterSet>("electronSet")),
     MuonPSet(iConfig.getParameter<edm::ParameterSet>("muonSet")),
-    TauPSet(iConfig.getParameter<edm::ParameterSet>("tauSet")),
-    PhotonPSet(iConfig.getParameter<edm::ParameterSet>("photonSet")),
     JetPSet(iConfig.getParameter<edm::ParameterSet>("jetSet")),
     FatJetPSet(iConfig.getParameter<edm::ParameterSet>("fatJetSet")),
     WriteNElectrons(iConfig.getParameter<int>("writeNElectrons")),
     WriteNMuons(iConfig.getParameter<int>("writeNMuons")),
     WriteNLeptons(iConfig.getParameter<int>("writeNLeptons")),
-    WriteNTaus(iConfig.getParameter<int>("writeNTaus")),
-    WriteNPhotons(iConfig.getParameter<int>("writeNPhotons")),
     WriteNJets(iConfig.getParameter<int>("writeNJets")),
     WriteNFatJets(iConfig.getParameter<int>("writeNFatJets")),
     HistFile(iConfig.getParameter<std::string>("histFile")),
@@ -58,8 +51,6 @@ HHAnalyzer::HHAnalyzer(const edm::ParameterSet& iConfig):
     theTriggerAnalyzer  = new TriggerAnalyzer(TriggerPSet, consumesCollector());
     theElectronAnalyzer = new ElectronAnalyzer(ElectronPSet, consumesCollector());
     theMuonAnalyzer     = new MuonAnalyzer(MuonPSet, consumesCollector());
-    theTauAnalyzer      = new TauAnalyzer(TauPSet, consumesCollector());
-    thePhotonAnalyzer   = new PhotonAnalyzer(PhotonPSet, consumesCollector());
     theJetAnalyzer      = new JetAnalyzer(JetPSet, consumesCollector());
     theFatJetAnalyzer   = new JetAnalyzer(FatJetPSet, consumesCollector());
     //theBTagAnalyzer     = new BTagAnalyzer(BTagAlgo);
@@ -72,10 +63,7 @@ HHAnalyzer::HHAnalyzer(const edm::ParameterSet& iConfig):
     TFileDirectory genDir=fs->mkdir("Gen/");
     TFileDirectory eleDir=fs->mkdir("Electrons/");
     TFileDirectory muoDir=fs->mkdir("Muons/");
-    TFileDirectory tauDir=fs->mkdir("Taus/");
-    TFileDirectory phoDir=fs->mkdir("Photons/");
     TFileDirectory jetDir=fs->mkdir("Jets/");
-    TFileDirectory kinDir=fs->mkdir("Kin/");
     
     // Make TH1F
     std::vector<std::string> nLabels={"All", "Trigger", "Iso Lep #geq 2", "Z cand ", "Jets #geq 2", "Z mass ", "h mass ", "Top veto", "bJets #geq 1", "bJets #geq 2"};
@@ -95,10 +83,7 @@ HHAnalyzer::HHAnalyzer(const edm::ParameterSet& iConfig):
             if(name.substr(0, 2)=="g_") Hist[name] = genDir.make<TH1F>(name.c_str(), title.c_str(), nbins, min, max);
             if(name.substr(0, 2)=="e_") Hist[name] = eleDir.make<TH1F>(name.c_str(), title.c_str(), nbins, min, max);
             if(name.substr(0, 2)=="m_") Hist[name] = muoDir.make<TH1F>(name.c_str(), title.c_str(), nbins, min, max);
-            if(name.substr(0, 2)=="t_") Hist[name] = tauDir.make<TH1F>(name.c_str(), title.c_str(), nbins, min, max);
-            if(name.substr(0, 2)=="p_") Hist[name] = phoDir.make<TH1F>(name.c_str(), title.c_str(), nbins, min, max);
             if(name.substr(0, 2)=="j_") Hist[name] = jetDir.make<TH1F>(name.c_str(), title.c_str(), nbins, min, max);
-            if(name.substr(0, 2)=="k_") Hist[name] = kinDir.make<TH1F>(name.c_str(), title.c_str(), nbins, min, max);
             Hist[name]->Sumw2();
             Hist[name]->SetOption(opt.c_str());
             // Particular histograms
@@ -116,18 +101,14 @@ HHAnalyzer::~HHAnalyzer() {
     // (e.g. close files, deallocate resources etc.)
     std::cout << "---------- ENDING  ----------" << std::endl;
     
-    
     delete theGenAnalyzer;
     delete thePileupAnalyzer;
     delete theTriggerAnalyzer;
     delete theElectronAnalyzer;
     delete theMuonAnalyzer;
-    delete theTauAnalyzer;
-    delete thePhotonAnalyzer;
     delete theJetAnalyzer;
     delete theFatJetAnalyzer;
-    //delete theBTagAnalyzer;
-    
+    //delete theBTagAnalyzer;    
 }
 
 
@@ -145,7 +126,7 @@ void HHAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
     EventWeight = StitchWeight = ZewkWeight = WewkWeight = PUWeight = TriggerWeight = LeptonWeight = 1.;
     FacWeightUp = FacWeightDown = RenWeightUp = RenWeightDown = ScaleWeightUp = ScaleWeightDown = 1.;
     isZtoEE = isZtoMM = isTtoEM = isWtoEN = isWtoMN = isZtoNN = false;
-    nPV = nElectrons = nMuons = nTaus = nPhotons = nJets = nFatJets = nBTagJets = 1;
+    nPV = nElectrons = nMuons = nJets = nFatJets = nBTagJets = 1;
     nVetoElectrons = nLooseMuons = 0;
     MaxJetBTag = MaxFatJetBTag = Chi2 = -1.;
     MinJetMetDPhi = 10.;
@@ -167,8 +148,6 @@ void HHAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
     for(int i = 0; i < WriteNElectrons; i++) ObjectsFormat::ResetLeptonType(Electrons[i]);
     for(int i = 0; i < WriteNMuons; i++) ObjectsFormat::ResetLeptonType(Muons[i]);
     for(int i = 0; i < WriteNLeptons; i++) ObjectsFormat::ResetLeptonType(Leptons[i]);
-    for(int i = 0; i < WriteNTaus; i++) ObjectsFormat::ResetTauType(Taus[i]);
-    for(int i = 0; i < WriteNPhotons; i++) ObjectsFormat::ResetPhotonType(Photons[i]);
     for(int i = 0; i < WriteNFatJets; i++) ObjectsFormat::ResetFatJetType(FatJets[i]);
     ObjectsFormat::ResetMEtType(MEt);
     
@@ -226,15 +205,6 @@ void HHAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
             nLooseMuons++;
 	}
     }
-    // Taus
-    std::vector<pat::Tau> TauVect = theTauAnalyzer->FillTauVector(iEvent);
-    theTauAnalyzer->CleanTausFromMuons(TauVect, MuonVect, 0.4);
-    theTauAnalyzer->CleanTausFromElectrons(TauVect, ElecVect, 0.4);
-    nTaus = TauVect.size();
-    // Photons
-    std::vector<pat::Photon> PhotonVect = thePhotonAnalyzer->FillPhotonVector(iEvent);
-    if(TriggerMap.find("HLT_DoublePhoton60_v") != TriggerMap.end() && TriggerMap["HLT_DoublePhoton60_v"]) thePhotonAnalyzer->PlotPhotons(PhotonVect, Hist, EventWeight);
-    nPhotons = PhotonVect.size();
     // Jets
     std::vector<pat::Jet> JetsVect = theJetAnalyzer->FillJetVector(iEvent);
     theJetAnalyzer->CleanJetsFromMuons(JetsVect, MuonVect, 0.4);
@@ -310,154 +280,14 @@ void HHAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
     //double GenZHadFatJetDR = -9.;
     bool isGenZZ = false;
     reco::Particle::LorentzVector p4GenZHad;
-    if(theGenLep!=NULL && theGenHad!=NULL){
-        const reco::Candidate* theGenZLep = theGenAnalyzer->FindMother(theGenLep);
-        const reco::Candidate* theGenZHad = theGenAnalyzer->FindMother(theGenHad);
-        for(unsigned int a = 0; a<=theGenZHad->numberOfDaughters(); a++) {
-            if(theGenZHad!=NULL && theGenZHad->daughter(a)!=NULL && (theGenZHad->pdgId()==23 || theGenZHad->pdgId()==25) && (theGenZHad->daughter(a)->pdgId() == - theGenHad->pdgId())){
-                GenHadDR = reco::deltaR(theGenHad->eta(),theGenHad->phi(),theGenZHad->daughter(a)->eta(),theGenZHad->daughter(a)->phi());
-                break;
-            }
-        }
-        for(unsigned int b = 0; b<=theGenZLep->numberOfDaughters(); b++) {
-            if(theGenZLep!=NULL && theGenZLep->daughter(b)!=NULL && (theGenZLep->pdgId()==23 || theGenZLep->pdgId()==25) && (theGenZLep->daughter(b)->pdgId() == - theGenLep->pdgId())){
-                GenLepDR = reco::deltaR(theGenLep->eta(),theGenLep->phi(),theGenZLep->daughter(b)->eta(),theGenZLep->daughter(b)->phi());
-                break;
-            }
-        }
-        if(theGenZLep!=NULL && theGenZLep->pdgId()==23 && theGenZHad!=NULL && (theGenZHad->pdgId()==23 || theGenZHad->pdgId()==25)) {
-            Hist["g_ZLepMass"]->Fill(theGenZLep->mass(), EventWeight);
-            Hist["g_ZLepPt"]->Fill(theGenZLep->pt(), EventWeight);
-            Hist["g_LepPt"]->Fill(theGenLep->pt(), EventWeight);
-            Hist["g_ZHadMass"]->Fill(theGenZHad->mass(), EventWeight);
-            Hist["g_ZHadPt"]->Fill(theGenZHad->pt(), EventWeight);
-            Hist["g_HadPt"]->Fill(theGenHad->pt(), EventWeight);
-            Hist["g_HadEta"]->Fill(theGenHad->eta(), EventWeight);
-            Hist["g_HadDR"]->Fill(GenHadDR, EventWeight);
-            Hist["g_LepDR"]->Fill(GenLepDR, EventWeight);
-            Hist["g_LepEta"]->Fill(theGenLep->eta(), EventWeight);
-            Hist["g_ZZDR"]->Fill(reco::deltaR(theGenZHad->eta(),theGenZHad->phi(),theGenZLep->eta(),theGenZLep->phi()), EventWeight);
-            Hist["g_ZZDPhi"]->Fill(reco::deltaPhi(theGenZHad->phi(),theGenZLep->phi()), EventWeight);
-            Hist["g_LepHadDR"]->Fill(reco::deltaR(theGenHad->eta(),theGenHad->phi(),theGenLep->eta(),theGenLep->phi()), EventWeight);
-            //GenZLepMass = theGenZLep->mass();
-            //GenZHadMass = theGenZHad->mass();
-            //GenZHadPt = theGenZHad->pt();
-            isGenZZ = true;
-            p4GenZHad = theGenZHad->p4();
-        }
-    }
-    
-    
-    reco::Candidate* theGenX = theGenAnalyzer->FindGenParticleByIdAndStatus(GenPVect, 39, 62);
-    if(!theGenX) theGenX = theGenAnalyzer->FindGenParticleByIdAndStatus(GenPVect, 36, 62);
-    if(theGenX!=NULL && theGenLep!=NULL && theGenHad!=NULL && isGenZZ){
-        Hist["g_XMass"]->Fill(theGenX->mass(), EventWeight);
-        Hist["g_XMT"]->Fill(theGenX->mt(), EventWeight);
-        Hist["g_XPt"]->Fill(theGenX->pt(), EventWeight);
-        Hist["g_XRapidity"]->Fill(theGenX->rapidity(), EventWeight);
-        //GenXMass = theGenX->mass();
-    }
-    
+    //add for genH / genHH    
 
     // ---------- Trigger selections ----------
-    // Dummy trigger
-    //TriggerWeight*=theElectronAnalyzer->GetDoubleElectronTriggerSF(ElecVect.at(0), ElecVect.at(1));
-    //TriggerWeight*=theMuonAnalyzer->GetDoubleMuonTriggerSF(MuonVect.at(0), MuonVect.at(1));
-    
-    
-    
     Hist["a_nEvents"]->Fill(2., EventWeight);
     Hist["e_nEvents"]->Fill(2., EventWeight);
-    Hist["m_nEvents"]->Fill(2., EventWeight);
+    Hist["m_nEvents"]->Fill(2., EventWeight);             
     
-    
-    // Electron efficiency plots
-    reco::GenParticle* genE1 = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, std::vector<int>{-11});
-    reco::GenParticle* genE2 = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, std::vector<int>{+11});
-    if(genE1!=NULL && genE2!=NULL) {
-        int e1(-1), e2(-1);
-        float dRll(-1.);
-        dRll = reco::deltaR(genE1->eta(), genE1->phi(), genE2->eta(), genE2->phi());
-        //pTll = (genE1->p4() + genE2->p4()).pt();
-        
-        for(unsigned int e = 0; e < ElecVect.size(); e++) {
-            if(reco::deltaR(genE1->eta(), genE1->phi(), ElecVect[e].eta(), ElecVect[e].phi()) < 0.1 && fabs(1.-ElecVect[e].pt()/genE1->pt()) < 0.3) e1 = e;
-            else if(((int)e)!=e1 && reco::deltaR(genE2->eta(), genE2->phi(), ElecVect[e].eta(), ElecVect[e].phi()) < 0.1 && fabs(1.-ElecVect[e].pt()/genE2->pt()) < 0.3) e2 = e;
-        }
-        if(e1 >= 0 && e2 >= 0) {
-            Hist["e_nEvents"]->Fill(3., EventWeight);
-            Hist["e_dR_reco"]->Fill(dRll);
-            if(ElecVect[e1].pt() > 55. && ElecVect[e2].pt() > 20.) {
-                Hist["e_nEvents"]->Fill(4., EventWeight);
-                Hist["e_dR_pt"]->Fill(dRll);
-                if(ElecVect[e1].charge() != ElecVect[e2].charge() && (ElecVect[e1].p4() + ElecVect[e2].p4()).mass() > 70 && (ElecVect[e1].p4() + ElecVect[e2].p4()).mass() < 110) {
-                    Hist["e_nEvents"]->Fill(5., EventWeight);
-                    Hist["e_dR_Z"]->Fill(dRll);
-                    Hist["e_dR"]->Fill(dRll);
-                    if(ElecVect[e1].userInt("isLoose") == 1 || ElecVect[e2].userInt("isLoose") == 1) {
-                        Hist["e_nEvents"]->Fill(6., EventWeight);
-                        Hist["e_dR_LooseId"]->Fill(dRll);
-                        if(ElecVect[e1].userInt("isLoose") == 1 && ElecVect[e2].userInt("isLoose") == 1) {
-                            Hist["e_nEvents"]->Fill(7., EventWeight);
-                            Hist["e_dR_LooseLooseId"]->Fill(dRll);
-                        }
-                    }
-                    if(ElecVect[e1].userInt("isVeto") == 1 && ElecVect[e2].userInt("isVeto") == 1) Hist["e_dR_VetoVetoId"]->Fill(dRll);
-                    if(ElecVect[e1].userInt("isMedium") == 1 && ElecVect[e2].userInt("isMedium") == 1) Hist["e_dR_MediumMediumId"]->Fill(dRll);
-                    if(ElecVect[e1].userInt("isTight") == 1 && ElecVect[e2].userInt("isTight") == 1) Hist["e_dR_TightTightId"]->Fill(dRll);
-                }
-            }
-        }
-    }
-    
-    
-    // Muon efficiency plots
-    reco::GenParticle* genM1 = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, std::vector<int>{-13});
-    reco::GenParticle* genM2 = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, std::vector<int>{+13});
-    if(genM1!=NULL && genM2!=NULL) {
-        int m1(-1), m2(-1);
-        float dRll(-1.);
-        dRll = reco::deltaR(genM1->eta(), genM1->phi(), genM2->eta(), genM2->phi());
-        //pTll = (genM1->p4() + genM2->p4()).pt();
-        
-        for(unsigned int m = 0; m < MuonVect.size(); m++) {
-            if(reco::deltaR(genM1->eta(), genM1->phi(), MuonVect[m].eta(), MuonVect[m].phi()) < 0.1 && fabs(1.-MuonVect[m].pt()/genM1->pt()) < 0.3) m1 = m;
-            else if(((int)m)!=m1 && reco::deltaR(genM2->eta(), genM2->phi(), MuonVect[m].eta(), MuonVect[m].phi()) < 0.1 && fabs(1.-MuonVect[m].pt()/genM2->pt()) < 0.3) m2 = m;
-        }
-        if(m1 >= 0 && m2 >= 0) {
-            Hist["m_nEvents"]->Fill(3., EventWeight);
-            Hist["m_dR_reco"]->Fill(dRll);
-            if(MuonVect[m1].pt() > 55. && MuonVect[m2].pt() > 20.) {
-                Hist["m_nEvents"]->Fill(4., EventWeight);
-                Hist["m_dR_pt"]->Fill(dRll);
-                if(MuonVect[m1].charge() != MuonVect[m2].charge() && (MuonVect[m1].p4() + MuonVect[m2].p4()).mass() > 70 && (MuonVect[m1].p4() + MuonVect[m2].p4()).mass() < 110) {
-                    Hist["m_nEvents"]->Fill(5., EventWeight);
-                    Hist["m_dR_Z"]->Fill(dRll);
-                    Hist["m_dR"]->Fill(dRll);
-                    if(MuonVect[m1].userInt("isHighPt") == 1 || MuonVect[m2].userInt("isHighPt") == 1) {
-                        Hist["m_nEvents"]->Fill(6., EventWeight);
-                        Hist["m_dR_HighptId"]->Fill(dRll);
-                        if((MuonVect[m1].userInt("isHighPt")==1 && MuonVect[m2].userInt("isTrackerHighPt")==1) || (MuonVect[m2].userInt("isHighPt")==1 && MuonVect[m1].userInt("isTrackerHighPt")==1)) {
-                            Hist["m_nEvents"]->Fill(7., EventWeight);
-                            Hist["m_dR_HighptTrackerId"]->Fill(dRll);
-                            if(MuonVect[m1].userFloat("trkIso") < 0.1 && MuonVect[m2].userFloat("trkIso") < 0.1) {
-                                Hist["m_nEvents"]->Fill(8., EventWeight);
-                                Hist["m_dR_HighptTrackerIdTrackerIso"]->Fill(dRll);
-                            }
-                        }
-                    }
-                    if(MuonVect[m1].userInt("isHighPt") == 1 && MuonVect[m2].userInt("isHighPt") == 1) Hist["m_dR_HighptHighptId"]->Fill(dRll);
-                    if(MuonVect[m1].userInt("isTight") == 1 && MuonVect[m2].userInt("isTight") == 1) Hist["m_dR_TightTightId"]->Fill(dRll);
-                    if(MuonVect[m1].userInt("isMedium") == 1 && MuonVect[m2].userInt("isMedium") == 1) Hist["m_dR_MediumMediumId"]->Fill(dRll);
-                    if(MuonVect[m1].userInt("isLoose") == 1 && MuonVect[m2].userInt("isLoose") == 1) Hist["m_dR_LooseLooseId"]->Fill(dRll);
-                }
-            }
-        }
-    }
-  
-    
-    // ---------- Event Variables ----------
-    
+    // ---------- Event Variables ----------    
     // Max b-tagged jet in the event
     for(unsigned int i = 2; i < JetsVect.size(); i++) if(JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag")) > MaxJetBTag) MaxJetBTag = JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag"));
     // Max b-tagged jet in the event
@@ -481,10 +311,6 @@ void HHAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
         for(unsigned int i = 0; i < ElecVect.size(); i++) std::cout << "  electron [" << i << "]\tpt: " << ElecVect[i].pt() << "\teta: " << ElecVect[i].eta() << "\tphi: " << ElecVect[i].phi() << "\tmass: " << ElecVect[i].mass() << "\tcharge: " << ElecVect[i].charge() << std::endl;
         std::cout << "number of muons:     " << MuonVect.size() << std::endl;
         for(unsigned int i = 0; i < MuonVect.size(); i++) std::cout << "  muon     [" << i << "]\tpt: " << MuonVect[i].pt() << "\teta: " << MuonVect[i].eta() << "\tphi: " << MuonVect[i].phi() << "\tmass: " << MuonVect[i].mass() << "\tcharge: " << MuonVect[i].charge() << std::endl;
-        std::cout << "number of taus:  " << TauVect.size() << std::endl;
-        for(unsigned int i = 0; i < TauVect.size(); i++) std::cout << "  tau  [" << i << "]\tpt: " << TauVect[i].pt() << "\teta: " << TauVect[i].eta() << "\tphi: " << TauVect[i].phi() << std::endl;
-        std::cout << "number of photons:  " << PhotonVect.size() << std::endl;
-        for(unsigned int i = 0; i < PhotonVect.size(); i++) std::cout << "  photon  [" << i << "]\tpt: " << PhotonVect[i].pt() << "\teta: " << PhotonVect[i].eta() << "\tphi: " << PhotonVect[i].phi() << std::endl;
         std::cout << "number of AK4 jets:  " << JetsVect.size() << std::endl;
         for(unsigned int i = 0; i < JetsVect.size(); i++) std::cout << "  AK4 jet  [" << i << "]\tpt: " << JetsVect[i].pt() << "\teta: " << JetsVect[i].eta() << "\tphi: " << JetsVect[i].phi() << "\tmass: " << JetsVect[i].mass() << std::endl;
         std::cout << "number of AK8 jets:  " << FatJetsVect.size() << std::endl;
@@ -507,8 +333,6 @@ void HHAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
             ObjectsFormat::FillElectronType(Leptons[1], &ElecVect[0], isMC);
         }
     }
-    for(unsigned int i = 0; i < Taus.size() && i < TauVect.size(); i++) ObjectsFormat::FillTauType(Taus[i], &TauVect[i], isMC);
-    for(unsigned int i = 0; i < Photons.size() && i < PhotonVect.size(); i++) ObjectsFormat::FillPhotonType(Photons[i], &PhotonVect[i], isMC);
     // clear previous vector
     Jets.clear();
     for(unsigned int i = 0; i < JetsVect.size(); i++) {
@@ -542,8 +366,6 @@ void HHAnalyzer::beginJob() {
     for(int i = 0; i < WriteNElectrons; i++) Electrons.push_back( LeptonType() );
     for(int i = 0; i < WriteNMuons; i++) Muons.push_back( LeptonType() );
     for(int i = 0; i < WriteNLeptons; i++) Leptons.push_back( LeptonType() );
-    for(int i = 0; i < WriteNTaus; i++) Taus.push_back( TauType() );
-    for(int i = 0; i < WriteNPhotons; i++) Photons.push_back( PhotonType() );
     for(int i = 0; i < WriteNFatJets; i++) FatJets.push_back( FatJetType() );
     
     // Create Tree and set Branches
@@ -570,12 +392,6 @@ void HHAnalyzer::beginJob() {
     for(auto it = TriggerMap.begin(); it != TriggerMap.end(); it++) tree->Branch(it->first.c_str(), &(it->second), (it->first+"/O").c_str());
     
     // Analysis variables
-    tree->Branch("isZtoEE", &isZtoEE, "isZtoEE/O");
-    tree->Branch("isZtoMM", &isZtoMM, "isZtoMM/O");
-    tree->Branch("isTtoEM", &isTtoEM, "isTtoEM/O");
-    tree->Branch("isWtoEN", &isWtoEN, "isWtoEN/O");
-    tree->Branch("isWtoMN", &isWtoMN, "isWtoMN/O");
-    tree->Branch("isZtoNN", &isZtoNN, "isZtoNN/O");
     tree->Branch("isMerged", &isMerged, "isMerged/O");
     tree->Branch("isResolved", &isResolved, "isResolved/O");
     
@@ -585,8 +401,6 @@ void HHAnalyzer::beginJob() {
     tree->Branch("nVetoElectrons", &nVetoElectrons, "nVetoElectrons/I");
     tree->Branch("nMuons", &nMuons, "nMuons/I");
     tree->Branch("nLooseMuons", &nLooseMuons, "nLooseMuons/I");
-    tree->Branch("nTaus", &nTaus, "nTaus/I");
-    tree->Branch("nPhotons", &nPhotons, "nPhotons/I");
     tree->Branch("nJets", &nJets, "nJets/I");
     tree->Branch("nFatJets", &nFatJets, "nFatJets/I");
     tree->Branch("nBTagJets", &nBTagJets, "nBTagJets/I");
@@ -608,8 +422,6 @@ void HHAnalyzer::beginJob() {
     for(int i = 0; i < WriteNElectrons; i++) tree->Branch(("Electron"+std::to_string(i+1)).c_str(), &(Electrons[i].pt), ObjectsFormat::ListLeptonType().c_str());
     for(int i = 0; i < WriteNMuons; i++) tree->Branch(("Muon"+std::to_string(i+1)).c_str(), &(Muons[i].pt), ObjectsFormat::ListLeptonType().c_str());
     for(int i = 0; i < WriteNLeptons; i++) tree->Branch(("Lepton"+std::to_string(i+1)).c_str(), &(Leptons[i].pt), ObjectsFormat::ListLeptonType().c_str());
-    for(int i = 0; i < WriteNTaus; i++) tree->Branch(("Tau"+std::to_string(i+1)).c_str(), &(Taus[i].pt), ObjectsFormat::ListTauType().c_str());
-    for(int i = 0; i < WriteNPhotons; i++) tree->Branch(("Photon"+std::to_string(i+1)).c_str(), &(Photons[i].pt), ObjectsFormat::ListPhotonType().c_str());
     // save vector of jets
     tree->Branch("Jets", &(Jets), 64000, 2);
     for(int i = 0; i < WriteNFatJets; i++) tree->Branch(("FatJet"+std::to_string(i+1)).c_str(), &(FatJets[i].pt), ObjectsFormat::ListFatJetType().c_str());
