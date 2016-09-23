@@ -10,6 +10,7 @@
 #include "DataFormats/PatCandidates/interface/MET.h"
 #include "DataFormats/PatCandidates/interface/CompositeCandidate.h"
 
+#include "Utilities.h"
 #include "Objects.h"
 
 class ObjectsFormat {

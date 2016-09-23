@@ -31,7 +31,7 @@ if len(options.inputFiles) == 0:
         fileNames = cms.untracked.vstring(
             # one single HH SM sample for test (events in DAS: 43877)
             'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISpring16MiniAODv2/GluGluToHHTo4B_node_SM_13TeV-madgraph/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/70000/205E4ECB-FE3A-E611-9870-0CC47A1E046A.root'
-            #'root://xrootd-cms.infn.it///store/mc/RunIISpring16MiniAODv2/BulkGravToZZToZhadZinv_narrow_M-1000_13TeV-madgraph/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/80000/BC528619-CF3A-E611-9926-002590207C28.root'
+            #'root://xrootd-cms.infn.it///store/mc/RunIISpring16MiniAODv2/GluGluToHHTo4B_node_SM_13TeV-madgraph/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/70000/205E4ECB-FE3A-E611-9870-0CC47A1E046A.root'
         )
     )
 # production: read externally provided filelist

@@ -201,23 +201,23 @@ void ObjectsFormat::FillJetType(JetType& I, const pat::Jet* R, bool isMC) {
     I.phi         = R->phi();
     I.mass        = R->mass();
     I.energy      = R->energy();
-  //  if(isMC && R->genJet()) {
-  //    I.ptGenJ    = R->genJet()->pt();
-  //    I.etaGenJ   = R->genJet()->eta();
-  //    I.phiGenJ   = R->genJet()->phi();
-  //    I.massGenJ  = R->genJet()->mass();
-  //  }
-  //  if(isMC && R->genParton()) {
-  //    I.ptGen     = R->genParton()->pt();
-  //    I.etaGen    = R->genParton()->eta();
-  //    I.phiGen    = R->genParton()->phi();
-  //    I.massGen   = R->genParton()->mass();
-  //  }
-  //  if(isMC && R->genParton()) {
-  //    I.ptLhe     = R->userFloat("ptLhe");
-  //    I.etaLhe    = R->userFloat("etaLhe");
-  //    I.phiLhe    = R->userFloat("phiLhe");
-  //  }
+    if(isMC && R->genJet()) {
+      I.ptGenJ    = R->genJet()->pt();
+      I.etaGenJ   = R->genJet()->eta();
+      I.phiGenJ   = R->genJet()->phi();
+      I.massGenJ  = R->genJet()->mass();
+    }
+    if(isMC && R->genParton()) {
+      I.ptGen     = R->genParton()->pt();
+      I.etaGen    = R->genParton()->eta();
+      I.phiGen    = R->genParton()->phi();
+      I.massGen   = R->genParton()->mass();
+    }
+    //if(isMC && R->genParton()) {
+    //I.ptLhe     = R->userFloat("ptLhe");
+    //I.etaLhe    = R->userFloat("etaLhe");
+    //I.phiLhe    = R->userFloat("phiLhe");
+    //}
     I.ptRaw       = R->correctedJet(0).pt();
     I.ptUnc       = R->userFloat("JESUncertainty");
     I.dPhi_met    = R->hasUserFloat("dPhi_met") ? R->userFloat("dPhi_met") : -1.;
@@ -261,15 +261,15 @@ void ObjectsFormat::FillJetType(JetType& I, const pat::Jet* R, bool isMC) {
     I.chm         = R->chargedHadronMultiplicity();
     I.npr         = R->chargedMultiplicity() + R->neutralMultiplicity();
     I.flavour     = R->partonFlavour();
-    if(isMC && R->genParton()) I.mother = false;//Utilities::FindMotherId(dynamic_cast<const reco::Candidate*>(R->genParton()));
+    if(isMC && R->genParton()) I.mother = Utilities::FindMotherId(R->genParton());
+    I.isMatched   = (I.mother==25);
     I.isLoose     = R->hasUserInt("isLoose") ? R->userInt("isLoose") : false;
     I.isMedium    = false;
     I.isTight     = R->hasUserInt("isTight") ? R->userInt("isTight") : false;
     I.isTightLepVeto     = R->hasUserInt("isTightLepVeto") ? R->userInt("isTightLepVeto") : false;
-    I.isCSVL      = false;//IsBTagged(Tagger, 1, I.CSV);
-    I.isCSVM      = false;//IsBTagged(Tagger, 2, I.CSV);
-    I.isCSVT      = false;//IsBTagged(Tagger, 3, I.CSV);
-    I.isMatched   = (I.mother==25);
+    I.isCSVL      = R->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>0.460 ? true : false;
+    I.isCSVM      = R->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>0.800 ? true : false;
+    I.isCSVT      = R->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags")>0.935 ? true : false;
 }
 
 void ObjectsFormat::ResetJetType(JetType& I) {
@@ -283,6 +283,17 @@ void ObjectsFormat::ResetJetType(JetType& I) {
     I.dPhi_met    = -1.;
     I.dPhi_Jet1   = -1.;
     I.puId        = -1.;
+    I.ptGenJ      = -10.;
+    I.etaGenJ     = -4.;
+    I.phiGenJ     = -4.;
+    I.massGenJ    = -10.;
+    I.ptGen       = -10.;
+    I.etaGen      = -4.;
+    I.phiGen      = -4.;
+    I.massGen     = -10.;
+    I.ptLhe       = -10.;
+    I.etaLhe      = -4.;
+    I.phiLhe      = -4.;
     I.CSV         = -99.;
     I.CSVR        = -99.;
     I.CSVRUp      = -99.;
