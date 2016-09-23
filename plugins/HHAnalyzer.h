@@ -141,14 +141,14 @@ class HHAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
         MuonAnalyzer* theMuonAnalyzer;
         JetAnalyzer* theJetAnalyzer;
         JetAnalyzer* theFatJetAnalyzer;
-        //BTagInterface* theBTagInterface;
+
         std::map<std::string, bool> TriggerMap;
         std::map<std::string, TH1F*> Hist;
             
         edm::Service<TFileService> fs;
         TTree* tree;
-        /*TTree* treealpha;*/
-        bool isMC, isZtoEE, isZtoMM, isTtoEM, isWtoEN, isWtoMN, isZtoNN, isMerged, isResolved;
+
+        bool isMC;
         long int EventNumber, RunNumber, LumiNumber;
         float EventWeight, StitchWeight, ZewkWeight, WewkWeight, PUWeight, TriggerWeight, LeptonWeight;
         float FacWeightUp, FacWeightDown, RenWeightUp, RenWeightDown, ScaleWeightUp, ScaleWeightDown;
@@ -158,35 +158,15 @@ class HHAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
         float CosThetaStar, CosTheta1, CosTheta2, Phi, Phi1, AngularLD;
         // Mass recoil formula
         float massRecoilFormula;
-        /*
-        // Lepton1
-        bool Lepton1_isMuon, Lepton1_isElectron, Lepton1_isLoose, Lepton1_isHighPt, Lepton1_isTrackerHighPt, Lepton1_isTight;
-        float Lepton1_pt, Lepton1_trkIso;
-        // Lepton2        
-        bool Lepton2_isMuon, Lepton2_isElectron, Lepton2_isLoose, Lepton2_isHighPt, Lepton2_isTrackerHighPt, Lepton2_isTight;
-        float Lepton2_pt, Lepton2_trkIso;
-        // MET        
-        float MEt_pt;
-        // V        
-        float V_pt, V_dPhi, V_mass, V_tmass;
-        // X        
-        float X_pt, X_dPhi, X_mass, X_tmass;
-        // FatJet1
-        bool FatJet1_isTight;
-        float FatJet1_pt, FatJet1_prunedMass, FatJet1_softdropMass, FatJet1_softdropPuppiMass, FatJet1_prunedMassCorr, FatJet1_softdropMassCorr, FatJet1_softdropPuppiMassCorr, FatJet1_chsTau21, FatJet1_puppiTau21, FatJet1_ddtTau21, FatJet1_CSV1, FatJet1_CSV2;
-        */
-        //
+
+        
+        // object collections
         std::vector<LeptonType> Electrons;
         std::vector<LeptonType> Muons;
-        std::vector<LeptonType> Leptons;
         std::vector<JetType> Jets;
         std::vector<FatJetType> FatJets;
         MEtType MEt;
-        CandidateType V, X;
-        /*CandidateType H, A;
-        CandidateType HMerged, HResolved, HResolvedPt, HResolvedHpt, HResolvedDZ, HResolvedDR;
-        CandidateType XMerged, XResolved, XResolvedPt, XResolvedHpt, XResolvedDZ, XResolvedDR;
-        LorentzType kH, kA;*/
+        std::vector<CandidateType> Hs;
 };
 
 #endif
