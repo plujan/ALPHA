@@ -259,19 +259,34 @@ void HHAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       Electrons.emplace_back();
       ObjectsFormat::FillElectronType(Electrons[i], &ElecVect[i], isMC);
     }
-    // clear previous vector
     Muons.clear();
     for(unsigned int i = 0; i < MuonVect.size(); i++) {
       Muons.emplace_back();
       ObjectsFormat::FillMuonType(Muons[i], &MuonVect[i], isMC);
     }
-    // clear previous vector
     Jets.clear();
     for(unsigned int i = 0; i < JetsVect.size(); i++) {
       Jets.emplace_back();
       ObjectsFormat::FillJetType(Jets[i], &JetsVect[i], isMC);
     }
     ObjectsFormat::FillMEtType(MEt, &MET, isMC);
+
+    // fill sorting vectors
+    j_sort_pt = std::vector<std::size_t>(Jets.size());
+    std::iota(j_sort_pt.begin(), j_sort_pt.end(), 0);
+    auto pt_comp = [&](std::size_t a, std::size_t b) {return Jets.at(a).pt > Jets.at(b).pt;};
+    std::sort(j_sort_pt.begin(), j_sort_pt.end(), pt_comp ); 
+
+    j_sort_csv = std::vector<std::size_t>(Jets.size());
+    std::iota(j_sort_csv.begin(), j_sort_csv.end(), 0);
+    auto csv_comp = [&](std::size_t a, std::size_t b) {return Jets.at(a).CSV > Jets.at(b).CSV;};
+    std::sort(j_sort_csv.begin(), j_sort_csv.end(), csv_comp);
+
+    j_sort_cmva = std::vector<std::size_t>(Jets.size());
+    std::iota(j_sort_cmva.begin(), j_sort_cmva.end(), 0);
+    auto cmva_comp = [&](std::size_t a, std::size_t b) {return Jets.at(a).CMVA > Jets.at(b).CMVA;};
+    std::sort(j_sort_cmva.begin(), j_sort_cmva.end(), cmva_comp);
+
     
     // Fill tree
     tree->Fill();
@@ -333,12 +348,16 @@ void HHAnalyzer::beginJob() {
   
     // Set Branches for objects
     // save vector of electron, muon and jets
-    tree->Branch("Electrons", &(Muons), 64000, 2);
+    tree->Branch("Electrons", &(Electrons), 64000, 2);
     tree->Branch("Muons", &(Muons), 64000, 2);
     // save vector of jets
     tree->Branch("Jets", &(Jets), 64000, 2);
     for(int i = 0; i < WriteNFatJets; i++) tree->Branch(("FatJet"+std::to_string(i+1)).c_str(), &(FatJets[i].pt), ObjectsFormat::ListFatJetType().c_str());
     tree->Branch("MEt", &MEt.pt, ObjectsFormat::ListMEtType().c_str());
+
+    tree->Branch("j_sort_pt", &(j_sort_pt), 64000, 2);
+    tree->Branch("j_sort_csv", &(j_sort_csv), 64000, 2);
+    tree->Branch("j_sort_cmva", &(j_sort_cmva), 64000, 2);
 }
 
 // ------------ method called once each job just after ending the event loop  ------------
