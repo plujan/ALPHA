@@ -85,6 +85,17 @@ struct JetType {
     float dPhi_met;
     float dPhi_Jet1;
     float puId;
+    float ptGenJ = -10.;
+    float etaGenJ = -4.;
+    float phiGenJ = -4.;
+    float massGenJ = -10.;
+    float ptGen = -10.;
+    float etaGen = -4.;
+    float phiGen = -4.;
+    float massGen = -10.;
+    float ptLhe = -10.;
+    float etaLhe = -4.;
+    float phiLhe = -4.;
     float CSV;
     float CSVR;
     float CSVRUp;

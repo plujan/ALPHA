@@ -1,5 +1,12 @@
 
 <lcgdict>
+  <class name="LorentzType"/>
+  <class name="CandidateType"/>
   <class name="JetType"/>
+  <class name="LeptonType"/>
+  <class name="std::vector<LorentzType>"/>
+  <class name="std::vector<CandidateType>"/>
   <class name="std::vector<JetType>"/>
+  <class name="std::vector<LeptonType>"/>
+  <class name="std::vector<std::size_t>"/>
 </lcgdict>
