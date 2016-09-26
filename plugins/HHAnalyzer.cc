@@ -57,12 +57,10 @@ HHAnalyzer::HHAnalyzer(const edm::ParameterSet& iConfig):
     // ---------- Plots Initialization ----------
     TFileDirectory allDir=fs->mkdir("All/");
     TFileDirectory genDir=fs->mkdir("Gen/");
-    TFileDirectory eleDir=fs->mkdir("Electrons/");
-    TFileDirectory muoDir=fs->mkdir("Muons/");
     TFileDirectory jetDir=fs->mkdir("Jets/");
     
     // Make TH1F
-    std::vector<std::string> nLabels={"All", "Trigger", "Iso Lep #geq 2", "Z cand ", "Jets #geq 2", "Z mass ", "h mass ", "Top veto", "bJets #geq 1", "bJets #geq 2"};
+    std::vector<std::string> nLabels={"All (jets in Acc)", "Trigger", "# jets >3", "# med b-tag >0", "# med b-tag >1", "# med b-tag >2", "# med b-tag >3", "", "", ""};
     
     int nbins;
     float min, max;
@@ -77,8 +75,6 @@ HHAnalyzer::HHAnalyzer(const edm::ParameterSet& iConfig):
             while(title.find("~")!=std::string::npos) title=title.replace(title.find("~"), 1, " "); // Remove ~
             if(name.substr(0, 2)=="a_") Hist[name] = allDir.make<TH1F>(name.c_str(), title.c_str(), nbins, min, max); //.substr(2)
             if(name.substr(0, 2)=="g_") Hist[name] = genDir.make<TH1F>(name.c_str(), title.c_str(), nbins, min, max);
-            if(name.substr(0, 2)=="e_") Hist[name] = eleDir.make<TH1F>(name.c_str(), title.c_str(), nbins, min, max);
-            if(name.substr(0, 2)=="m_") Hist[name] = muoDir.make<TH1F>(name.c_str(), title.c_str(), nbins, min, max);
             if(name.substr(0, 2)=="j_") Hist[name] = jetDir.make<TH1F>(name.c_str(), title.c_str(), nbins, min, max);
             Hist[name]->Sumw2();
             Hist[name]->SetOption(opt.c_str());
@@ -130,8 +126,6 @@ void HHAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
     ObjectsFormat::ResetMEtType(MEt);
     
     Hist["a_nEvents"]->Fill(1., EventWeight);
-    Hist["e_nEvents"]->Fill(1., EventWeight);
-    Hist["m_nEvents"]->Fill(1., EventWeight);
     
     // -----------------------------------
     //           READ OBJECTS
@@ -232,11 +226,10 @@ void HHAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
     reco::Particle::LorentzVector p4GenZHad;
     //add for genH / genHH    
 
-    // ---------- Trigger selections ----------
+    // --- Trigger selection ---
+    // selection (if required) is made with HLT Analyzer (called before ntuple Analyzer)
     Hist["a_nEvents"]->Fill(2., EventWeight);
-    Hist["e_nEvents"]->Fill(2., EventWeight);
-    Hist["m_nEvents"]->Fill(2., EventWeight);             
-    
+   
     // ---------- Event Variables ----------    
     // Max b-tagged jet in the event
     for(unsigned int i = 0; i < JetsVect.size(); i++) if(JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag")) > MaxJetBTag) MaxJetBTag = JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag"));
@@ -286,6 +279,17 @@ void HHAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
     auto cmva_comp = [&](std::size_t a, std::size_t b) {return Jets.at(a).CMVA > Jets.at(b).CMVA;};
     std::sort(j_sort_cmva.begin(), j_sort_cmva.end(), cmva_comp);
 
+    // --- Fill nEvents histogram --- no effective selection applied
+    // --- num jets selection ---
+    if(JetsVect.size() > 3) {
+      Hist["a_nEvents"]->Fill(3., EventWeight);
+
+      // --- b-Tag selection ---
+      if( Jets.at(j_sort_csv[0]).CSV > 0.800) Hist["a_nEvents"]->Fill(4., EventWeight);
+      if( Jets.at(j_sort_csv[1]).CSV > 0.800) Hist["a_nEvents"]->Fill(5., EventWeight);
+      if( Jets.at(j_sort_csv[2]).CSV > 0.800) Hist["a_nEvents"]->Fill(6., EventWeight);
+      if( Jets.at(j_sort_csv[3]).CSV > 0.800) Hist["a_nEvents"]->Fill(7., EventWeight);      
+    }
     
     // Fill tree
     tree->Fill();
