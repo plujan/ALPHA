@@ -159,10 +159,14 @@ from Configuration.AlCa.GlobalTag import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run2_mc', '')
 from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
 switchOnVIDElectronIdProducer(process, DataFormat.MiniAOD)
-ele_id_modules = ['RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Spring15_25ns_V1_cff',
-                 'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Spring15_25ns_nonTrig_V1_cff',
-                 'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Spring15_25ns_Trig_V1_cff',
-                 'RecoEgamma.ElectronIdentification.Identification.heepElectronID_HEEPV60_cff']
+ele_id_modules = [
+                'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Summer16_80X_V1_cff',
+                'RecoEgamma.ElectronIdentification.Identification.cutBasedElectronHLTPreselecition_Summer16_V1_cff',
+                'RecoEgamma.ElectronIdentification.Identification.heepElectronID_HEEPV60_cff',
+                'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Spring15_25ns_'+'nonTrig_V1_cff',
+                'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Spring15_25ns_'+ 'Trig_V1_cff',
+                  ]
+
 for ele_idmod in ele_id_modules:
     setupAllVIDIdsInModule(process,ele_idmod,setupVIDElectronSelection)
 
