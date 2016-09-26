@@ -29,6 +29,7 @@
 <use name="CondFormats/JetMETObjects"/>
 <use name="HLTrigger/HLTcore"/>
 <use name="RecoEgamma/EgammaTools"/>
+<use name="RecoEgamma/ElectronIdentification"/>
 <use name="RecoMET/METFilters"/>
 <use name="RecoMET/METAlgorithms"/>
 <!--<use name="lhapdf"/>-->
