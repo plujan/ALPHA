@@ -12,5 +12,7 @@ namespace {
     std::vector<JetType> dummy4;
     std::vector<LeptonType> dummy5;
     std::vector<std::size_t> dummy6;
+    LorentzType dummy7;
+    std::vector<LorentzType> dummy8;
   };
 }

@@ -32,6 +32,7 @@ class GenAnalyzer {
         virtual reco::Candidate* FindLastDaughter(reco::Candidate*);
         virtual reco::GenParticle* FindGenParticleGenByIds(std::vector<reco::GenParticle>&, std::vector<int>, int=-1);
         virtual reco::GenParticle* FindLastDaughterGen(reco::GenParticle*);
+        virtual const reco::GenParticle* FindLastDaughterGen(const reco::GenParticle*);
         virtual const reco::Candidate* FindMother(reco::GenParticle*);
         virtual reco::Candidate* FindGenParticleByIdAndStatus(std::vector<reco::GenParticle>&, int, int);
         virtual float GetStitchWeight(std::map<std::string, float>);
@@ -40,6 +41,8 @@ class GenAnalyzer {
         virtual float GetPUWeight(const edm::Event&);
     //    virtual float GetPDFWeight(const edm::Event&);
         virtual std::pair<float, float> GetQ2Weight(const edm::Event&);
+        virtual std::vector<reco::GenParticle> PartonsFromDecays(const std::vector<int> & pdgIds);
+        virtual std::vector<reco::GenParticle> PartonsFromDecays(const std::vector<int> & pdgIds, std::vector<reco::GenParticle> & genDecay );
 
       
     private:
@@ -67,6 +70,10 @@ class GenAnalyzer {
         TF1* fWEWK;
         
         edm::LumiReWeighting* LumiWeights;
+
+        // new member to hold GenCollection and about copy overheads
+        edm::Handle<std::vector<reco::GenParticle> > GenCollection;
+
 };
 
 

@@ -166,7 +166,8 @@ class HHAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
         std::vector<JetType> Jets;
         std::vector<FatJetType> FatJets;
         MEtType MEt;
-        std::vector<CandidateType> GenHs;
+        std::vector<LorentzType> GenBFromHs;
+        std::vector<LorentzType> GenHs;
 
         // for saving jet sortings
         std::vector<std::size_t> j_sort_pt;
