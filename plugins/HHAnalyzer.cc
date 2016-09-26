@@ -120,11 +120,10 @@ void HHAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
     
     EventWeight = StitchWeight = ZewkWeight = WewkWeight = PUWeight = TriggerWeight = LeptonWeight = 1.;
     FacWeightUp = FacWeightDown = RenWeightUp = RenWeightDown = ScaleWeightUp = ScaleWeightDown = 1.;
-    nPV = nElectrons = nMuons = nJets = nFatJets = nBTagJets = 1;
+    nPV = nElectrons = nMuons = nJets = nFatJets = nBTagJets = -1.;
     nVetoElectrons = nLooseMuons = 0;
-    MaxJetBTag = MaxFatJetBTag = Chi2 = -1.;
+    MaxJetBTag = MaxFatJetBTag = -1.;
     MinJetMetDPhi = 10.;
-    massRecoilFormula = -1.;
 
     // Initialize types
     for(int i = 0; i < WriteNFatJets; i++) ObjectsFormat::ResetFatJetType(FatJets[i]);
@@ -240,7 +239,7 @@ void HHAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
     
     // ---------- Event Variables ----------    
     // Max b-tagged jet in the event
-    for(unsigned int i = 2; i < JetsVect.size(); i++) if(JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag")) > MaxJetBTag) MaxJetBTag = JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag"));
+    for(unsigned int i = 0; i < JetsVect.size(); i++) if(JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag")) > MaxJetBTag) MaxJetBTag = JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag"));
     // Max b-tagged jet in the event
     for(unsigned int i = 0; i < JetsVect.size(); i++) if(FatJetsVect.size() > 0 && JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag")) > MaxFatJetBTag && deltaR(FatJetsVect.at(0), JetsVect[i])>0.8) MaxFatJetBTag = JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag"));
     
@@ -331,20 +330,10 @@ void HHAnalyzer::beginJob() {
     tree->Branch("nLooseMuons", &nLooseMuons, "nLooseMuons/I");
     tree->Branch("nJets", &nJets, "nJets/I");
     tree->Branch("nFatJets", &nFatJets, "nFatJets/I");
-    tree->Branch("nBTagJets", &nBTagJets, "nBTagJets/I");
-    
+    tree->Branch("nBTagJets", &nBTagJets, "nBTagJets/I");    
     tree->Branch("MaxJetBTag", &MaxJetBTag, "MaxJetBTag/F");
     tree->Branch("MaxFatJetBTag", &MaxFatJetBTag, "MaxFatJetBTag/F");
     tree->Branch("MinJetMetDPhi", &MinJetMetDPhi, "MinJetMetDPhi/F");
-    tree->Branch("Chi2", &Chi2, "Chi2/F");
-    // Angular variables
-    tree->Branch("CosThetaStar", &CosThetaStar, "CosThetaStar/F");
-    tree->Branch("CosTheta1", &CosTheta1, "CosTheta1/F");
-    tree->Branch("CosTheta2", &CosTheta2, "CosTheta2/F");
-    tree->Branch("Phi", &Phi, "Phi/F");
-    tree->Branch("Phi1", &Phi1, "Phi1/F");
-    // Mass recoil formula
-    tree->Branch("massRecoilFormula", &massRecoilFormula, "massRecoilFormula/F");
   
     // Set Branches for objects
     // save vector of electron, muon and jets

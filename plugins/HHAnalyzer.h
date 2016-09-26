@@ -153,12 +153,7 @@ class HHAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
         float EventWeight, StitchWeight, ZewkWeight, WewkWeight, PUWeight, TriggerWeight, LeptonWeight;
         float FacWeightUp, FacWeightDown, RenWeightUp, RenWeightDown, ScaleWeightUp, ScaleWeightDown;
         int nPV, nElectrons, nVetoElectrons, nMuons, nLooseMuons, nJets, nFatJets, nBTagJets;
-        float MaxJetBTag, MaxFatJetBTag, MinJetMetDPhi, Chi2;
-        // Angular
-        float CosThetaStar, CosTheta1, CosTheta2, Phi, Phi1, AngularLD;
-        // Mass recoil formula
-        float massRecoilFormula;
-
+        float MaxJetBTag, MaxFatJetBTag, MinJetMetDPhi;
         
         // object collections
         std::vector<LeptonType> Electrons;
