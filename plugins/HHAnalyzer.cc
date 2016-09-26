@@ -87,7 +87,7 @@ HHAnalyzer::HHAnalyzer(const edm::ParameterSet& iConfig):
         }
     }
     histFile.close();
-    
+
     std::cout << "---------- STARTING ----------" << std::endl;
 }
 
@@ -219,18 +219,9 @@ void HHAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
     
     EventWeight *= ZewkWeight * WewkWeight;
 
-    std::vector<int> LepIds = {12,14,16,-12,-14,-16};
-    std::vector<int> HadIds = {1,2,3,4,5,-1,-2,-3,-4,-5};
-    reco::GenParticle* theGenLep = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, LepIds);
-    reco::GenParticle* theGenHad = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, HadIds);
-    
-    //Gen level plots and candidates
-    double GenHadDR = -9.;
-    double GenLepDR = -9.;
-    //double GenZHadFatJetDR = -9.;
-    bool isGenZZ = false;
-    reco::Particle::LorentzVector p4GenZHad;
-    //add for genH / genHH    
+    std::vector<reco::GenParticle> GenHsPart;
+    std::vector<reco::GenParticle> GenBFromHsPart = theGenAnalyzer->PartonsFromDecays({25}, GenHsPart);
+
 
     // ---------- Trigger selections ----------
     Hist["a_nEvents"]->Fill(2., EventWeight);
@@ -286,6 +277,19 @@ void HHAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
     auto cmva_comp = [&](std::size_t a, std::size_t b) {return Jets.at(a).CMVA > Jets.at(b).CMVA;};
     std::sort(j_sort_cmva.begin(), j_sort_cmva.end(), cmva_comp);
 
+    // fill b quarks from higgs
+    GenBFromHs.clear();
+    for(unsigned int i = 0; i < GenBFromHsPart.size(); i++) {
+      GenBFromHs.emplace_back();
+      ObjectsFormat::FillLorentzType(GenBFromHs[i], &GenBFromHsPart.at(i).p4());
+    }
+
+    // fill b quarks from higgs
+    GenHs.clear();
+    for(unsigned int i = 0; i < GenHsPart.size(); i++) {
+      GenHs.emplace_back();
+      ObjectsFormat::FillLorentzType(GenHs[i], &GenHsPart.at(i).p4());
+    }
     
     // Fill tree
     tree->Fill();
@@ -343,6 +347,8 @@ void HHAnalyzer::beginJob() {
     tree->Branch("Jets", &(Jets), 64000, 2);
     for(int i = 0; i < WriteNFatJets; i++) tree->Branch(("FatJet"+std::to_string(i+1)).c_str(), &(FatJets[i].pt), ObjectsFormat::ListFatJetType().c_str());
     tree->Branch("MEt", &MEt.pt, ObjectsFormat::ListMEtType().c_str());
+    tree->Branch("GenBFromHs", &(GenBFromHs), 64000, 2);
+    tree->Branch("GenHs", &(GenHs), 64000, 2);
 
     tree->Branch("j_sort_pt", &(j_sort_pt), 64000, 2);
     tree->Branch("j_sort_csv", &(j_sort_csv), 64000, 2);

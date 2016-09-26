@@ -13,8 +13,7 @@ GenAnalyzer::GenAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl
     Sample(PSet.getParameter<std::string>("sample")),
     EWKFileName(PSet.getParameter<std::string>("ewkFile")),
     ApplyEWK(PSet.getParameter<bool>("applyEWK"))
-{
-    
+{    
     for(unsigned int i = 0; i < SampleDYJetsToLL.size(); i++) {
         Files[SampleDYJetsToLL[i]] = new TFile((SampleDir+SampleDYJetsToLL[i]+".root").c_str(), "READ");
         hPartons[SampleDYJetsToLL[i]] = (TH1F*)Files[SampleDYJetsToLL[i]]->Get("counter/c_lhePartons");
@@ -112,8 +111,7 @@ std::map<std::string, float> GenAnalyzer::FillWeightsMap(const edm::Event& iEven
 std::vector<reco::GenParticle> GenAnalyzer::FillGenVector(const edm::Event& iEvent) {
     std::vector<reco::GenParticle> Vect;
     if(iEvent.isRealData()) return Vect;
-    // Declare and open collection
-    edm::Handle<std::vector<reco::GenParticle> > GenCollection;
+    // fill collection for this event 
     iEvent.getByToken(GenParticlesToken, GenCollection);
     // Loop on Gen Particles collection
     for(std::vector<reco::GenParticle>::const_iterator it = GenCollection->begin(); it != GenCollection->end(); ++it) {
@@ -195,6 +193,13 @@ reco::GenParticle* GenAnalyzer::FindLastDaughterGen(reco::GenParticle* p) {
     if(p->numberOfDaughters() <= 0 || !p->daughter(0)) return p;
     if(p->daughter(0)->pdgId() != p->pdgId()) return p;
     return FindLastDaughterGen( dynamic_cast<reco::GenParticle*>( p->daughter(0) ));
+}
+
+// Recursive function to find the last particle in the chain before decay: e.g. 23 -> 23 -> *23* -> 13 -13.  Returns a GenParticle
+const reco::GenParticle* GenAnalyzer::FindLastDaughterGen(const reco::GenParticle* p) {
+    if(p->numberOfDaughters() <= 0 || !p->daughter(0)) return p;
+    if(p->daughter(0)->pdgId() != p->pdgId()) return p;
+    return FindLastDaughterGen( dynamic_cast<const reco::GenParticle*>( p->daughter(0) ));
 }
 
 // Some particles radiate other particles with the same pdgId but a different status. Method to find a mother with different pdgId
@@ -365,4 +370,51 @@ float GenAnalyzer::GetWewkWeight(float wpt) {
     if(!ApplyEWK) return 1.;
     if(wpt <= 0) return 1.;
     return fWEWK->Eval(wpt);
+}
+
+
+// returns a vector with the gen particles from the decays of the particles in the list
+std::vector<reco::GenParticle> GenAnalyzer::PartonsFromDecays(const std::vector<int> & pdgIds)  {
+  
+  // vector to save the partons
+  std::vector<reco::GenParticle> partons;
+
+  for (auto & genParticle : *GenCollection ) {
+    // check if pdgid in vector
+    if (std::find(pdgIds.begin(), pdgIds.end(), genParticle.pdgId()) != pdgIds.end()) {
+      if (genParticle.numberOfDaughters() > 1) {
+        if (genParticle.daughter(0) && genParticle.daughter(1)) {
+          // emplace genParticles in output vector
+          partons.emplace_back(*FindLastDaughterGen(dynamic_cast<const reco::GenParticle*>(genParticle.daughter(0))));
+          partons.emplace_back(*FindLastDaughterGen(dynamic_cast<const reco::GenParticle*>(genParticle.daughter(1))));
+        }
+      }
+    }
+  }
+
+  return partons;
+}
+
+// returns a vector with the gen particles from the decays of the particles in the list
+// saves decating particles in vector passed a reference
+std::vector<reco::GenParticle> GenAnalyzer::PartonsFromDecays(const std::vector<int> & pdgIds, std::vector<reco::GenParticle> & genDecay)  {
+  
+  // vector to save the partons
+  std::vector<reco::GenParticle> partons;
+
+  for (auto & genParticle : *GenCollection ) {
+    // check if pdgid in vector
+    if (std::find(pdgIds.begin(), pdgIds.end(), genParticle.pdgId()) != pdgIds.end()) {
+      if (genParticle.numberOfDaughters() > 1) {
+        if (genParticle.daughter(0) && genParticle.daughter(1)) {
+          genDecay.emplace_back(genParticle);
+          // emplace genParticles in output vector
+          partons.emplace_back(*FindLastDaughterGen(dynamic_cast<const reco::GenParticle*>(genParticle.daughter(0))));
+          partons.emplace_back(*FindLastDaughterGen(dynamic_cast<const reco::GenParticle*>(genParticle.daughter(1))));
+        }
+      }
+    }
+  }
+
+  return partons;
 }
