@@ -69,6 +69,7 @@ if isData:
 
 process.counter = cms.EDAnalyzer('CounterAnalyzer',
     lheProduct = cms.InputTag('externalLHEProducer' if not isCustom else 'source'),
+    pythiaLOSample = cms.bool(False)
 )
 
 # Trigger filter
@@ -245,6 +246,7 @@ process.ntuple = cms.EDAnalyzer('HHAnalyzer',
         sample = cms.string( sample ),
         ewkFile = cms.string('%s/src/Analysis/ALPHA/data/scalefactors_v4.root' % os.environ['CMSSW_BASE']),
         applyEWK = cms.bool(True if sample.startswith('DYJets') or sample.startswith('WJets') else False),
+        pythiaLOSample = cms.bool(False)
     ),
     pileupSet = cms.PSet(
         pileup = cms.InputTag('slimmedAddPileupInfo'),
