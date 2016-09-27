@@ -3,6 +3,7 @@
 
 filelists = [ 
 ####### DATA
+        'BTagCSVRun2016D-PromptReco-v2',
 
 ####### MC
 	'GluGluToHHTo4B_node_2_13TeV-madgraph',
