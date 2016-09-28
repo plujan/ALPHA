@@ -149,6 +149,7 @@ class Diboson : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
         PhotonAnalyzer* thePhotonAnalyzer;
         JetAnalyzer* theJetAnalyzer;
         JetAnalyzer* theFatJetAnalyzer;
+        Utilities* theUtilities;
         //BTagInterface* theBTagInterface;
         std::map<std::string, bool> TriggerMap;
         std::map<std::string, TH1F*> Hist;

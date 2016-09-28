@@ -63,6 +63,8 @@ Diboson::Diboson(const edm::ParameterSet& iConfig):
     theJetAnalyzer      = new JetAnalyzer(JetPSet, consumesCollector());
     theFatJetAnalyzer   = new JetAnalyzer(FatJetPSet, consumesCollector());
     //theBTagAnalyzer     = new BTagAnalyzer(BTagAlgo);
+
+    theUtilities        = new Utilities();
     
     std::vector<std::string> TriggerList(TriggerPSet.getParameter<std::vector<std::string> >("paths"));
     for(unsigned int i = 0; i < TriggerList.size(); i++) TriggerMap[ TriggerList[i] ] = false;
@@ -323,11 +325,11 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         Hist["g_Hpt"]->Fill(genH->pt(), EventWeight);
         Hist["g_HdR"]->Fill(reco::deltaR(genQ1->eta(), genQ1->phi(), genQ2->eta(), genQ2->phi()), EventWeight);
         
-        float genCosThetaStar = Utilities::ReturnCosThetaStar(genX->p4(), genZ->p4());
-        float genCosTheta1    = Utilities::ReturnCosTheta1(genZ->p4(), genL1->p4(), genL2->p4(), genQ1->p4(), genQ2->p4());
-        float genCosTheta2    = fabs( Utilities::ReturnCosTheta2(genH->p4(), genL1->p4(), genL2->p4(), genQ1->p4(), genQ2->p4()) );
-        float genPhi          = Utilities::ReturnPhi(genX->p4(), genL1->p4(), genL2->p4(), genQ1->p4(), genQ2->p4());
-        float genPhi1         = Utilities::ReturnPhi1(genX->p4(), genL1->p4(), genL2->p4());
+        float genCosThetaStar = theUtilities->ReturnCosThetaStar(genX->p4(), genZ->p4());
+        float genCosTheta1    = theUtilities->ReturnCosTheta1(genZ->p4(), genL1->p4(), genL2->p4(), genQ1->p4(), genQ2->p4());
+        float genCosTheta2    = fabs( theUtilities->ReturnCosTheta2(genH->p4(), genL1->p4(), genL2->p4(), genQ1->p4(), genQ2->p4()) );
+        float genPhi          = theUtilities->ReturnPhi(genX->p4(), genL1->p4(), genL2->p4(), genQ1->p4(), genQ2->p4());
+        float genPhi1         = theUtilities->ReturnPhi1(genX->p4(), genL1->p4(), genL2->p4());
         
         Hist["g_CosThetaStar"]->Fill(genCosThetaStar, EventWeight);
         Hist["g_CosTheta1"]->Fill(genCosTheta1, EventWeight);
@@ -663,7 +665,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     else if(isWtoMN) {
         if(Verbose) std::cout << " - Try to reconstruct W -> mn" << std::endl;
         // W kinematic reconstruction
-        float pz = Utilities::RecoverNeutrinoPz(&MuonVect.at(0).p4(), &MET.p4());
+        float pz = theUtilities->RecoverNeutrinoPz(&MuonVect.at(0).p4(), &MET.p4());
         Neutrino.setP4(reco::Particle::LorentzVector(MET.px(), MET.py(), pz, sqrt(MET.pt()*MET.pt() + pz*pz) ));
         theV.addDaughter(MuonVect.at(0));
         theV.addDaughter(Neutrino);
@@ -678,7 +680,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     else if(isWtoEN) {
         if(Verbose) std::cout << " - Try to reconstruct W -> em" << std::endl;
         // W kinematic reconstruction
-        float pz = Utilities::RecoverNeutrinoPz(&ElecVect.at(0).p4(), &MET.p4());
+        float pz = theUtilities->RecoverNeutrinoPz(&ElecVect.at(0).p4(), &MET.p4());
         Neutrino.setP4(reco::Particle::LorentzVector(MET.px(), MET.py(), pz, sqrt(MET.pt()*MET.pt() + pz*pz) ));
         theV.addDaughter(ElecVect.at(0));
         theV.addDaughter(Neutrino);
@@ -827,7 +829,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
 
         //MC truth leading ak4 jets 
         if(isMC && JetsVect.at(0).genParton()!=NULL && JetsVect.at(1).genParton()!=NULL && isGenZZ){
-            if(Utilities::FindMotherId(JetsVect.at(0).genParton())==23 && Utilities::FindMotherId(JetsVect.at(1).genParton())==23){
+            if(theUtilities->FindMotherId(JetsVect.at(0).genParton())==23 && theUtilities->FindMotherId(JetsVect.at(1).genParton())==23){
                 Hist["a_num_H_truth_Hpt"]->Fill(GenZHadPt, EventWeight);
                 Hist["a_num_H_truth_HadDR"]->Fill(GenHadDR, EventWeight);
                 Hist["a_num_H_truth_XMass"]->Fill(GenXMass, EventWeight);
@@ -836,7 +838,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
 
         //MC truth highest pT di-jet
         if(isMC && (ch1<=JetsVect.size() && ch2<=JetsVect.size())  && JetsVect.at(ch1).genParton()!=NULL && JetsVect.at(ch2).genParton()!=NULL && isGenZZ){
-            if(Utilities::FindMotherId(JetsVect.at(ch1).genParton())==23 && Utilities::FindMotherId(JetsVect.at(ch2).genParton())==23){
+            if(theUtilities->FindMotherId(JetsVect.at(ch1).genParton())==23 && theUtilities->FindMotherId(JetsVect.at(ch2).genParton())==23){
 	        Hist["a_num_HHpt_truth_Hpt"]->Fill(GenZHadPt, EventWeight);
 	        Hist["a_num_HHpt_truth_HadDR"]->Fill(GenHadDR, EventWeight);
 	        Hist["a_num_HHpt_truth_XMass"]->Fill(GenXMass, EventWeight);
@@ -867,7 +869,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         //std::cout << "DZ: chosen jets " << ch1 << ", " << ch2 << ", mass " << theHResolvedDZ.mass()  << std::endl;
         //MC truth closest to mZ jets
         if(isMC && (ch1<=JetsVect.size() && ch2<=JetsVect.size()) && JetsVect.at(ch1).genParton()!=NULL && JetsVect.at(ch2).genParton()!=NULL && isGenZZ){
-            if(Utilities::FindMotherId(JetsVect.at(ch1).genParton())==23 && Utilities::FindMotherId(JetsVect.at(ch2).genParton())==23){
+            if(theUtilities->FindMotherId(JetsVect.at(ch1).genParton())==23 && theUtilities->FindMotherId(JetsVect.at(ch2).genParton())==23){
 	        Hist["a_num_HDZ_truth_Hpt"]->Fill(GenZHadPt, EventWeight);
 	        Hist["a_num_HDZ_truth_HadDR"]->Fill(GenHadDR, EventWeight);
 	        Hist["a_num_HDZ_truth_XMass"]->Fill(GenXMass, EventWeight);
@@ -895,7 +897,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
 
         //MC truth closest in DR          
         if(isMC && (ch1<=JetsVect.size() && ch2<=JetsVect.size()) && JetsVect.at(ch1).genParton()!=NULL && JetsVect.at(ch2).genParton()!=NULL && isGenZZ) {
-            if(Utilities::FindMotherId(JetsVect.at(ch1).genParton())==23 && Utilities::FindMotherId(JetsVect.at(ch2).genParton())==23) {
+            if(theUtilities->FindMotherId(JetsVect.at(ch1).genParton())==23 && theUtilities->FindMotherId(JetsVect.at(ch2).genParton())==23) {
                 Hist["a_num_HDR_truth_Hpt"]->Fill(GenZHadPt, EventWeight);
                 Hist["a_num_HDR_truth_HadDR"]->Fill(GenHadDR, EventWeight);
                 Hist["a_num_HDR_truth_XMass"]->Fill(GenXMass, EventWeight);
@@ -983,7 +985,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         reco::Candidate::LorentzVector fJet1 = JetsVect.at(0).p4();
         reco::Candidate::LorentzVector fJet2 = JetsVect.at(1).p4();
         if(Verbose) std::cout << "Performing kinematic fit..." << std::endl;
-        Chi2 = Utilities::PerformKinematicFit(&JetsVect.at(0), &JetsVect.at(1), &fJet1, &fJet2, 125.0);
+        Chi2 = theUtilities->PerformKinematicFit(&JetsVect.at(0), &JetsVect.at(1), &fJet1, &fJet2, 125.0);
         
         // Kinematic Fit Candidates
         thekH = fJet1 + fJet2;
@@ -992,11 +994,11 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         // ########## PART 5: VARIABLES ##########
         if(isZtoMM || isZtoEE) {
             // ---------- Angular ----------
-            CosThetaStar = Utilities::ReturnCosThetaStar(theA.p4(), theV.p4());
-            CosTheta1    = Utilities::ReturnCosTheta1(theV.p4(), theV.daughter(0)->p4(), theV.daughter(1)->p4(), theH.daughter(0)->p4(), theH.daughter(1)->p4());
-            CosTheta2    = fabs( Utilities::ReturnCosTheta2(theH.p4(), theV.daughter(0)->p4(), theV.daughter(1)->p4(), theH.daughter(0)->p4(), theH.daughter(1)->p4()) );
-            Phi          = Utilities::ReturnPhi(theA.p4(), theV.daughter(0)->p4(), theV.daughter(1)->p4(), theH.daughter(0)->p4(), theH.daughter(1)->p4());
-            Phi1         = Utilities::ReturnPhi1(theA.p4(), theV.daughter(0)->p4(), theV.daughter(1)->p4());
+            CosThetaStar = theUtilities->ReturnCosThetaStar(theA.p4(), theV.p4());
+            CosTheta1    = theUtilities->ReturnCosTheta1(theV.p4(), theV.daughter(0)->p4(), theV.daughter(1)->p4(), theH.daughter(0)->p4(), theH.daughter(1)->p4());
+            CosTheta2    = fabs( theUtilities->ReturnCosTheta2(theH.p4(), theV.daughter(0)->p4(), theV.daughter(1)->p4(), theH.daughter(0)->p4(), theH.daughter(1)->p4()) );
+            Phi          = theUtilities->ReturnPhi(theA.p4(), theV.daughter(0)->p4(), theV.daughter(1)->p4(), theH.daughter(0)->p4(), theH.daughter(1)->p4());
+            Phi1         = theUtilities->ReturnPhi1(theA.p4(), theV.daughter(0)->p4(), theV.daughter(1)->p4());
         }
         
         Hist["a_nEvents"]->Fill(5., EventWeight);
