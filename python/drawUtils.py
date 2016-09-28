@@ -113,6 +113,9 @@ def draw(hist, data, back, sign, snorm=1, ratio=0, poisson=False, log=False):
     
     # Legend
     n = len([x for x in data+back+['BkgSum']+sign if samples[x]['plot']])
+    for i, s in enumerate(sign):
+        if 'sublabel' in samples[s]: n+=1
+        if 'subsublabel' in samples[s]: n+=1
     leg = TLegend(0.7, 0.9-0.05*n, 0.95, 0.9)
     leg.SetBorderSize(0)
     leg.SetFillStyle(0) #1001
@@ -122,7 +125,13 @@ def draw(hist, data, back, sign, snorm=1, ratio=0, poisson=False, log=False):
     for i, s in reversed(list(enumerate(['BkgSum']+back))):
         leg.AddEntry(hist[s], samples[s]['label'], "f")
     for i, s in enumerate(sign):
-        if samples[s]['plot']: leg.AddEntry(hist[s], samples[s]['label'].replace("m_{#Chi}=1 GeV", ""), "fl")
+        if samples[s]['plot']: 
+            leg.AddEntry(hist[s], samples[s]['label'].replace("m_{#Chi}=1 GeV", ""), "fl")
+            #print samples[s]
+            if 'sublabel' in samples[s]: 
+                leg.AddEntry(hist[s], samples[s]['sublabel'].replace("m_{#Chi}=1 GeV", ""), "")
+            if 'subsublabel' in samples[s]: 
+                leg.AddEntry(hist[s], samples[s]['subsublabel'].replace("m_{#Chi}=1 GeV", ""), "")
     
     
     # --- Display ---
@@ -395,7 +404,7 @@ def drawCMS(lumi, text, onTop=False):
 #    latex.DrawLatex(0.45, 0.98, "DM monojet")
 
 def drawAnalysis(s, center=False):
-    analyses = {"VZ" : "X #rightarrow VZ #rightarrow llqq", "VH" : "X #rightarrow Vh #rightarrow (ll,l#nu,#nu#nu)bb", "Vh" : "X #rightarrow Vh #rightarrow (ll,l#nu,#nu#nu)bb", "Zh" : "Z' #rightarrow Zh #rightarrow (ll,#nu#nu)bb", "Wh" : "W' #rightarrow Wh #rightarrow l#nu bb", "DM": "DM + heavy flavour", "AZh" : "A #rightarrow Zh #rightarrow llbb"}
+    analyses = {"VZ" : "X #rightarrow ZV #rightarrow llqq", "VH" : "X #rightarrow Vh #rightarrow (ll,l#nu,#nu#nu)bb", "Vh" : "X #rightarrow Vh #rightarrow (ll,l#nu,#nu#nu)bb", "Zh" : "Z' #rightarrow Zh #rightarrow (ll,#nu#nu)bb", "Wh" : "W' #rightarrow Wh #rightarrow l#nu bb", "DM": "DM + heavy flavour", "AZh" : "A #rightarrow Zh #rightarrow llbb", "ZZ" : "G #rightarrow ZZ #rightarrow llqq", "WZ" : "W' #rightarrow ZW #rightarrow llqq", }
     latex = TLatex()
     latex.SetNDC()
     latex.SetTextSize(0.04)
@@ -431,6 +440,7 @@ def drawRegion(channel, left=False):
         elif 'Inc' in channel: text += ", inclusive region"
         elif 'SB' in channel: text += ", sidebands region"
         elif 'SR' in channel: text += ", signal region"
+        elif 'NR' in channel: text += ", inclusive region"
         elif 'MC' in channel: text += ", simulation"
 #    else:
 #        return False

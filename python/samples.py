@@ -1430,7 +1430,7 @@ sample = {
 samples = {
     'data_obs' : {
         'order' : 0,
-        'files' : ['METRun2016B-PromptReco-v1', 'METRun2016B-PromptReco-v2', 'METRun2016C-PromptReco-v2', 'METRun2016D-PromptReco-v2'],#'SingleMuonRun2016B-PromptReco-v1', 'SingleMuonRun2016B-PromptReco-v2', 'SingleMuonRun2016C-PromptReco-v2', 'SingleMuonRun2016D-PromptReco-v2', 'SingleElectronRun2016B-PromptReco-v1', 'SingleElectronRun2016B-PromptReco-v2', 'SingleElectronRun2016C-PromptReco-v2', 'SingleElectronRun2016D-PromptReco-v2', ], #, 'SingleMuonRun2016E-PromptReco-v2','SingleElectronRun2016E-PromptReco-v2',  'METRun2016E-PromptReco-v2'
+        'files' : ['METRun2016B-PromptReco-v1', 'METRun2016B-PromptReco-v2', 'METRun2016C-PromptReco-v2', 'METRun2016D-PromptReco-v2'] + ['SingleMuonRun2016B-PromptReco-v1', 'SingleMuonRun2016B-PromptReco-v2', 'SingleMuonRun2016C-PromptReco-v2', 'SingleMuonRun2016D-PromptReco-v2'] + ['SingleElectronRun2016B-PromptReco-v1', 'SingleElectronRun2016B-PromptReco-v2', 'SingleElectronRun2016C-PromptReco-v2', 'SingleElectronRun2016D-PromptReco-v2'],
         'fillcolor' : 0,
         'fillstyle' : 1,
         'linecolor' : 1,
@@ -1509,7 +1509,7 @@ samples = {
         'linecolor' : 856,
         'linewidth' : 2,
         'linestyle' : 1,
-        'label' : "Z/#gamma(#nu#nu) + jets",
+        'label' : "Z(#nu#nu) + jets",
         'weight': 1.,
         'plot': True,
     },
@@ -1539,7 +1539,7 @@ samples = {
     },
     'WJetsToLNu_HT' : {
         'order' : 2,
-        'files' : ['WJetsToLNu_HT-100To200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0_ext1-v1', 'WJetsToLNu_HT-200To400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0_ext1-v1', 'WJetsToLNu_HT-400To600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0-v1', 'WJetsToLNu_HT-600To800_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0-v1', 'WJetsToLNu_HT-800To1200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0-v2', 'WJetsToLNu_HT-1200To2500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0_ext1-v1', 'WJetsToLNu_HT-2500ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0-v1',],#'WJetsToLNu_HT-800To1200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0_ext1-v1',
+        'files' : ['WJetsToLNu_HT-100To200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0_ext1-v1', 'WJetsToLNu_HT-200To400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0_ext1-v1', 'WJetsToLNu_HT-400To600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0-v1', 'WJetsToLNu_HT-600To800_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0-v1', 'WJetsToLNu_HT-800To1200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0_ext1-v1', 'WJetsToLNu_HT-1200To2500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0_ext1-v1', 'WJetsToLNu_HT-2500ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0-v1'],
         'fillcolor' : 881,
         'fillstyle' : 1001,
         'linecolor' : 881,
@@ -1551,7 +1551,7 @@ samples = {
     },
     'TTbar' : {
         'order' : 3,
-        'files' : ['TT_TuneCUETP8M1_13TeV-powheg-pythia8_v0_ext4_red4-v1'],
+        'files' : ['TT_TuneCUETP8M1_13TeV-powheg-pythia8_v0_ext4-v1'],
         #'files' : ['TTTo2L2Nu_13TeV-powheg_v0_ext1-v1', 'TTToSemiLeptonic_13TeV-powheg_v0_ext1-v1'],
         'fillcolor' : 798,
         'fillstyle' : 1001,
@@ -1564,6 +1564,31 @@ samples = {
     },
     'TTbar-red' : {
         'order' : 3,
+        'files' : ['TT_TuneCUETP8M1_13TeV-powheg-pythia8_v0_ext4_red4-v1'],
+        #'files' : ['TTTo2L2Nu_13TeV-powheg_v0_ext1-v1', 'TTToSemiLeptonic_13TeV-powheg_v0_ext1-v1'],
+        'fillcolor' : 798,
+        'fillstyle' : 1001,
+        'linecolor' : 798,
+        'linewidth' : 2,
+        'linestyle' : 1,
+        'label' : "t#bar{t}",#, single t
+        'weight': 1.,
+        'plot': True,
+    },
+    'TTbarLep' : {
+        'order' : 3,
+        'files' : ['TTTo2L2Nu_13TeV-powheg_v0_ext1-v1', 'TTToSemiLeptonic_13TeV-powheg_v0_ext1-v1'],
+        'fillcolor' : 798,
+        'fillstyle' : 1001,
+        'linecolor' : 798,
+        'linewidth' : 2,
+        'linestyle' : 1,
+        'label' : "t#bar{t}",#, single t
+        'weight': 1.,
+        'plot': True,
+    },
+    'TTbarLep-red' : {
+        'order' : 3,
         'files' : ['TTTo2L2Nu_13TeV-powheg_v0_ext1_red1-v1', 'TTToSemiLeptonic_13TeV-powheg_v0_ext1_red1-v1'],
         'fillcolor' : 798,
         'fillstyle' : 1001,
@@ -1573,10 +1598,10 @@ samples = {
         'label' : "t#bar{t}",#, single t
         'weight': 1.,
         'plot': True,
-    },    
+    },
     'ST' : {
         'order' : 4,
-        'files' : ['ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1_v0-v2','ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1_v0-v1'],#['ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1-v1', 'ST_t-channel_antitop_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1-v1', 'ST_t-channel_top_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1-v1', 'ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1-v1', 'ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1-v2'],
+        'files' : ['ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1-v1', 'ST_t-channel_antitop_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1-v1', 'ST_t-channel_top_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1-v1', 'ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1-v1', 'ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1-v2'],
         'fillcolor' : 801,
         'fillstyle' : 1001,
         'linecolor' : 801,
@@ -1588,9 +1613,19 @@ samples = {
     },
     'VV' : {
         'order' : 5,
-        #'files' : ['WW_TuneCUETP8M1_13TeV-pythia8_v0-v1','WZ_TuneCUETP8M1_13TeV-pythia8_v0-v1','ZZ_TuneCUETP8M1_13TeV-pythia8_v0-v1'],
-        #'files' : ['VVTo2L2Nu_13TeV_amcatnloFXFX_madspin_pythia8_v0-v1'],
-        'files' : ['WWToLNuQQ_13TeV-powheg_v0_ext1-v1','WZTo1L1Nu2Q_13TeV_amcatnloFXFX_madspin_pythia8_v0-v1','WZTo1L3Nu_13TeV_amcatnloFXFX_madspin_pythia8_v0-v1','WZTo3LNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_v0-v1','ZZTo2Q2Nu_13TeV_amcatnloFXFX_madspin_pythia8_v0-v1'],#['ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8_v0-v1', 'WZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8_v0-v1'],#
+        'files' : ['WWToLNuQQ_13TeV-powheg_v0_ext1-v1','WZTo1L1Nu2Q_13TeV_amcatnloFXFX_madspin_pythia8_v0-v1','WZTo1L3Nu_13TeV_amcatnloFXFX_madspin_pythia8_v0-v1','WZTo3LNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_v0-v1','ZZTo2Q2Nu_13TeV_amcatnloFXFX_madspin_pythia8_v0-v1','ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8_v0-v1', 'WZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8_v0-v1'],#
+        'fillcolor' : 602,
+        'fillstyle' : 1001,
+        'linecolor' : 602,
+        'linewidth' : 2,
+        'linestyle' : 1,
+        'label' : "VV",
+        'weight': 1.,
+        'plot': True,
+    },
+    'VV2L2Q' : {
+        'order' : 5,
+        'files' : ['ZZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8_v0-v1', 'WZTo2L2Q_13TeV_amcatnloFXFX_madspin_pythia8_v0-v1'],
         'fillcolor' : 602,
         'fillstyle' : 1001,
         'linecolor' : 602,
@@ -1798,6 +1833,7 @@ samples = {
         #'plot': True,
     #},
     
+    ### BulkG -> Zhad Zlep
     'XZZ_M600' : {
         'order' : 1001,
         'files' : ['BulkGravToZZToZlepZhad_narrow_M-600_13TeV-madgraph_v14-v1'],
@@ -1858,6 +1894,20 @@ samples = {
         'weight': 1.,
         'plot': True,
     },
+    'XZZ_M800x10' : {
+        'order' : 1001,
+        'files' : ['BulkGravToZZToZlepZhad_narrow_M-800_13TeV-madgraph_v14-v1'],
+        'fillcolor' : 623,
+        'fillstyle' : 3005,
+        'linecolor' : 625,
+        'linewidth' : 3,
+        'linestyle' : 1,
+        'label' : "m_{X} = 800 GeV",
+        'sublabel' : "G_{Bulk} #rightarrow Z_{had}Z_{lep}",
+        'subsublabel' : "(x10)",
+        'weight': 10.,
+        'plot': True,
+    },    
     'XZZ_M1000' : {
         'order' : 1001,
         'files' : ['BulkGravToZZToZlepZhad_narrow_M-1000_13TeV-madgraph_v14-v1'],
@@ -1875,7 +1925,7 @@ samples = {
         'files' : ['BulkGravToZZToZlepZhad_narrow_M-1200_13TeV-madgraph_v14-v1'],
         'fillcolor' : 625,
         'fillstyle' : 3005,
-        'linecolor' : 628,
+        'linecolor' : 632,
         'linewidth' : 3,
         'linestyle' : 1,
         'label' : "m_{X} = 1200 GeV",
@@ -1887,7 +1937,7 @@ samples = {
         'files' : ['BulkGravToZZToZlepZhad_narrow_M-1400_13TeV-madgraph_v14-v1'],
         'fillcolor' : 628,
         'fillstyle' : 3005,
-        'linecolor' : 629,
+        'linecolor' : 632,
         'linewidth' : 3,
         'linestyle' : 1,
         'label' : "m_{X} = 1400 GeV",
@@ -1899,7 +1949,7 @@ samples = {
         'files' : ['BulkGravToZZToZlepZhad_narrow_M-1600_13TeV-madgraph_v14-v1'],
         'fillcolor' : 628,
         'fillstyle' : 3005,
-        'linecolor' : 629,
+        'linecolor' : 633,
         'linewidth' : 3,
         'linestyle' : 1,
         'label' : "m_{X} = 1600 GeV",
@@ -1911,7 +1961,7 @@ samples = {
         'files' : ['BulkGravToZZToZlepZhad_narrow_M-1800_13TeV-madgraph_v14-v1'],
         'fillcolor' : 629,
         'fillstyle' : 3005,
-        'linecolor' : 633,
+        'linecolor' : 629,
         'linewidth' : 3,
         'linestyle' : 1,
         'label' : "m_{X} = 1800 GeV",
@@ -1923,13 +1973,37 @@ samples = {
         'files' : ['BulkGravToZZToZlepZhad_narrow_M-2000_13TeV-madgraph_v14-v1'],
         'fillcolor' : 633,
         'fillstyle' : 3005,
-        'linecolor' : 634,
+        'linecolor' : 630,
         'linewidth' : 3,
         'linestyle' : 1,
         'label' : "m_{X} = 2000 GeV",
         'weight': 1.,
         'plot': True,
     },
+    'XZZ_M2200' : {
+        'order' : 1001,
+        'files' : [],
+        'fillcolor' : 633,
+        'fillstyle' : 3005,
+        'linecolor' : 634,
+        'linewidth' : 3,
+        'linestyle' : 1,
+        'label' : "m_{X} = 2200 GeV",
+        'weight': 1.,
+        'plot': True,
+    },    
+    'XZZ_M2400' : {
+        'order' : 1001,
+        'files' : [],
+        'fillcolor' : 633,
+        'fillstyle' : 3005,
+        'linecolor' : 634,
+        'linewidth' : 3,
+        'linestyle' : 1,
+        'label' : "m_{X} = 2400 GeV",
+        'weight': 1.,
+        'plot': True,
+    },    
     'XZZ_M2500' : {
         'order' : 1001,
         'files' : ['BulkGravToZZToZlepZhad_narrow_M-2500_13TeV-madgraph_v14-v2'],
@@ -1942,12 +2016,36 @@ samples = {
         'weight': 1.,
         'plot': True,
     },
+    'XZZ_M2600' : {
+        'order' : 1001,
+        'files' : [],
+        'fillcolor' : 633,
+        'fillstyle' : 3005,
+        'linecolor' : 634,
+        'linewidth' : 3,
+        'linestyle' : 1,
+        'label' : "m_{X} = 2600 GeV",
+        'weight': 1.,
+        'plot': True,
+    },
+    'XZZ_M2800' : {
+        'order' : 1001,
+        'files' : [],
+        'fillcolor' : 633,
+        'fillstyle' : 3005,
+        'linecolor' : 635,
+        'linewidth' : 3,
+        'linestyle' : 1,
+        'label' : "m_{X} = 2800 GeV",
+        'weight': 1.,
+        'plot': True,
+    },   
     'XZZ_M3000' : {
         'order' : 1001,
         'files' : ['BulkGravToZZToZlepZhad_narrow_M-3000_13TeV-madgraph_v14-v1'],
         'fillcolor' : 634,
         'fillstyle' : 3005,
-        'linecolor' : 635,
+        'linecolor' : 636,
         'linewidth' : 3,
         'linestyle' : 1,
         'label' : "m_{X} = 3000 GeV",
@@ -1991,6 +2089,7 @@ samples = {
         'plot': True,
     },
     
+    ### HVT W' -> Whad Zlep
     'XWZ_M600' : {
         'order' : 1001,
         'files' : ['WprimeToWZToWhadZlep_narrow_M-600_13TeV-madgraph_v14-v1'],
@@ -2044,7 +2143,7 @@ samples = {
         'files' : ['WprimeToWZToWhadZlep_narrow_M-1400_13TeV-madgraph_v14-v1'],
         'fillcolor' : 628,
         'fillstyle' : 3005,
-        'linecolor' : 629,
+        'linecolor' : 633,
         'linewidth' : 3,
         'linestyle' : 1,
         'label' : "m_{W'} = 1400 GeV",
@@ -2147,8 +2246,8 @@ samples = {
         'weight': 1.,
         'plot': True,
     },
-        
-    #ZhadZinv
+                
+    ### BulkG -> Zhad Zinv
     'XZZInv_M600' : {
         'order' : 1001,
         'files' : ['BulkGravToZZToZhadZinv_narrow_M-600_13TeV-madgraph_v14-v1'],
@@ -2306,7 +2405,7 @@ samples = {
         'plot': True,
     },
     
-    # AZh
+    ### A -> Zlep hbb
         'AZh_M225' : {
         'order' : 1001,
         'files' : ['GluGluToAToZhToLLBB_M225_13TeV-amcatnlo'],
