@@ -247,27 +247,23 @@ void HHAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       Muons.emplace_back();
       ObjectsFormat::FillMuonType(Muons[i], &MuonVect[i], isMC);
     }
-    Jets.clear();
-    for(unsigned int i = 0; i < JetsVect.size(); i++) {
-      Jets.emplace_back();
-      ObjectsFormat::FillJetType(Jets[i], &JetsVect[i], isMC);
-    }
+    alp::convert(JetsVect, Jets);
     ObjectsFormat::FillMEtType(MEt, &MET, isMC);
 
     // fill sorting vectors
     j_sort_pt = std::vector<std::size_t>(Jets.size());
     std::iota(j_sort_pt.begin(), j_sort_pt.end(), 0);
-    auto pt_comp = [&](std::size_t a, std::size_t b) {return Jets.at(a).pt > Jets.at(b).pt;};
+    auto pt_comp = [&](std::size_t a, std::size_t b) {return Jets.at(a).pt() > Jets.at(b).pt();};
     std::sort(j_sort_pt.begin(), j_sort_pt.end(), pt_comp ); 
 
     j_sort_csv = std::vector<std::size_t>(Jets.size());
     std::iota(j_sort_csv.begin(), j_sort_csv.end(), 0);
-    auto csv_comp = [&](std::size_t a, std::size_t b) {return Jets.at(a).CSV > Jets.at(b).CSV;};
+    auto csv_comp = [&](std::size_t a, std::size_t b) {return Jets.at(a).CSV() > Jets.at(b).CSV();};
     std::sort(j_sort_csv.begin(), j_sort_csv.end(), csv_comp);
 
     j_sort_cmva = std::vector<std::size_t>(Jets.size());
     std::iota(j_sort_cmva.begin(), j_sort_cmva.end(), 0);
-    auto cmva_comp = [&](std::size_t a, std::size_t b) {return Jets.at(a).CMVA > Jets.at(b).CMVA;};
+    auto cmva_comp = [&](std::size_t a, std::size_t b) {return Jets.at(a).CMVA() > Jets.at(b).CMVA();};
     std::sort(j_sort_cmva.begin(), j_sort_cmva.end(), cmva_comp);
 
     // fill b quarks from higgs
@@ -290,10 +286,10 @@ void HHAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
       Hist["a_nEvents"]->Fill(3., EventWeight);
 
       // --- b-Tag selection ---
-      if( Jets.at(j_sort_csv[0]).CSV > 0.800) Hist["a_nEvents"]->Fill(4., EventWeight);
-      if( Jets.at(j_sort_csv[1]).CSV > 0.800) Hist["a_nEvents"]->Fill(5., EventWeight);
-      if( Jets.at(j_sort_csv[2]).CSV > 0.800) Hist["a_nEvents"]->Fill(6., EventWeight);
-      if( Jets.at(j_sort_csv[3]).CSV > 0.800) Hist["a_nEvents"]->Fill(7., EventWeight);      
+      if( Jets.at(j_sort_csv[0]).CSV() > 0.800) Hist["a_nEvents"]->Fill(4., EventWeight);
+      if( Jets.at(j_sort_csv[1]).CSV() > 0.800) Hist["a_nEvents"]->Fill(5., EventWeight);
+      if( Jets.at(j_sort_csv[2]).CSV() > 0.800) Hist["a_nEvents"]->Fill(6., EventWeight);
+      if( Jets.at(j_sort_csv[3]).CSV() > 0.800) Hist["a_nEvents"]->Fill(7., EventWeight);      
     }
     
     // Fill tree
