@@ -96,6 +96,8 @@
 //#include "BTagInterface.h"
 #include "Utilities.h"
 
+#include "../interface/alp_converters.h"
+
 
 //
 // class declaration
@@ -158,7 +160,7 @@ class HHAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
         // object collections
         std::vector<LeptonType> Electrons;
         std::vector<LeptonType> Muons;
-        std::vector<JetType> Jets;
+        std::vector<alp::Jet> Jets;
         std::vector<FatJetType> FatJets;
         MEtType MEt;
         std::vector<LorentzType> GenBFromHs;
