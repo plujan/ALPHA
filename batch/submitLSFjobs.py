@@ -67,6 +67,8 @@ for l in filelists:
     print '\nSplitting',l,'in',len(sublists),'chunk(s) of approximately',njobs,'files each'
     lfold = options.output+'/'+l
     os.system('mkdir '+lfold)
+    if lfold.find('lustre')!= -1: outputbase = ""
+    else: outputbase = options.base
 
     ########## LOOP ON LSF JOB ##########
     for x in range(len(sublists)):
@@ -93,7 +95,7 @@ for l in filelists:
             fout.write('eval `scram runtime -sh`\n')
             fout.write('ls\n')
             fout.write('echo "running"\n')
-            fout.write('cmsRun '+options.base+options.cfg+' inputFiles='+options.base+lsubfold+'/list.txt\n')
+            fout.write('cmsRun '+options.base+options.cfg+' inputFiles='+outputbase+lsubfold+'/list.txt\n')
             #fout.write('cmsRun '+options.base+options.cfg+' outputFile_clear outputFile='+outname+'.root inputFiles_clear inputFiles_load='+lsubfold+'/list.txt\n')
             fout.write('exit $?\n') 
             fout.write('echo ""\n')
