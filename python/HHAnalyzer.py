@@ -1,6 +1,8 @@
 #FIXME JSON file here
 # New electron SF
 # Check muon SF
+# TO EXECUTE: 
+# cmsRun python/HHAnalyzer.py maxEvents=10
 
 import FWCore.ParameterSet.Config as cms
 from FWCore.ParameterSet.VarParsing import VarParsing
@@ -12,6 +14,9 @@ options.register ('tCut', 0, options.multiplicity.singleton, options.varType.int
                   "Trigger cut on/off")
 options.parseArguments()
 
+#Un-comment to change output name - default is 'output' (useful for debug)
+#options.outputFile = 'test'
+
 # Determine sample name for MC stitching
 sample = (options.inputFiles[0]).split('/')[-1].replace('.txt', '') if len(options.inputFiles) > 0 else ''
 if sample=='list': sample = (options.inputFiles[0]).split('/')[-3]
@@ -21,7 +26,7 @@ process = cms.Process('ALPHA')
 process.load('FWCore.MessageService.MessageLogger_cfi')
 process.MessageLogger.cerr.threshold = 'ERROR'
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(options.maxEvents) )
 
 # input
 # default: if no filelist from command line, run on specified samples
@@ -30,10 +35,11 @@ if len(options.inputFiles) == 0:
     process.source = cms.Source('PoolSource',
         fileNames = cms.untracked.vstring(
             # one single HH SM sample for test (events in DAS: 43877)
-#            'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISpring16MiniAODv2/GluGluToHHTo4B_node_SM_13TeV-madgraph/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/70000/205E4ECB-FE3A-E611-9870-0CC47A1E046A.root'
+            'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISpring16MiniAODv2/GluGluToHHTo4B_node_SM_13TeV-madgraph/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/70000/205E4ECB-FE3A-E611-9870-0CC47A1E046A.root'
             #'root://xrootd-cms.infn.it///store/mc/RunIISpring16MiniAODv2/GluGluToHHTo4B_node_SM_13TeV-madgraph/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/70000/205E4ECB-FE3A-E611-9870-0CC47A1E046A.root'
+            #'root://xrootd-cms.infn.it//store/mc/RunIISpring16MiniAODv2/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/80000/C014DCF9-AF3A-E611-A998-782BCB5094C5.root'
             #DATA Run2016 - BTagCSV :
-            'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016D/BTagCSV/MINIAOD/PromptReco-v2/000/276/542/00000/F29C90C5-E349-E611-A453-02163E01374E.root'
+            # 'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016D/BTagCSV/MINIAOD/PromptReco-v2/000/276/542/00000/F29C90C5-E349-E611-A453-02163E01374E.root'
         )
     )
 # production: read externally provided filelist
@@ -43,7 +49,7 @@ else:
 
 #output
 process.TFileService = cms.Service('TFileService',
-    fileName = cms.string('output.root' if len(options.outputFile) == 0 else options.outputFile),
+    fileName = cms.string('output.root' if not options.outputFile else options.outputFile),
     closeFileFast = cms.untracked.bool(True)
 )
 
@@ -53,6 +59,7 @@ isCustom = ('GluGluToAToZhToLLBB' in process.source.fileNames[0])
 isReHLT = ('_reHLT_' in process.source.fileNames[0])
 print 'Running on', ('data' if isData else 'MC'), ', sample is', sample
 if isReHLT: print '-> re-HLT sample'
+print 'maxEvents = ', options.maxEvents
 
 # Print trigger cut status
 if not isData: print 'Trigger cut is', ('off' if options.tCut == 0 else 'on')
