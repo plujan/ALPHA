@@ -1,6 +1,8 @@
 #FIXME JSON file here
 # New electron SF
 # Check muon SF
+# TO EXECUTE: 
+# cmsRun python/HHAnalyzer.py maxEvents=10
 
 import FWCore.ParameterSet.Config as cms
 from FWCore.ParameterSet.VarParsing import VarParsing
@@ -24,7 +26,7 @@ process = cms.Process('ALPHA')
 process.load('FWCore.MessageService.MessageLogger_cfi')
 process.MessageLogger.cerr.threshold = 'ERROR'
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(options.maxEvents) )
 
 # input
 # default: if no filelist from command line, run on specified samples
@@ -57,6 +59,7 @@ isCustom = ('GluGluToAToZhToLLBB' in process.source.fileNames[0])
 isReHLT = ('_reHLT_' in process.source.fileNames[0])
 print 'Running on', ('data' if isData else 'MC'), ', sample is', sample
 if isReHLT: print '-> re-HLT sample'
+print 'maxEvents = ', options.maxEvents
 
 # Print trigger cut status
 if not isData: print 'Trigger cut is', ('off' if options.tCut == 0 else 'on')
