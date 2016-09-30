@@ -57,7 +57,7 @@ rm samplelist.txt
 if [[ "$1" == "MC" ]]
 then
     rm filelists/Spring16/QCD*GenJets5*
-    rm filelists/Spring16/QCD*BGenFilter*
+    #rm filelists/Spring16/QCD*BGenFilter*
     #rm filelists/Spring16/DYB*
     rm filelists/Spring16/*Contin*
     rm filelists/Spring16/GJets*
