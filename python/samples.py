@@ -458,6 +458,12 @@ sample = {
 #        'xsec'    : 1.,
 #        'kfactor' : 1.,
 #    },
+    'TT_TuneCUETP8M1_13TeV-powheg-pythia8_v14_ext3-v1' : { # currently with xrootd
+        'nevents' : 92925926,
+        'xsec'    : 831.76, #*(6./9.)*(6./9.) FIXME
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
     'TT_TuneCUETP8M1_13TeV-powheg-pythia8_v0_ext4-v1' : {
         'nevents' : 182123200,
         'xsec'    : 831.76*(6./9.)*(6./9.),
