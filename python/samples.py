@@ -567,14 +567,14 @@ sample = {
         'kfactor' : 1.,
     },
 
-    'TTZToQQ_TuneCUETP8M1_13TeV-amcatnlo-pythia8_v0-v1' : { # via xrootd
+    'TTZToQQ_TuneCUETP8M1_13TeV-amcatnlo-pythia8_v0-v1' : {
         'nevents' : 749400.,
         'xsec'    : 1., #FIXME
         'matcheff': 1.,
         'kfactor' : 1.,
     },
 
-    'ttHTobb_M125_13TeV_powheg_pythia8_v14-v1' : { # via xrootd
+    'ttHTobb_M125_13TeV_powheg_pythia8_v14-v1' : {
         'nevents' : 3912212.,
         'xsec'    : 1., #FIXME
         'matcheff': 1.,

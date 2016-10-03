@@ -60,7 +60,9 @@ filelists = [
         'QCD_HT700to1000_BGenFilter_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0-v1',
 
         # TOP
+        'ttHTobb_M125_13TeV_powheg_pythia8_v14-v1',
         'TTWJetsToQQ_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8_v0-v1',
+        'TTZToQQ_TuneCUETP8M1_13TeV-amcatnlo-pythia8_v0-v1',
         'ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1_v0-v2',
         'ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1_v0-v1',
 
