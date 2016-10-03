@@ -22,6 +22,8 @@ namespace alp {
     }
     dest.partonFlavour_ = orig.partonFlavour();
     dest.hadronFlavour_ = orig.hadronFlavour();
+    dest.ptRaw_ = orig.correctedJet(0).pt();
+    dest.JESunc_ = orig.userFloat("JESUncertainty");
 
     // bDiscriminators
     std::vector<std::string> bDiscs = { "pfCombinedInclusiveSecondaryVertexV2BJetTags",
@@ -36,7 +38,8 @@ namespace alp {
                                         "CMVAR",
                                         "CMVARUp",
                                         "CMVARDown",
-                                        "QGLikelihood"};
+                                        "QGLikelihood"
+                                       };
     for (const auto & oDisc : oDiscs) {
       if (orig.hasUserFloat(oDisc)) {
         dest.discs_.emplace_back(oDisc, orig.userFloat(oDisc));

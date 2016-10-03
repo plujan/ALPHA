@@ -275,6 +275,11 @@ process.ntuple = cms.EDAnalyzer('HHAnalyzer',
           'HLT_QuadJet45_DoubleBTagCSV_p087_v',
           'HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v',
           'HLT_DoubleJet90_Double30_DoubleBTagCSV_p087_v',
+          'HLT_DoubleJet90_Double30_DoubleBTagCSV_p087_v',
+          'HLT_BIT_HLT_IsoMu18_v', #for trigger efficiency study
+          'HLT_BIT_HLT_IsoMu20_v',
+          'HLT_BIT_HLT_IsoMu22_v',
+          'HLT_BIT_HLT_Mu27_v',
         ),
     ),
     electronSet = cms.PSet(
