@@ -55,6 +55,12 @@ namespace alp {
         hadronFlavour_(rhs.hadronFlavour_),
         ptRaw_(rhs.ptRaw_),
         JESunc_(rhs.JESunc_),
+        puId_(rhs.puId_),
+        mult_(rhs.mult_),
+        chm_(rhs.chm_),
+        chf_(rhs.chf_),
+        nhf_(rhs.nhf_),
+        muf_(rhs.muf_),
         discs_(rhs.discs_),
         ids_(rhs.ids_) {}
 
@@ -89,7 +95,13 @@ namespace alp {
       float CMVA() const { return disc(CMVA_name);}
       float ptRaw() const { return ptRaw_;};
       float JESunc() const { return JESunc_;};
-      
+      float puId() const { return puId_;};
+      float mult() const { return mult_;};
+      float chm() const { return chm_;};
+      float chf() const { return chf_;};
+      float nhf() const { return nhf_;};
+      float muf() const { return muf_;};
+     
     // attributes (also public)
 
       // flavour attributes (0 if data/undefined)
@@ -97,6 +109,12 @@ namespace alp {
       int hadronFlavour_ = 0;
       float ptRaw_ = 0;
       float JESunc_ = 0;
+      float puId_ = 0;
+      float mult_ = 0;
+      float chm_ = 0;
+      float chf_ = 0;
+      float nhf_ = 0;
+      float muf_ = 0;
 
       // to keep float discriminator values
       StringFloatPairVector discs_ = {};

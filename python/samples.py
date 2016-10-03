@@ -1416,13 +1416,7 @@ sample = {
         'xsec'    : 6831.,
         'matcheff': 1.,
         'kfactor' : 1.,
-    },
-    'QCD_HT2000toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0-v1' : {
-        'nevents' : 300000,
-        'xsec'    : 1.,
-        'matcheff': 1.,
-        'kfactor' : 1.,
-    },
+    },   
     
     # Background QCD bEnriched FIXME  xsec
     'QCD_bEnriched_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0-v1' : {
