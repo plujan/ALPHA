@@ -11,8 +11,8 @@ fi
 if [[ "$1" == "MC" ]]
 then
     python2.6 batch/get_ds_file_info.py -d "/*/*RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2*/MINIAOD*" > query.txt
-    python2.6 batch/get_ds_file_info.py -d "/*/*RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1*/MINIAOD*" >> query.txt #append reHLT
-     # for MC
+    python2.6 batch/get_ds_file_info.py -d "/*/*RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic*/MINIAOD*" >> query.txt # append reHLT samples to query
+    # for MC
 else
     if [[ "$2" == "B" ]] || [[ "$2" == "C" ]] || [[ "$2" == "D" ]] || [[ "$2" == "E" ]]
     then
@@ -29,7 +29,7 @@ tmpname=$(cat query.txt | awk '{print $4}' | sed -e 's/to//g')
 echo File to be read: $tmpname
 
 # step 2: get list of the samples names (with postfix)
-cat query.txt | grep MINIAOD | awk '{print $1}' | sed -e 's/\/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2//g' | sed -e 's/\/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1//g' | sed -e 's/\/MINIAODSIM//g' | sed -e 's/\/MINIAOD//g' | sed -e 's/\///g' > samplelist.txt
+cat query.txt | grep MINIAOD | awk '{print $1}' | sed -e 's/\/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2//g' | sed -e 's/\/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic//g' | sed -e 's/\/MINIAODSIM//g' | sed -e 's/\/MINIAOD//g' | sed -e 's/\///g' > samplelist.txt
 
 # step 3: get filelist form the dump, filter it, and dump it into appropriate files
 cat samplelist.txt | while read sample

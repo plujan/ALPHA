@@ -39,7 +39,7 @@ if len(options.inputFiles) == 0:
             #'root://xrootd-cms.infn.it///store/mc/RunIISpring16MiniAODv2/GluGluToHHTo4B_node_SM_13TeV-madgraph/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/70000/205E4ECB-FE3A-E611-9870-0CC47A1E046A.root'
             #'root://xrootd-cms.infn.it//store/mc/RunIISpring16MiniAODv2/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/80000/C014DCF9-AF3A-E611-A998-782BCB5094C5.root'
             #DATA Run2016 - BTagCSV :
-            # 'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016D/BTagCSV/MINIAOD/PromptReco-v2/000/276/542/00000/F29C90C5-E349-E611-A453-02163E01374E.root'
+            #'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016D/BTagCSV/MINIAOD/PromptReco-v2/000/276/542/00000/F29C90C5-E349-E611-A453-02163E01374E.root'
         )
     )
 # production: read externally provided filelist
@@ -275,6 +275,11 @@ process.ntuple = cms.EDAnalyzer('HHAnalyzer',
           'HLT_QuadJet45_DoubleBTagCSV_p087_v',
           'HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v',
           'HLT_DoubleJet90_Double30_DoubleBTagCSV_p087_v',
+          'HLT_DoubleJet90_Double30_DoubleBTagCSV_p087_v',
+          'HLT_BIT_HLT_IsoMu18_v', #for trigger efficiency study
+          'HLT_BIT_HLT_IsoMu20_v',
+          'HLT_BIT_HLT_IsoMu22_v',
+          'HLT_BIT_HLT_Mu27_v',
         ),
     ),
     electronSet = cms.PSet(
