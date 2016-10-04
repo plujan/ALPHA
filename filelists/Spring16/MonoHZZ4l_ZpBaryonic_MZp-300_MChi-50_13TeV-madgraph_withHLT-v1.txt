@@ -1,0 +1,2 @@
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISpring16MiniAODv2/MonoHZZ4l_ZpBaryonic_MZp-300_MChi-50_13TeV-madgraph/MINIAODSIM/premix_withHLT_80X_mcRun2_asymptotic_v14-v1/100000/F8D1C65D-746E-E611-807B-20CF3027A607.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISpring16MiniAODv2/MonoHZZ4l_ZpBaryonic_MZp-300_MChi-50_13TeV-madgraph/MINIAODSIM/premix_withHLT_80X_mcRun2_asymptotic_v14-v1/00000/DA285D0C-5F6F-E611-89E4-B083FED42488.root

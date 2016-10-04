@@ -1,0 +1,7 @@
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/FSQJets/MINIAOD/01Jul2016-v2/10000/9262DC3A-8446-E611-985E-A0000420FE80.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/FSQJets/MINIAOD/01Jul2016-v2/10000/264B46EC-9C45-E611-A2C8-B8CA3A70B608.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/FSQJets/MINIAOD/01Jul2016-v2/00000/CEAC5005-F047-E611-9748-002590574546.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/FSQJets/MINIAOD/01Jul2016-v2/10000/6A653444-8E46-E611-B5F8-001E67DDBFC5.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/FSQJets/MINIAOD/01Jul2016-v2/10000/66D97E73-CE44-E611-83A4-1CC1DE19257E.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/FSQJets/MINIAOD/01Jul2016-v2/10000/D2CE7770-CC44-E611-B5AB-5065F37D4131.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/FSQJets/MINIAOD/01Jul2016-v2/10000/12475B29-8843-E611-BB11-0025B3E0214E.root
