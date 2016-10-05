@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# Filelist for HH->4b
+# Sample lists for HH->4b
 
-filelists = [ 
+samplelists = [ 
 ####### DATA
         'BTagCSVRun2016D-PromptReco-v2',
         'SingleMuonRun2016D-PromptReco-v2', # for trigger study
@@ -90,4 +90,19 @@ filelists = [
         'WJetsToLNu_HT-800To1200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0-v2',
         'WJetsToLNu_HT-800To1200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0_ext1-v1',
 
+      ##to be checked
+	# TT reHLT
+        #'TT_TuneCUETP8M1_13TeV-powheg-pythia8_v14_ext3-v1',
+        #'ST_t-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1_v14_ext1-v1',
+        #'ZH_HToBB_ZToQQ_M125_13TeV_powheg_pythia8_v14-v1',
+        #'ZJetsToQQ_HT600toInf_13TeV-madgraph_v14-v1',
+        #'GluGluHToBB_M125_13TeV_powheg_pythia8_v14-v1',
+        #'GluGluHToBB_M125_13TeV_powheg_pythia8_v14_ext1-v1',
+        #'VBFHToBB_M-125_13TeV_powheg_pythia8_weightfix_v14-v1',
+        #'VBFHToBB_M-125_13TeV_powheg_pythia8_weightfix_v14_ext1-v1',
+        #'WJetsToQQ_HT-600ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0-v1',
+        #'DYJetsToQQ_HT180_13TeV-madgraphMLM-pythia8_v0-v1',
+        #'TTTT_TuneCUETP8M1_13TeV-amcatnlo-pythia8_v0_ext1-v1',
+        #'ttbb_4FS_ckm_amcatnlo_madspin_pythia8_v0_ext1-v1',
+        #'ZZTo4Q_13TeV_amcatnloFXFX_madspin_pythia8_v0-v1',
 ]

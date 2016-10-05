@@ -683,7 +683,12 @@ sample = {
         #'matcheff': 1.,
         #'kfactor' : 1.,
     #},
-    
+    'ZZTo4Q_13TeV_amcatnloFXFX_madspin_pythia8_v0-v1' : {
+        'nevents' : 29948451.,
+        'xsec'    : 1., #FIXME
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },   
     
     'WZ_TuneCUETP8M1_13TeV-pythia8_v0-v1' : {
         'nevents' : 1000000.,
