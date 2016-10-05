@@ -296,6 +296,12 @@ sample = {
         'matcheff': 0.41,
         'kfactor' : 1.,
     },
+    'DYJetsToNuNu_PtZ-650ToInf_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_v0-v1' : {
+        'nevents' : 1017947,
+        'xsec' : 0.1042, #0.02639,
+        'matcheff': 0.42,
+        'kfactor' : 1.,
+    },
     'DYJetsToQQ_HT180_13TeV-madgraphMLM-pythia8_v0-v1' : { # via xrootd
         'nevents' : 12052369,
         'xsec'    : 1., #FIXME
