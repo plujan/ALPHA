@@ -105,4 +105,5 @@ samplelists = [
         #'TTTT_TuneCUETP8M1_13TeV-amcatnlo-pythia8_v0_ext1-v1',
         #'ttbb_4FS_ckm_amcatnlo_madspin_pythia8_v0_ext1-v1',
         #'ZZTo4Q_13TeV_amcatnloFXFX_madspin_pythia8_v0-v1',
+        #'TTWJetsToQQ_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8_v0-v1',
 ]

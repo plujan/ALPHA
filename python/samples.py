@@ -368,8 +368,12 @@ sample = {
         'matcheff': 0.1,
         'kfactor' : 1.391,
     },
-    
-    
+    'ZJetsToQQ_HT600toInf_13TeV-madgraph_v14-v1' : {
+        'nevents' : 992590.,
+        'xsec'    : 1., #FIXME
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },    
     
     'WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_v0-v1' : {
         'nevents' : 9908534,
@@ -566,6 +570,13 @@ sample = {
     'TTWJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8_v0-v1' : {
         'nevents' : 1.,
         'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+
+    'TTWJetsToQQ_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8_v0-v1' : {
+        'nevents' : 833298.,
+        'xsec'    : 1., #FIXME
         'matcheff': 1.,
         'kfactor' : 1.,
     },
