@@ -471,6 +471,12 @@ sample = {
         'matcheff': 1.,
         'kfactor' : 1.,
     },
+    'TTToSemiLeptonic_13TeV-powheg_ext1-v2' : {
+        'nevents' : 82172328,
+        'xsec'    : 831.76*(6./9.)*(3./9.)*2.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
     'TTToSemiLeptonic_13TeV-powheg_ext1_red1-v1' : {
         'nevents' : 82172328/10,
         'xsec'    : 831.76*(6./9.)*(3./9.)*2.,
@@ -565,7 +571,7 @@ sample = {
     
     'ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1-v1' : {
         'nevents' : 1000000.,
-        'xsec'    : 10.11,
+        'xsec'    : 10.32*(1.-0.665),
         'kfactor' : 1.,
     },
     'ST_t-channel_antitop_4f_inclusiveDecays_13TeV-powhegV2-madspin-pythia8_TuneCUETP8M1-v1' : {
@@ -575,27 +581,32 @@ sample = {
     },
     'ST_t-channel_antitop_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1-v1' : {
         'nevents' : 1682400.,
-        'xsec'    : 80.95,
+        'xsec'    : 80.95*(1.-0.665),
+        'kfactor' : 1.,
+    },
+    'ST_t-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1_withHLT_ext1-v1' : {
+        'nevents' : 19835374.,
+        'xsec'    : 216.99*(1.-0.665),
         'kfactor' : 1.,
     },
     'ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1-v1' : {
         'nevents' : 985000.,
-        'xsec'    : 38.09,
+        'xsec'    : 71.7/2.,
         'kfactor' : 1.,
     },
     'ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1-v2' : {
         'nevents' : 998400.,
-        'xsec'    : 38.09,
-        'kfactor' : 1.,
-    },
-    'ST_tW_antitop_5f_NoFullyHadronicDecays_13TeV-powheg_TuneCUETP8M1-v1' : {
-        'nevents' : 5388717.,
-        'xsec'    : 38.09,
+        'xsec'    : 71.7/2.,
         'kfactor' : 1.,
     },
     'ST_tW_top_5f_NoFullyHadronicDecays_13TeV-powheg_TuneCUETP8M1-v1' : {
+        'nevents' : 5388717.,
+        'xsec'    : 71.7/2.*0.557775,
+        'kfactor' : 1.,
+    },
+    'ST_tW_antitop_5f_NoFullyHadronicDecays_13TeV-powheg_TuneCUETP8M1-v1' : {
         'nevents' : 5405726.,
-        'xsec'    : 38.09,
+        'xsec'    : 71.7/2.*0.557775,
         'kfactor' : 1.,
     },
 
@@ -1577,7 +1588,7 @@ samples = {
     },
     'TTbarLep' : {
         'order' : 3,
-        'files' : ['TTTo2L2Nu_13TeV-powheg_ext1-v1', 'TTToSemiLeptonic_13TeV-powheg_ext1-v1'],
+        'files' : ['TTTo2L2Nu_13TeV-powheg_ext1-v1', 'TTToSemiLeptonic_13TeV-powheg_ext1-v2'],
         'fillcolor' : 798,
         'fillstyle' : 1001,
         'linecolor' : 798,
@@ -1601,7 +1612,12 @@ samples = {
     },
     'ST' : {
         'order' : 4,
-        'files' : ['ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1-v1', 'ST_t-channel_antitop_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1-v1', 'ST_t-channel_top_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1-v1', 'ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1-v1', 'ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1-v2'],
+        'files' : ['ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1-v1', 
+                   #'ST_t-channel_antitop_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1-v1', 
+                   #'ST_t-channel_top_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1-v1', 
+                   'ST_t-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1_withHLT_ext1-v1', 
+                   'ST_tW_antitop_5f_NoFullyHadronicDecays_13TeV-powheg_TuneCUETP8M1-v1', 
+                   'ST_tW_top_5f_NoFullyHadronicDecays_13TeV-powheg_TuneCUETP8M1-v1'],
         'fillcolor' : 801,
         'fillstyle' : 1001,
         'linecolor' : 801,
