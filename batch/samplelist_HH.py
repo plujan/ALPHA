@@ -5,9 +5,9 @@ samplelists = [
 ####### DATA
 
         # ICHEP GOLDEN JSON -- 12.9 fb-1
-        #'BTagCSVRun2016B-PromptReco-v1',
-        #'BTagCSVRun2016B-PromptReco-v2',
-        #'BTagCSVRun2016C-PromptReco-v2',
+        'BTagCSVRun2016B-PromptReco-v1',
+        'BTagCSVRun2016B-PromptReco-v2',
+        'BTagCSVRun2016C-PromptReco-v2',
         'BTagCSVRun2016D-PromptReco-v2',
 
         # ICHEP GOLDEN JSON -- 12.9 fb-1  -- for trigger study

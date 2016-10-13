@@ -177,12 +177,31 @@ sample = {
         'matcheff': 1.,
         'kfactor' : 1.,
     },
-    'BTagCSVRun2016D-PromptReco-v2' : {
-        'nevents' : 100000000,
+    'BTagCSVRun2016B-PromptReco-v1' : {
+        'nevents' : 1973077,
         'xsec'    : 1.,
         'matcheff': 1.,
         'kfactor' : 1.,
     },
+    'BTagCSVRun2016B-PromptReco-v2' : {
+        'nevents' : 77545653,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'BTagCSVRun2016C-PromptReco-v2' : {
+        'nevents' : 31253722,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'BTagCSVRun2016D-PromptReco-v2' : {
+        'nevents' : 56725352,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+
     
     ########## MC ##########
     
