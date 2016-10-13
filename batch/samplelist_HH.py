@@ -3,8 +3,18 @@
 
 samplelists = [ 
 ####### DATA
+
+        # ICHEP GOLDEN JSON -- 12.9 fb-1
+        #'BTagCSVRun2016B-PromptReco-v1',
+        #'BTagCSVRun2016B-PromptReco-v2',
+        #'BTagCSVRun2016C-PromptReco-v2',
         'BTagCSVRun2016D-PromptReco-v2',
-        'SingleMuonRun2016D-PromptReco-v2', # for trigger study
+
+        # ICHEP GOLDEN JSON -- 12.9 fb-1  -- for trigger study
+        'SingleMuonRun2016B-PromptReco-v1',
+        'SingleMuonRun2016B-PromptReco-v2', 
+        'SingleMuonRun2016C-PromptReco-v2',
+        'SingleMuonRun2016D-PromptReco-v2',
 
 ####### MC
 	'GluGluToHHTo4B_node_2_13TeV-madgraph_v14-v1',
