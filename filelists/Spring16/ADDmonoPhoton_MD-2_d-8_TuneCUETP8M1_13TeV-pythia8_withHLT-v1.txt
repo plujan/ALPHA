@@ -1,0 +1,2 @@
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISpring16MiniAODv2/ADDmonoPhoton_MD-2_d-8_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/premix_withHLT_80X_mcRun2_asymptotic_v14-v1/100000/CA3E3E0A-2772-E611-AD41-002590FD5838.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISpring16MiniAODv2/ADDmonoPhoton_MD-2_d-8_TuneCUETP8M1_13TeV-pythia8/MINIAODSIM/premix_withHLT_80X_mcRun2_asymptotic_v14-v1/100000/CCE7C17B-2772-E611-A7AF-D4856459AC42.root

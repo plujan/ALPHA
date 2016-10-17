@@ -15,7 +15,7 @@ cmsenv
 git cms-init
 ```
 Packages needed by ALPHA:
-Merge the most recent MET filters and EGM smearing and scale
+Merge the most recent MET filters and EGM smearing, scale, and IDs
 ```bash
 git cms-merge-topic -u cms-met:CMSSW_8_0_X-METFilterUpdate
 git cms-merge-topic -u emanueledimarco:ecal_smear_fix_80X
@@ -23,8 +23,7 @@ git cms-addpkg EgammaAnalysis/ElectronTools
 cd EgammaAnalysis/ElectronTools/data
 git clone -b ICHEP2016_approval_7p65fb https://github.com/emanueledimarco/ScalesSmearings.git
 cd $CMSSW_BASE/src
-git cms-merge-topic -u ikrav:egm_id_80X_v1
-
+git cms-merge-topic -u ikrav:egm_id_80X_v1 
 mkdir Analysis
 cd Analysis
 ```

@@ -1,3 +1,0 @@
-dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISpring16MiniAODv2/BulkGravToZZToZhadZinv_narrow_M-800_13TeV-madgraph/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/10000/28AD5C13-893A-E611-8C15-44A842CFC971.root
-dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISpring16MiniAODv2/BulkGravToZZToZhadZinv_narrow_M-800_13TeV-madgraph/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/10000/74EBB392-873A-E611-89BA-001E67586629.root
-dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISpring16MiniAODv2/BulkGravToZZToZhadZinv_narrow_M-800_13TeV-madgraph/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/10000/9896DA1D-893A-E611-AE59-0025907B4F5A.root
