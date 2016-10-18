@@ -1,1 +1,0 @@
-dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISpring16MiniAODv2/BulkGravToWWToWlepWhad_narrow_M-1800_13TeV-madgraph/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/80000/F8C1AE78-193B-E611-960C-0025907277CE.root

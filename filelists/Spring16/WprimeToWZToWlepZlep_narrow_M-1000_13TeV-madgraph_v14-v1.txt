@@ -1,2 +1,0 @@
-dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISpring16MiniAODv2/WprimeToWZToWlepZlep_narrow_M-1000_13TeV-madgraph/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/70000/32AC7BC2-CA3F-E611-B421-0CC47A4D7698.root
-dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISpring16MiniAODv2/WprimeToWZToWlepZlep_narrow_M-1000_13TeV-madgraph/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/70000/8A86A4C5-CB3F-E611-90C9-0025905A60CA.root
