@@ -1,0 +1,5 @@
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016C/SingleMuon/MINIAOD/23Sep2016-v1/70000/508EB58C-7D8D-E611-9390-00259073E52A.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016C/SingleMuon/MINIAOD/23Sep2016-v1/70000/78BEA76B-A087-E611-9050-141877638F39.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016C/SingleMuon/MINIAOD/23Sep2016-v1/80000/6436377E-EF87-E611-9A21-141877642ECF.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016C/SingleMuon/MINIAOD/23Sep2016-v1/80000/8E7C37FB-5787-E611-B5AE-002590D600F2.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016C/SingleMuon/MINIAOD/23Sep2016-v1/80000/90340EE2-CA88-E611-B462-D48564594FB4.root

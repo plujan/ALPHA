@@ -1,2 +1,0 @@
-dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISpring16MiniAODv2/QBHToEMu_M-6500_n4_ADD_TuneCUETP8M1_13TeV-QBH-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/20000/D60112C2-C843-E611-8AF4-0025905A6094.root
-dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISpring16MiniAODv2/QBHToEMu_M-6500_n4_ADD_TuneCUETP8M1_13TeV-QBH-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/20000/3EA6E180-C943-E611-A884-008CFA197DF0.root

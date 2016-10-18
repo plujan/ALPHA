@@ -61,7 +61,7 @@ do
         versionname=${sample: -2} # for Data
     fi
 
-    cat $tmpname | grep store | grep $trimname | grep $versionname > filelists/$dirname/$sample.txt
+    cat $tmpname | grep store | grep $trimname | grep $versionname | sort > filelists/$dirname/$sample.txt
     sed -i -e 's/^/dcap:\/\/t2-srm-02.lnl.infn.it\/pnfs\/lnl.infn.it\/data\/cms\//' filelists/$dirname/$sample.txt
     echo Created filelist filelists/$dirname/$sample.txt
 done
