@@ -31,7 +31,6 @@ echo File to be read: $tmpname
 # # step 2: get list of the samples names (with postfix)
 cat query.txt | grep MINIAOD | awk '{print $1}' | sed -e 's/\/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0//g' | sed -e 's/\/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14/_reHLT/g' | sed -e 's/\/RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14/_withHLT/g' | sed -e 's/\/MINIAODSIM//g' | sed -e 's/\/MINIAOD//g' | sed -e 's/\///g' > samplelist.txt
 
-
 # step 3: get filelist form the dump, filter it, and dump it into appropriate files
 cat samplelist.txt | while read sample
 do
@@ -75,7 +74,7 @@ rm samplelist.txt
 if [[ "$1" == "MC" ]]
 then
     rm filelists/Spring16/QCD*GenJets5*
-    rm filelists/Spring16/QCD*BGenFilter*
+    #rm filelists/Spring16/QCD*BGenFilter*
     #rm filelists/Spring16/DYB*
     rm filelists/Spring16/*Contin*
     rm filelists/Spring16/GJets*

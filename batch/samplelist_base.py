@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-# Base filelist taken from submitLSFjobs.py
+# Base list of samples taken from submitLSFjobs.py
 
-filelists = [ 
+samplelists = [ 
 ####### DATA
    ## Run2016B
   'SingleMuonRun2016B-PromptReco-v1', 
