@@ -7,14 +7,14 @@ then
 fi
 
 # step 0: execute script with PhedEx request number
-#python2.6 filelists/get_ds_file_info.py -n 669099 > query.txt
+# python2.6 filelists/get_ds_file_info.py -n 669099 > query.txt
 if [[ "$1" == "MC" ]]
 then
-    python2.6 batch/get_ds_file_info.py -d "/*/*RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2*/MINIAOD*" > query.txt
-    python2.6 batch/get_ds_file_info.py -d "/*/*RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic*/MINIAOD*" >> query.txt # append reHLT samples to query
-    # for MC
+    python2.6 batch/get_ds_file_info.py -d "/*/*RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0*/MINIAOD*" > query.txt
+    python2.6 batch/get_ds_file_info.py -d "/*/*RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14*/MINIAOD*" >> query.txt #append reHLT
+    python2.6 batch/get_ds_file_info.py -d "/*/*RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14*/MINIAOD*" >> query.txt #append withHLT
 else
-    if [[ "$2" == "B" ]] || [[ "$2" == "C" ]] || [[ "$2" == "D" ]] || [[ "$2" == "E" ]]
+    if [[ "$2" == "B" ]] || [[ "$2" == "C" ]] || [[ "$2" == "D" ]] || [[ "$2" == "E" ]] || [[ "$2" == "F" ]] || [[ "$2" == "G" ]] || [[ "$2" == "H" ]]
     then
         python2.6 batch/get_ds_file_info.py -d "/*/Run2016$2*/MINIAOD" > query.txt   # for Data
     else
@@ -28,23 +28,40 @@ fi
 tmpname=$(cat query.txt | awk '{print $4}' | sed -e 's/to//g')
 echo File to be read: $tmpname
 
-# step 2: get list of the samples names (with postfix)
-cat query.txt | grep MINIAOD | awk '{print $1}' | sed -e 's/\/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2//g' | sed -e 's/\/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic//g' | sed -e 's/\/MINIAODSIM//g' | sed -e 's/\/MINIAOD//g' | sed -e 's/\///g' > samplelist.txt
+# # step 2: get list of the samples names (with postfix)
+cat query.txt | grep MINIAOD | awk '{print $1}' | sed -e 's/\/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0//g' | sed -e 's/\/RunIISpring16MiniAODv2-PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14/_reHLT/g' | sed -e 's/\/RunIISpring16MiniAODv2-premix_withHLT_80X_mcRun2_asymptotic_v14/_withHLT/g' | sed -e 's/\/MINIAODSIM//g' | sed -e 's/\/MINIAOD//g' | sed -e 's/\///g' > samplelist.txt
 
 # step 3: get filelist form the dump, filter it, and dump it into appropriate files
 cat samplelist.txt | while read sample
 do
     if [[ "$1" == "MC" ]]
     then
-        trimname=${sample%_v*} # for MC
+        if [[ $sample == *"_reHLT"* ]] 
+        then 
+            tmp=$(echo $sample | sed -e 's/_reHLT//g')
+        elif [[ $sample == *"_withHLT"* ]] 
+        then
+            tmp=$(echo $sample | sed -e 's/_withHLT//g')
+        else
+            tmp=$sample
+        fi
+        
+        if [[ $sample == *"_ext"* ]]
+        then
+            trimname=$(echo $tmp | sed -e 's/_ext[0-9]-v[0-9]//g')
+            versionname=""${tmp: -8}""
+        else
+            trimname=$(echo $tmp | sed -e 's/-v[0-9]//g')
+            versionname=""\\${tmp: -3}""
+        fi
         dirname="Spring16" # for MC
-        versionname="v" # for MC
     else
         trimname=${sample%Run*} # for Data
         dirname="Run2016" # for Data
         versionname=${sample: -2} # for Data
     fi
-    cat $tmpname | grep store | grep $trimname | grep $versionname > filelists/$dirname/$sample.txt
+
+    cat $tmpname | grep store | grep $trimname | grep $versionname | sort > filelists/$dirname/$sample.txt
     sed -i -e 's/^/dcap:\/\/t2-srm-02.lnl.infn.it\/pnfs\/lnl.infn.it\/data\/cms\//' filelists/$dirname/$sample.txt
     echo Created filelist filelists/$dirname/$sample.txt
 done

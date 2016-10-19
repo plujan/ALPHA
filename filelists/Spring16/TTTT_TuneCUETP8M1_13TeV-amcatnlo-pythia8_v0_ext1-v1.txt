@@ -1,1 +1,0 @@
-root://xrootd-cms.infn.it//store/mc/RunIISpring16MiniAODv2/TTTT_TuneCUETP8M1_13TeV-amcatnlo-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_ext1-v1/70000/02262C1A-EC1C-E611-B7BF-A0369F310374.root

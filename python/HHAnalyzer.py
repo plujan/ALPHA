@@ -35,11 +35,13 @@ if len(options.inputFiles) == 0:
     process.source = cms.Source('PoolSource',
         fileNames = cms.untracked.vstring(
             # one single HH SM sample for test (events in DAS: 43877)
-            'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISpring16MiniAODv2/GluGluToHHTo4B_node_SM_13TeV-madgraph/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/70000/205E4ECB-FE3A-E611-9870-0CC47A1E046A.root'
+            #'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISpring16MiniAODv2/GluGluToHHTo4B_node_SM_13TeV-madgraph/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/70000/205E4ECB-FE3A-E611-9870-0CC47A1E046A.root'
+            'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISpring16MiniAODv2/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_ext3-v1/20000/24658987-0032-E611-BC7A-0025905B85D6.root'
             #'root://xrootd-cms.infn.it///store/mc/RunIISpring16MiniAODv2/GluGluToHHTo4B_node_SM_13TeV-madgraph/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/70000/205E4ECB-FE3A-E611-9870-0CC47A1E046A.root'
             #'root://xrootd-cms.infn.it//store/mc/RunIISpring16MiniAODv2/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/80000/C014DCF9-AF3A-E611-A998-782BCB5094C5.root'
             #DATA Run2016 - BTagCSV :
             #'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016D/BTagCSV/MINIAOD/PromptReco-v2/000/276/542/00000/F29C90C5-E349-E611-A453-02163E01374E.root'
+            #'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016C/SingleMuon/MINIAOD/PromptReco-v2/000/275/778/00000/B62129FE-A93C-E611-A937-02163E011C16.root'
         )
     )
 # production: read externally provided filelist
@@ -74,7 +76,6 @@ if isData:
     #process.source.lumisToProcess = LumiList.LumiList(filename = '%s/src/Analysis/ALPHA/data/JSON/Cert_271036-275125_13TeV_PromptReco_Collisions16_JSON.txt' % os.environ['CMSSW_BASE']).getVLuminosityBlockRange() #4.34
     #process.source.lumisToProcess = LumiList.LumiList(filename = '%s/src/Analysis/ALPHA/data/JSON/Cert_271036-275783_13TeV_PromptReco_Collisions16_JSON.txt' % os.environ['CMSSW_BASE']).getVLuminosityBlockRange() #6.26
     process.source.lumisToProcess = LumiList.LumiList(filename = '%s/src/Analysis/ALPHA/data/JSON/Cert_271036-276811_13TeV_PromptReco_Collisions16_JSON_NoL1T.txt' % os.environ['CMSSW_BASE']).getVLuminosityBlockRange() #12.9
-
 
 process.counter = cms.EDAnalyzer('CounterAnalyzer',
     lheProduct = cms.InputTag('externalLHEProducer' if not isCustom else 'source'),
@@ -276,10 +277,16 @@ process.ntuple = cms.EDAnalyzer('HHAnalyzer',
           'HLT_DoubleJet90_Double30_TripleBTagCSV_p087_v',
           'HLT_DoubleJet90_Double30_DoubleBTagCSV_p087_v',
           'HLT_DoubleJet90_Double30_DoubleBTagCSV_p087_v',
-          'HLT_BIT_HLT_IsoMu18_v', #for trigger efficiency study
-          'HLT_BIT_HLT_IsoMu20_v',
-          'HLT_BIT_HLT_IsoMu22_v',
-          'HLT_BIT_HLT_Mu27_v',
+          'HLT_IsoMu18_v', #for trigger efficiency study
+          'HLT_IsoTkMu18_v',
+          'HLT_IsoMu20_v',
+          'HLT_IsoTkMu20_v',
+          'HLT_IsoMu22_v',
+          'HLT_IsoTkMu22_v',
+          'HLT_IsoMu22eta2p1_v',
+          'HLT_IsoTkMu22eta2p1_v',
+          'HLT_IsoMu24_v',
+          'HLT_IsoTkMu24_v',
         ),
     ),
     electronSet = cms.PSet(

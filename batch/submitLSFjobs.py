@@ -95,7 +95,7 @@ for l in samplelists:
             fout.write('eval `scram runtime -sh`\n')
             fout.write('ls\n')
             fout.write('echo "running"\n')
-           # fout.write('export X509_USER_PROXY=/lustre/cmswork/dallosso/hh2016/CMSSW_8_0_12/src/Analysis/ALPHA/x509up_u749 \n') #FIXME make it general
+            #fout.write('export X509_USER_PROXY=/lustre/cmswork/dallosso/hh2016/CMSSW_8_0_12/src/Analysis/ALPHA/x509up_u749 \n') #FIXME make it general
             fout.write('cmsRun '+options.base+options.cfg+' inputFiles='+outputbase+lsubfold+'/list.txt\n')
             #fout.write('cmsRun '+options.base+options.cfg+' outputFile_clear outputFile='+outname+'.root inputFiles_clear inputFiles_load='+lsubfold+'/list.txt\n')
             fout.write('exit $?\n') 

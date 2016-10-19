@@ -1,0 +1,4 @@
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISpring16MiniAODv2/MonoHZZ4l_ZpBaryonic_MZp-10_MChi-1000_13TeV-madgraph/MINIAODSIM/premix_withHLT_80X_mcRun2_asymptotic_v14-v1/100000/3274489E-A96D-E611-BD8D-001E67396E05.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISpring16MiniAODv2/MonoHZZ4l_ZpBaryonic_MZp-10_MChi-1000_13TeV-madgraph/MINIAODSIM/premix_withHLT_80X_mcRun2_asymptotic_v14-v1/100000/B0DE78D1-F36D-E611-BEE0-0242AC130002.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISpring16MiniAODv2/MonoHZZ4l_ZpBaryonic_MZp-10_MChi-1000_13TeV-madgraph/MINIAODSIM/premix_withHLT_80X_mcRun2_asymptotic_v14-v1/100000/BC23D7B3-F36D-E611-8F3B-002590200A40.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISpring16MiniAODv2/MonoHZZ4l_ZpBaryonic_MZp-10_MChi-1000_13TeV-madgraph/MINIAODSIM/premix_withHLT_80X_mcRun2_asymptotic_v14-v1/100000/E0159C6A-F36D-E611-B348-848F69FD4E41.root
