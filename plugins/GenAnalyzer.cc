@@ -110,8 +110,12 @@ std::map<std::string, float> GenAnalyzer::FillWeightsMap(const edm::Event& iEven
 // ---------- GEN PARTICLES ----------
 
 std::vector<reco::GenParticle> GenAnalyzer::FillGenVector(const edm::Event& iEvent) {
+
     std::vector<reco::GenParticle> Vect;
-    if(iEvent.isRealData() or PythiaLOSample) return Vect;
+
+    // check if is real data
+    isRealData = iEvent.isRealData();
+    if(isRealData or PythiaLOSample) return Vect;
     // fill collection for this event 
     iEvent.getByToken(GenParticlesToken, GenCollection);
     // Loop on Gen Particles collection
@@ -380,6 +384,8 @@ std::vector<reco::GenParticle> GenAnalyzer::PartonsFromDecays(const std::vector<
   // vector to save the partons
   std::vector<reco::GenParticle> partons;
 
+  if(isRealData or PythiaLOSample) return partons;
+
   for (auto & genParticle : *GenCollection ) {
     // check if pdgid in vector
     if (std::find(pdgIds.begin(), pdgIds.end(), genParticle.pdgId()) != pdgIds.end()) {
@@ -402,6 +408,8 @@ std::vector<reco::GenParticle> GenAnalyzer::PartonsFromDecays(const std::vector<
   
   // vector to save the partons
   std::vector<reco::GenParticle> partons;
+
+  if(isRealData or PythiaLOSample) return partons;
 
   for (auto & genParticle : *GenCollection ) {
     // check if pdgid in vector

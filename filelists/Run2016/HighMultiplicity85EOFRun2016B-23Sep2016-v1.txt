@@ -1,0 +1,6 @@
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/HighMultiplicity85EOF/MINIAOD/23Sep2016-v1/50000/22A972D7-2D89-E611-A258-0025905B8564.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/HighMultiplicity85EOF/MINIAOD/23Sep2016-v1/50000/C8DB3876-3689-E611-9FF2-0025904AC2C6.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/HighMultiplicity85EOF/MINIAOD/23Sep2016-v1/50000/D00FFAD1-2D89-E611-A797-0CC47A4D763C.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/HighMultiplicity85EOF/MINIAOD/23Sep2016-v1/50000/D22DB839-2E89-E611-A3A2-008CFA197E8C.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/HighMultiplicity85EOF/MINIAOD/23Sep2016-v1/50000/E8016211-2789-E611-8960-0242AC130002.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/HighMultiplicity85EOF/MINIAOD/23Sep2016-v1/70000/BA4887CF-B08F-E611-84D3-00259029E84C.root
