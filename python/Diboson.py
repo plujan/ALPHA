@@ -18,7 +18,7 @@ process = cms.Process('ALPHA')
 process.load('FWCore.MessageService.MessageLogger_cfi')
 process.MessageLogger.cerr.threshold = 'ERROR'
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 # input
 # default: if no filelist from command line, run on specified samples
@@ -95,7 +95,10 @@ process.HLTFilter = cms.EDFilter('HLTHighLevel',
         'HLT_PFMETNoMu90_JetIdCleaned_PFMHTNoMu90_IDTight_v*',
         'HLT_PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight_v*',
         'HLT_PFMET120_BTagCSV_p067_v*',
+        'HLT_PFMET170_NotCleaned_v*',
         'HLT_PFMET170_NoiseCleaned_v*',
+        'HLT_PFMET170_JetIdCleaned_v*',
+        'HLT_PFMET170_HBHECleaned_v*',
         'HLT_DoublePhoton60_v*',
     ),
     eventSetupPathsKey = cms.string(''), # not empty => use read paths from AlCaRecoTriggerBitsRcd via this key
@@ -266,8 +269,34 @@ process.ntuple = cms.EDAnalyzer('Diboson',
             'DYJetsToLL_M-50_HT-600toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0_ext1-v1',
             'DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0_ext1-v1',
         ),
-        samplesZJetsToNuNu = cms.vstring(),
-        samplesWJetsToLNu = cms.vstring(),
+        samplesZJetsToNuNu = cms.vstring(
+            'DYJetsToNuNu_PtZ-100To250_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_v0-v1',
+            'DYJetsToNuNu_PtZ-250To400_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_v0-v1',
+            'DYJetsToNuNu_PtZ-400To650_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_v0-v1',
+            'DYJetsToNuNu_PtZ-650ToInf_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_v0-v1',
+            'ZJetsToNuNu_HT-100To200_13TeV-madgraph_ext1-v1',
+            'ZJetsToNuNu_HT-200To400_13TeV-madgraph_ext1-v1',
+            'ZJetsToNuNu_HT-400To600_13TeV-madgraph_ext1-v1',
+            'ZJetsToNuNu_HT-600To800_13TeV-madgraph-v1',
+            'ZJetsToNuNu_HT-800To1200_13TeV-madgraph-v3',
+            'ZJetsToNuNu_HT-1200To2500_13TeV-madgraph_ext1-v1',
+            'ZJetsToNuNu_HT-2500ToInf_13TeV-madgraph-v1',
+        ),
+        samplesWJetsToLNu = cms.vstring(
+            'WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_v0-v1',
+            'WJetsToLNu_HT-100To200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0_ext1-v1',
+            'WJetsToLNu_HT-200To400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0_ext1-v1',
+            ##'WJetsToLNu_HT-400To600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0_ext1-v1',
+            'WJetsToLNu_HT-800To1200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0_ext1-v1',
+            'WJetsToLNu_HT-1200To2500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0_ext1-v1',
+            #'WJetsToLNu_HT-100To200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0-v1',
+            'WJetsToLNu_HT-200To400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0-v1',
+            'WJetsToLNu_HT-400To600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0-v1',
+            'WJetsToLNu_HT-600To800_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0-v1',
+            'WJetsToLNu_HT-800To1200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0-v2',
+            'WJetsToLNu_HT-1200To2500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0-v1',
+            'WJetsToLNu_HT-2500ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0-v1',
+        ),
         samplesDir = cms.string('%s/src/Analysis/ALPHA/data/Stitch/' % os.environ['CMSSW_BASE']),
         sample = cms.string( sample ),
         ewkFile = cms.string('%s/src/Analysis/ALPHA/data/scalefactors_v4.root' % os.environ['CMSSW_BASE']),
@@ -284,7 +313,7 @@ process.ntuple = cms.EDAnalyzer('Diboson',
     ),
     triggerSet = cms.PSet(
         trigger = cms.InputTag('TriggerResults', '', triggerTag),
-        paths = cms.vstring('HLT_Mu45_eta2p1_v', 'HLT_Mu50_v', 'HLT_TkMu50_v', 'HLT_IsoMu20_v', 'HLT_IsoTkMu20_v', 'HLT_IsoMu24_v', 'HLT_IsoTkMu24_v', 'HLT_Mu27_TkMu8_v', 'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v', 'HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v', 'HLT_Ele105_CaloIdVT_GsfTrkIdT_v', 'HLT_Ele115_CaloIdVT_GsfTrkIdT_v', 'HLT_Ele23_WPLoose_Gsf_v', 'HLT_Ele27_WPLoose_Gsf_v', 'HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v', 'HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_v', 'HLT_PFMETNoMu90_PFMHTNoMu90_IDTight_v', 'HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v', 'HLT_PFMETNoMu90_JetIdCleaned_PFMHTNoMu90_IDTight_v', 'HLT_PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight_v', 'HLT_PFMET120_BTagCSV_p067_v', 'HLT_PFMET170_NoiseCleaned_v', 'HLT_DoublePhoton60_v',),
+        paths = cms.vstring('HLT_Mu45_eta2p1_v', 'HLT_Mu50_v', 'HLT_TkMu50_v', 'HLT_IsoMu20_v', 'HLT_IsoTkMu20_v', 'HLT_IsoMu24_v', 'HLT_IsoTkMu24_v', 'HLT_Mu27_TkMu8_v', 'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v', 'HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v', 'HLT_Ele105_CaloIdVT_GsfTrkIdT_v', 'HLT_Ele115_CaloIdVT_GsfTrkIdT_v', 'HLT_Ele23_WPLoose_Gsf_v', 'HLT_Ele27_WPLoose_Gsf_v', 'HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v', 'HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_v', 'HLT_PFMETNoMu90_PFMHTNoMu90_IDTight_v', 'HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v', 'HLT_PFMETNoMu90_JetIdCleaned_PFMHTNoMu90_IDTight_v', 'HLT_PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight_v', 'HLT_PFMET120_BTagCSV_p067_v', 'HLT_PFMET170_NotCleaned_v', 'HLT_PFMET170_NoiseCleaned_v', 'HLT_PFMET170_JetIdCleaned_v', 'HLT_PFMET170_HBHECleaned_v', 'HLT_DoublePhoton60_v',),
     ),
     electronSet = cms.PSet(
         #electrons = cms.InputTag('selectedElectrons'),
