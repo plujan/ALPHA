@@ -233,52 +233,73 @@ void Zinv::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     // Missing Energy
     pat::MET MET = theJetAnalyzer->FillMetVector(iEvent);
     pat::MET Neutrino(MET);
+    float MHT = 0.;
+    float MHTx = 0.;
+    float MHTy = 0.;
+    float MinMETMHT = 0.;
     //MET trigger efficiency for muons ad electrons
     float metNoMupx = MET.px();
     float metNoMupy = MET.py();
+    float metNoMu = 0.;
     bool METtrigNoMu = false;
     bool METtrig = false;
+    for(int a=0; a<nJets; a++){
+      MHTx += JetsVect.at(a).px();
+      MHTy += JetsVect.at(a).px();
+    }
+    MHT = sqrt(pow(MHTx,2) + pow(MHTy,2));
+    //float MHTNoMu = MHT;
+    //float MHTNoMux = MHTx;
+    //float MHTNoMuy = MHTy;
+    float MinMETNoMuMHT = 0.;
+    MinMETMHT = std::min(float(MET.pt()),MHT);
+    //std::cout << "MEt: " << MET.pt() <<std::endl;
+    //std::cout << "MHT: " << MHT << std::endl;
     METtrigNoMu = TriggerMap["HLT_PFMETNoMu90_PFMHTNoMu90_IDTight_v"] || TriggerMap["HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v"];
     //METtrig = TriggerMap["HLT_PFMET170_NotCleaned_v"] || TriggerMap["HLT_PFMET170_NoiseCleaned_v"] || TriggerMap["HLT_PFMET170_JetIdCleaned_v"] || TriggerMap["HLT_PFMET170_HBHECleaned_v"] || TriggerMap["HLT_PFMET170_BeamHaloCleaned_v"];
     METtrig = TriggerMap["HLT_PFMET170_NoiseCleaned_v"] || TriggerMap["HLT_PFMET170_JetIdCleaned_v"] || TriggerMap["HLT_PFMET170_HBHECleaned_v"];
 
-    if(nFatJets>0){
-        if(nMuons>0){
-            if(TriggerMap["HLT_Mu45_eta2p1_v"] && MuonVect.at(0).userInt("isTight") && MuonVect.at(0).userFloat("pfIso04")<0.15 && MuonVect.at(0).pt()>55){
+    //if(nFatJets>0){
+        if(nMuons==1 && TriggerMap["HLT_IsoMu27_v"] && MuonVect.at(0).userInt("isTight") && MuonVect.at(0).userFloat("pfIso04")<0.15 && MuonVect.at(0).pt()>30){
                 for(int m=0; m<nMuons; m++){
 	            metNoMupx += MuonVect.at(m).px();
 	            metNoMupy += MuonVect.at(m).py();
+                    //MHTNoMux += MuonVect.at(m).px();
+                    //MHTNoMuy += MuonVect.at(m).py();
 		}
+                //MHTNoMu = sqrt(pow(MHTNoMux,2) + pow(MHTNoMuy,2));
 	        reco::Particle::LorentzVector metNoMup4(metNoMupx, metNoMupy, 0, sqrt(pow(metNoMupx,2) + pow(metNoMupy,2)) );
-	        MET.addUserFloat("ptNoMu",metNoMup4.pt());
-	        MET.addUserFloat("phiNoMu",metNoMup4.phi());
-	        Hist["a_mu_den_trig"]->Fill(MET.pt(), EventWeight);
-	        Hist["a_mu_den_trigNoMu"]->Fill(MET.userFloat("ptNoMu"), EventWeight);
-		MetDPhiNoMuPreTrig_MuSel->Fill(MET.userFloat("ptNoMu"), reco::deltaPhi(MuonVect.at(0).phi(),MET.userFloat("phiNoMu")), EventWeight);
-		MetDPhiWithMuPreTrig_MuSel->Fill(MET.pt(), reco::deltaPhi(MuonVect.at(0).phi(),MET.phi()), EventWeight);
+                metNoMu = metNoMup4.pt();
+                MinMETNoMuMHT = std::min(metNoMu,MHT);
+		//std::cout << "metNoMu: " << metNoMu <<std::endl;
+		//std::cout << "MHTNoMu: " << MHTNoMu << std::endl;
+	        //MET.addUserFloat("ptNoMu",metNoMup4.pt());
+	        //MET.addUserFloat("phiNoMu",metNoMup4.phi());
+	        Hist["a_mu_den_trig"]->Fill(MinMETMHT, EventWeight);
+	        Hist["a_mu_den_trigNoMu"]->Fill(MinMETNoMuMHT, EventWeight);
+		MetDPhiNoMuPreTrig_MuSel->Fill(MinMETNoMuMHT, reco::deltaPhi(MuonVect.at(0).phi(),metNoMup4.phi()), EventWeight);
+		MetDPhiWithMuPreTrig_MuSel->Fill(MinMETMHT, reco::deltaPhi(MuonVect.at(0).phi(),MET.phi()), EventWeight);
 	        if(METtrigNoMu){
-		    Hist["a_mu_num_trigNoMu"]->Fill(MET.userFloat("ptNoMu"), EventWeight);
-		    MetDPhiNoMuPostTrig_MuSel->Fill(MET.userFloat("ptNoMu"), reco::deltaPhi(MuonVect.at(0).phi(),MET.userFloat("phiNoMu")), EventWeight);
+		    Hist["a_mu_num_trigNoMu"]->Fill(MinMETNoMuMHT, EventWeight);
+		    MetDPhiNoMuPostTrig_MuSel->Fill(MinMETNoMuMHT, reco::deltaPhi(MuonVect.at(0).phi(),metNoMup4.phi()), EventWeight);
 		}
 	        if(METtrig){
-		    Hist["a_mu_num_trig"]->Fill(MET.pt(), EventWeight);
-		    MetDPhiWithMuPostTrig_MuSel->Fill(MET.pt(), reco::deltaPhi(MuonVect.at(0).phi(),MET.phi()), EventWeight);
+		    Hist["a_mu_num_trig"]->Fill(MinMETMHT, EventWeight);
+		    MetDPhiWithMuPostTrig_MuSel->Fill(MinMETMHT, reco::deltaPhi(MuonVect.at(0).phi(),MET.phi()), EventWeight);
 		}
-            }
         }
-        if(nElectrons>0){
-            if(TriggerMap["HLT_Ele27_WPLoose_Gsf_v"] && ElecVect.at(0).userInt("isTight") && ElecVect.at(0).pt()>55){
-	        Hist["a_ele_den_trig"]->Fill(MET.pt(), EventWeight);
-		MetDPhiPreTrig_EleSel->Fill(MET.pt(), reco::deltaPhi(ElecVect.at(0).phi(),MET.phi()), EventWeight);
+        if(nElectrons==1 && TriggerMap["HLT_Ele27_WPLoose_Gsf_v"] && ElecVect.at(0).userInt("isTight") && ElecVect.at(0).pt()>30){
+	        Hist["a_ele_den_trig"]->Fill(MinMETMHT, EventWeight);
+		MetDPhiPreTrig_EleSel->Fill(MinMETMHT, reco::deltaPhi(ElecVect.at(0).phi(),MET.phi()), EventWeight);
 	        if(METtrig || METtrigNoMu) {
-		    Hist["a_ele_num_trig"]->Fill(MET.pt(), EventWeight);
-		    MetDPhiPostTrig_EleSel->Fill(MET.pt(), reco::deltaPhi(ElecVect.at(0).phi(),MET.phi()), EventWeight);
+		    Hist["a_ele_num_trig"]->Fill(MinMETMHT, EventWeight);
+		    MetDPhiPostTrig_EleSel->Fill(MinMETMHT, reco::deltaPhi(ElecVect.at(0).phi(),MET.phi()), EventWeight);
 		}
-            }
+            
         }
-    }
+    //}
     //theJetAnalyzer->ApplyRecoilCorrections(MET, &MET.genMET()->p4(), &theV.p4(), 0);
-    
+    /*
     
     // -----------------------------------
     //           GEN LEVEL
@@ -425,12 +446,12 @@ void Zinv::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
 	}
       }
 	    //if(Verbose) std::cout << " - Possible Z inv candidate" << std::endl;    
-	    /*
-            if(isMC) {
+	    
+            //if(isMC) {
                 /// FIXME -> APPLYING THE SF FOR Met trigger HARDCODED <- FIXME ///
-                TriggerWeight *= theJetAnalyzer->GetMetTriggerPFMETNoMu90OrPFMETNoMu120OrPFMET170SF(MET);
-            }
-	    */
+            //    TriggerWeight *= theJetAnalyzer->GetMetTriggerPFMETNoMu90OrPFMETNoMu120OrPFMET170SF(MET);
+            //}
+	    
     }
     
     if(not(isZtoNN) && not(isZtoEE) && not(isZtoMM)) { if(Verbose) std::cout << " - No reconstructible V candidate" << std::endl; return; }
@@ -534,7 +555,7 @@ void Zinv::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     
     // Fill tree
     tree->Fill();
-    
+    */
 }
 
 
@@ -602,13 +623,13 @@ void Zinv::beginJob() {
     tree->Branch("MinJetMetDPhi", &MinJetMetDPhi, "MinJetMetDPhi/F");
     tree->Branch("Chi2", &Chi2, "Chi2/F");
     // Angular variables
-    tree->Branch("CosThetaStar", &CosThetaStar, "CosThetaStar/F");
-    tree->Branch("CosTheta1", &CosTheta1, "CosTheta1/F");
-    tree->Branch("CosTheta2", &CosTheta2, "CosTheta2/F");
-    tree->Branch("Phi", &Phi, "Phi/F");
-    tree->Branch("Phi1", &Phi1, "Phi1/F");
+    //tree->Branch("CosThetaStar", &CosThetaStar, "CosThetaStar/F");
+    //tree->Branch("CosTheta1", &CosTheta1, "CosTheta1/F");
+    //tree->Branch("CosTheta2", &CosTheta2, "CosTheta2/F");
+    //tree->Branch("Phi", &Phi, "Phi/F");
+    //tree->Branch("Phi1", &Phi1, "Phi1/F");
     // Mass recoil formula
-    tree->Branch("massRecoilFormula", &massRecoilFormula, "massRecoilFormula/F");
+    //tree->Branch("massRecoilFormula", &massRecoilFormula, "massRecoilFormula/F");
   
     // Set Branches for objects
     for(int i = 0; i < WriteNElectrons; i++) tree->Branch(("Electron"+std::to_string(i+1)).c_str(), &(Electrons[i].pt), ObjectsFormat::ListLeptonType().c_str());
