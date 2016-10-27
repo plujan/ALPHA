@@ -341,10 +341,12 @@ void JetAnalyzer::CorrectMass(pat::Jet& jet, float rho, float nPV, bool isMC) {
 void JetAnalyzer::CorrectPuppiMass(pat::Jet& jet, bool isMC) {
     bool hasInfo( jet.hasUserFloat("ak8PFJetsPuppiSoftDropMass") && jet.hasUserFloat("ak8PFJetsPuppiSoftDropPt") && jet.hasUserFloat("ak8PFJetsPuppiSoftDropEta") );
     float corr(1.), genCorr(1.), recoCorr(1.);
-    if(isMC && hasInfo && jet.userFloat("ak8PFJetsPuppiSoftDropMass") > 0.) {
+    if(hasInfo && jet.userFloat("ak8PFJetsPuppiSoftDropMass") > 0.) {
         genCorr = PuppiJECcorr_gen->Eval( jet.userFloat("ak8PFJetsPuppiSoftDropPt") );
-        if(fabs(jet.userFloat("ak8PFJetsPuppiSoftDropEta")) <= 1.3) recoCorr = PuppiJECcorr_reco_0eta1v3->Eval( jet.userFloat("ak8PFJetsPuppiSoftDropPt") );
-        else if(fabs(jet.userFloat("ak8PFJetsPuppiSoftDropEta")) > 1.3 ) recoCorr = PuppiJECcorr_reco_1v3eta2v5->Eval( jet.userFloat("ak8PFJetsPuppiSoftDropPt") );
+        if(fabs(jet.userFloat("ak8PFJetsPuppiSoftDropEta")) <= 1.3) 
+            recoCorr = PuppiJECcorr_reco_0eta1v3->Eval( jet.userFloat("ak8PFJetsPuppiSoftDropPt") );
+        else if(fabs(jet.userFloat("ak8PFJetsPuppiSoftDropEta")) > 1.3 ) 
+            recoCorr = PuppiJECcorr_reco_1v3eta2v5->Eval( jet.userFloat("ak8PFJetsPuppiSoftDropPt") );
         corr = genCorr * recoCorr;
     }
     if(corr < 0.) corr = 0.;
