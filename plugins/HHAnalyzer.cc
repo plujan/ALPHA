@@ -49,10 +49,8 @@ HHAnalyzer::HHAnalyzer(const edm::ParameterSet& iConfig):
     theElectronAnalyzer = new ElectronAnalyzer(ElectronPSet, consumesCollector());
     theMuonAnalyzer     = new MuonAnalyzer(MuonPSet, consumesCollector());
     theJetAnalyzer      = new JetAnalyzer(JetPSet, consumesCollector());
-    theFatJetAnalyzer   = new JetAnalyzer(FatJetPSet, consumesCollector());
     
     std::vector<std::string> TriggerList(TriggerPSet.getParameter<std::vector<std::string> >("paths"));
-    for(unsigned int i = 0; i < TriggerList.size(); i++) TriggerMap[ TriggerList[i] ] = false;
         
     // ---------- Plots Initialization ----------
     TFileDirectory allDir=fs->mkdir("All/");
@@ -99,7 +97,6 @@ HHAnalyzer::~HHAnalyzer() {
     delete theElectronAnalyzer;
     delete theMuonAnalyzer;
     delete theJetAnalyzer;
-    delete theFatJetAnalyzer;
 }
 
 
@@ -109,22 +106,21 @@ HHAnalyzer::~HHAnalyzer() {
 
 // ------------ method called for each event  ------------
 void HHAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
-    isMC = !iEvent.isRealData();
-    EventNumber = iEvent.id().event();
-    LumiNumber = iEvent.luminosityBlock();
-    RunNumber = iEvent.id().run();
+
+    auto & filterPairs = EventInfo.filterPairs_;
+    auto & weightPairs = EventInfo.weightPairs_;
+    filterPairs.clear();
+    weightPairs.clear();
+    EventInfo.setEvent(iEvent.id().event());
+    EventInfo.setLumiBlock(iEvent.luminosityBlock());
+    EventInfo.setRun(iEvent.id().run());
+    EventInfo.setIsMC(!iEvent.isRealData());
+
     
     EventWeight = StitchWeight = ZewkWeight = WewkWeight = PUWeight = TriggerWeight = LeptonWeight = 1.;
     FacWeightUp = FacWeightDown = RenWeightUp = RenWeightDown = ScaleWeightUp = ScaleWeightDown = 1.;
-    nPV = nElectrons = nMuons = nJets = nFatJets = nBTagJets = -1.;
-    nVetoElectrons = nLooseMuons = 0;
-    MaxJetBTag = MaxFatJetBTag = -1.;
-    MinJetMetDPhi = 10.;
+    nPV = -1.;
 
-    // Initialize types
-    for(int i = 0; i < WriteNFatJets; i++) ObjectsFormat::ResetFatJetType(FatJets[i]);
-    ObjectsFormat::ResetMEtType(MEt);
-    
     Hist["a_nEvents"]->Fill(1., EventWeight);
     
     // -----------------------------------
@@ -133,30 +129,28 @@ void HHAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
     
     // Pu weight
     PUWeight = thePileupAnalyzer->GetPUWeight(iEvent);
-    nPV = thePileupAnalyzer->GetPV(iEvent);
-    Hist["a_nPVNoWeight"]->Fill(nPV, EventWeight);
+    EventInfo.setNumPV(thePileupAnalyzer->GetPV(iEvent));
+    Hist["a_nPVNoWeight"]->Fill(EventInfo.getNumPV(), EventWeight);
     EventWeight *= PUWeight;
-    Hist["a_nPVReWeight"]->Fill(nPV, EventWeight);
+    Hist["a_nPVReWeight"]->Fill(EventInfo.getNumPV(), EventWeight);
     
     // Trigger
+    std::map<std::string, bool> TriggerMap;
     theTriggerAnalyzer->FillTriggerMap(iEvent, TriggerMap);
     EventWeight *= TriggerWeight;
+    for (const auto & kv : TriggerMap) {
+      filterPairs.emplace_back(kv.first, kv.second);
+    } 
     
     // Electrons
     std::vector<pat::Electron> ElecVect = theElectronAnalyzer->FillElectronVector(iEvent);
-    nElectrons = ElecVect.size();
-    for(unsigned int i =0; i<ElecVect.size(); i++){
-        if(ElecVect.at(i).userInt("isVeto")==1) nVetoElectrons++;
-    }
     // Muons
     std::vector<pat::Muon> MuonVect = theMuonAnalyzer->FillMuonVector(iEvent);
-    nMuons = MuonVect.size();
     std::vector<pat::Muon> LooseMuonVect;
     for(unsigned int i =0; i<MuonVect.size(); i++){
-        if(MuonVect.at(i).userInt("isLoose")==1){
-	    LooseMuonVect.push_back(MuonVect.at(i));
-            nLooseMuons++;
-	}
+      if(MuonVect.at(i).userInt("isLoose")==1){
+	      LooseMuonVect.push_back(MuonVect.at(i));
+	    }
     }
     // Jets
     std::vector<pat::Jet> JetsVect = theJetAnalyzer->FillJetVector(iEvent);
@@ -164,11 +158,6 @@ void HHAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
     theJetAnalyzer->CleanJetsFromElectrons(JetsVect, ElecVect, 0.4);
     nJets = JetsVect.size();
     nBTagJets = theJetAnalyzer->GetNBJets(JetsVect);
-    // Fat Jets
-    std::vector<pat::Jet> FatJetsVect = theFatJetAnalyzer->FillJetVector(iEvent);
-    //theFatJetAnalyzer->CleanJetsFromMuons(FatJetsVect, MuonVect, 1.); // Do NOT clean the fatjet now
-    //theFatJetAnalyzer->CleanJetsFromElectrons(FatJetsVect, ElecVect, 1.); // Do NOT clean the fatjet now
-    nFatJets = FatJetsVect.size();
     // Missing Energy
     pat::MET MET = theJetAnalyzer->FillMetVector(iEvent);
     pat::MET Neutrino(MET);
@@ -181,8 +170,6 @@ void HHAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
     reco::Particle::LorentzVector metNoMup4(metNoMupx, metNoMupy, 0, 0 );
     MET.addUserFloat("metNoMu",metNoMup4.px());
     MET.addUserFloat("phiNoMu",metNoMup4.phi());
-
-    //theJetAnalyzer->ApplyRecoilCorrections(MET, &MET.genMET()->p4(), &theV.p4(), 0);
     
     // -----------------------------------
     //           GEN LEVEL
@@ -201,7 +188,6 @@ void HHAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
     std::map<std::string, float> LheMap = theGenAnalyzer->FillLheMap(iEvent);
     // MC Stitching
     StitchWeight = theGenAnalyzer->GetStitchWeight(LheMap);
-    //EventWeight *= StitchWeight; // Not yet
     // Gen Particles
     std::vector<reco::GenParticle> GenPVect = theGenAnalyzer->FillGenVector(iEvent);
     // Gen candidates
@@ -221,34 +207,37 @@ void HHAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
     // selection (if required) is made with HLT Analyzer (called before ntuple Analyzer)
     Hist["a_nEvents"]->Fill(2., EventWeight);
    
-    // ---------- Event Variables ----------    
-    // Max b-tagged jet in the event
-    for(unsigned int i = 0; i < JetsVect.size(); i++) if(JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag")) > MaxJetBTag) MaxJetBTag = JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag"));
-    // Max b-tagged jet in the event
-    for(unsigned int i = 0; i < JetsVect.size(); i++) if(FatJetsVect.size() > 0 && JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag")) > MaxFatJetBTag && deltaR(FatJetsVect.at(0), JetsVect[i])>0.8) MaxFatJetBTag = JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag"));
-    
-    for(unsigned int i = 0; i < JetsVect.size(); i++) if(fabs(reco::deltaPhi(JetsVect[i].phi(), MET.phi())) < MinJetMetDPhi) MinJetMetDPhi = fabs(reco::deltaPhi(JetsVect[i].phi(), MET.phi()));
+    // ---------- Other Variables ----------    
     
     // Jet variables
     theJetAnalyzer->AddVariables(JetsVect, MET);
-    theFatJetAnalyzer->AddVariables(FatJetsVect, MET);
     // Leptons
     theElectronAnalyzer->AddVariables(ElecVect, MET);
     theMuonAnalyzer->AddVariables(MuonVect, MET);
 
     // ---------- Fill objects ----------
-    Electrons.clear();
-    for(unsigned int i = 0; i < ElecVect.size(); i++) {
-      Electrons.emplace_back();
-      ObjectsFormat::FillElectronType(Electrons[i], &ElecVect[i], isMC);
-    }
-    Muons.clear();
-    for(unsigned int i = 0; i < MuonVect.size(); i++) {
-      Muons.emplace_back();
-      ObjectsFormat::FillMuonType(Muons[i], &MuonVect[i], isMC);
-    }
+    // reconstructed
+    alp::convert(ElecVect, Electrons);
+    alp::convert(MuonVect, Muons);
     alp::convert(JetsVect, Jets);
-    ObjectsFormat::FillMEtType(MEt, &MET, isMC);
+    alp::convert(MET, alp_MET);
+    // gen level
+    alp::convert(GenBFromHsPart, GenBFromHs);
+    alp::convert(GenHsPart, GenHs);
+
+    // fill weights
+    weightPairs.emplace_back("EventWeight", EventWeight);
+    weightPairs.emplace_back("FacWeightUp", FacWeightUp);
+    weightPairs.emplace_back("FacWeightDown", FacWeightDown);
+    weightPairs.emplace_back("ScaleWeightUp", ScaleWeightUp);
+    weightPairs.emplace_back("ScaleWeightDown", ScaleWeightDown);
+    weightPairs.emplace_back("StichWeight", StitchWeight);
+    weightPairs.emplace_back("ZewkWeight", ZewkWeight);
+    weightPairs.emplace_back("WewkWeight", WewkWeight);
+    weightPairs.emplace_back("PUWeight", PUWeight);
+    weightPairs.emplace_back("TriggerWeight", TriggerWeight);
+    weightPairs.emplace_back("LeptonWeight", LeptonWeight);
+
 
     // fill sorting vectors
     j_sort_pt = std::vector<std::size_t>(Jets.size());
@@ -266,19 +255,6 @@ void HHAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
     auto cmva_comp = [&](std::size_t a, std::size_t b) {return Jets.at(a).CMVA() > Jets.at(b).CMVA();};
     std::sort(j_sort_cmva.begin(), j_sort_cmva.end(), cmva_comp);
 
-    // fill b quarks from higgs
-    GenBFromHs.clear();
-    for(unsigned int i = 0; i < GenBFromHsPart.size(); i++) {
-      GenBFromHs.emplace_back();
-      ObjectsFormat::FillLorentzType(GenBFromHs[i], &GenBFromHsPart.at(i).p4());
-    }
-
-    // fill b quarks from higgs
-    GenHs.clear();
-    for(unsigned int i = 0; i < GenHsPart.size(); i++) {
-      GenHs.emplace_back();
-      ObjectsFormat::FillLorentzType(GenHs[i], &GenHsPart.at(i).p4());
-    }
 
     // --- Fill nEvents histogram --- no effective selection applied
     // --- num jets selection ---
@@ -301,53 +277,16 @@ void HHAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 // ------------ method called once each job just before starting event loop  ------------
 void HHAnalyzer::beginJob() {
     
-    // Object objects are created only one in the begin job. The reference passed to the branch has to be the same
-    for(int i = 0; i < WriteNFatJets; i++) FatJets.push_back( FatJetType() );
-    
     // Create Tree and set Branches
     tree=fs->make<TTree>("tree", "tree");
-    tree->Branch("isMC", &isMC, "isMC/O");
-    tree->Branch("EventNumber", &EventNumber, "EventNumber/L");
-    tree->Branch("LumiNumber", &LumiNumber, "LumiNumber/L");
-    tree->Branch("RunNumber", &RunNumber, "RunNumber/L");
-    tree->Branch("EventWeight", &EventWeight, "EventWeight/F");
-    tree->Branch("FacWeightUp", &FacWeightUp, "FacWeightUp/F");
-    tree->Branch("FacWeightDown", &FacWeightDown, "FacWeightDown/F");
-    tree->Branch("RenWeightUp", &RenWeightUp, "RenWeightUp/F");
-    tree->Branch("RenWeightDown", &RenWeightDown, "RenWeightDown/F");
-    tree->Branch("ScaleWeightUp", &ScaleWeightUp, "ScaleWeightUp/F");
-    tree->Branch("ScaleWeightDown", &ScaleWeightDown, "ScaleWeightDown/F");
-    tree->Branch("StitchWeight", &StitchWeight, "StitchWeight/F");
-    tree->Branch("ZewkWeight", &ZewkWeight, "ZewkWeight/F");
-    tree->Branch("WewkWeight", &WewkWeight, "WewkWeight/F");
-    tree->Branch("PUWeight", &PUWeight, "PUWeight/F");
-    tree->Branch("TriggerWeight", &TriggerWeight, "TriggerWeight/F");
-    tree->Branch("LeptonWeight", &LeptonWeight, "LeptonWeight/F");
-    
-    // Set trigger branches
-    for(auto it = TriggerMap.begin(); it != TriggerMap.end(); it++) tree->Branch(it->first.c_str(), &(it->second), (it->first+"/O").c_str());
-    
-    // Objects
-    tree->Branch("nPV", &nPV, "nPV/I");
-    tree->Branch("nElectrons", &nElectrons, "nElectrons/I");
-    tree->Branch("nVetoElectrons", &nVetoElectrons, "nVetoElectrons/I");
-    tree->Branch("nMuons", &nMuons, "nMuons/I");
-    tree->Branch("nLooseMuons", &nLooseMuons, "nLooseMuons/I");
-    tree->Branch("nJets", &nJets, "nJets/I");
-    tree->Branch("nFatJets", &nFatJets, "nFatJets/I");
-    tree->Branch("nBTagJets", &nBTagJets, "nBTagJets/I");    
-    tree->Branch("MaxJetBTag", &MaxJetBTag, "MaxJetBTag/F");
-    tree->Branch("MaxFatJetBTag", &MaxFatJetBTag, "MaxFatJetBTag/F");
-    tree->Branch("MinJetMetDPhi", &MinJetMetDPhi, "MinJetMetDPhi/F");
-  
-    // Set Branches for objects
+
+    // branch to save event information 
+    tree->Branch("EventInfo", &(EventInfo), 64000, 2);
     // save vector of electron, muon and jets
     tree->Branch("Electrons", &(Electrons), 64000, 2);
     tree->Branch("Muons", &(Muons), 64000, 2);
-    // save vector of jets
     tree->Branch("Jets", &(Jets), 64000, 2);
-    for(int i = 0; i < WriteNFatJets; i++) tree->Branch(("FatJet"+std::to_string(i+1)).c_str(), &(FatJets[i].pt), ObjectsFormat::ListFatJetType().c_str());
-    tree->Branch("MEt", &MEt.pt, ObjectsFormat::ListMEtType().c_str());
+    tree->Branch("MET", &(alp_MET),64000,2);
     tree->Branch("GenBFromHs", &(GenBFromHs), 64000, 2);
     tree->Branch("GenHs", &(GenHs), 64000, 2);
 

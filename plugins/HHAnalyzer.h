@@ -144,7 +144,6 @@ class HHAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
         JetAnalyzer* theJetAnalyzer;
         JetAnalyzer* theFatJetAnalyzer;
 
-        std::map<std::string, bool> TriggerMap;
         std::map<std::string, TH1F*> Hist;
             
         edm::Service<TFileService> fs;
@@ -158,13 +157,13 @@ class HHAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
         float MaxJetBTag, MaxFatJetBTag, MinJetMetDPhi;
         
         // object collections
-        std::vector<LeptonType> Electrons;
-        std::vector<LeptonType> Muons;
+        alp::EventInfo EventInfo;
+        std::vector<alp::Lepton> Electrons;
+        std::vector<alp::Lepton> Muons;
         std::vector<alp::Jet> Jets;
-        std::vector<FatJetType> FatJets;
-        MEtType MEt;
-        std::vector<LorentzType> GenBFromHs;
-        std::vector<LorentzType> GenHs;
+        alp::Candidate alp_MET;
+        std::vector<alp::Candidate> GenBFromHs;
+        std::vector<alp::Candidate> GenHs;
 
         // for saving jet sortings
         std::vector<std::size_t> j_sort_pt;
