@@ -36,7 +36,8 @@ if len(options.inputFiles) == 0:
         fileNames = cms.untracked.vstring(
             # one single HH SM sample for test (events in DAS: 43877)
             #'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISpring16MiniAODv2/GluGluToHHTo4B_node_SM_13TeV-madgraph/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/70000/205E4ECB-FE3A-E611-9870-0CC47A1E046A.root'
-            'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISpring16MiniAODv2/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_ext3-v1/20000/24658987-0032-E611-BC7A-0025905B85D6.root'
+            'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISpring16MiniAODv2/ST_t-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1/MINIAODSIM/premix_withHLT_80X_mcRun2_asymptotic_v14_ext1-v1/80000/02236588-E871-E611-BDA6-D8D385AE85C0.root'
+           # 'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISpring16MiniAODv2/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_ext3-v1/20000/24658987-0032-E611-BC7A-0025905B85D6.root'
             #'root://xrootd-cms.infn.it///store/mc/RunIISpring16MiniAODv2/GluGluToHHTo4B_node_SM_13TeV-madgraph/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/70000/205E4ECB-FE3A-E611-9870-0CC47A1E046A.root'
             #'root://xrootd-cms.infn.it//store/mc/RunIISpring16MiniAODv2/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14_ext3-v1/80000/C014DCF9-AF3A-E611-A998-782BCB5094C5.root'
             #DATA Run2016 - BTagCSV :

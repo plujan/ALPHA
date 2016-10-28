@@ -177,7 +177,8 @@ void HHAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
     
     // Gen weights
     std::map<std::string, float> GenWeight = theGenAnalyzer->FillWeightsMap(iEvent);
-    EventWeight *= GenWeight["event"];
+    float genWeight = GenWeight["event"];    
+    EventWeight *= genWeight;    
     if(GenWeight.find("2") != GenWeight.end()) FacWeightUp     = GenWeight["2"];
     if(GenWeight.find("3") != GenWeight.end()) FacWeightDown   = GenWeight["3"];
     if(GenWeight.find("4") != GenWeight.end()) RenWeightUp     = GenWeight["4"];
@@ -227,6 +228,7 @@ void HHAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
     // fill weights
     weightPairs.emplace_back("EventWeight", EventWeight);
+    weightPairs.emplace_back("GenWeight", genWeight);
     weightPairs.emplace_back("FacWeightUp", FacWeightUp);
     weightPairs.emplace_back("FacWeightDown", FacWeightDown);
     weightPairs.emplace_back("ScaleWeightUp", ScaleWeightUp);
