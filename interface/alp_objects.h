@@ -2,6 +2,7 @@
 #pragma once
 
 #include <vector>
+#include <algorithm>
 #include "Math/Vector4D.h"
 #include "Math/Vector4Dfwd.h"
 
@@ -23,7 +24,11 @@ namespace alp {
     public:
  
       EventInfo() {}
-      EventInfo(unsigned int event, unsigned int lumiBlock, unsigned int run);
+      EventInfo(unsigned int event, unsigned int lumiBlock, unsigned int run) :
+				event_(event),
+    		lumiBlock_(lumiBlock),
+    		run_(run) {}
+ 
       // copy constructor
       EventInfo( const EventInfo& rhs) :
         isMC_(rhs.isMC_),
@@ -36,19 +41,50 @@ namespace alp {
 
       ~EventInfo() {}
 
-      bool hasFilter(const std::string &name) const; 
-      bool getFilter(const std::string &name) const; 
+      bool hasFilter(const std::string &name) const {
+    		for( auto filterPair : filterPairs_)  {
+      		if (filterPair.first == name) return true;
+    		}
+    		return false; 
+  		}
+
+      bool getFilter(const std::string &name) const {
+    		for( auto filterPair : filterPairs_)  {
+      		if (filterPair.first == name) return filterPair.second;
+    		}
+    		return false;
+  		}
+
       bool getFilterC(const char * name) const { return getFilter(std::string(name)); }; 
       const StringBoolPairVector & getFilterPairs() const { return filterPairs_; } 
       void setFilterPairs(const StringBoolPairVector &filterPairs) { filterPairs_ = filterPairs; }
 
-      bool hasWeight(const std::string &name) const; 
-      float getWeight(const std::string &name) const; 
+      bool hasWeight(const std::string &name) const {
+				for( auto weightPair : weightPairs_)  {
+      		if (weightPair.first == name) return true;
+    		}
+				return false;
+			}
+
+      float getWeight(const std::string &name) const { 
+        for( auto weightPair : weightPairs_)  {
+          if (weightPair.first == name) return weightPair.second;
+        }
+        return 1;
+      }
+
       float getWeightC(const char * name) const { return getWeight(std::string(name)); }; 
       const StringFloatPairVector & getWeightPairs() const { return weightPairs_; } 
       void setWeightPairs(const StringFloatPairVector &weightPairs) { weightPairs_ = weightPairs; } 
-      void emplaceWeight(const std::string &name, const float &weight)
-         { weightPairs_.emplace_back(name, weight); } 
+
+      float eventWeight(const std::vector<std::string> & weights) {
+        float eventWeight = 1.0;
+        for (const auto & weightPair : weightPairs_ ) {
+          if (std::find(weights.begin(), weights.end(), weightPair.first) != weights.end())
+            eventWeight *= weightPair.second;
+        }
+        return eventWeight;
+      }
 
       inline bool isMC() const { return isMC_; }
       inline void setIsMC(bool isMC) { isMC_ = isMC; }
