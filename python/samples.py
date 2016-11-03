@@ -1467,7 +1467,7 @@ sample = {
         'kfactor' : 1.,
     },
     'QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1-v1' : {
-        'nevents' : 300000,
+        'nevents' : 7803965,
         'xsec'    : 119.9,
         'matcheff': 1.,
         'kfactor' : 1.,

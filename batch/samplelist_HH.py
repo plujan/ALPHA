@@ -42,7 +42,6 @@ samplelists = [
 	# Background QCD
 	'QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v2',
 	'QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1-v1',
-	'QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1',
 	'QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v3',
 	'QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1-v1',
 	'QCD_HT2000toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1',
@@ -77,7 +76,7 @@ samplelists = [
         'QCD_HT700to1000_BGenFilter_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1',
 
         # TOP
-        'TT_TuneCUETP8M1_13TeV-powheg-pythia8_reHLT_ext3-v1.txt',
+        'TT_TuneCUETP8M1_13TeV-powheg-pythia8_reHLT_ext3-v1',
         #'ttHTobb_M125_13TeV_powheg_pythia8_reHLT_ext3-v1',
         #'TTWJetsToQQ_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8_v0-v1',
         #'TTZToQQ_TuneCUETP8M1_13TeV-amcatnlo-pythia8_v0-v1',
