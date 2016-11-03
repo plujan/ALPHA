@@ -55,15 +55,18 @@ do
             versionname=""\\${tmp: -3}""
         fi
         dirname="Spring16" # for MC
+        recoversion=$trimname
     else
-        trimname=${sample%Run*} # for Data
         dirname="Run2016" # for Data
+        trimname=${sample%Run2016*} # for Data
+        recoversion=$(echo $sample | cut -d "-" -f2)
         versionname=${sample: -2} # for Data
     fi
 
-    cat $tmpname | grep store | grep $trimname | grep $versionname | sort > filelists/$dirname/$sample.txt
+    cat $tmpname | grep store | grep $trimname | grep $versionname | grep $recoversion | sort > filelists/$dirname/$sample.txt
     sed -i -e 's/^/dcap:\/\/t2-srm-02.lnl.infn.it\/pnfs\/lnl.infn.it\/data\/cms\//' filelists/$dirname/$sample.txt
     echo Created filelist filelists/$dirname/$sample.txt
+
 done
 
 # final step: clean up

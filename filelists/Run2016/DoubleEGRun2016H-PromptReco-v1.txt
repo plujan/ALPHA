@@ -1,0 +1,13 @@
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016H/DoubleEG/MINIAOD/PromptReco-v1/000/281/085/00000/E4E7FF75-887F-E611-ADD6-02163E01410D.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016H/DoubleEG/MINIAOD/PromptReco-v1/000/281/090/00000/DA0B1813-C37F-E611-ADD0-02163E014398.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016H/DoubleEG/MINIAOD/PromptReco-v1/000/281/117/00000/3208F060-0C80-E611-9E17-FA163EF672C9.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016H/DoubleEG/MINIAOD/PromptReco-v1/000/281/130/00000/4A9389E1-7680-E611-BBA1-02163E014474.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016H/DoubleEG/MINIAOD/PromptReco-v1/000/281/131/00000/FCEE3A59-9580-E611-AC5A-02163E014708.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016H/DoubleEG/MINIAOD/PromptReco-v1/000/281/145/00000/3E943FD9-BA80-E611-A93D-FA163E65C584.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016H/DoubleEG/MINIAOD/PromptReco-v1/000/281/156/00000/2001B676-D080-E611-B7CB-FA163E5CE870.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016H/DoubleEG/MINIAOD/PromptReco-v1/000/281/165/00000/4065C23C-D480-E611-B06E-FA163E8E3D2E.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016H/DoubleEG/MINIAOD/PromptReco-v1/000/281/166/00000/D4AA850D-DA80-E611-8908-FA163E1A5107.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016H/DoubleEG/MINIAOD/PromptReco-v1/000/281/167/00000/0096C22C-E480-E611-9C66-FA163E333360.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016H/DoubleEG/MINIAOD/PromptReco-v1/000/281/178/00000/A6830AB0-F880-E611-9422-02163E011D1A.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016H/DoubleEG/MINIAOD/PromptReco-v1/000/281/189/00000/A69A39F0-0881-E611-88D1-02163E0137AF.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016H/DoubleEG/MINIAOD/PromptReco-v1/000/281/201/00000/0EE1C4D6-6A81-E611-B8A3-FA163ECAAE3F.root
