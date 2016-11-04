@@ -1433,7 +1433,423 @@ sample = {
         'matcheff': 1.,
         'kfactor' : 1.,
     },
-    
+
+    # Dark Matter BBbarDMJet scalar
+    'BBbarDMJets_scalar_Mchi-1_Mphi-10_TuneCUETP8M1_v2_13TeV-madgraphMLM-pythia8_withHLT-v1' : {
+        'nevents'  : 251000, #250265,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,  
+    },
+    'BBbarDMJets_scalar_Mchi-1_Mphi-20_TuneCUETP8M1_v2_13TeV-madgraphMLM-pythia8_withHLT-v1' : {
+        'nevents'  : 230000, #222282,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,  
+    },
+    'BBbarDMJets_scalar_Mchi-1_Mphi-50_TuneCUETP8M1_v2_13TeV-madgraphMLM-pythia8_withHLT-v1' : {
+        'nevents'  : 250000, #247432,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,  
+    },
+    'BBbarDMJets_scalar_Mchi-1_Mphi-100_TuneCUETP8M1_v2_13TeV-madgraphMLM-pythia8_withHLT-v1' : {
+        'nevents'  : 331000, #330545,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,  
+    },
+    'BBbarDMJets_scalar_Mchi-1_Mphi-200_TuneCUETP8M1_v2_13TeV-madgraphMLM-pythia8_withHLT-v1' : {
+        'nevents'  : 241000, #240484,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,  
+    },
+    'BBbarDMJets_scalar_Mchi-1_Mphi-300_TuneCUETP8M1_v2_13TeV-madgraphMLM-pythia8_withHLT-v1' : {
+        'nevents'  : 251000, #250474,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,  
+    },
+    'BBbarDMJets_scalar_Mchi-1_Mphi-500_TuneCUETP8M1_v2_13TeV-madgraphMLM-pythia8_withHLT-v1' : {
+        'nevents'  : 270000, #269482,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,  
+    },
+    'BBbarDMJets_scalar_Mchi-1_Mphi-10000_TuneCUETP8M1_v2_13TeV-madgraphMLM-pythia8_withHLT-v1' : {
+        'nevents'  : 252000, #251468,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,  
+    },
+    'BBbarDMJets_scalar_Mchi-10_Mphi-10_TuneCUETP8M1_v2_13TeV-madgraphMLM-pythia8_withHLT-v1' : {
+        'nevents'  : 313100, #313064,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,  
+    },
+    'BBbarDMJets_scalar_Mchi-10_Mphi-15_TuneCUETP8M1_v2_13TeV-madgraphMLM-pythia8_withHLT-v1' : {
+        'nevents'  : 257000, #256897,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,  
+    },
+    'BBbarDMJets_scalar_Mchi-10_Mphi-50_TuneCUETP8M1_v2_13TeV-madgraphMLM-pythia8_withHLT-v1' : {
+        'nevents'  : 233200, #233112,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,  
+    },
+    'BBbarDMJets_scalar_Mchi-10_Mphi-100_TuneCUETP8M1_v2_13TeV-madgraphMLM-pythia8_withHLT-v1' : {
+        'nevents'  : 270000, #269945,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,  
+    },
+    'BBbarDMJets_scalar_Mchi-50_Mphi-10_TuneCUETP8M1_v2_13TeV-madgraphMLM-pythia8_withHLT-v1' : {
+        'nevents'  : 255800, #255701,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,  
+    },
+     'BBbarDMJets_scalar_Mchi-50_Mphi-50_TuneCUETP8M1_v2_13TeV-madgraphMLM-pythia8_withHLT-v1' : {
+        'nevents'  : 242300, #242201,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,  
+    },
+     'BBbarDMJets_scalar_Mchi-50_Mphi-95_TuneCUETP8M1_v2_13TeV-madgraphMLM-pythia8_withHLT-v1' : {
+        'nevents'  : 221000, #220902,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,  
+    },
+     'BBbarDMJets_scalar_Mchi-50_Mphi-200_TuneCUETP8M1_v2_13TeV-madgraphMLM-pythia8_withHLT-v1' : {
+        'nevents'  : 257100, #257061,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,  
+    },
+     'BBbarDMJets_scalar_Mchi-50_Mphi-300_TuneCUETP8M1_v2_13TeV-madgraphMLM-pythia8_withHLT-v1' : {
+        'nevents'  : 292000, #291612,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,  
+    },
+
+    # Dark Matter BBbarDMJet Pseudoscalar
+    'BBbarDMJets_pseudoscalar_Mchi-1_Mphi-10_TuneCUETP8M1_v2_13TeV-madgraphMLM-pythia8_withHLT-v1' : {
+        'nevents'  : 266700, #266677,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,  
+    },
+    'BBbarDMJets_pseudoscalar_Mchi-1_Mphi-20_TuneCUETP8M1_v2_13TeV-madgraphMLM-pythia8_withHLT-v1' : {
+        'nevents'  : 246700, #246640,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,  
+    },
+    'BBbarDMJets_pseudoscalar_Mchi-1_Mphi-50_TuneCUETP8M1_v2_13TeV-madgraphMLM-pythia8_withHLT-v1' : {
+        'nevents'  : 237300, #237297,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,  
+    },
+    'BBbarDMJets_pseudoscalar_Mchi-1_Mphi-100_TuneCUETP8M1_v2_13TeV-madgraphMLM-pythia8_withHLT-v1' : {
+        'nevents'  : 249000, #248966,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,  
+    },
+    'BBbarDMJets_pseudoscalar_Mchi-1_Mphi-200_TuneCUETP8M1_v2_13TeV-madgraphMLM-pythia8_withHLT-v1' : {
+        'nevents'  : 253000, #252617,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,  
+    },
+    'BBbarDMJets_pseudoscalar_Mchi-1_Mphi-300_TuneCUETP8M1_v2_13TeV-madgraphMLM-pythia8_withHLT-v1' : {
+        'nevents'  : 228300, #228250,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,  
+    },
+    'BBbarDMJets_pseudoscalar_Mchi-1_Mphi-500_TuneCUETP8M1_v2_13TeV-madgraphMLM-pythia8_withHLT-v1' : {
+        'nevents'  : 214100, #214043,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,  
+    },
+    'BBbarDMJets_pseudoscalar_Mchi-1_Mphi-10000_TuneCUETP8M1_v2_13TeV-madgraphMLM-pythia8_withHLT-v1' : {
+        'nevents'  : 261300, #261201,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,  
+    },
+    'BBbarDMJets_pseudoscalar_Mchi-10_Mphi-10_TuneCUETP8M1_v2_13TeV-madgraphMLM-pythia8_withHLT-v1' : {
+        'nevents'  : 189900, #189885,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,  
+    },
+    'BBbarDMJets_pseudoscalar_Mchi-10_Mphi-15_TuneCUETP8M1_v2_13TeV-madgraphMLM-pythia8_withHLT-v1' : {
+        'nevents'  : 263010,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,  
+    },
+    'BBbarDMJets_pseudoscalar_Mchi-10_Mphi-50_TuneCUETP8M1_v2_13TeV-madgraphMLM-pythia8_withHLT-v1' : {
+        'nevents'  : 262800, #262743,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,  
+    },
+    'BBbarDMJets_pseudoscalar_Mchi-10_Mphi-100_TuneCUETP8M1_v2_13TeV-madgraphMLM-pythia8_withHLT-v1' : {
+        'nevents'  : 243000, #242998,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,  
+    },
+    'BBbarDMJets_pseudoscalar_Mchi-50_Mphi-10_TuneCUETP8M1_v2_13TeV-madgraphMLM-pythia8_withHLT-v1' : {
+        'nevents'  : 235100, #235077,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,  
+    },
+     'BBbarDMJets_pseudoscalar_Mchi-50_Mphi-50_TuneCUETP8M1_v2_13TeV-madgraphMLM-pythia8_withHLT-v1' : {
+        'nevents'  : 255000, #254999,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,  
+    },
+     'BBbarDMJets_pseudoscalar_Mchi-50_Mphi-95_TuneCUETP8M1_v2_13TeV-madgraphMLM-pythia8_withHLT-v1' : {
+        'nevents'  : 269010, #269008,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,  
+    },
+     'BBbarDMJets_pseudoscalar_Mchi-50_Mphi-200_TuneCUETP8M1_v2_13TeV-madgraphMLM-pythia8_withHLT-v1' : {
+        'nevents'  : 237400, #237386,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,  
+    },
+     'BBbarDMJets_pseudoscalar_Mchi-50_Mphi-300_TuneCUETP8M1_v2_13TeV-madgraphMLM-pythia8_withHLT-v1' : {
+        'nevents'  : 230000, #226716,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,  
+    },
+
+    #Dark Matter TTBarDMJet
+    'TTbarDMJets_scalar_Mchi-1_Mphi-10_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_reHLT_ext1-v1' : {
+        'nevents'  : 240400, #240379,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,
+    },
+    'TTbarDMJets_scalar_Mchi-1_Mphi-20_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_reHLT_ext1-v1' : {
+        'nevents'  : 241200, #241125,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,
+    },
+    'TTbarDMJets_scalar_Mchi-1_Mphi-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_reHLT_ext1-v1' : {
+        'nevents'  : 247600, #247586,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,
+    },
+    'TTbarDMJets_scalar_Mchi-1_Mphi-100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_reHLT_ext1-v1' : {
+        'nevents'  : 258000, #257761,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,
+    },
+    'TTbarDMJets_scalar_Mchi-1_Mphi-200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_reHLT_ext1-v1' : {
+        'nevents'  : 254300, #254295,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,
+    },
+    'TTbarDMJets_scalar_Mchi-1_Mphi-300_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_reHLT_ext1-v1' : {
+        'nevents'  : 254100, #254030,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,
+    },
+    'TTbarDMJets_scalar_Mchi-1_Mphi-500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_reHLT_ext1-v1' : {
+        'nevents'  : 250600, #250524,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,
+    },
+    'TTbarDMJets_scalar_Mchi-1_Mphi-10000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_reHLT_ext1-v2' : {
+        'nevents'  : 250000, #249959,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,
+    },
+    'TTbarDMJets_scalar_Mchi-10_Mphi-10_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_reHLT_ext1-v1' : {
+        'nevents'  : 250000, #248046,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,
+    },
+    'TTbarDMJets_scalar_Mchi-10_Mphi-15_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_reHLT_ext1-v1' : {
+        'nevents'  : 214010, #214004,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,
+    },
+    'TTbarDMJets_scalar_Mchi-10_Mphi-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_reHLT_ext1-v1' : {
+        'nevents'  : 255000, #254833,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,
+    },
+    'TTbarDMJets_scalar_Mchi-10_Mphi-100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_reHLT_ext1-v1' : {
+        'nevents'  : 234000, #233806,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,
+    },
+    'TTbarDMJets_scalar_Mchi-50_Mphi-10_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_reHLT_ext1-v1' : {
+        'nevents'  : 328000, #327637,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,
+    },
+    'TTbarDMJets_scalar_Mchi-50_Mphi-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_reHLT_ext1-v1' : {
+        'nevents'  : 246200, #246177,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,
+    },
+    'TTbarDMJets_scalar_Mchi-50_Mphi-95_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_reHLT_ext1-v1' : {
+        'nevents'  : 234500, #234466,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,
+    },
+    'TTbarDMJets_scalar_Mchi-50_Mphi-200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_reHLT_ext1-v1' : {
+        'nevents'  : 253300, #253278,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,
+    },
+    'TTbarDMJets_scalar_Mchi-50_Mphi-300_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_reHLT_ext1-v1' : {
+        'nevents'  : 247000, #246915,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,
+    },
+
+    #TTbarDMJets Pseudoscalar
+    'TTbarDMJets_pseudoscalar_Mchi-1_Mphi-10_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_reHLT_ext1-v1' : {
+        'nevents'  : 252100, #252054,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,
+    },
+    'TTbarDMJets_pseudoscalar_Mchi-1_Mphi-20_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_reHLT_ext1-v1' : {
+        'nevents'  : 249300, #249253,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,
+    },
+    'TTbarDMJets_pseudoscalar_Mchi-1_Mphi-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_reHLT_ext1-v1' : {
+        'nevents'  : 255520, #255516,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,
+    },
+    'TTbarDMJets_pseudoscalar_Mchi-1_Mphi-100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_reHLT_ext1-v1' : {
+        'nevents'  : 250000, #249971,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,
+    },
+    'TTbarDMJets_pseudoscalar_Mchi-1_Mphi-200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_reHLT_ext1-v1' : {
+        'nevents'  : 242000, #241926,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,
+    },
+    'TTbarDMJets_pseudoscalar_Mchi-1_Mphi-300_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_reHLT_ext1-v1' : {
+        'nevents'  : 251100, #251079,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,
+    },
+    'TTbarDMJets_pseudoscalar_Mchi-1_Mphi-500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_reHLT_ext1-v1' : {
+        'nevents'  : 242000, #241952,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,
+    },
+    'TTbarDMJets_pseudoscalar_Mchi-1_Mphi-10000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_reHLT_ext1-v1' : {
+        'nevents'  : 207100, #207059,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,
+    },
+    'TTbarDMJets_pseudoscalar_Mchi-10_Mphi-10_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_reHLT_ext1-v1' : {
+        'nevents'  : 251000, #250666,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,
+    },
+    'TTbarDMJets_pseudoscalar_Mchi-10_Mphi-15_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_reHLT_ext1-v1' : {
+        'nevents'  : 253100, #253099,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,
+    },
+    'TTbarDMJets_pseudoscalar_Mchi-10_Mphi-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_reHLT_ext1-v1' : {
+        'nevents'  : 247200, #247164,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,
+    },
+    'TTbarDMJets_pseudoscalar_Mchi-10_Mphi-100_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_reHLT_ext1-v1' : {
+        'nevents'  : 242000, #241572,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,
+    },
+    'TTbarDMJets_pseudoscalar_Mchi-50_Mphi-10_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_reHLT_ext1-v1' : {
+        'nevents'  : 275000, #274874,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,
+    },
+    'TTbarDMJets_pseudoscalar_Mchi-50_Mphi-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_reHLT_ext1-v1' : {
+        'nevents'  : 237000, #236930,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,
+    },
+    'TTbarDMJets_pseudoscalar_Mchi-50_Mphi-95_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_reHLT_ext1-v1' : {
+        'nevents'  : 370020, #370018,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,
+    },
+    'TTbarDMJets_pseudoscalar_Mchi-50_Mphi-200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_reHLT_ext1-v1' : {
+        'nevents'  : 232400, #232399,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,
+    },
+    'TTbarDMJets_pseudoscalar_Mchi-50_Mphi-300_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_reHLT_ext1-v1' : {
+        'nevents'  : 257000, #256765,
+        'xsec'     : 1.,
+        'matcheff' : 1.,
+        'kfactor'  : 1.,
+    },
+
     # Background QCD
     # Background QCD
     'QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1' : {
@@ -1632,10 +2048,7 @@ sample = {
         'matcheff': 1.,
         'kfactor' : 1.,
     },
-
 }
-
-
 
 
 
