@@ -170,5 +170,45 @@ selection = {
     "AZheebbSR" : "triggerIsoEle && doubleIsoEle && nJets>=2 && V.mass>70 && V.mass<110 && (H.mass>90 && H.mass<140) && ((Jet1.CSV>0.935 && Jet2.CSV>0.460) || (Jet1.CSV>0.460 && Jet2.CSV>0.935)) && MEt.pt<60",
     "AZhmmbbSR" : "triggerIsoMuo && doubleIsoMuo && nJets>=2 && V.mass>70 && V.mass<110 && (H.mass>90 && H.mass<140) && ((Jet1.CSV>0.935 && Jet2.CSV>0.460) || (Jet1.CSV>0.460 && Jet2.CSV>0.935)) && MEt.pt<60",
     "AZhllbbSR": "(AZhmmbbSR) || (AZheebbSR)",
+
+
+    #------------------------------#
+    #----------    DM    ----------#
+    #------------------------------#
+
+    'DMbbINCZee' : 'isZtoEE && (isMC?1:HLT_Ele27_WPTight_Gsf_v)             && Lepton1.isElectron && Lepton2.isElectron && ((Lepton1.pt>40 && Lepton1.isTight && Lepton2.pt>20 && Lepton2.isLoose)||(Lepton1.pt>20 && Lepton1.isLoose && Lepton2.pt>40 && Lepton2.isTight)) && V.mass > 70 && V.mass<110',
+    'DMbbINCZmm' : 'isZtoMM && (isMC?1:(HLT_IsoMu22_v||HLT_IsoTkMu22_v))    && Lepton1.isMuon && Lepton2.isMuon && ((Lepton1.pt>40 && Lepton1.isTight && Lepton1.pfIso04<0.15 && Lepton2.pt>20 && Lepton2.isLoose && Lepton2.pfIso04<0.25)||(Lepton1.pt>20 && Lepton1.isLoose && Lepton1.pfIso04<0.25 && Lepton2.pt>40 && Lepton2.isTight && Lepton2.pfIso04<0.15)) && V.mass > 70 && V.mass<110',
+    'DMbbINCWen' : 'isWtoEN && (isMC?1:HLT_Ele27_WPTight_Gsf_v)             && Lepton1.isElectron && Lepton1.pt>40 && Lepton1.isTight && V.tmass>50',
+    'DMbbINCWmn' : 'isWtoMN && (isMC?1:(HLT_IsoMu22_v||HLT_IsoTkMu22_v))    && Lepton1.isMuon && Lepton1.pt>40 && Lepton1.isTight && Lepton1.pfIso04<0.15 && V.tmass>50',
+    'DMbbINCTme' : 'isTtoEM && (isMC?1:(HLT_IsoMu22_v||HLT_IsoTkMu22_v))    && Lepton1.isTight && Lepton2.isTight && Lepton1.pt>40 && Lepton2.pt>40 && ((Lepton1.isMuon && Lepton1.pfIso04<0.15 && Lepton2.isElectron)||(Lepton2.isMuon && Lepton2.pfIso04<0.15 && Lepton1.isElectron)) && ((Lepton1.charge>0 && Lepton2.charge<0)||(Lepton2.charge>0 && Lepton1.charge<0))',
+
+    'DMbbCRZee' : 'DMbbINCZee && hadronicRecoil.pt>200 && nElectrons>=2 && nMuons==0 && nTaus==0 && Jet1.pt>50 && MinJetMetDPhi>0.5',
+    'DMbbCRZmm' : 'DMbbINCZmm && hadronicRecoil.pt>200 && nElectrons==0 && nMuons>=2 && nTaus==0 && Jet1.pt>50 && MinJetMetDPhi>0.5',
+    'DMbbCRWen' : 'DMbbINCWen && hadronicRecoil.pt>200 && nElectrons==1 && nMuons==0 && nTaus==0 && Jet1.pt>50 && MinJetMetDPhi>0.5 && V.tmass>50 && V.tmass<160',
+    'DMbbCRWmn' : 'DMbbINCWmn && hadronicRecoil.pt>200 && nElectrons==0 && nMuons==1 && nTaus==0 && Jet1.pt>50 && MinJetMetDPhi>0.5 && V.tmass>50 && V.tmass<160',
+    'DMbbCRTme' : 'DMbbINCTme && hadronicRecoil.pt>200 && nElectrons==1 && nMuons==1 && nTaus==0 && Jet1.pt>50 && MinJetMetDPhi>0.5',
+
+
+    #'DMbbZeeCR' : 'isZtoEE && isZCR && (isMC?1:HLT_Ele27_WPLoose_Gsf_v)             && Lepton1.pt>40',
+    #'DMbbZmmCR' : 'isZtoMM && isZCR && (isMC?1:(HLT_IsoMu22_v||HLT_IsoTkMu22_v))    && Lepton1.pt>40',
+    #'DMbbWenCR' : 'isWtoEN && isWCR && (isMC?1:HLT_Ele27_WPLoose_Gsf_v)             && Lepton1.pt>40',
+    #'DMbbWmnCR' : 'isWtoMN && isWCR && (isMC?1:(HLT_IsoMu22_v||HLT_IsoTkMu22_v))    && Lepton1.pt>40',
+    #'DMbbTmeCR' : 'isTtoEM && isTCR && (isMC?1:(HLT_IsoMu22_v||HLT_IsoTkMu22_v))    && Lepton1.pt>40',
+    #'DMbbSR'    : 'isZtoNN && isSR  && (isMC?1:(HLT_PFMETNoMu90_PFMHTNoMu90_IDTight_v||HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v||HLT_PFMETNoMu90_JetIdCleaned_PFMHTNoMu90_IDTight_v||HLT_PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight_v)) && MEt.pt>200',
+
+    #'DMbb_NL_ZeeCR' : 'DMbbZeeCR && nMuons==0',
+    #'DMbb_NL_ZmmCR' : 'DMbbZmmCR && nElectrons==0',
+    #'DMbb_NL_WenCR' : 'DMbbWenCR && nMuons==0',
+    #'DMbb_NL_WmnCR' : 'DMbbWmnCR && nElectrons==0',
+    #'DMbb_NL_TmeCR' : 'DMbbTmeCR && nElectrons==1 && nMuons==1',
+    #'DMbb_NL_SR'    : 'DMbbSR    && nElectrons==0 && nMuons==0',
+
+    #'DMbb_NTL_ZeeCR' : 'DMbb_NL_ZeeCR && nTaus==0',
+    #'DMbb_NTL_ZmmCR' : 'DMbb_NL_ZmmCR && nTaus==0',
+    #'DMbb_NTL_WenCR' : 'DMbb_NL_WenCR && nTaus==0',
+    #'DMbb_NTL_WmnCR' : 'DMbb_NL_WmnCR && nTaus==0',
+    #'DMbb_NTL_TmeCR' : 'DMbb_NL_TmeCR && nTaus==0',
+    #'DMbb_NTL_SR'    : 'DMbb_NL_SR    && nTaus==0',
+
 }
 

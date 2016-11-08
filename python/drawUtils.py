@@ -37,12 +37,19 @@ def project(var, cut, weight, samplelist, pd, ntupledir):
             chain[s] = TChain("ntuple/tree")
             for j, ss in enumerate(samples[s]['files']):
                 if not 'data' in s or ('data' in s and ss in pd):
+                    print '- ADDING:',ss
                     chain[s].Add(ntupledir + ss + ".root")
             if variable[var]['nbins']>0: hist[s] = TH1F(s, ";"+variable[var]['title'], variable[var]['nbins'], variable[var]['min'], variable[var]['max']) # Init histogram
             else: hist[s] = TH1F(s, ";"+variable[var]['title'], len(variable[var]['bins'])-1, array('f', variable[var]['bins']))
             hist[s].Sumw2()
             tmpcut = cut
+            print s
             if not 'data' in s:
+                
+                if "(isMC?1:HLT_Ele27_WPTight_Gsf_v)" in tmpcut: 
+                    print "HLT_Ele27_WPTight_Gsf_v in CUT ->",
+                    tmpcut = tmpcut.replace("(isMC?1:HLT_Ele27_WPTight_Gsf_v)","1==1")
+                    print tmpcut
                 if s.endswith('_0b'): tmpcut += " && nBJets==0"
                 elif s.endswith('_1b'): tmpcut += " && nBJets==1"
                 elif s.endswith('_2b'): tmpcut += " && nBJets>=2"
