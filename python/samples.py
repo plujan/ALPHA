@@ -247,7 +247,7 @@ sample = {
         'nevents' : 1695733,
         'xsec'    : 1.,
         'matcheff': 1.,
-        'kfactor' : 1.,
+        'kfactor' : 1.,  
     },
     
     ########## MC ##########
