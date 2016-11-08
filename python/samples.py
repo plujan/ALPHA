@@ -237,7 +237,18 @@ sample = {
         'matcheff': 1.,
         'kfactor' : 1.,
     },
-
+    'BTagCSVRun2016H-PromptReco-v2' : {
+        'nevents' : 64179785,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'BTagCSVRun2016H-PromptReco-v3' : {
+        'nevents' : 1695733,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
     
     ########## MC ##########
     
