@@ -74,7 +74,7 @@ TauType(): pt(-1.), eta(-9.), phi(-9.), mass(-1.), energy(-1.), pfIso(-1.), dz(-
 
 
 struct JetType {
-    JetType(): pt(-1.), eta(-9.), phi(-9.), mass(-1.), energy(-1.), ptRaw(-1.), ptUnc(-1.), dPhi_met(-1.), dPhi_Jet1(-1.), puId(-1.), CSV(-99.), CSVR(-99.), CSVRUp(-99.), CSVRDown(-99.), CMVA(-99.), CMVAR(-99.), CMVARUp(-99.), CMVARDown(-99.), QGLikelihood(-1.), chf(-1.), nhf(-1.), phf(-1.), elf(-1.), muf(-1.), chm(-1), npr(-1), flavour(0), mother(0), isLoose(false), isMedium(false), isTight(false), isTightLepVeto(false), isCSVL(false), isCSVM(false), isCSVT(false), isMatched(false) {}
+    JetType(): pt(-1.), eta(-9.), phi(-9.), mass(-1.), energy(-1.), ptRaw(-1.), ptUnc(-1.), dPhi_met(-1.), dPhi_Jet1(-1.), puId(-1.), CSV(-99.), CSVR(-99.), CSVRUp(-99.), CSVRDown(-99.), CMVA(-99.), CMVAR(-99.), CMVARUp(-99.), CMVARDown(-99.), QGLikelihood(-1.), chf(-1.), nhf(-1.), phf(-1.), elf(-1.), muf(-1.), ptGenJ(-10.), etaGenJ(-4.), phiGenJ(-4.), massGenJ(-10.),ptGen(-10.), etaGen(-4.), phiGen(-4.), massGen(-10.),ptLhe(-10.), etaLhe(-4.), phiLhe(-4.), chm(-1), npr(-1), flavour(0), mother(0), isLoose(false), isMedium(false), isTight(false), isTightLepVeto(false), isCSVL(false), isCSVM(false), isCSVT(false), isMatched(false) {}
     float pt;
     float eta;
     float phi;
@@ -85,17 +85,6 @@ struct JetType {
     float dPhi_met;
     float dPhi_Jet1;
     float puId;
-    float ptGenJ = -10.;
-    float etaGenJ = -4.;
-    float phiGenJ = -4.;
-    float massGenJ = -10.;
-    float ptGen = -10.;
-    float etaGen = -4.;
-    float phiGen = -4.;
-    float massGen = -10.;
-    float ptLhe = -10.;
-    float etaLhe = -4.;
-    float phiLhe = -4.;
     float CSV;
     float CSVR;
     float CSVRUp;
@@ -110,6 +99,17 @@ struct JetType {
     float phf;
     float elf;
     float muf;
+    float ptGenJ; 
+    float etaGenJ;
+    float phiGenJ;
+    float massGenJ;
+    float ptGen;
+    float etaGen;
+    float phiGen;
+    float massGen;
+    float ptLhe;
+    float etaLhe;
+    float phiLhe;
     int chm;
     int npr;
     int flavour;

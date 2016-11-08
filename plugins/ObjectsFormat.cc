@@ -283,17 +283,6 @@ void ObjectsFormat::ResetJetType(JetType& I) {
     I.dPhi_met    = -1.;
     I.dPhi_Jet1   = -1.;
     I.puId        = -1.;
-    I.ptGenJ      = -10.;
-    I.etaGenJ     = -4.;
-    I.phiGenJ     = -4.;
-    I.massGenJ    = -10.;
-    I.ptGen       = -10.;
-    I.etaGen      = -4.;
-    I.phiGen      = -4.;
-    I.massGen     = -10.;
-    I.ptLhe       = -10.;
-    I.etaLhe      = -4.;
-    I.phiLhe      = -4.;
     I.CSV         = -99.;
     I.CSVR        = -99.;
     I.CSVRUp      = -99.;
@@ -308,8 +297,19 @@ void ObjectsFormat::ResetJetType(JetType& I) {
     I.phf         = -1.;
     I.elf         = -1.;
     I.muf         = -1.;
-    I.chm         = -1.;
-    I.npr         = -1.;
+    I.ptGenJ      = -10.;
+    I.etaGenJ     = -4.;
+    I.phiGenJ     = -4.;
+    I.massGenJ    = -10.;
+    I.ptGen       = -10.;
+    I.etaGen      = -4.;
+    I.phiGen      = -4.;
+    I.massGen     = -10.;
+    I.ptLhe       = -10.;
+    I.etaLhe      = -4.;
+    I.phiLhe      = -4.;
+    I.chm         = -1;
+    I.npr         = -1;
     I.flavour     = 0;
     I.mother      = false;
     I.isLoose     = false;
@@ -322,7 +322,8 @@ void ObjectsFormat::ResetJetType(JetType& I) {
     I.isMatched   = false;
 }
 
-std::string ObjectsFormat::ListJetType() {return "pt/F:eta/F:phi/F:mass/F:energy/F:ptRaw/F:ptUnc/F:dPhi_met/F:dPhi_Jet1/F:puId/F:CSV/F:CSVR/F:CSVRUp/F:CSVRDown/F:CMVA/F:CMVAR/F:CMVARUp/F:CMVARDown/F:QGLikelihood/F:chf/F:nhf/F:phf/F:elf/F:muf/F:chm/I:npr/I:flavour/I:mother/I:isLoose/O:isMedium/O:isTight/O:isTightLepVeto/O:isCSVL/O:isCSVM/O:isCSVT/O:isMatched/O";}
+std::string ObjectsFormat::ListJetType() {return "pt/F:eta/F:phi/F:mass/F:energy/F:ptRaw/F:ptUnc/F:dPhi_met/F:dPhi_Jet1/F:puId/F:CSV/F:CSVR/F:CSVRUp/F:CSVRDown/F:CMVA/F:CMVAR/F:CMVARUp/F:CMVARDown/F:QGLikelihood/F:chf/F:nhf/F:phf/F:elf/F:muf/F:ptGenJ/F:etaGenJ/F:phiGenJ/F:massGenJ/F:ptGen/F:etaGen/F:phiGen/F:massGen/F:ptLhe/F:etaLhe/F:phiLhe/I:chm/I:npr/I:flavour/I:mother/I:isLoose/O:isMedium/O:isTight/O:isTightLepVeto/O:isCSVL/O:isCSVM/O:isCSVT/O:isMatched/O";}
+
 
 //*******************//
 //     Fat Jet       //
