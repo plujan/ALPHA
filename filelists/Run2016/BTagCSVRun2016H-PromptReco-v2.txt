@@ -967,6 +967,10 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016H/BTag
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016H/BTagCSV/MINIAOD/PromptReco-v2/000/284/014/00000/DCA495E8-329F-E611-A9D0-02163E01468A.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016H/BTagCSV/MINIAOD/PromptReco-v2/000/284/025/00000/16C5A99F-589F-E611-A8CA-FA163EB00487.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016H/BTagCSV/MINIAOD/PromptReco-v2/000/284/025/00000/9622CDBC-309F-E611-BD80-02163E012780.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016H/BTagCSV/MINIAOD/PromptReco-v2/000/284/029/00000/0E8324B0-07A0-E611-8695-02163E012562.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016H/BTagCSV/MINIAOD/PromptReco-v2/000/284/029/00000/708FAB7F-F29F-E611-984C-02163E0126A1.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016H/BTagCSV/MINIAOD/PromptReco-v2/000/284/029/00000/D44951F8-FB9F-E611-851C-02163E014305.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016H/BTagCSV/MINIAOD/PromptReco-v2/000/284/029/00000/F890DFDC-13A0-E611-8724-02163E0141DB.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016H/BTagCSV/MINIAOD/PromptReco-v2/000/284/035/00000/225566A5-3B9F-E611-AD11-02163E0140E6.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016H/BTagCSV/MINIAOD/PromptReco-v2/000/284/035/00000/3487C03B-439F-E611-A226-FA163E882198.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016H/BTagCSV/MINIAOD/PromptReco-v2/000/284/035/00000/44D718C6-3C9F-E611-BB5D-FA163EB7BBE5.root

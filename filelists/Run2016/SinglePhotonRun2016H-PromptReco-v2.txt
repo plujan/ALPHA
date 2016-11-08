@@ -521,5 +521,6 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016H/Sing
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016H/SinglePhoton/MINIAOD/PromptReco-v2/000/284/029/00000/EA8CCD58-359F-E611-BFA8-FA163E06C274.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016H/SinglePhoton/MINIAOD/PromptReco-v2/000/284/035/00000/1098E856-459F-E611-9438-02163E013685.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016H/SinglePhoton/MINIAOD/PromptReco-v2/000/284/035/00000/1AE29A23-459F-E611-871F-FA163E1DE70D.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016H/SinglePhoton/MINIAOD/PromptReco-v2/000/284/035/00000/2213A86C-479F-E611-8BCF-02163E0127E5.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016H/SinglePhoton/MINIAOD/PromptReco-v2/000/284/035/00000/D2866817-459F-E611-A40C-02163E014156.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016H/SinglePhoton/MINIAOD/PromptReco-v2/000/284/035/00000/D4129043-4A9F-E611-8EFB-FA163EE30F6B.root
