@@ -135,6 +135,7 @@ DMbb::~DMbb() {
 
 // ------------ method called for each event  ------------
 void DMbb::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
+
     isMC = !iEvent.isRealData();
     EventNumber = iEvent.id().event();
     LumiNumber = iEvent.luminosityBlock();
@@ -157,6 +158,7 @@ void DMbb::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     for(int i = 0; i < WriteNTaus; i++) ObjectsFormat::ResetTauType(Taus[i]);
     for(int i = 0; i < WriteNPhotons; i++) ObjectsFormat::ResetPhotonType(Photons[i]);
     for(int i = 0; i < WriteNJets; i++) ObjectsFormat::ResetJetType(Jets[i]);
+
     ObjectsFormat::ResetMEtType(MEt);
     ObjectsFormat::ResetMEtType(hadronicRecoil);
     
@@ -166,7 +168,7 @@ void DMbb::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     Hist["a_nEvents"]->Fill(1., EventWeight);
     Hist["e_nEvents"]->Fill(1., EventWeight);
     Hist["m_nEvents"]->Fill(1., EventWeight);
-    
+
     // -----------------------------------
     //           READ OBJECTS
     // -----------------------------------
@@ -209,6 +211,8 @@ void DMbb::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     nTaus = TauVect.size();
     // Photons
     std::vector<pat::Photon> PhotonVect = thePhotonAnalyzer->FillPhotonVector(iEvent);
+    thePhotonAnalyzer->CleanPhotonsFromMuons(PhotonVect, MuonVect, 0.4);
+    thePhotonAnalyzer->CleanPhotonsFromElectrons(PhotonVect, ElecVect, 0.4);
     nPhotons = PhotonVect.size();
     // Jets
     std::vector<pat::Jet> JetsVect = theJetAnalyzer->FillJetVector(iEvent);
@@ -263,19 +267,19 @@ void DMbb::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
 //     reco::GenParticle* theGenBqu = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, BquIds);
     
     if(theGenZ){
-        Hist["g_ZMass"]->Fill(theGenZ->mass(), EventWeight);
-        Hist["g_ZPt"]->Fill(theGenZ->pt(), EventWeight);
-        Hist["g_ZEta"]->Fill(theGenZ->eta(), EventWeight);
-        Hist["g_ZPhi"]->Fill(theGenZ->phi(), EventWeight);
+        Hist["g_Zmass"]->Fill(theGenZ->mass(), EventWeight);
+        Hist["g_Zpt"]->Fill(theGenZ->pt(), EventWeight);
+        Hist["g_Zeta"]->Fill(theGenZ->eta(), EventWeight);
+        Hist["g_Zphi"]->Fill(theGenZ->phi(), EventWeight);
     }
     
     if(theGenW){
-        Hist["g_WMass"]->Fill(theGenW->mass(), EventWeight);
-        Hist["g_WPt"]->Fill(theGenW->pt(), EventWeight);
-        Hist["g_WEta"]->Fill(theGenW->eta(), EventWeight);
-        Hist["g_WPhi"]->Fill(theGenW->phi(), EventWeight);
+        Hist["g_Wmass"]->Fill(theGenW->mass(), EventWeight);
+        Hist["g_Wpt"]->Fill(theGenW->pt(), EventWeight);
+        Hist["g_Weta"]->Fill(theGenW->eta(), EventWeight);
+        Hist["g_Wphi"]->Fill(theGenW->phi(), EventWeight);
     }
-    
+
 //     if(theGenBqu!=NULL){
 //         float dR_GenB = -1;
 //         float dPhi_GenB = -1;
@@ -376,7 +380,7 @@ void DMbb::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
                 LeptonWeight *= theMuonAnalyzer->GetMuonTrkSF(MuonVect.at(m2));
                 if (MuonVect.at(m1).pt() > MuonVect.at(m2).pt() ) {
                     /// FIXME -> APPLYING THE SF FOR IsoMu22 HADRCODED <- FIXME ///
-                    LeptonWeight *= theMuonAnalyzer->GetMuonTriggerSFIsoMu22(MuonVect.at(m1));
+//                     LeptonWeight *= theMuonAnalyzer->GetMuonTriggerSFIsoMu22(MuonVect.at(m1));
                     LeptonWeight *= theMuonAnalyzer->GetMuonIdSF(MuonVect.at(m1), 3); // TightID
                     LeptonWeight *= theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(m1), 2);// TightIso
                     LeptonWeight *= theMuonAnalyzer->GetMuonIdSF(MuonVect.at(m2), 1); // LooseID
@@ -384,7 +388,7 @@ void DMbb::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
                 }
                 else {
                     /// FIXME -> APPLYING THE SF FOR IsoMu22 HADRCODED <- FIXME ///
-                    LeptonWeight *= theMuonAnalyzer->GetMuonTriggerSFIsoMu22(MuonVect.at(m2));
+//                     LeptonWeight *= theMuonAnalyzer->GetMuonTriggerSFIsoMu22(MuonVect.at(m2));
                     LeptonWeight *= theMuonAnalyzer->GetMuonIdSF(MuonVect.at(m2), 3); // TightID
                     LeptonWeight *= theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(m2), 2);// TightIso
                     LeptonWeight *= theMuonAnalyzer->GetMuonIdSF(MuonVect.at(m1), 1); // LooseID
@@ -428,13 +432,13 @@ void DMbb::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
                 LeptonWeight *= theElectronAnalyzer->GetElectronRecoEffSF(ElecVect.at(e2));
                 if (ElecVect.at(e1).pt() > ElecVect.at(e2).pt() ) {
                 /// FIXME -> APPLYING THE SF FOR Ele27 HADRCODED <- FIXME ///
-//                     LeptonWeight *= theElectronAnalyzer->GetElectronTriggerSFEle105(ElecVect.at(e1));
+                    LeptonWeight *= theElectronAnalyzer->GetElectronTriggerSFEle27Tight(ElecVect.at(e1));
                     LeptonWeight *= theElectronAnalyzer->GetElectronIdSF(ElecVect.at(e1), 3);// TightID
                     LeptonWeight *= theElectronAnalyzer->GetElectronIdSF(ElecVect.at(e2), 1);// LooseID
                 }
                 else {
                 /// FIXME -> APPLYING THE SF FOR Ele27 HADRCODED <- FIXME ///
-//                     LeptonWeight *= theElectronAnalyzer->GetElectronTriggerSFEle105(ElecVect.at(e2));                
+                    LeptonWeight *= theElectronAnalyzer->GetElectronTriggerSFEle27Tight(ElecVect.at(e2));                
                     LeptonWeight *= theElectronAnalyzer->GetElectronIdSF(ElecVect.at(e2), 3);// TightID
                     LeptonWeight *= theElectronAnalyzer->GetElectronIdSF(ElecVect.at(e1), 1);// LooseID
                 }
@@ -458,13 +462,13 @@ void DMbb::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         addP4.set(theV);
         // SF
         if(isMC) {
-            /// FIXME -> APPLYING THE SF FOR IsoMu22 HADRCODED <- FIXME ///
-            LeptonWeight *= theMuonAnalyzer->GetMuonTriggerSFIsoMu22(MuonVect.at(0));
             ///Mu
             LeptonWeight *= theMuonAnalyzer->GetMuonTrkSF(MuonVect.at(0));
             LeptonWeight *= theMuonAnalyzer->GetMuonIdSF(MuonVect.at(0), 3); //TightID
             LeptonWeight *= theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(0), 2);//TightIso
             ///Ele
+            /// FIXME -> APPLYING THE SF FOR Ele27 HADRCODED <- FIXME ///
+            LeptonWeight *= theElectronAnalyzer->GetElectronTriggerSFEle27Tight(ElecVect.at(0));
             LeptonWeight *= theElectronAnalyzer->GetElectronRecoEffSF(ElecVect.at(0));
             LeptonWeight *= theElectronAnalyzer->GetElectronIdSF(ElecVect.at(0), 3);// TightID
         }
@@ -484,7 +488,7 @@ void DMbb::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         // SF
         if(isMC) {
             /// FIXME -> APPLYING THE SF FOR IsoMu22 HADRCODED <- FIXME ///
-            LeptonWeight *= theMuonAnalyzer->GetMuonTriggerSFIsoMu22(MuonVect.at(0));
+//             LeptonWeight *= theMuonAnalyzer->GetMuonTriggerSFIsoMu22(MuonVect.at(0));
             LeptonWeight *= theMuonAnalyzer->GetMuonTrkSF(MuonVect.at(0));
             LeptonWeight *= theMuonAnalyzer->GetMuonIdSF(MuonVect.at(0), 3); //TightID
             LeptonWeight *= theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(0), 2);//TightIso
@@ -505,7 +509,7 @@ void DMbb::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         // SF
         if(isMC) {
             /// FIXME -> APPLYING THE SF FOR Ele27 HADRCODED <- FIXME ///
-//                LeptonWeight *= theElectronAnalyzer->GetElectronTriggerSFEle105(ElecVect.at(0));
+            LeptonWeight *= theElectronAnalyzer->GetElectronTriggerSFEle27Tight(ElecVect.at(0));
             LeptonWeight *= theElectronAnalyzer->GetElectronIdSF(ElecVect.at(0), 3); //TightID
             LeptonWeight *= theElectronAnalyzer->GetElectronRecoEffSF(ElecVect.at(0));
         }
