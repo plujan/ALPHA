@@ -237,7 +237,18 @@ sample = {
         'matcheff': 1.,
         'kfactor' : 1.,
     },
-
+    'BTagCSVRun2016H-PromptReco-v2' : {
+        'nevents' : 64179785,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'BTagCSVRun2016H-PromptReco-v3' : {
+        'nevents' : 1695733,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,  
+    },
     
     ########## MC ##########
     
@@ -1964,49 +1975,49 @@ sample = {
     # Background QCD bEnriched
     'QCD_bEnriched_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1' : {
         'nevents' : 221429,
-        'xsec'    : 1., # to be updated
+        'xsec_br' : 5.26,
         'matcheff': 1.,
         'kfactor' : 1.,
     },
     'QCD_bEnriched_HT100to200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1' : {
         'nevents' : 5341805,
-        'xsec'    : 1., # to be updated
+        'xsec_br' : 1321000.,
         'matcheff': 1.,
         'kfactor' : 1.,
     },
     'QCD_bEnriched_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1' : {
         'nevents' : 50978,
-        'xsec'    : 1., # to be updated
+        'xsec_br' : 4.41,
         'matcheff': 1.,
         'kfactor' : 1.,
     },
     'QCD_bEnriched_HT2000toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1' : {
         'nevents' : 23671,
-        'xsec'    : 1., # to be updated
+        'xsec_br' : 0.78,
         'matcheff': 1.,
         'kfactor' : 1.,
     },
     'QCD_bEnriched_HT200to300_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1' : {
         'nevents' : 4735212,
-        'xsec'    : 1., # to be updated
+        'xsec_br' : 87950.,
         'matcheff': 1.,
         'kfactor' : 1.,
     },
     'QCD_bEnriched_HT300to500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1' : {
         'nevents' : 2871164,
-        'xsec'    : 1., # to be updated
+        'xsec_br' : 17570.,
         'matcheff': 1.,
         'kfactor' : 1.,
     },
     'QCD_bEnriched_HT500to700_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1' : {
         'nevents' : 2426857,
-        'xsec'    : 1., # to be updated
+        'xsec_br' : 1512.,
         'matcheff': 1.,
         'kfactor' : 1.,
     },
     'QCD_bEnriched_HT700to1000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1' : {
         'nevents' : 877400,
-        'xsec'    : 1., # to be updated
+        'xsec_br' : 320.,
         'matcheff': 1.,
         'kfactor' : 1.,
     },
@@ -2014,50 +2025,50 @@ sample = {
     # Background QCD BGenFilter FIXME  xsec*br
     'QCD_HT1000to1500_BGenFilter_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1' : {
         'nevents' : 830868,
-        'xsec'    : 1.,
-        'matcheff': 1.,
+        'xsec_br' : 184.4,
+        'matcheff': 0.1361,
         'kfactor' : 1.,
     },
     'QCD_HT100to200_BGenFilter_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1' : {
         'nevents' : 7819821,
-        'xsec'    : 1.,
-        'matcheff': 1.,
+        'xsec_br' : 1899000.,
+        'matcheff': 0.1621,
         'kfactor' : 1.,
     },
     'QCD_HT1500to2000_BGenFilter_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1' : {
         'nevents' : 240962,
-        'xsec'    : 1.,
-        'matcheff': 1.,
+        'xsec_br' : 21.31,
+        'matcheff': 0.1535,
         'kfactor' : 1.,
     },
     'QCD_HT2000toInf_BGenFilter_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1' : {
         'nevents' : 136826,
-        'xsec'    : 1.,
-        'matcheff': 1.,
+        'xsec_br' : 4.16,
+        'matcheff': 0.1481,
         'kfactor' : 1.,
     },
     'QCD_HT200to300_BGenFilter_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1' : {
         'nevents' : 8251443,
-        'xsec'    : 1.,
-        'matcheff': 1.,
+        'xsec_br' : 156500.,
+        'matcheff': 0.1477,
         'kfactor' : 1.,
     },
     'QCD_HT300to500_BGenFilter_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1' : {
         'nevents' : 5772931,
-        'xsec'    : 1.,
-        'matcheff': 1.,
+        'xsec_br' : 38970.,
+        'matcheff': 0.1442,
         'kfactor' : 1.,
     },
     'QCD_HT500to700_BGenFilter_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1' : {
         'nevents' : 7083503,
-        'xsec'    : 1.,
-        'matcheff': 1.,
+        'xsec_br' : 4150.,
+        'matcheff': 0.1358,
         'kfactor' : 1.,
     },
     'QCD_HT700to1000_BGenFilter_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1' : {
         'nevents' : 2893038,
-        'xsec'    : 1.,
-        'matcheff': 1.,
+        'xsec_br' : 1000.,
+        'matcheff': 0.1442,
         'kfactor' : 1.,
     },
 }
