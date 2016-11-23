@@ -249,7 +249,50 @@ sample = {
         'matcheff': 1.,
         'kfactor' : 1.,  
     },
-    
+    #re-reco
+    'BTagCSVRun2016B-23Sep2016-v2' : {
+        'nevents' : 1972666,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'BTagCSVRun2016B-23Sep2016-v3' : {
+        'nevents' : 77890616,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'BTagCSVRun2016C-23Sep2016-v1' : {
+        'nevents' : 30358567,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'BTagCSVRun2016D-23Sep2016-v1' : {
+        'nevents' : 56527008,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'BTagCSVRun2016E-23Sep2016-v1' : {
+        'nevents' : 60415444,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'BTagCSVRun2016F-23Sep2016-v1' : {
+        'nevents' : 37608672,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'BTagCSVRun2016G-23Sep2016-v1' : {
+        'nevents' : 100834056,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+ 
     ########## MC ##########
     
     'DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8-v1' : {
