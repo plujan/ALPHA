@@ -475,8 +475,7 @@ sample = {
         'xsec'    : 385.9,
         'matcheff': 1.,
         'kfactor' : 1.434,#392.68/385.9, #1.434
-    },
-    
+    },    
     'WJetsToLNu_HT-400To600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1' : {
         'nevents' : 7432746,#1963464,
         'xsec'    : 47.9,
@@ -499,13 +498,8 @@ sample = {
         'nevents' : 14410862,
         'xsec'    : 12.8,
         'matcheff': 1.,
-        'kfactor' : 1.004,#8.74/12.8, 
+        'kfactor' : 1.004,#8.74/12.8,
     },
-#    'WJetsToLNu_HT-800To1200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1' : {
-#        'nevents' : 1.,
-#        'xsec'    : 5.261,
-#        'kfactor' : 1.,
-#    },
     'WJetsToLNu_HT-800To1200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v2' : {
         'nevents' : 1540477,
         'xsec'    : 5.261,
@@ -537,10 +531,10 @@ sample = {
         'kfactor' : 1.004,#0.01816/0.03089,
     },
     'WJetsToLNu_HT-2500ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1-v1' : {
-        'nevents' : 2254248,#253561,                                                                                 
+        'nevents' : 2254248,#253561,
         'xsec'    : 0.03089,
         'matcheff': 1.,
-        'kfactor' : 1.004,#0.01816/0.03089,                                                                                                          
+        'kfactor' : 1.004,#0.01816/0.03089,
     },
     'WJetsToQQ_HT-600ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_v0-v1' : { # currently with xrootd
         'nevents' : 1025005,
@@ -564,6 +558,12 @@ sample = {
     'TT_TuneCUETP8M1_13TeV-powheg-pythia8_ext4_red4-v1' : {
         'nevents' : 182123200/10,
         'xsec'    : 831.76,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'TT_TuneCUETP8M1_13TeV-powheg-pythia8_ext4-v1' : {
+        'nevents' : 200000000, ##182123200
+        'xsec'    : 831.76,      
         'matcheff': 1.,
         'kfactor' : 1.,
     },
@@ -1872,7 +1872,7 @@ sample = {
         'matcheff' : 1.,
         'kfactor'  : 1.,
     },
-
+    
     # Background QCD
     # Background QCD
     'QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1' : {
@@ -2071,7 +2071,10 @@ sample = {
         'matcheff': 0.1442,
         'kfactor' : 1.,
     },
+
 }
+
+
 
 
 
@@ -2163,7 +2166,7 @@ samples = {
     },
     'ZJetsToNuNu_HT' : {
         'order' : 2,
-        'files' : ['ZJetsToNuNu_HT-100To200_13TeV-madgraph_ext1-v1','ZJetsToNuNu_HT-200To400_13TeV-madgraph_ext1-v1','ZJetsToNuNu_HT-400To600_13TeV-madgraph_ext1-v1','ZJetsToNuNu_HT-600To800_13TeV-madgraph-v1','ZJetsToNuNu_HT-800To1200_13TeV-madgraph-v3','ZJetsToNuNu_HT-1200To2500_13TeV-madgraph_ext1-v1','ZJetsToNuNu_HT-2500ToInf_13TeV-madgraph-v1'],#missing samples ,'ZJetsToNuNu_HT-2500ToInf_13TeV-madgraph-v1'
+        'files' : ['ZJetsToNuNu_HT-100To200_13TeV-madgraph_ext1-v1','ZJetsToNuNu_HT-800To1200_13TeV-madgraph-v3','ZJetsToNuNu_HT-1200To2500_13TeV-madgraph_ext1-v1'],#missing samples ,'ZJetsToNuNu_HT-2500ToInf_13TeV-madgraph-v1'
         'fillcolor' : 856,
         'fillstyle' : 1001,
         'linecolor' : 856,
@@ -2187,17 +2190,7 @@ samples = {
     },
     'WJetsToLNu_HT' : {
         'order' : 2,
-        'files' : ['WJetsToLNu_HT-100To200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1-v1', 
-                   'WJetsToLNu_HT-200To400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1-v1', 
-                   #'WJetsToLNu_HT-400To600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1', 
-                   'WJetsToLNu_HT-400To600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1-v1',
-                   #'WJetsToLNu_HT-600To800_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1', 
-                   'WJetsToLNu_HT-600To800_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1-v1',
-                   'WJetsToLNu_HT-800To1200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1-v1', 
-                   'WJetsToLNu_HT-1200To2500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1-v1', 
-                   #'WJetsToLNu_HT-2500ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1'
-                   'WJetsToLNu_HT-2500ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1-v1',
-                   ],
+        'files' : ['WJetsToLNu_HT-100To200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1-v1', 'WJetsToLNu_HT-200To400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1-v1', 'WJetsToLNu_HT-400To600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1-v1', 'WJetsToLNu_HT-600To800_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1-v1', 'WJetsToLNu_HT-800To1200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1-v1', 'WJetsToLNu_HT-1200To2500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1-v1', 'WJetsToLNu_HT-2500ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1-v1'],
         'fillcolor' : 881,
         'fillstyle' : 1001,
         'linecolor' : 881,
@@ -2259,17 +2252,12 @@ samples = {
     },
     'ST' : {
         'order' : 4,
-        'files' : [
-            #'ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1-v1', 
-            #'ST_t-channel_antitop_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1-v1', 
-            #'ST_t-channel_top_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1-v1', 
-            #'ST_t-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1_withHLT_ext1-v1', 
-            #'ST_tW_antitop_5f_NoFullyHadronicDecays_13TeV-powheg_TuneCUETP8M1-v1', 
-            #'ST_tW_top_5f_NoFullyHadronicDecays_13TeV-powheg_TuneCUETP8M1-v1'
-            'ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1-v1',
-            'ST_t-channel_antitop_4f_inclusiveDecays_13TeV-powhegV2-madspin-pythia8_TuneCUETP8M1-v1',
-            'ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1-v2',
-            ],
+        'files' : ['ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1-v1', 
+                   #'ST_t-channel_antitop_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1-v1', 
+                   #'ST_t-channel_top_4f_leptonDecays_13TeV-powheg-pythia8_TuneCUETP8M1-v1', 
+                   'ST_t-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1_withHLT_ext1-v1', 
+                   'ST_tW_antitop_5f_NoFullyHadronicDecays_13TeV-powheg_TuneCUETP8M1-v1', 
+                   'ST_tW_top_5f_NoFullyHadronicDecays_13TeV-powheg_TuneCUETP8M1-v1'],
         'fillcolor' : 801,
         'fillstyle' : 1001,
         'linecolor' : 801,
@@ -2279,6 +2267,21 @@ samples = {
         'weight': 1.,
         'plot': True,
     },
+    'ST_DMbb' : {
+        'order' : 4,
+        'files' : ['ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1-v2', 
+                   'ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1-v1', 
+                   'ST_t-channel_antitop_4f_inclusiveDecays_13TeV-powhegV2-madspin-pythia8_TuneCUETP8M1-v1', 
+                ],
+        'fillcolor' : 801,
+        'fillstyle' : 1001,
+        'linecolor' : 801,
+        'linewidth' : 2,
+        'linestyle' : 1,
+        'label' : "Single-t",
+        'weight': 1.,
+        'plot': True,
+    },        
     'TopLep' : {
         'order' : 3,
         'files' : ['TTTo2L2Nu_13TeV-powheg_ext1-v1', 'TTToSemiLeptonic_13TeV-powheg_ext1-v2']+['ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1-v1', 
@@ -2334,16 +2337,19 @@ samples = {
     },
     'QCD' : {
         'order' : 6,
-        'files' : [
-            #'QCD_HT100to200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1', 
-            'QCD_HT200to300_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1-v1', 
-            'QCD_HT300to500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1-v1', 
-            'QCD_HT500to700_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1-v1', 
-            'QCD_HT700to1000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1-v1', 
-            'QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1-v1', 
-            'QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1-v1', 
-            'QCD_HT2000toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1-v1'
-            ],
+        'files' : ['QCD_HT100to200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1', 'QCD_HT200to300_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1', 'QCD_HT300to500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1', 'QCD_HT500to700_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1', 'QCD_HT700to1000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1', 'QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1', 'QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1', 'QCD_HT2000toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1'],
+        'fillcolor' : 921,
+        'fillstyle' : 1001,
+        'linecolor' : 921,
+        'linewidth' : 2,
+        'linestyle' : 1,
+        'label' : "multijet",
+        'weight': 1.,
+        'plot': True,
+    },
+    'QCD_DMbb' : {
+        'order' : 6,
+        'files' : ['QCD_HT200to300_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1-v1', 'QCD_HT300to500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1-v1', 'QCD_HT500to700_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1-v1', 'QCD_HT700to1000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1-v1', 'QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1-v1', 'QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1-v1', 'QCD_HT2000toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1-v1'],
         'fillcolor' : 921,
         'fillstyle' : 1001,
         'linecolor' : 921,
@@ -3256,6 +3262,7 @@ samples = {
         'weight': 1.,
         'plot': True,
     },
+
     #bbDM scalar
     'bbDMs_Mchi1_Mphi10' : {
         'order' : 1001,
@@ -4076,5 +4083,4 @@ samples = {
         'weight': 1.,
         'plot': True,
         },
-        
 }
