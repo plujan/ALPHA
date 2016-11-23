@@ -205,7 +205,7 @@ struct FatJetType {
 //};
 
 struct MEtType {
-    MEtType(): pt(-1.), eta(-9.), phi(-9.), sign(-1.), ptRaw(-1.), phiRaw(-9.), ptType1(-1.), phiType1(-9.), ptGen(-1.), phiGen(-9.), ptScaleUp(-1.), ptScaleDown(-1.), ptResUp(-1.), ptResDown(-1.) {}
+    MEtType(): pt(-1.), eta(-9.), phi(-9.), sign(-1.), ptRaw(-1.), phiRaw(-9.), ptType1(-1.), phiType1(-9.), ptGen(-1.), phiGen(-9.), ptScaleUp(-1.), ptScaleDown(-1.), ptResUp(-1.), ptResDown(-1.), ptCalo(-1.) {}
     float pt;
     float eta;
     float phi;
@@ -220,6 +220,7 @@ struct MEtType {
     float ptScaleDown;
     float ptResUp;
     float ptResDown;
+    float ptCalo;
 };
 
 struct MEtFullType {
