@@ -141,7 +141,7 @@ void DMbb::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     LumiNumber = iEvent.luminosityBlock();
     RunNumber = iEvent.id().run();
     
-    EventWeight = StitchWeight = ZewkWeight = WewkWeight = PUWeight = TriggerWeight = LeptonWeight = 1.;
+    EventWeight = StitchWeight = ZewkWeight = WewkWeight = TopPtWeight = PUWeight = TriggerWeight = LeptonWeight = 1.;
     FacWeightUp = FacWeightDown = RenWeightUp = RenWeightDown = ScaleWeightUp = ScaleWeightDown = 1.;
     isZtoEE = isZtoMM = isTtoEM = isWtoEN = isWtoMN = isZtoNN = false;
     nPV = nElectrons = nMuons = nTaus = nPhotons = nJets = nBTagJets = 1;
@@ -251,11 +251,15 @@ void DMbb::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     // Gen candidates
     reco::Candidate* theGenZ = theGenAnalyzer->FindGenParticle(GenPVect, 23);
     reco::Candidate* theGenW = theGenAnalyzer->FindGenParticle(GenPVect, 24);
+    reco::Candidate* theGenTop     = theGenAnalyzer->FindGenParticle(GenPVect, 6);
+    reco::Candidate* theGenAntiTop = theGenAnalyzer->FindGenParticle(GenPVect, -6);
     // EWK corrections
     if(theGenZ) ZewkWeight = theGenAnalyzer->GetZewkWeight(theGenZ->pt());
     if(theGenW) WewkWeight = theGenAnalyzer->GetWewkWeight(theGenW->pt());
+    // TopPtReweighting corrections
+    if(theGenTop && theGenAntiTop) TopPtWeight = theGenAnalyzer->GetTopPtWeight(theGenTop->pt())*theGenAnalyzer->GetTopPtWeight(theGenAntiTop->pt());
     
-    EventWeight *= ZewkWeight * WewkWeight;
+    EventWeight *= ZewkWeight * WewkWeight * TopPtWeight;
     
     std::vector<int> LepIds = {11,13,15,-11,-13,-15};
     std::vector<int> NeuIds = {12,14,16,-12,-14,-16};
@@ -648,6 +652,7 @@ void DMbb::beginJob() {
     tree->Branch("StitchWeight", &StitchWeight, "StitchWeight/F");
     tree->Branch("ZewkWeight", &ZewkWeight, "ZewkWeight/F");
     tree->Branch("WewkWeight", &WewkWeight, "WewkWeight/F");
+    tree->Branch("TopPtWeight", &TopPtWeight, "TopPtWeight/F");
     tree->Branch("PUWeight", &PUWeight, "PUWeight/F");
     tree->Branch("TriggerWeight", &TriggerWeight, "TriggerWeight/F");
     tree->Branch("LeptonWeight", &LeptonWeight, "LeptonWeight/F");
