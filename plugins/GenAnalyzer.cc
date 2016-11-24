@@ -410,7 +410,7 @@ std::vector<reco::GenParticle> GenAnalyzer::PartonsFromDecays(const std::vector<
 }
 
 // returns a vector with the gen particles from the decays of the particles in the list
-// saves decating particles in vector passed a reference
+// saves decaying particles in vector passed a reference
 std::vector<reco::GenParticle> GenAnalyzer::PartonsFromDecays(const std::vector<int> & pdgIds, std::vector<reco::GenParticle> & genDecay)  {
   
   // vector to save the partons
@@ -433,4 +433,23 @@ std::vector<reco::GenParticle> GenAnalyzer::PartonsFromDecays(const std::vector<
   }
 
   return partons;
+}
+
+// returns a vector with the first n particles which have pdgIDs
+std::vector<reco::GenParticle> GenAnalyzer::FirstNGenParticles(const std::vector<int> & pdgIds, std::size_t n)  {
+  
+  // vector to save the rtons
+  std::vector<reco::GenParticle> particles;
+
+  if(isRealData or PythiaLOSample) return particles;
+
+  for (auto & genParticle : *GenCollection ) {
+    // check if pdgid in vector
+    if (std::find(pdgIds.begin(), pdgIds.end(), genParticle.pdgId()) != pdgIds.end()) {
+          particles.emplace_back(genParticle);
+    }
+    if (particles.size() == n) return particles;
+  }
+
+  return particles;
 }
