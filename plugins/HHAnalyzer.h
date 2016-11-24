@@ -164,6 +164,7 @@ class HHAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
         alp::Candidate alp_MET;
         std::vector<alp::Candidate> GenBFromHs;
         std::vector<alp::Candidate> GenHs;
+        std::vector<alp::Candidate> TL_GenHs;
 
         // for saving jet sortings
         std::vector<std::size_t> j_sort_pt;

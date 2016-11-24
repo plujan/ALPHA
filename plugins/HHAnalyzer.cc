@@ -202,6 +202,7 @@ void HHAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
     std::vector<reco::GenParticle> GenHsPart;
     std::vector<reco::GenParticle> GenBFromHsPart = theGenAnalyzer->PartonsFromDecays({25}, GenHsPart);
+    std::vector<reco::GenParticle> TL_GenHsPart = theGenAnalyzer->FirstNGenParticles({25}, 2);
 
 
     // --- Trigger selection ---
@@ -225,6 +226,7 @@ void HHAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
     // gen level
     alp::convert(GenBFromHsPart, GenBFromHs);
     alp::convert(GenHsPart, GenHs);
+    alp::convert(TL_GenHsPart, TL_GenHs);
 
     // fill weights
     weightPairs.emplace_back("EventWeight", EventWeight);
@@ -291,6 +293,7 @@ void HHAnalyzer::beginJob() {
     tree->Branch("MET", &(alp_MET),64000,2);
     tree->Branch("GenBFromHs", &(GenBFromHs), 64000, 2);
     tree->Branch("GenHs", &(GenHs), 64000, 2);
+    tree->Branch("TL_GenHs", &(TL_GenHs), 64000, 2);
 
     tree->Branch("j_sort_pt", &(j_sort_pt), 64000, 2);
     tree->Branch("j_sort_csv", &(j_sort_csv), 64000, 2);
