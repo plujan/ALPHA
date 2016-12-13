@@ -46,6 +46,63 @@ sample = {
         'matcheff': 1.,
         'kfactor' : 1.,
     },
+
+    'SingleMuonRun2016H-PromptReco-v2' : {
+        'nevents' : 171134793,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'SingleMuonRun2016H-PromptReco-v3' : {
+        'nevents' : 4393222,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+
+    #re-reco 
+    'SingleMuonRun2016B-23Sep2016-v1' : {
+        'nevents' : 2789243,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'SingleMuonRun2016B-23Sep2016-v3' : {
+        'nevents' : 158145722,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'SingleMuonRun2016C-23Sep2016-v1' : {
+        'nevents' : 67441308,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'SingleMuonRun2016D-23Sep2016-v1' : {
+        'nevents' : 98017996,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'SingleMuonRun2016E-23Sep2016-v1' : {
+        'nevents' : 90984718,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'SingleMuonRun2016F-23Sep2016-v1' : {
+        'nevents' : 65425108,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'SingleMuonRun2016G-23Sep2016-v1' : {
+        'nevents' : 149916849,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
     
     'DoubleMuonRun2016B-PromptReco-v1' : {
         'nevents' : 4201017,
