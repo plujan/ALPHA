@@ -1,5 +1,7 @@
-# ALPHA
+# ALPHA 
 A Light Post-Heppy Analyzer
+
+# FROZEN TO CMSSW_8_0_12 (JAN-2017)
 
 ## Git instructions
 # Prerequisites
