@@ -20,6 +20,8 @@ class PileupAnalyzer {
         PileupAnalyzer(edm::ParameterSet&, edm::ConsumesCollector&&);
         ~PileupAnalyzer();
         virtual float GetPUWeight(const edm::Event&);
+        virtual float GetPUWeightUp(const edm::Event&);
+        virtual float GetPUWeightDown(const edm::Event&);
         virtual float GetPV(const edm::Event&);
 
       
@@ -27,8 +29,12 @@ class PileupAnalyzer {
         edm::EDGetTokenT<std::vector<PileupSummaryInfo> > PUToken;
         edm::EDGetTokenT<std::vector<reco::Vertex> > PVToken;
         edm::LumiReWeighting* LumiWeights;
+        edm::LumiReWeighting* LumiWeightsUp;
+        edm::LumiReWeighting* LumiWeightsDown;
         
         std::string DataFileName;
+        std::string DataFileNameUp;
+        std::string DataFileNameDown;
         std::string MCFileName;
         std::string DataName;
         std::string MCName;

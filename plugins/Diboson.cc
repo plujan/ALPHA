@@ -49,6 +49,9 @@ Diboson::Diboson(const edm::ParameterSet& iConfig):
     HistFile(iConfig.getParameter<std::string>("histFile")),
     Verbose(iConfig.getParameter<bool>("verbose"))
 {
+    
+    std::cout << "CONSTRUCTOR";
+
     //now do what ever initialization is needed
     usesResource("TFileService");
     
@@ -139,13 +142,17 @@ Diboson::~Diboson() {
 
 // ------------ method called for each event  ------------
 void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
+    
+    
     isMC = !iEvent.isRealData();
     EventNumber = iEvent.id().event();
     LumiNumber = iEvent.luminosityBlock();
     RunNumber = iEvent.id().run();
     
-    EventWeight = StitchWeight = ZewkWeight = WewkWeight = PUWeight = TriggerWeight = LeptonWeight = 1.;
+    EventWeight = StitchWeight = ZewkWeight = WewkWeight = TriggerWeight = LeptonWeight = 1.;
+    PUWeight = PUWeightUp = PUWeightDown = 1.;
     FacWeightUp = FacWeightDown = RenWeightUp = RenWeightDown = ScaleWeightUp = ScaleWeightDown = 1.;
+    PdfWeight = 1.;
     isZtoEE = isZtoMM = isTtoEM = isWtoEN = isWtoMN = isZtoNN = false;
     nPV = nElectrons = nMuons = nTaus = nPhotons = nJets = nFatJets = nBTagJets = 1;
     nVetoElectrons = nLooseMuons = 0;
@@ -174,36 +181,21 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     for(int i = 0; i < WriteNJets; i++) ObjectsFormat::ResetJetType(Jets[i]);
     for(int i = 0; i < WriteNFatJets; i++) ObjectsFormat::ResetFatJetType(FatJets[i]);
     ObjectsFormat::ResetMEtType(MEt);
-    
     ObjectsFormat::ResetCandidateType(V);
     ObjectsFormat::ResetCandidateType(X);
-    /*ObjectsFormat::ResetCandidateType(H);
-    ObjectsFormat::ResetCandidateType(A);
-    ObjectsFormat::ResetCandidateType(HMerged);
-    ObjectsFormat::ResetCandidateType(XMerged);
-    ObjectsFormat::ResetCandidateType(HResolved);
-    ObjectsFormat::ResetCandidateType(XResolved);
-    ObjectsFormat::ResetCandidateType(HResolvedPt);
-    ObjectsFormat::ResetCandidateType(XResolvedPt);
-    ObjectsFormat::ResetCandidateType(HResolvedHpt);
-    ObjectsFormat::ResetCandidateType(XResolvedHpt);
-    ObjectsFormat::ResetCandidateType(HResolvedDZ);
-    ObjectsFormat::ResetCandidateType(XResolvedDZ);
-    ObjectsFormat::ResetCandidateType(HResolvedDR);
-    ObjectsFormat::ResetCandidateType(XResolvedDR);
-    ObjectsFormat::ResetLorentzType(kH);
-    ObjectsFormat::ResetLorentzType(kA);*/
-    
+
     Hist["a_nEvents"]->Fill(1., EventWeight);
     Hist["e_nEvents"]->Fill(1., EventWeight);
     Hist["m_nEvents"]->Fill(1., EventWeight);
-    
+
     // -----------------------------------
     //           READ OBJECTS
     // -----------------------------------
     
     // Pu weight
-    PUWeight = thePileupAnalyzer->GetPUWeight(iEvent);
+    PUWeight     = thePileupAnalyzer->GetPUWeight(iEvent);
+    PUWeightUp   = thePileupAnalyzer->GetPUWeightUp(iEvent);
+    PUWeightDown = thePileupAnalyzer->GetPUWeightDown(iEvent);
     nPV = thePileupAnalyzer->GetPV(iEvent);
     Hist["a_nPVNoWeight"]->Fill(nPV, EventWeight);
     EventWeight *= PUWeight;
@@ -219,6 +211,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     for(unsigned int i =0; i<ElecVect.size(); i++){
         if(ElecVect.at(i).userInt("isVeto")==1) nVetoElectrons++;
     }
+
     // Muons
     std::vector<pat::Muon> MuonVect = theMuonAnalyzer->FillMuonVector(iEvent);
     nMuons = MuonVect.size();
@@ -227,23 +220,27 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         if(MuonVect.at(i).userInt("isLoose")==1){
 	    LooseMuonVect.push_back(MuonVect.at(i));
             nLooseMuons++;
-	}
+        }
     }
+    
     // Taus
     std::vector<pat::Tau> TauVect = theTauAnalyzer->FillTauVector(iEvent);
     theTauAnalyzer->CleanTausFromMuons(TauVect, MuonVect, 0.4);
     theTauAnalyzer->CleanTausFromElectrons(TauVect, ElecVect, 0.4);
     nTaus = TauVect.size();
+
     // Photons
     std::vector<pat::Photon> PhotonVect = thePhotonAnalyzer->FillPhotonVector(iEvent);
     if(TriggerMap.find("HLT_DoublePhoton60_v") != TriggerMap.end() && TriggerMap["HLT_DoublePhoton60_v"]) thePhotonAnalyzer->PlotPhotons(PhotonVect, Hist, EventWeight);
     nPhotons = PhotonVect.size();
+
     // Jets
     std::vector<pat::Jet> JetsVect = theJetAnalyzer->FillJetVector(iEvent);
     theJetAnalyzer->CleanJetsFromMuons(JetsVect, MuonVect, 0.4);
     theJetAnalyzer->CleanJetsFromElectrons(JetsVect, ElecVect, 0.4);
     nJets = JetsVect.size();
     nBTagJets = theJetAnalyzer->GetNBJets(JetsVect);
+
     // Fat Jets
     std::vector<pat::Jet> FatJetsVect = theFatJetAnalyzer->FillJetVector(iEvent);
     //theFatJetAnalyzer->CleanJetsFromMuons(FatJetsVect, MuonVect, 1.); // Do NOT clean the fatjet now
@@ -262,19 +259,33 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     // -----------------------------------
     
     // Gen weights
-    std::map<std::string, float> GenWeight = theGenAnalyzer->FillWeightsMap(iEvent);
-    EventWeight *= GenWeight["event"];
-    if(GenWeight.find("2") != GenWeight.end()) FacWeightUp     = GenWeight["2"];
-    if(GenWeight.find("3") != GenWeight.end()) FacWeightDown   = GenWeight["3"];
-    if(GenWeight.find("4") != GenWeight.end()) RenWeightUp     = GenWeight["4"];
-    if(GenWeight.find("7") != GenWeight.end()) RenWeightDown   = GenWeight["7"];
-    if(GenWeight.find("5") != GenWeight.end()) ScaleWeightUp   = GenWeight["5"];
-    if(GenWeight.find("9") != GenWeight.end()) ScaleWeightDown = GenWeight["9"];
+    std::map<int, float> GenWeight = theGenAnalyzer->FillWeightsMap(iEvent);
+    EventWeight *= GenWeight[-1];
+    if(GenWeight.find(2) != GenWeight.end()) FacWeightUp     = GenWeight[2];
+    if(GenWeight.find(3) != GenWeight.end()) FacWeightDown   = GenWeight[3];
+    if(GenWeight.find(4) != GenWeight.end()) RenWeightUp     = GenWeight[4];
+    if(GenWeight.find(7) != GenWeight.end()) RenWeightDown   = GenWeight[7];
+    if(GenWeight.find(5) != GenWeight.end()) ScaleWeightUp   = GenWeight[5];
+    if(GenWeight.find(9) != GenWeight.end()) ScaleWeightDown = GenWeight[9];
+    
+    float tmpPdfWeight = 0.;
+    int   tmpPdfN = 0;
+    for(auto const& pdfw : GenWeight) {
+        if (pdfw.first > 9 && pdfw.second>0) {
+            ++tmpPdfN;
+//             std::cout << "pdf " << tmpPdfN << " = " << pdfw.second << "\n";
+            tmpPdfWeight = tmpPdfWeight + pdfw.second*pdfw.second;
+        }
+    }
+    PdfWeight = sqrt(tmpPdfWeight/tmpPdfN);
+//     std::cout << "PdfWeight " << PdfWeight << "\n";
+
     // Lhe Particles
     std::map<std::string, float> LheMap = theGenAnalyzer->FillLheMap(iEvent);
     // Mc Stitching
     StitchWeight = theGenAnalyzer->GetStitchWeight(LheMap);
     //EventWeight *= StitchWeight; // Not yet
+
     // Gen Particles
     std::vector<reco::GenParticle> GenPVect = theGenAnalyzer->FillGenVector(iEvent);
     // Gen candidates
@@ -289,53 +300,11 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     
     EventWeight *= ZewkWeight * WewkWeight;
     
-    /*
-//        float genPtZ(-1.), genPtW(-1.);
-//    if(!genZ && genL1 && genL2) genPtZ = (!genZ) ? genZ->pt() : (*genL1 + *genL2).pt();
-//    if(!genW && ((genL1 && genN1) || (genL2 && genN2))) genPtW = (!genW) ? genW->pt() : ( (genL1 && genN1) ? (*genL1 + *genN1).pt() : (*genL2 + *genN2).pt() );
-//    if(genZ) genPtZ = genZ->pt();
-//    if(genW) genPtW = genW->pt();
-    
-    reco::GenParticle* genL1 = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, std::vector<int>{-11, -13}, 23);
-    reco::GenParticle* genL2 = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, std::vector<int>{+11, +13}, 23);
-    reco::GenParticle* genQ1 = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, std::vector<int>{5}, 25);
-    reco::GenParticle* genQ2 = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, std::vector<int>{-5}, 25);
-    reco::GenParticle* genZ = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, std::vector<int>{23});
-    reco::GenParticle* genH = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, std::vector<int>{25});
-    reco::GenParticle* genX = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, std::vector<int>{36});
-    
-    if(genL1!=NULL && genL2!=NULL && genQ1!=NULL && genQ2!=NULL && genZ!=NULL && genH!=NULL && genX!=NULL) {
-        //reco::Candidate::LorentzVector genV(genL1->p4() + genL2->p4()), genH(genQ1->p4() + genQ2->p4()), genX(genL1->p4() + genL2->p4() + genQ1->p4() + genQ2->p4());
-        
-        Hist["g_Xmass"]->Fill(genX->mass(), EventWeight);
-        Hist["g_Xpt"]->Fill(genX->pt(), EventWeight);
-        Hist["g_Zmass"]->Fill(genZ->mass(), EventWeight);
-        Hist["g_Zpt"]->Fill(genZ->pt(), EventWeight);
-        Hist["g_ZdR"]->Fill(reco::deltaR(genL1->eta(), genL1->phi(), genL2->eta(), genL2->phi()), EventWeight);
-        Hist["g_Hmass"]->Fill(genH->mass(), EventWeight);
-        Hist["g_Hpt"]->Fill(genH->pt(), EventWeight);
-        Hist["g_HdR"]->Fill(reco::deltaR(genQ1->eta(), genQ1->phi(), genQ2->eta(), genQ2->phi()), EventWeight);
-        
-        float genCosThetaStar = theUtilities->ReturnCosThetaStar(genX->p4(), genZ->p4());
-        float genCosTheta1    = theUtilities->ReturnCosTheta1(genZ->p4(), genL1->p4(), genL2->p4(), genQ1->p4(), genQ2->p4());
-        float genCosTheta2    = fabs( theUtilities->ReturnCosTheta2(genH->p4(), genL1->p4(), genL2->p4(), genQ1->p4(), genQ2->p4()) );
-        float genPhi          = theUtilities->ReturnPhi(genX->p4(), genL1->p4(), genL2->p4(), genQ1->p4(), genQ2->p4());
-        float genPhi1         = theUtilities->ReturnPhi1(genX->p4(), genL1->p4(), genL2->p4());
-        
-        Hist["g_CosThetaStar"]->Fill(genCosThetaStar, EventWeight);
-        Hist["g_CosTheta1"]->Fill(genCosTheta1, EventWeight);
-        Hist["g_CosTheta2"]->Fill(genCosTheta2, EventWeight);
-        Hist["g_Phi"]->Fill(genPhi, EventWeight);
-        Hist["g_Phi1"]->Fill(genPhi1, EventWeight);
-        
-    }
-    */
-
     std::vector<int> LepIds = {12,14,16,-12,-14,-16};
     std::vector<int> HadIds = {1,2,3,4,5,-1,-2,-3,-4,-5};
     reco::GenParticle* theGenLep = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, LepIds);
     reco::GenParticle* theGenHad = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, HadIds);
-    
+
     //Gen level plots and candidates
     //double GenZLepMass = -1.;
     //double GenZHadMass = -1.;
@@ -381,9 +350,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
             isGenZZ = true;
             p4GenZHad = theGenZHad->p4();
         }
-    }
-    
-    
+    }    
     reco::Candidate* theGenX = theGenAnalyzer->FindGenParticleByIdAndStatus(GenPVect, 39, 62);
     if(!theGenX) theGenX = theGenAnalyzer->FindGenParticleByIdAndStatus(GenPVect, 36, 62);
     if(theGenX!=NULL && theGenLep!=NULL && theGenHad!=NULL && isGenZZ){
@@ -392,9 +359,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         Hist["g_XPt"]->Fill(theGenX->pt(), EventWeight);
         Hist["g_XRapidity"]->Fill(theGenX->rapidity(), EventWeight);
         //GenXMass = theGenX->mass();
-    }
-    
-
+    }    
     // ---------- Trigger selections ----------
     // Dummy trigger
     //TriggerWeight*=theElectronAnalyzer->GetDoubleElectronTriggerSF(ElecVect.at(0), ElecVect.at(1));
@@ -404,8 +369,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     
     Hist["a_nEvents"]->Fill(2., EventWeight);
     Hist["e_nEvents"]->Fill(2., EventWeight);
-    Hist["m_nEvents"]->Fill(2., EventWeight);
-    
+    Hist["m_nEvents"]->Fill(2., EventWeight);    
     
     // Electron efficiency plots
     reco::GenParticle* genE1 = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, std::vector<int>{-11});
@@ -444,8 +408,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
                 }
             }
         }
-    }
-    
+    }    
     
     // Muon efficiency plots
     reco::GenParticle* genM1 = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, std::vector<int>{-13});
@@ -489,8 +452,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
                 }
             }
         }
-    }
-    
+    }    
     
     // -----------------------------------
     //           VECTOR BOSON
@@ -508,6 +470,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         else if(MuonVect.size()>=2) isZtoMM=true;
         else {if(Verbose) std::cout << " - No Iso SF OS Leptons" << std::endl;}
     }
+
     // ---------- W TO LEPTON and NEUTRINO ----------
     else if(MuonVect.size()==1 || ElecVect.size()==1) {
         if(MuonVect.size()==1 && ElecVect.size()==1) isTtoEM = true;
@@ -528,13 +491,14 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     
     Hist["a_nEvents"]->Fill(3., EventWeight);
     Hist["m_nEvents"]->Fill(8., EventWeight);
+    
 //    if(isZtoEE) Hist["e_nEvents"]->Fill(3., EventWeight);
 //    if(isZtoMM) Hist["m_nEvents"]->Fill(3., EventWeight);
 
 
     // ---------- Reconstruct V candidate ----------
+    pat::CompositeCandidate theV;    
     
-    pat::CompositeCandidate theV;
     /*
     if(isZtoMM) {
         if(Verbose) std::cout << " - Try to reconstruct Z -> mm" << std::endl;
@@ -631,21 +595,24 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
             // SF
             if(isMC) {
                 /// FIXME -> APPLYING THE SF FOR Ele105 HADRCODED <- FIXME ///
-                if (ElecVect.at(e1).pt() > ElecVect.at(e2).pt() )
+                if (ElecVect.at(e1).pt() > ElecVect.at(e2).pt() ){
                     LeptonWeight *= theElectronAnalyzer->GetElectronTriggerSFEle105(ElecVect.at(e1));
-                else
+                }
+                else{
                     LeptonWeight *= theElectronAnalyzer->GetElectronTriggerSFEle105(ElecVect.at(e2));                
+                }
                 LeptonWeight *= theElectronAnalyzer->GetElectronIdSF(ElecVect.at(0), ElectronPSet.getParameter<int>("electron1id"));
                 LeptonWeight *= theElectronAnalyzer->GetElectronIdSF(ElecVect.at(1), ElectronPSet.getParameter<int>("electron2id"));
                 LeptonWeight *= theElectronAnalyzer->GetElectronRecoEffSF(ElecVect.at(0));
                 LeptonWeight *= theElectronAnalyzer->GetElectronRecoEffSF(ElecVect.at(1));
             }
         }
-        else { if(Verbose) std::cout << " - No OS electrons" << std::endl; return; }
+        else { if(Verbose) std::cout << " - No OS electrons" << std::endl; 
+               return; }
         // Clean-up electron collection
         pat::Electron Ele1 = ElecVect.at(e1), Ele2 = ElecVect.at(e2);
         ElecVect.clear();
-        if(Ele1.pt() > Ele2.pt()) {ElecVect.push_back(Ele1); ElecVect.push_back(Ele2);}
+        if(Ele1.pt() > Ele2.pt()) {ElecVect.push_back(Ele1); ElecVect.push_back(Ele2); }
         else {ElecVect.push_back(Ele2); ElecVect.push_back(Ele1);}
     }
     else if(isTtoEM) {
@@ -1106,7 +1073,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     ObjectsFormat::FillCandidateType(XResolvedDR, &theXResolvedDR, isMC);
     */
     if(V.pt < 100.) return;
-    
+
     // Fill tree
     tree->Fill();
     
@@ -1212,7 +1179,8 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
 
 // ------------ method called once each job just before starting event loop  ------------
 void Diboson::beginJob() {
-    
+    std::cout << "BEGIN JOB";
+
     // Object objects are created only one in the begin job. The reference passed to the branch has to be the same
     for(int i = 0; i < WriteNElectrons; i++) Electrons.push_back( LeptonType() );
     for(int i = 0; i < WriteNMuons; i++) Muons.push_back( LeptonType() );
@@ -1235,10 +1203,13 @@ void Diboson::beginJob() {
     tree->Branch("RenWeightDown", &RenWeightDown, "RenWeightDown/F");
     tree->Branch("ScaleWeightUp", &ScaleWeightUp, "ScaleWeightUp/F");
     tree->Branch("ScaleWeightDown", &ScaleWeightDown, "ScaleWeightDown/F");
+    tree->Branch("PdfWeight", &PdfWeight, "PdfWeight/F");
     tree->Branch("StitchWeight", &StitchWeight, "StitchWeight/F");
     tree->Branch("ZewkWeight", &ZewkWeight, "ZewkWeight/F");
     tree->Branch("WewkWeight", &WewkWeight, "WewkWeight/F");
     tree->Branch("PUWeight", &PUWeight, "PUWeight/F");
+    tree->Branch("PUWeightUp", &PUWeightUp, "PUWeightUp/F");
+    tree->Branch("PUWeightDown", &PUWeightDown, "PUWeightDown/F");
     tree->Branch("TriggerWeight", &TriggerWeight, "TriggerWeight/F");
     tree->Branch("LeptonWeight", &LeptonWeight, "LeptonWeight/F");
     
@@ -1375,12 +1346,16 @@ void Diboson::beginJob() {
 
 // ------------ method called once each job just after ending the event loop  ------------
 void Diboson::endJob() {
+    std::cout << "END JOB";
 }
 
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
 void Diboson::fillDescriptions(edm::ConfigurationDescriptions& descriptions) {
     //The following says we do not know what parameters are allowed so do no validation
     // Please change this to state exactly what you do use, even if it is no parameters
+
+    std::cout << "FILL DESCRIPTION";
+
     edm::ParameterSetDescription desc;
     desc.setUnknown();
     descriptions.addDefault(desc);

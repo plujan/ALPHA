@@ -83,9 +83,9 @@ GenAnalyzer::~GenAnalyzer() {
 
 // ---------- GEN WEIGHTS ----------
 
-std::map<std::string, float> GenAnalyzer::FillWeightsMap(const edm::Event& iEvent) {
-    std::map<std::string, float> Weights;
-    Weights["event"] = 1.;
+std::map<int, float> GenAnalyzer::FillWeightsMap(const edm::Event& iEvent) {
+    std::map<int, float> Weights;
+    Weights[-1] = 1.; // EventWeight
     if(iEvent.isRealData() or PythiaLOSample) return Weights;
     // Declare and open collection
     edm::Handle<GenEventInfoProduct> GenEventCollection;
@@ -95,10 +95,10 @@ std::map<std::string, float> GenAnalyzer::FillWeightsMap(const edm::Event& iEven
     iEvent.getByToken(LheToken, LheEventCollection);
     const LHEEventProduct* Product = LheEventCollection.product();
     
-    Weights["event"] = fabs(Product->originalXWGTUP()) / Product->originalXWGTUP();
+    Weights[-1] = fabs(Product->originalXWGTUP()) / Product->originalXWGTUP();
     
-    for(unsigned int i = 0; i < 10 && i < Product->weights().size(); i++) {
-        Weights[ Product->weights()[i].id ] = Product->weights()[i].wgt / Product->originalXWGTUP();
+    for(unsigned int i = 0; i < Product->weights().size(); i++) {
+        Weights[ std::stoi(Product->weights()[i].id) ] = Product->weights()[i].wgt / Product->originalXWGTUP();
     }
 //    for(auto it = Product->weights().begin(); it != Product->weights().end(), i<10; ++it, i++) {
 //        std::cout << it->id << "     " << it->wgt << std::endl;
