@@ -157,7 +157,7 @@ ElectronAnalyzer::~ElectronAnalyzer() {
 
 
 std::vector<pat::Electron> ElectronAnalyzer::FillElectronVector(const edm::Event& iEvent) {
-    //bool isMC(!iEvent.isRealData());
+    bool isMC(!iEvent.isRealData());
     int IdTh(Electron1Id);//, IsoTh(Electron1Iso);
     float PtTh(Electron1Pt);
     std::vector<pat::Electron> Vect;
@@ -202,6 +202,25 @@ std::vector<pat::Electron> ElectronAnalyzer::FillElectronVector(const edm::Event
         }
         pat::Electron el=*it;
         pat::ElectronRef elRef(EleCollection, elIdx);
+        
+// // //         // Corrections for Ele Smearing (on data only) -- MORIOND 2017
+// // //         double Ecorr=1;
+// // //         if(!isMC)
+// // //             DetId detid = el.superCluster()->seed()->seed();
+// // //             const EcalRecHit * rh = NULL;
+// // //             if (detid.subdetId() == EcalBarrel) {
+// // //                 auto rh_i =  _ebrechits->find(detid);
+// // //                             if( rh_i != _ebrechits->end()) rh =  &(*rh_i);
+// // //                             else rh = NULL;
+// // //                     } 
+// // //             if(rh==NULL) Ecorr=1;
+// // //             else{
+// // //             if(rh->energy() > 200 && rh->energy()<300)  Ecorr=1.0199;
+// // //             else if(rh->energy()>300 && rh->energy()<400) Ecorr=  1.052;
+// // //             else if(rh->energy()>400 && rh->energy()<500) Ecorr = 1.015;
+// // //             }
+// // //         el.setP4(reco::Candidate::LorentzVector(el.px(), el.py(), el.pz(), Ecorr*el.energy() ));      
+        
         // Pt and eta
         if(el.pt()<PtTh || fabs(el.eta())>2.5) continue;
         // PF (?) Isolation R=0.4 https://twiki.cern.ch/twiki/bin/viewauth/CMS/EgammaPFBasedIsolation#for_PAT_electron_users_using_sta
@@ -371,11 +390,12 @@ float ElectronAnalyzer::GetElectronTriggerSFEle105(pat::Electron& ele) {
     if(!isEleSingleTriggerFile) return 1.;
     double pt = std::min( std::max( ElectronTriggerEle105->GetXaxis()->GetXmin(), ele.pt() ) , ElectronTriggerEle105->GetXaxis()->GetXmax() - 0.000001 );
     double eta = 0.;
-    if (ele.eta() > 0)
+    if (ele.eta() > 0){
         eta = std::min( ElectronTriggerEle105->GetYaxis()->GetXmax() - 0.000001 , ele.eta() );
-    else
+    }
+    else{
         eta = std::max( ElectronTriggerEle105->GetYaxis()->GetXmin() + 0.000001 , ele.eta() );
-    
+    }
     return ElectronTriggerEle105->GetBinContent( ElectronTriggerEle105->FindBin(pt, eta) );
 }
 

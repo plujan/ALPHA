@@ -29,6 +29,12 @@
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
 #include "DataFormats/VertexReco/interface/Vertex.h"
 
+
+#include "DataFormats/PatCandidates/interface/PackedCandidate.h"
+#include "DataFormats/Candidate/interface/Candidate.h"
+#include "JetMETCorrections/Modules/interface/JetResolution.h"
+#include <CondFormats/JetMETObjects/interface/JetResolutionObject.h>
+
 #include "BTagCalibrationStandalone.h"
 
 #include "DataFormats/Common/interface/Ptr.h"
@@ -37,6 +43,7 @@
 #include "TH2.h"
 #include "TF1.h"
 #include "TLorentzVector.h"
+#include "TRandom3.h"
 
 class JetAnalyzer {
     public:
@@ -53,9 +60,9 @@ class JetAnalyzer {
         virtual pat::MET FillMetVector(const edm::Event&);
         virtual void ApplyRecoilCorrections(pat::MET&, const reco::Candidate::LorentzVector*, const reco::Candidate::LorentzVector*, int);
         //virtual float GetScaleUncertainty(pat::Jet&);
-        virtual float GetResolutionRatio(float);
-        virtual float GetResolutionErrorUp(float);
-        virtual float GetResolutionErrorDown(float);
+//         virtual float GetResolutionRatio(float);
+//         virtual float GetResolutionErrorUp(float);
+//         virtual float GetResolutionErrorDown(float);
         virtual bool isLooseJet(pat::Jet&);
         //virtual bool isMediumJet(pat::Jet&);
         virtual bool isTightJet(pat::Jet&);
@@ -69,7 +76,7 @@ class JetAnalyzer {
         edm::EDGetTokenT<edm::ValueMap<float>> QGToken;
         int JetId;
         float Jet1Pt, Jet2Pt, JetEta;
-        bool AddQG, RecalibrateJets, RecalibrateMass, RecalibratePuppiMass;
+        bool AddQG, RecalibrateJets, RecalibrateMass, RecalibratePuppiMass, SmearJets;
         std::string JECUncertaintyMC;
         std::string JECUncertaintyDATA;
         std::vector<std::string> JetCorrectorMC;
@@ -86,6 +93,9 @@ class JetAnalyzer {
         bool UseRecoil;
         std::string RecoilMCFile;
         std::string RecoilDataFile;
+        std::string JerName_res;
+        std::string JerName_sf;
+        float Rparameter;
         
         TFile* PuppiCorrFile;
         TF1* PuppiJECcorr_gen;
@@ -117,6 +127,10 @@ class JetAnalyzer {
 //        BTagCalibrationReader * reader_down_hfstats2;
 //        BTagCalibrationReader * reader_down_cferr1;
 //        BTagCalibrationReader * reader_down_cferr2;
+        
+        //JME
+        JME::JetResolution              * resolution;
+        JME::JetResolutionScaleFactor   * resolution_sf;        
         
         // Recoil corrections
         RecoilCorrector* recoilCorr;
