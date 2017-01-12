@@ -20,6 +20,9 @@ namespace {
     std::vector<alp::Candidate> vector_alp_candidate_;
     alp::Jet alp_jet_;
     std::vector<alp::Jet> vector_alp_jet_;
+    alp::DiObject alp_diobject_;
+    std::vector<alp::DiObject> vector_alp_diobject_;
+
 
   };
 }
