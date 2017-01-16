@@ -18,8 +18,8 @@ process = cms.Process('ALPHA')
 process.load('FWCore.MessageService.MessageLogger_cfi')
 process.MessageLogger.cerr.threshold = 'ERROR'
 
-#process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10000) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+#process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10000) )
 
 # input
 # default: if no filelist from command line, run on specified samples
@@ -31,7 +31,35 @@ if len(options.inputFiles) == 0:
            #'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISpring16MiniAODv2/DYJetsToLL_M-50_HT-400to600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_ext1-v1/40000/8219CC5E-F529-E611-A621-14187733AD89.root' # DY
            
            #'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016H/SingleMuon/MINIAOD/PromptReco-v3/000/284/036/00000/129CD4B5-5D9F-E611-A9AB-02163E014220.root', # SingleMuon
-           'root://cms-xrd-global.cern.ch//store/mc/RunIISummer16MiniAODv2/DYJetsToLL_M-50_HT-800to1200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/120000/480D3900-8CC0-E611-81E8-001E67504645.root', # DYJetsToLL
+           
+           
+           
+#'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016D/SingleMuon/MINIAOD/23Sep2016-v1/90000/E8C064B4-0C8F-E611-B8B8-008CFAFC0500.root',
+#'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016D/SingleMuon/MINIAOD/23Sep2016-v1/90000/E8F0A7C0-2790-E611-B3D8-20CF305B0581.root',
+#'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016D/SingleMuon/MINIAOD/23Sep2016-v1/90000/EAF0207C-428F-E611-B174-0090FAA581E4.root',
+#'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016D/SingleMuon/MINIAOD/23Sep2016-v1/90000/EC726C5F-C090-E611-B6A6-001E67E6F512.root',
+#'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016D/SingleMuon/MINIAOD/23Sep2016-v1/90000/ECB0D8D4-B68E-E611-9611-0090FAA58434.root',
+#'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016D/SingleMuon/MINIAOD/23Sep2016-v1/90000/F0FFBA28-3690-E611-85D0-848F69FD4517.root',
+#'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016D/SingleMuon/MINIAOD/23Sep2016-v1/90000/F4308113-2890-E611-BD8E-001E67E6F85F.root',
+#'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016D/SingleMuon/MINIAOD/23Sep2016-v1/90000/F627424B-0490-E611-8FB5-3417EBE64BA0.root',
+#'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016D/SingleMuon/MINIAOD/23Sep2016-v1/90000/F6E7B76F-1390-E611-BC3B-008CFAFBFB94.root',
+#'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016D/SingleMuon/MINIAOD/23Sep2016-v1/90000/F6F514A9-9B90-E611-8149-0CC47A4DED7E.root',
+#'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016D/SingleMuon/MINIAOD/23Sep2016-v1/90000/FA79D566-1390-E611-BB88-008CFAFBFB94.root',
+#'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016D/SingleMuon/MINIAOD/23Sep2016-v1/90000/FACC563A-628F-E611-AB8B-008CFAFBEC9A.root',
+           
+           
+'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016D/SingleElectron/MINIAOD/23Sep2016-v1/90000/6A4024AD-C788-E611-B2E6-0090FAA58B94.root',
+'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016D/SingleElectron/MINIAOD/23Sep2016-v1/90000/6A41A46D-8188-E611-95CD-3417EBE7063F.root',
+'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016D/SingleElectron/MINIAOD/23Sep2016-v1/90000/6A471EFD-4F87-E611-9327-FA163E622848.root',
+'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016D/SingleElectron/MINIAOD/23Sep2016-v1/90000/6AE974A5-D489-E611-AE8F-00259021A4A2.root',
+'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016D/SingleElectron/MINIAOD/23Sep2016-v1/90000/6C0C15DE-8C88-E611-BAF7-FA163E0D4748.root',
+'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016D/SingleElectron/MINIAOD/23Sep2016-v1/90000/6CA739FD-6C88-E611-8E35-001E677923E6.root',
+'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016D/SingleElectron/MINIAOD/23Sep2016-v1/90000/6CB07F24-4788-E611-8DAA-FA163E9BA77A.root',
+'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016D/SingleElectron/MINIAOD/23Sep2016-v1/90000/6CBC4A42-CF88-E611-959B-0025905C95F8.root',
+'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016D/SingleElectron/MINIAOD/23Sep2016-v1/90000/6CDD978C-D187-E611-A82A-0CC47A009E26.root',
+'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016D/SingleElectron/MINIAOD/23Sep2016-v1/90000/6CDFF3EB-B487-E611-9F4C-02163E015F9C.root',
+           
+           #'root://cms-xrd-global.cern.ch//store/mc/RunIISummer16MiniAODv2/DYJetsToLL_M-50_HT-800to1200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/120000/480D3900-8CC0-E611-81E8-001E67504645.root', # DYJetsToLL
         )
     )
 # production: read externally provided filelist
@@ -173,8 +201,8 @@ for ele_idmod in ele_id_modules:
 
 #photons upstream modules
 switchOnVIDPhotonIdProducer(process, DataFormat.MiniAOD)
-ph_id_modules = ['RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_Spring15_25ns_V1_cff',
-                 'RecoEgamma.PhotonIdentification.Identification.mvaPhotonID_Spring15_25ns_nonTrig_V2_cff']
+ph_id_modules = ['RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_Spring16_V2p2_cff.py',
+                 'RecoEgamma.PhotonIdentification.Identification.mvaPhotonID_Spring16_nonTrig_V1_cff.py']
 for ph_idmod in ph_id_modules:
     setupAllVIDIdsInModule(process,ph_idmod,setupVIDPhotonSelection)
 
@@ -343,6 +371,7 @@ process.ntuple = cms.EDAnalyzer('Diboson',
         eleMVANonTrigTightIdMap = cms.InputTag('egmGsfElectronIDs:mvaEleID-Spring16-GeneralPurpose-V1-wp80'),
         eleMVATrigMediumIdMap = cms.InputTag('egmGsfElectronIDs:mvaEleID-Spring16-GeneralPurpose-V1-wp90'), ### NOTE -> SAME AS NON-TRIG IN 2017
         eleMVATrigTightIdMap = cms.InputTag('egmGsfElectronIDs:mvaEleID-Spring16-GeneralPurpose-V1-wp80'), ### NOTE -> SAME AS NON-TRIG IN 2017
+        eleEcalRecHitCollection = cms.InputTag("reducedEgamma:reducedEBRecHits"),
         eleSingleTriggerFileName = cms.string('%s/src/Analysis/ALPHA/data/SingleEleTriggerEff.root' % os.environ['CMSSW_BASE']),
         eleVetoIdFileName = cms.string('%s/src/Analysis/ALPHA/data/eleVetoIDSF_ICHEP.root' % os.environ['CMSSW_BASE']),
         eleLooseIdFileName = cms.string('%s/src/Analysis/ALPHA/data/eleLooseIDSF_ICHEP.root' % os.environ['CMSSW_BASE']),
@@ -388,10 +417,11 @@ process.ntuple = cms.EDAnalyzer('Diboson',
     photonSet = cms.PSet(
         photons = cms.InputTag('slimmedPhotons'),
         vertices = cms.InputTag('offlineSlimmedPrimaryVertices'),
-        phoLooseIdMap = cms.InputTag('egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-loose'),
-        phoMediumIdMap = cms.InputTag('egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-medium'),
-        phoTightIdMap = cms.InputTag('egmPhotonIDs:cutBasedPhotonID-Spring15-25ns-V1-standalone-tight'),
-        phoMVANonTrigMediumIdMap = cms.InputTag('egmPhotonIDs:mvaPhoID-Spring15-25ns-nonTrig-V2-wp90'),
+        phoLooseIdMap = cms.InputTag('egmPhotonIDs:cutBasedPhotonID-Spring16-V2p2-loose'),
+        phoMediumIdMap = cms.InputTag('egmPhotonIDs:cutBasedPhotonID-Spring16-V2p2-medium'),
+        phoTightIdMap = cms.InputTag('egmPhotonIDs:cutBasedPhotonID-Spring16-V2p2-tight'),
+        phoMVANonTrigMediumIdMap = cms.InputTag('egmPhotonIDs:mvaPhoID-Spring16-nonTrig-V1-wp90'),
+        phoEcalRecHitCollection = cms.InputTag("reducedEgamma:reducedEBRecHits"),
         phoLooseIdFileName = cms.string('%s/src/Analysis/ALPHA/data/phoLooseIDSF_ICHEP.root' % os.environ['CMSSW_BASE']),
         phoMediumIdFileName = cms.string('%s/src/Analysis/ALPHA/data/phoMediumIDSF_ICHEP.root' % os.environ['CMSSW_BASE']),
         phoTightIdFileName = cms.string('%s/src/Analysis/ALPHA/data/phoTightIDSF_ICHEP.root' % os.environ['CMSSW_BASE']),

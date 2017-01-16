@@ -58,6 +58,7 @@ class ElectronAnalyzer {
         edm::EDGetTokenT<edm::ValueMap<bool>> EleMVANonTrigTightIdMapToken;
         edm::EDGetTokenT<edm::ValueMap<bool>> EleMVATrigMediumIdMapToken;
         edm::EDGetTokenT<edm::ValueMap<bool>> EleMVATrigTightIdMapToken;
+        edm::EDGetTokenT<EcalRecHitCollection> EleEcalRecHitCollectionToken;
         std::string EleSingleTriggerFileName;
         std::string EleVetoIdFileName;
         std::string EleLooseIdFileName;
