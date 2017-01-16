@@ -43,10 +43,10 @@ class MuonAnalyzer {
         virtual float GetMuonIsoSFError(pat::Muon&, int);
         virtual float GetDoubleMuonTriggerSF(pat::Muon&, pat::Muon&);
         virtual float GetDoubleMuonTriggerSFError(pat::Muon&, pat::Muon&);
-        virtual float GetMuonTriggerSFIsoMu22(pat::Muon&);
-        virtual float GetMuonTriggerSFErrorIsoMu22(pat::Muon&);
-        virtual float GetMuonTriggerSFMu45eta2p1(pat::Muon&);
-        virtual float GetMuonTriggerSFErrorMu45eta2p1(pat::Muon&);
+        virtual float GetMuonTriggerSFIsoMu24(pat::Muon&);
+        virtual float GetMuonTriggerSFErrorIsoMu24(pat::Muon&);
+        virtual float GetMuonTriggerSFMu50(pat::Muon&);
+        virtual float GetMuonTriggerSFErrorMu50(pat::Muon&);
         virtual TH1F* ConvertTGraph(TGraphAsymmErrors*);
       
     private:
@@ -77,8 +77,8 @@ class MuonAnalyzer {
         
         TH2F* MuonTriggerLt20;
         TH2F* MuonTriggerGt20;
-        TH2F* MuonTriggerIsoMu22;
-        TH2F* MuonTriggerMu45eta2p1;
+        TH2F* MuonTriggerIsoMu24;
+        TH2F* MuonTriggerMu50;
         
         TGraphAsymmErrors* MuonTrkGraph;
         TH1F* MuonTrk;

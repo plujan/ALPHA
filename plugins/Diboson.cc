@@ -554,11 +554,11 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
             addP4.set(theV);
             // SF
             if(isMC) {                
-                /// FIXME -> APPLYING THE SF FOR Mu45eta2p1 HADRCODED <- FIXME ///
+                /// FIXME -> APPLYING THE SF FOR Mu50 HADRCODED <- FIXME ///
                 if (MuonVect.at(m1).pt() > MuonVect.at(m2).pt() )
-                    LeptonWeight *= theMuonAnalyzer->GetMuonTriggerSFMu45eta2p1(MuonVect.at(m1));
+                    LeptonWeight *= theMuonAnalyzer->GetMuonTriggerSFMu50(MuonVect.at(m1));
                 else
-                    LeptonWeight *= theMuonAnalyzer->GetMuonTriggerSFMu45eta2p1(MuonVect.at(m2));
+                    LeptonWeight *= theMuonAnalyzer->GetMuonTriggerSFMu50(MuonVect.at(m2));
                 LeptonWeight *= theMuonAnalyzer->GetMuonTrkSF(MuonVect.at(m1));
                 LeptonWeight *= theMuonAnalyzer->GetMuonTrkSF(MuonVect.at(m2));
                 LeptonWeight *= theMuonAnalyzer->GetMuonIdSF(MuonVect.at(m1), MuonPSet.getParameter<int>("muon1id"));
