@@ -149,7 +149,9 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     LumiNumber = iEvent.luminosityBlock();
     RunNumber = iEvent.id().run();
     
-    EventWeight = StitchWeight = ZewkWeight = WewkWeight = TriggerWeight = LeptonWeight = 1.;
+    EventWeight = StitchWeight = ZewkWeight = WewkWeight = 1.;
+    TriggerWeight = 1.;
+    LeptonWeight = LeptonWeightUp = LeptonWeightDown = 1.;
     PUWeight = PUWeightUp = PUWeightDown = 1.;
     FacWeightUp = FacWeightDown = RenWeightUp = RenWeightDown = ScaleWeightUp = ScaleWeightDown = 1.;
     PdfWeight = 1.;
@@ -503,18 +505,34 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
             theV.addDaughter(MuonVect.at(m1).charge() < 0 ? MuonVect.at(m2) : MuonVect.at(m1));
             addP4.set(theV);
             // SF
-            if(isMC) {                
+            if(isMC) {        
+                float LeptonWeightUnc = 0.;
                 /// FIXME -> APPLYING THE SF FOR Mu50 HADRCODED <- FIXME ///
-                if (MuonVect.at(m1).pt() > MuonVect.at(m2).pt() )
-                    LeptonWeight *= theMuonAnalyzer->GetMuonTriggerSFMu50(MuonVect.at(m1));
-                else
-                    LeptonWeight *= theMuonAnalyzer->GetMuonTriggerSFMu50(MuonVect.at(m2));
+                if (MuonVect.at(m1).pt() > MuonVect.at(m2).pt() ) {
+                    LeptonWeight     *= theMuonAnalyzer->GetMuonTriggerSFMu50(MuonVect.at(m1));
+                    LeptonWeightUnc  += pow(theMuonAnalyzer->GetMuonTriggerSFErrorMu50(MuonVect.at(m1)),2);
+
+                }
+                else {
+                    LeptonWeight     *= theMuonAnalyzer->GetMuonTriggerSFMu50(MuonVect.at(m2));
+                    LeptonWeightUnc  += pow(theMuonAnalyzer->GetMuonTriggerSFErrorMu50(MuonVect.at(m2)),2);
+                }
                 LeptonWeight *= theMuonAnalyzer->GetMuonTrkSF(MuonVect.at(m1));
                 LeptonWeight *= theMuonAnalyzer->GetMuonTrkSF(MuonVect.at(m2));
-                LeptonWeight *= theMuonAnalyzer->GetMuonIdSF(MuonVect.at(m1), MuonPSet.getParameter<int>("muon1id"));
-                LeptonWeight *= theMuonAnalyzer->GetMuonIdSF(MuonVect.at(m2), MuonPSet.getParameter<int>("muon2id"));
-                LeptonWeight *= theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(m1), MuonPSet.getParameter<int>("muon1iso"));
-                LeptonWeight *= theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(m2), MuonPSet.getParameter<int>("muon2iso"));
+                LeptonWeight *= theMuonAnalyzer->GetMuonIdSF(MuonVect.at(m1), 0);
+                LeptonWeight *= theMuonAnalyzer->GetMuonIdSF(MuonVect.at(m2), 0);
+                LeptonWeight *= theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(m1), 0);
+                LeptonWeight *= theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(m2), 0);
+
+                LeptonWeightUnc += pow(theMuonAnalyzer->GetMuonTrkSFError(MuonVect.at(m1))      ,2);
+                LeptonWeightUnc += pow(theMuonAnalyzer->GetMuonTrkSFError(MuonVect.at(m2))      ,2);
+                LeptonWeightUnc += pow(theMuonAnalyzer->GetMuonIdSFError(MuonVect.at(m1), 0)    ,2);
+                LeptonWeightUnc += pow(theMuonAnalyzer->GetMuonIdSFError(MuonVect.at(m2), 0)    ,2);
+                LeptonWeightUnc += pow(theMuonAnalyzer->GetMuonIsoSFError(MuonVect.at(m1), 0)   ,2);
+                LeptonWeightUnc += pow(theMuonAnalyzer->GetMuonIsoSFError(MuonVect.at(m2), 0)   ,2);
+
+                LeptonWeightUp   = LeptonWeight+sqrt(LeptonWeightUnc);
+                LeptonWeightDown = LeptonWeight-sqrt(LeptonWeightUnc);
             }
         }
         else { if(Verbose) std::cout << " - No OS muons" << std::endl; return; }
@@ -544,17 +562,28 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
             addP4.set(theV);
             // SF
             if(isMC) {
+                float LeptonWeightUnc = 0.;
                 /// FIXME -> APPLYING THE SF FOR Ele105 HADRCODED <- FIXME ///
                 if (ElecVect.at(e1).pt() > ElecVect.at(e2).pt() ){
-                    LeptonWeight *= theElectronAnalyzer->GetElectronTriggerSFEle105(ElecVect.at(e1));
+                    LeptonWeight     *= theElectronAnalyzer->GetElectronTriggerSFEle105(ElecVect.at(e1));
+                    LeptonWeightUnc  += pow(theElectronAnalyzer->GetElectronTriggerSFErrorEle105(ElecVect.at(e1)),2);                    
                 }
                 else{
-                    LeptonWeight *= theElectronAnalyzer->GetElectronTriggerSFEle105(ElecVect.at(e2));                
+                    LeptonWeight     *= theElectronAnalyzer->GetElectronTriggerSFEle105(ElecVect.at(e2));    
+                    LeptonWeightUnc  += pow(theElectronAnalyzer->GetElectronTriggerSFErrorEle105(ElecVect.at(e2)),2);                                        
                 }
-                LeptonWeight *= theElectronAnalyzer->GetElectronIdSF(ElecVect.at(0), ElectronPSet.getParameter<int>("electron1id"));
-                LeptonWeight *= theElectronAnalyzer->GetElectronIdSF(ElecVect.at(1), ElectronPSet.getParameter<int>("electron2id"));
-                LeptonWeight *= theElectronAnalyzer->GetElectronRecoEffSF(ElecVect.at(0));
-                LeptonWeight *= theElectronAnalyzer->GetElectronRecoEffSF(ElecVect.at(1));
+                LeptonWeight    *= theElectronAnalyzer->GetElectronRecoEffSF(ElecVect.at(0));
+                LeptonWeight    *= theElectronAnalyzer->GetElectronRecoEffSF(ElecVect.at(1));
+                LeptonWeight    *= theElectronAnalyzer->GetElectronIdSF(ElecVect.at(0), 0);
+                LeptonWeight    *= theElectronAnalyzer->GetElectronIdSF(ElecVect.at(1), 0);
+                
+                LeptonWeightUnc += pow(theElectronAnalyzer->GetElectronRecoEffSFError(ElecVect.at(0))   ,2);
+                LeptonWeightUnc += pow(theElectronAnalyzer->GetElectronRecoEffSFError(ElecVect.at(1))   ,2);
+                LeptonWeightUnc += pow(theElectronAnalyzer->GetElectronIdSFError(ElecVect.at(0), 0)     ,2);
+                LeptonWeightUnc += pow(theElectronAnalyzer->GetElectronIdSFError(ElecVect.at(1), 0)     ,2);
+                
+                LeptonWeightUp   = LeptonWeight+sqrt(LeptonWeightUnc);
+                LeptonWeightDown = LeptonWeight-sqrt(LeptonWeightUnc);                
             }
         }
         else { if(Verbose) std::cout << " - No OS electrons" << std::endl; 
@@ -581,9 +610,19 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         addP4.set(theV);
         // SF
         if(isMC) {
-            LeptonWeight *= theMuonAnalyzer->GetMuonTrkSF(MuonVect.at(0));
-            LeptonWeight *= theMuonAnalyzer->GetMuonIdSF(MuonVect.at(0), MuonPSet.getParameter<int>("muon1id"));
-            LeptonWeight *= theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(0), MuonPSet.getParameter<int>("muon1iso"));
+            float LeptonWeightUnc = 0.;
+            LeptonWeight    *= theMuonAnalyzer->GetMuonTriggerSFMu50(MuonVect.at(0));
+            LeptonWeight    *= theMuonAnalyzer->GetMuonTrkSF(MuonVect.at(0));
+            LeptonWeight    *= theMuonAnalyzer->GetMuonIdSF(MuonVect.at(0), 0);
+            LeptonWeight    *= theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(0), 0);
+
+            LeptonWeightUnc += pow(theMuonAnalyzer->GetMuonTriggerSFErrorMu50(MuonVect.at(0)),2);
+            LeptonWeightUnc += pow(theMuonAnalyzer->GetMuonTrkSFError(MuonVect.at(0))        ,2);
+            LeptonWeightUnc += pow(theMuonAnalyzer->GetMuonIdSFError(MuonVect.at(0), 0)      ,2);
+            LeptonWeightUnc += pow(theMuonAnalyzer->GetMuonIsoSFError(MuonVect.at(0), 0)     ,2);
+            
+            LeptonWeightUp   = LeptonWeight+sqrt(LeptonWeightUnc);
+            LeptonWeightDown = LeptonWeight-sqrt(LeptonWeightUnc);                            
         }
     }
     else if(isWtoEN) {
@@ -596,8 +635,17 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         addP4.set(theV);
         // SF
         if(isMC) {
-            LeptonWeight *= theElectronAnalyzer->GetElectronIdSF(ElecVect.at(0), ElectronPSet.getParameter<int>("electron1id"));
-            LeptonWeight *= theElectronAnalyzer->GetElectronRecoEffSF(ElecVect.at(0));
+            float LeptonWeightUnc = 0.;
+            LeptonWeight    *= theElectronAnalyzer->GetElectronTriggerSFEle105(ElecVect.at(0));
+            LeptonWeight    *= theElectronAnalyzer->GetElectronIdSF(ElecVect.at(0), 0);
+            LeptonWeight    *= theElectronAnalyzer->GetElectronRecoEffSF(ElecVect.at(0));
+
+            LeptonWeightUnc += theElectronAnalyzer->GetElectronTriggerSFErrorEle105(ElecVect.at(0));
+            LeptonWeightUnc += theElectronAnalyzer->GetElectronIdSFError(ElecVect.at(0), 0);
+            LeptonWeightUnc += theElectronAnalyzer->GetElectronRecoEffSFError(ElecVect.at(0));
+
+            LeptonWeightUp   = LeptonWeight+sqrt(LeptonWeightUnc);
+            LeptonWeightDown = LeptonWeight-sqrt(LeptonWeightUnc);                            
         }
     }
     else if(isZtoNN) {
@@ -768,6 +816,8 @@ void Diboson::beginJob() {
     tree->Branch("PUWeightDown", &PUWeightDown, "PUWeightDown/F");
     tree->Branch("TriggerWeight", &TriggerWeight, "TriggerWeight/F");
     tree->Branch("LeptonWeight", &LeptonWeight, "LeptonWeight/F");
+    tree->Branch("LeptonWeightUp", &LeptonWeightUp, "LeptonWeightUp/F");
+    tree->Branch("LeptonWeightDown", &LeptonWeightDown, "LeptonWeightDown/F");
     
     // Set trigger branches
     for(auto it = TriggerMap.begin(); it != TriggerMap.end(); it++) tree->Branch(it->first.c_str(), &(it->second), (it->first+"/O").c_str());

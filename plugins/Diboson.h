@@ -159,7 +159,9 @@ class Diboson : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
         /*TTree* treealpha;*/
         bool isMC, isZtoEE, isZtoMM, isTtoEM, isWtoEN, isWtoMN, isZtoNN, isMerged, isResolved;
         long int EventNumber, RunNumber, LumiNumber;
-        float EventWeight, StitchWeight, ZewkWeight, WewkWeight, TriggerWeight, LeptonWeight;
+        float EventWeight, StitchWeight, ZewkWeight, WewkWeight;
+        float TriggerWeight;
+        float LeptonWeight, LeptonWeightUp, LeptonWeightDown;
         float PUWeight, PUWeightUp, PUWeightDown;
         float FacWeightUp, FacWeightDown, RenWeightUp, RenWeightDown, ScaleWeightUp, ScaleWeightDown;
         float PdfWeight;

@@ -48,18 +48,18 @@ if len(options.inputFiles) == 0:
 #'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016D/SingleMuon/MINIAOD/23Sep2016-v1/90000/FACC563A-628F-E611-AB8B-008CFAFBEC9A.root',
            
            
-'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016D/SingleElectron/MINIAOD/23Sep2016-v1/90000/6A4024AD-C788-E611-B2E6-0090FAA58B94.root',
-'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016D/SingleElectron/MINIAOD/23Sep2016-v1/90000/6A41A46D-8188-E611-95CD-3417EBE7063F.root',
-'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016D/SingleElectron/MINIAOD/23Sep2016-v1/90000/6A471EFD-4F87-E611-9327-FA163E622848.root',
-'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016D/SingleElectron/MINIAOD/23Sep2016-v1/90000/6AE974A5-D489-E611-AE8F-00259021A4A2.root',
-'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016D/SingleElectron/MINIAOD/23Sep2016-v1/90000/6C0C15DE-8C88-E611-BAF7-FA163E0D4748.root',
-'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016D/SingleElectron/MINIAOD/23Sep2016-v1/90000/6CA739FD-6C88-E611-8E35-001E677923E6.root',
-'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016D/SingleElectron/MINIAOD/23Sep2016-v1/90000/6CB07F24-4788-E611-8DAA-FA163E9BA77A.root',
-'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016D/SingleElectron/MINIAOD/23Sep2016-v1/90000/6CBC4A42-CF88-E611-959B-0025905C95F8.root',
-'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016D/SingleElectron/MINIAOD/23Sep2016-v1/90000/6CDD978C-D187-E611-A82A-0CC47A009E26.root',
-'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016D/SingleElectron/MINIAOD/23Sep2016-v1/90000/6CDFF3EB-B487-E611-9F4C-02163E015F9C.root',
+#'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016D/SingleElectron/MINIAOD/23Sep2016-v1/90000/6A4024AD-C788-E611-B2E6-0090FAA58B94.root',
+#'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016D/SingleElectron/MINIAOD/23Sep2016-v1/90000/6A41A46D-8188-E611-95CD-3417EBE7063F.root',
+#'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016D/SingleElectron/MINIAOD/23Sep2016-v1/90000/6A471EFD-4F87-E611-9327-FA163E622848.root',
+#'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016D/SingleElectron/MINIAOD/23Sep2016-v1/90000/6AE974A5-D489-E611-AE8F-00259021A4A2.root',
+#'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016D/SingleElectron/MINIAOD/23Sep2016-v1/90000/6C0C15DE-8C88-E611-BAF7-FA163E0D4748.root',
+#'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016D/SingleElectron/MINIAOD/23Sep2016-v1/90000/6CA739FD-6C88-E611-8E35-001E677923E6.root',
+#'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016D/SingleElectron/MINIAOD/23Sep2016-v1/90000/6CB07F24-4788-E611-8DAA-FA163E9BA77A.root',
+#'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016D/SingleElectron/MINIAOD/23Sep2016-v1/90000/6CBC4A42-CF88-E611-959B-0025905C95F8.root',
+#'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016D/SingleElectron/MINIAOD/23Sep2016-v1/90000/6CDD978C-D187-E611-A82A-0CC47A009E26.root',
+#'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016D/SingleElectron/MINIAOD/23Sep2016-v1/90000/6CDFF3EB-B487-E611-9F4C-02163E015F9C.root',
            
-           #'root://cms-xrd-global.cern.ch//store/mc/RunIISummer16MiniAODv2/DYJetsToLL_M-50_HT-800to1200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/120000/480D3900-8CC0-E611-81E8-001E67504645.root', # DYJetsToLL
+           'root://cms-xrd-global.cern.ch//store/mc/RunIISummer16MiniAODv2/DYJetsToLL_M-50_HT-800to1200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/120000/480D3900-8CC0-E611-81E8-001E67504645.root', # DYJetsToLL
         )
     )
 # production: read externally provided filelist
@@ -201,8 +201,8 @@ for ele_idmod in ele_id_modules:
 
 #photons upstream modules
 switchOnVIDPhotonIdProducer(process, DataFormat.MiniAOD)
-ph_id_modules = ['RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_Spring16_V2p2_cff.py',
-                 'RecoEgamma.PhotonIdentification.Identification.mvaPhotonID_Spring16_nonTrig_V1_cff.py']
+ph_id_modules = ['RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_Spring16_V2p2_cff',
+                 'RecoEgamma.PhotonIdentification.Identification.mvaPhotonID_Spring16_nonTrig_V1_cff']
 for ph_idmod in ph_id_modules:
     setupAllVIDIdsInModule(process,ph_idmod,setupVIDPhotonSelection)
 
@@ -408,8 +408,8 @@ process.ntuple = cms.EDAnalyzer('Diboson',
         vertices = cms.InputTag('offlineSlimmedPrimaryVertices'),
         taupt = cms.double(20.),
         taueta = cms.double(2.3),
-        tauIdByDecayMode = cms.int32(0),# 0: not set, 1: old, 2: new
-        tauIdByDeltaBetaIso = cms.int32(0),# 0: not set, 1: loose, 2: medium, 3: tight
+        tauIdByDecayMode = cms.int32(1),# 0: not set, 1: old, 2: new
+        tauIdByDeltaBetaIso = cms.int32(1),# 0: not set, 1: loose, 2: medium, 3: tight
         tauIdByMVAIso = cms.int32(0),# 0: not set, 1: V loose, 2: loose, 3: medium, 4: tight, 5: V tight
         tauIdByMuonRejection = cms.int32(0),# 0: not set, 1: loose, 2: tight
         tauIdByElectronRejection = cms.int32(0),# 0: not set, 1: V loose, 2: loose, 3: medium, 4: tight
