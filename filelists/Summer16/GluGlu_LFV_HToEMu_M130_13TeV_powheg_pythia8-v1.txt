@@ -1,0 +1,3 @@
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISummer16MiniAODv2/GluGlu_LFV_HToEMu_M130_13TeV_powheg_pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/110000/46528379-FBDB-E611-8E7C-D48564594FB4.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISummer16MiniAODv2/GluGlu_LFV_HToEMu_M130_13TeV_powheg_pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/110000/9C799A5D-FBDB-E611-B736-0090FAA58D84.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISummer16MiniAODv2/GluGlu_LFV_HToEMu_M130_13TeV_powheg_pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/110000/BEE2C4B5-FCDB-E611-880B-001E675051BD.root
