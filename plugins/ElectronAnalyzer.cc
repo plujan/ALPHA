@@ -14,6 +14,7 @@ ElectronAnalyzer::ElectronAnalyzer(const edm::ParameterSet& PSet, edm::ConsumesC
     EleMVANonTrigTightIdMapToken(CColl.consumes<edm::ValueMap<bool>>(PSet.getParameter<edm::InputTag>("eleMVANonTrigTightIdMap"))),
     EleMVATrigMediumIdMapToken(CColl.consumes<edm::ValueMap<bool>>(PSet.getParameter<edm::InputTag>("eleMVATrigMediumIdMap"))),
     EleMVATrigTightIdMapToken(CColl.consumes<edm::ValueMap<bool>>(PSet.getParameter<edm::InputTag>("eleMVATrigTightIdMap"))),
+    EleEcalRecHitCollectionToken(CColl.consumes<EcalRecHitCollection>(PSet.getParameter<edm::InputTag>("eleEcalRecHitCollection"))),
     EleSingleTriggerFileName(PSet.getParameter<std::string>("eleSingleTriggerFileName")),
     EleVetoIdFileName(PSet.getParameter<std::string>("eleVetoIdFileName")),
     EleLooseIdFileName(PSet.getParameter<std::string>("eleLooseIdFileName")),
@@ -29,21 +30,9 @@ ElectronAnalyzer::ElectronAnalyzer(const edm::ParameterSet& PSet, edm::ConsumesC
     Electron1Pt(PSet.getParameter<double>("electron1pt")),
     Electron2Pt(PSet.getParameter<double>("electron2pt"))
 {
-    isEleVetoIdFile = isEleLooseIdFile = isEleMediumIdFile = isEleTightIdFile = isEleRecoEffFile = isEleMVATrigMediumIdFile = isEleMVATrigTightIdFile = isEleTriggerFile = isEleSingleTriggerFile = false;
-    
-    // AN-13-022, obsolete!!
-    // Electron trigger, obsolete!!!
-//    EleTriggerFile=new TFile("data/DETrigger.root", "READ");
-//    if(!EleTriggerFile->IsZombie()) {
-//        EleTriggerDATAHighLeg=(TH2F*)EleTriggerFile->Get("test/DATA_Ele17Leg");
-//        EleTriggerDATALowLeg=(TH2F*)EleTriggerFile->Get("test/DATA_Ele8Leg");
-//        EleTriggerMCHighLeg=(TH2F*)EleTriggerFile->Get("test/MC_Ele17Leg");
-//        EleTriggerMCLowLeg=(TH2F*)EleTriggerFile->Get("test/MC_Ele8Leg");
-//        isEleTriggerFile=true;
-//    }
-//    else std::cout << " - ElectronAnalyzer Warning: No EleTrigger Weight File" << std::endl;
-    
+    isEleVetoIdFile = isEleLooseIdFile = isEleMediumIdFile = isEleTightIdFile = isEleRecoEffFile = isEleMVATrigMediumIdFile = isEleMVATrigTightIdFile = isEleTriggerFile = isEleSingleTriggerFile = false;    
 
+    // FIXME -> 2016 numbers, now obsolete!!!
     // Electron SingleTrigger
     EleSingleTriggerFile=new TFile(EleSingleTriggerFileName.c_str(), "READ");
     if(!EleSingleTriggerFile->IsZombie()) {
@@ -172,6 +161,9 @@ std::vector<pat::Electron> ElectronAnalyzer::FillElectronVector(const edm::Event
     iEvent.getByToken(VertexToken, PVCollection);
     const reco::Vertex* vertex=&PVCollection->front();
     
+    edm::Handle<EcalRecHitCollection> _ebrechits;
+    iEvent.getByToken(EleEcalRecHitCollectionToken, _ebrechits);
+
     //value map for ID 2015-2016
     edm::Handle<edm::ValueMap<bool> > VetoIdDecisions;
     edm::Handle<edm::ValueMap<bool> > LooseIdDecisions;
@@ -191,6 +183,7 @@ std::vector<pat::Electron> ElectronAnalyzer::FillElectronVector(const edm::Event
     iEvent.getByToken(EleMVANonTrigTightIdMapToken, MVANonTrigTightIdDecisions);
     iEvent.getByToken(EleMVATrigMediumIdMapToken, MVATrigMediumIdDecisions);
     iEvent.getByToken(EleMVATrigTightIdMapToken, MVATrigTightIdDecisions);
+    
     unsigned int elIdx = 0;
     
     // Loop on Electron collection
@@ -202,24 +195,26 @@ std::vector<pat::Electron> ElectronAnalyzer::FillElectronVector(const edm::Event
         }
         pat::Electron el=*it;
         pat::ElectronRef elRef(EleCollection, elIdx);
+                
         
-// // //         // Corrections for Ele Smearing (on data only) -- MORIOND 2017
-// // //         double Ecorr=1;
-// // //         if(!isMC)
-// // //             DetId detid = el.superCluster()->seed()->seed();
-// // //             const EcalRecHit * rh = NULL;
-// // //             if (detid.subdetId() == EcalBarrel) {
-// // //                 auto rh_i =  _ebrechits->find(detid);
-// // //                             if( rh_i != _ebrechits->end()) rh =  &(*rh_i);
-// // //                             else rh = NULL;
-// // //                     } 
-// // //             if(rh==NULL) Ecorr=1;
-// // //             else{
-// // //             if(rh->energy() > 200 && rh->energy()<300)  Ecorr=1.0199;
-// // //             else if(rh->energy()>300 && rh->energy()<400) Ecorr=  1.052;
-// // //             else if(rh->energy()>400 && rh->energy()<500) Ecorr = 1.015;
-// // //             }
-// // //         el.setP4(reco::Candidate::LorentzVector(el.px(), el.py(), el.pz(), Ecorr*el.energy() ));      
+        // Corrections for Ele Smearing (on data only) -- MORIOND 2017
+        double Ecorr=1;
+        if(!isMC) {
+            DetId detid = el.superCluster()->seed()->seed();
+            const EcalRecHit * rh = NULL;
+            if (detid.subdetId() == EcalBarrel) {
+                auto rh_i =  _ebrechits->find(detid);
+                            if( rh_i != _ebrechits->end()) rh =  &(*rh_i);
+                            else rh = NULL;
+                    } 
+            if(rh==NULL) Ecorr=1;
+            else{
+            if(rh->energy() > 200 && rh->energy()<300)  Ecorr=1.0199;
+            else if(rh->energy()>300 && rh->energy()<400) Ecorr=  1.052;
+            else if(rh->energy()>400 && rh->energy()<500) Ecorr = 1.015;
+            }
+        }
+        el.setP4(reco::Candidate::LorentzVector(el.px(), el.py(), el.pz(), Ecorr*el.energy() ));      
         
         // Pt and eta
         if(el.pt()<PtTh || fabs(el.eta())>2.5) continue;
@@ -422,165 +417,3 @@ float ElectronAnalyzer::GetElectronTriggerSFEle27Tight(pat::Electron& ele) {
     return ElectronTriggerEle27Tight->GetBinContent( ElectronTriggerEle27Tight->FindBin(eta, pt) );
 }
 
-/*
-
-//// Obsolete Electron ID for Run1
-
-// Electron Cut-based Quality ID: see https://twiki.cern.ch/twiki/bin/view/CMS/EgammaCutBasedIdentification#Electron_ID_Working_Points
-bool ElectronAnalyzer::IsElectronCut(pat::Electron& el, const reco::Vertex* vertex, int q) {
-    // Electron Quality: 0 - Veto, 1 - Loose, 2 - Medium, 3 - Tight
-    //                                VBTF90     VBTF 80    VBTF 70
-    if(q<0 || q>3) return false;
-    //     ECAL BARREL                                   ECAL ENDCAP
-    float sieieEB[4]    ={0.01,  0.01,  0.01,  0.01 },  sieieEE[4]    ={0.03,  0.03,  0.03,  0.03 };
-    float dEtaInEB[4]   ={0.007, 0.007, 0.004, 0.004},  dEtaInEE[4]   ={0.010, 0.009, 0.007, 0.005};
-    float dPhiInEB[4]   ={0.8,   0.15,  0.06,  0.03 },  dPhiInEE[4]   ={0.7,   0.10,  0.03,  0.02 };
-    float hOeEB[4]      ={0.15,  0.12,  0.12,  0.12 },  hOeEE[4]      ={1.e10, 0.10,  0.10,  0.10 };
-    float d0vtxEB[4]    ={0.04,  0.02,  0.02,  0.02 },  d0vtxEE[4]    ={0.04,  0.02,  0.02,  0.02 };
-    float dZvtxEB[4]    ={0.2,   0.2,   0.1,   0.1  },  dZvtxEE[4]    ={0.2,   0.2,   0.1,   0.1  };
-    float abs1oE1opEB[4]={0.,    0.05,  0.05,  0.05 },  abs1oE1opEE[4]={0.,    0.05,  0.05,  0.05 };
-    //float pfIsoOPtEB[4] ={0.15,  0.15,  0.15,  0.10 },  pfIsoOPtEE[4] ={0.15,  0.15,  0.15,  0.10 };
-    //float vtxFitEB[4]   ={1.e-6, 1.e-6, 1.e-6, 1.e-6},  vtxFitEE[4]   ={1.e-6, 1.e-6, 1.e-6, 1.e-6};
-    float mHitsEB[4]    ={1.,    1.,    1.,    0.   },  mHitsEE[4]    ={1.,    1.,    1.,    0.   };
-    
-    bool isEB=el.isEB();
-    bool isEE=el.isEE();
-    
-    float sieie=el.scSigmaIEtaIEta();
-    float dEtaIn=fabs(el.deltaEtaSuperClusterTrackAtVtx());
-    float dPhiIn=fabs(el.deltaPhiSuperClusterTrackAtVtx());
-    float hOe=el.hadronicOverEm();
-    float d0vtx=fabs( el.gsfTrack()->d0() - vertex->x()*sin(el.gsfTrack()->phi()) + vertex->y()*cos(el.gsfTrack()->phi()) );
-    float dZvtx=fabs( (el.vz()-vertex->z()) -( (el.vx()-vertex->x())*el.px()+(el.vy()-vertex->y())*el.py() )/el.pt()*el.pz()/el.pt() );
-    float E = el.superCluster()->energy();
-    float p = 1./(el.eSuperClusterOverP()/E);
-    float abs1oE1op=fabs(1./E - 1./p);
-    float mHits=el.gsfTrack()->hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS);
-    
-    if(isEB) if(sieie>sieieEB[q] || dEtaIn>dEtaInEB[q] || dPhiIn>dPhiInEB[q] || hOe>hOeEB[q] || d0vtx>d0vtxEB[q] || dZvtx>dZvtxEB[q] || abs1oE1op>abs1oE1opEB[q] || mHits>mHitsEB[q]) return false;
-    if(isEE) if(sieie>sieieEE[q] || dEtaIn>dEtaInEE[q] || dPhiIn>dPhiInEE[q] || hOe>hOeEE[q] || d0vtx>d0vtxEE[q] || dZvtx>dZvtxEE[q] || abs1oE1op>abs1oE1opEE[q] || mHits>mHitsEE[q]) return false;
-    return true;
-}
-
-// https://twiki.cern.ch/twiki/bin/view/CMS/EgammaCutBasedIdentification#Glossary_of_Variables
-bool ElectronAnalyzer::IsLooseElectron(pat::Electron& el, const reco::Vertex* vertex) {
-    if(el.isEB()) {
-        if(  
-               fabs(el.deltaEtaSuperClusterTrackAtVtx())<0.007
-            && fabs(el.deltaPhiSuperClusterTrackAtVtx())<0.15
-            && el.scSigmaIEtaIEta()<0.01
-            && el.hadronicOverEm()<0.12
-            && el.gsfTrack()->dxy(vertex->position())<0.02
-            && el.gsfTrack()->dz(vertex->position())<0.2
-            && fabs(1./el.ecalEnergy() - 1./el.trackMomentumAtVtx().R())<0.05
-      //      && el.reco::GsfElectron::fbrem()<10.e-6
-            && el.gsfTrack()->hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS)<=1
-        ) return true;
-    }
-    else if(el.isEE()) {
-        if(
-               fabs(el.deltaEtaSuperClusterTrackAtVtx())<0.009
-            && fabs(el.deltaPhiSuperClusterTrackAtVtx())<0.10
-            && el.scSigmaIEtaIEta()<0.03
-            && el.hadronicOverEm()<0.10
-            && el.gsfTrack()->dxy(vertex->position())<0.02
-            && el.gsfTrack()->dz(vertex->position())<0.2
-            && fabs(1./el.ecalEnergy() - 1./el.trackMomentumAtVtx().R())<0.05
-      //      && el.reco::GsfElectron::fbrem()<10.e-6
-            && el.gsfTrack()->hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS)<=1
-        ) return true;
-    }
-    return false;
-}
-
-bool ElectronAnalyzer::IsLooseMVAElectron(pat::Electron& el) {
-    //if(el.gsfTrack()->hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS)>0) return false;
-    float mva=el.electronID("mvaTrigV0");
-    float eta=fabs(el.eta());
-    // AN2013_108_v8 page 31
-    if(el.pt()>=10.) {
-        if(eta<0.8)               {if(mva<-0.34) return false;}
-        if(eta>=0.8 && eta<1.479) {if(mva<-0.65) return false;}
-        if(eta>=1.479)            {if(mva<+0.60) return false;}
-    }
-    else {
-        if(eta<0.8)               {if(mva<+0.47) return false;}
-        if(eta>=0.8 && eta<1.479) {if(mva<0.004) return false;}
-        if(eta>=1.479)            {if(mva<0.295) return false;}
-    }
-    return true;
-}
-
-// https://twiki.cern.ch/twiki/bin/view/CMS/MultivariateElectronIdentification#Recommended_Working_Points_With
-bool ElectronAnalyzer::IsTightMVAElectron(pat::Electron& el) {
-    // Conversion Veto
-    if(!el.passConversionVeto()) return false;
-    // Missing hits veto
-    if(el.gsfTrack()->hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS)>0) return false;
-    // Triggering MVA Cut
-    float mva=el.electronID("mvaTrigV0");
-    float eta=fabs(el.eta());
-    if(el.pt()<20.) {
-        if(eta<0.8)               {if(mva<+0.00) return false;}
-        if(eta>=0.8 && eta<1.479) {if(mva<+0.10) return false;}
-        if(eta>=1.479)            {if(mva<+0.62) return false;}
-    }
-    else {
-        if(eta<0.8)               {if(mva<+0.94) return false;}
-        if(eta>=0.8 && eta<1.479) {if(mva<+0.85) return false;}
-        if(eta>=1.479)            {if(mva<+0.92) return false;}
-    }
-    return true;
-}
-
-
-// https://twiki.cern.ch/twiki/bin/view/Main/EGammaScaleFactors2012#2012_8_TeV_data_53X
-float ElectronAnalyzer::GetLooseElectronSF(pat::Electron& el) {
-    float pt=el.pt();
-    float eta=fabs(el.eta());
-    if(pt>10. && pt<=15.) {
-        if(eta<=0.8)                     return 0.855;
-        else if(eta>0.8   && eta<=1.442) return 0.858;
-        else if(eta>1.442 && eta<=1.556) return 1.109;
-        else if(eta>1.556 && eta<=2.0  ) return 0.838;
-        else if(eta>2.0   && eta<=2.5  ) return 1.034;
-    }
-    else if(pt>15. && pt<=20.) {
-        if(eta<=0.8)                     return 0.962;
-        else if(eta>0.8   && eta<=1.442) return 0.962;
-        else if(eta>1.442 && eta<=1.556) return 0.903;
-        else if(eta>1.556 && eta<=2.0  ) return 0.939;
-        else if(eta>2.0   && eta<=2.5  ) return 0.970;
-    }
-    else if(pt>20. && pt<=30.) {
-        if(eta<=0.8)                     return 1.005;
-        else if(eta>0.8   && eta<=1.442) return 0.981;
-        else if(eta>1.442 && eta<=1.556) return 1.044;
-        else if(eta>1.556 && eta<=2.0  ) return 0.980;
-        else if(eta>2.0   && eta<=2.5  ) return 1.017;
-    }
-    else if(pt>30. && pt<=40.) {
-        if(eta<=0.8)                     return 1.004;
-        else if(eta>0.8   && eta<=1.442) return 0.991;
-        else if(eta>1.442 && eta<=1.556) return 0.998;
-        else if(eta>1.556 && eta<=2.0  ) return 0.992;
-        else if(eta>2.0   && eta<=2.5  ) return 1.019;
-    }
-    else if(pt>40. && pt<=50.) {
-        if(eta<=0.8)                     return 1.008;
-        else if(eta>0.8   && eta<=1.442) return 0.994;
-        else if(eta>1.442 && eta<=1.556) return 0.989;
-        else if(eta>1.556 && eta<=2.0  ) return 1.004;
-        else if(eta>2.0   && eta<=2.5  ) return 1.005;
-    }
-    else if(pt>50.) {
-        if(eta<=0.8)                     return 1.008;
-        else if(eta>0.8   && eta<=1.442) return 0.999;
-        else if(eta>1.442 && eta<=1.556) return 0.994;
-        else if(eta>1.556 && eta<=2.0  ) return 1.006;
-        else if(eta>2.0   && eta<=2.5  ) return 1.009;
-    }
-    return 1.;
-}
-
-*/

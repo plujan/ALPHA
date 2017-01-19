@@ -32,6 +32,10 @@ git cms-merge-topic -u ikrav:egm_id_80X_v3
 git cms-merge-topic -u Sam-Harper:PackedCandNoPuppi
 mkdir -p ../external/slc6_amd64_gcc530/data/RecoEgamma/ElectronIdentification/ #we need this for the mva weights which runs in VID regardless if you need it or not
 git clone git@github.com:cms-data/RecoEgamma-ElectronIdentification ../external/slc6_amd64_gcc530/data/RecoEgamma/ElectronIdentification/data #we need this for the mva weights which runs in VID regardless if you need it or not
+### PhotonID
+cd $CMSSW_BASE/src
+git cms-merge-topic -u ikrav:egm_id_80X_v3_photons
+
 cd $CMSSW_BASE/src
 mkdir Analysis
 cd Analysis

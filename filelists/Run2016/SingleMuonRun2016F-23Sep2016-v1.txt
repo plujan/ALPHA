@@ -74,6 +74,7 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016F/Sing
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016F/SingleMuon/MINIAOD/23Sep2016-v1/50000/18DF86D2-198F-E611-BADE-0025905A60F8.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016F/SingleMuon/MINIAOD/23Sep2016-v1/50000/1A870D0E-B48D-E611-B6E1-008CFA1979B0.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016F/SingleMuon/MINIAOD/23Sep2016-v1/50000/1AA92007-EF8D-E611-AB2A-3417EBE645A9.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016F/SingleMuon/MINIAOD/23Sep2016-v1/50000/1C525538-28C1-E611-8831-0025905B85B2.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016F/SingleMuon/MINIAOD/23Sep2016-v1/50000/1C759641-D98E-E611-91E3-0025905A609A.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016F/SingleMuon/MINIAOD/23Sep2016-v1/50000/1E312791-808F-E611-B990-20CF305B052F.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016F/SingleMuon/MINIAOD/23Sep2016-v1/50000/1E3D657E-9F8E-E611-9235-002590D0B0CC.root
@@ -114,6 +115,7 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016F/Sing
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016F/SingleMuon/MINIAOD/23Sep2016-v1/50000/566D32B6-AB8D-E611-A1D8-10983627C3C1.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016F/SingleMuon/MINIAOD/23Sep2016-v1/50000/569B173B-4E8F-E611-BC21-0025901D08D2.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016F/SingleMuon/MINIAOD/23Sep2016-v1/50000/569C05CE-DB8E-E611-AD75-0CC47A4D768C.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016F/SingleMuon/MINIAOD/23Sep2016-v1/50000/58490339-28C1-E611-ADD5-0025905B85A2.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016F/SingleMuon/MINIAOD/23Sep2016-v1/50000/5878ACCE-988D-E611-BE4B-848F69FD29DF.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016F/SingleMuon/MINIAOD/23Sep2016-v1/50000/58C2578E-F68E-E611-857A-0025905A60E0.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016F/SingleMuon/MINIAOD/23Sep2016-v1/50000/5A57757F-A68E-E611-B090-848F69FD2826.root

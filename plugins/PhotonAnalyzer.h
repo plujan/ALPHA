@@ -15,6 +15,10 @@
 #include "DataFormats/PatCandidates/interface/Conversion.h"
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
 #include "DataFormats/VertexReco/interface/Vertex.h"
+#include "DataFormats/EcalRecHit/interface/EcalRecHitCollections.h"
+#include "DataFormats/DetId/interface/DetId.h"
+#include "DataFormats/EcalDetId/interface/EBDetId.h"
+#include "DataFormats/EcalDetId/interface/EEDetId.h"
 
 #include "TFile.h"
 #include "TH2.h"
@@ -45,6 +49,7 @@ class PhotonAnalyzer {
         edm::EDGetTokenT<edm::ValueMap<bool>> PhoMediumIdMapToken;
         edm::EDGetTokenT<edm::ValueMap<bool>> PhoTightIdMapToken;
         edm::EDGetTokenT<edm::ValueMap<bool>> PhoMVANonTrigMediumIdMapToken;
+        edm::EDGetTokenT<EcalRecHitCollection> PhoEcalRecHitCollectionToken;        
         std::string PhoLooseIdFileName;
         std::string PhoMediumIdFileName;
         std::string PhoTightIdFileName;

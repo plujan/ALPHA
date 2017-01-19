@@ -7,6 +7,7 @@ PhotonAnalyzer::PhotonAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&&
     PhoMediumIdMapToken(CColl.consumes<edm::ValueMap<bool>>(PSet.getParameter<edm::InputTag>("phoMediumIdMap"))),
     PhoTightIdMapToken(CColl.consumes<edm::ValueMap<bool>>(PSet.getParameter<edm::InputTag>("phoTightIdMap"))),
     PhoMVANonTrigMediumIdMapToken(CColl.consumes<edm::ValueMap<bool>>(PSet.getParameter<edm::InputTag>("phoMVANonTrigMediumIdMap"))),
+    PhoEcalRecHitCollectionToken(CColl.consumes<EcalRecHitCollection>(PSet.getParameter<edm::InputTag>("phoEcalRecHitCollection"))),
     PhoLooseIdFileName(PSet.getParameter<std::string>("phoLooseIdFileName")),
     PhoMediumIdFileName(PSet.getParameter<std::string>("phoMediumIdFileName")),
     PhoTightIdFileName(PSet.getParameter<std::string>("phoTightIdFileName")),
@@ -75,7 +76,7 @@ PhotonAnalyzer::~PhotonAnalyzer() {
 
 
 std::vector<pat::Photon> PhotonAnalyzer::FillPhotonVector(const edm::Event& iEvent) {
-    //bool isMC(!iEvent.isRealData());
+    bool isMC(!iEvent.isRealData());
     int IdTh(PhotonId);
     float PtTh(PhotonPt);
     std::vector<pat::Photon> Vect;
@@ -89,7 +90,9 @@ std::vector<pat::Photon> PhotonAnalyzer::FillPhotonVector(const edm::Event& iEve
     //edm::Handle<reco::VertexCollection> PVCollection;
     //iEvent.getByToken(VertexToken, PVCollection);
     //const reco::Vertex* vertex=&PVCollection->front();
-    
+
+    edm::Handle<EcalRecHitCollection> _ebrechits;
+    iEvent.getByToken(PhoEcalRecHitCollectionToken, _ebrechits);    
 
     //value map for ID 2015-2016
     edm::Handle<edm::ValueMap<bool> > LooseIdDecisions;
@@ -106,6 +109,28 @@ std::vector<pat::Photon> PhotonAnalyzer::FillPhotonVector(const edm::Event& iEve
     for(std::vector<pat::Photon>::const_iterator it=PhoCollection->begin(); it!=PhoCollection->end(); ++it) {
         pat::Photon ph=*it;
   pat::PhotonRef phRef(PhoCollection,phIdx);
+  
+  
+        // Corrections for Ele Smearing (on data only) -- MORIOND 2017
+        double Ecorr=1;
+        if(!isMC) {
+            DetId detid = ph.superCluster()->seed()->seed();
+            const EcalRecHit * rh = NULL;
+            if (detid.subdetId() == EcalBarrel) {
+                auto rh_i =  _ebrechits->find(detid);
+                            if( rh_i != _ebrechits->end()) rh =  &(*rh_i);
+                            else rh = NULL;
+                    } 
+            if(rh==NULL) Ecorr=1;
+            else{
+            if(rh->energy() > 200 && rh->energy()<300)  Ecorr=1.0199;
+            else if(rh->energy()>300 && rh->energy()<400) Ecorr=  1.052;
+            else if(rh->energy()>400 && rh->energy()<500) Ecorr = 1.015;
+            }
+        }
+        ph.setP4(reco::Candidate::LorentzVector(ph.px(), ph.py(), ph.pz(), Ecorr*ph.energy() ));      
+  
+  
         // Pt and eta
         if(ph.pt()<PtTh || fabs(ph.eta())>2.5) continue;
         float pfIso = ( ph.chargedHadronIso() + std::max(ph.neutralHadronIso() + ph.photonIso() - 0.5*ph.puChargedHadronIso(), 0.) ) / ph.pt();
