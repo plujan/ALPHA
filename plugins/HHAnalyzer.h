@@ -136,7 +136,8 @@ class HHAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
 
         bool isMC;
         long int EventNumber, RunNumber, LumiNumber;
-        float EventWeight, StitchWeight, TriggerWeight, LeptonWeight;
+        float EventWeight, StitchWeight, TriggerWeight;
+        float LeptonWeight, LeptonWeightUp, LeptonWeightDown;
         float PUWeight, PUWeightUp, PUWeightDown;
         float FacWeightUp, FacWeightDown, RenWeightUp, RenWeightDown, ScaleWeightUp, ScaleWeightDown;
         float PdfWeight;

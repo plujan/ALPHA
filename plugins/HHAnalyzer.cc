@@ -98,7 +98,7 @@ void HHAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
     PUWeight = PUWeightUp = PUWeightDown = 1.;
     FacWeightUp = FacWeightDown = RenWeightUp = RenWeightDown = ScaleWeightUp = ScaleWeightDown = 1.;
     PdfWeight = 1.;
-    nPV = nElectrons = nMuons = nTaus = nPhotons = nJets = nFatJets = nBTagJets = -1;
+    nPV = nElectrons = nMuons = nJets = nFatJets = nBTagJets = -1;
 
     Hist["a_nEvents"]->Fill(1., EventWeight);
     
@@ -219,7 +219,6 @@ void HHAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
     // fill weights
     weightPairs.emplace_back("EventWeight", EventWeight);
-    weightPairs.emplace_back("GenWeight", genWeight);
     weightPairs.emplace_back("FacWeightUp", FacWeightUp);
     weightPairs.emplace_back("FacWeightDown", FacWeightDown);
     weightPairs.emplace_back("ScaleWeightUp", ScaleWeightUp);
