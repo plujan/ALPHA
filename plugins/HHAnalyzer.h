@@ -1,21 +1,6 @@
 // -*- C++ -*-
-//
 // Package:    Analysis/ALPHA
 // Class:      HHAnalyzer 
-// 
-/**\class HHAnalyzer HHAnalyzer.cc Analysis/ALPHA/plugins/HHAnalyzer.cc
-
- Description: [one line class summary]
-
- Implementation:
-     [Notes on implementation]
-*/
-//
-// Original Author:  Alberto Zucchetta
-// Modified by: Pablo de Castro 
-// Created:  Thu, 28 Apr 2016 08:28:54 GMT
-//
-//
 
 #ifndef DIBOSON_H
 #define DIBOSON_H
@@ -151,8 +136,11 @@ class HHAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
 
         bool isMC;
         long int EventNumber, RunNumber, LumiNumber;
-        float EventWeight, StitchWeight, ZewkWeight, WewkWeight, PUWeight, TriggerWeight, LeptonWeight;
+        float EventWeight, StitchWeight, TriggerWeight;
+        float LeptonWeight, LeptonWeightUp, LeptonWeightDown;
+        float PUWeight, PUWeightUp, PUWeightDown;
         float FacWeightUp, FacWeightDown, RenWeightUp, RenWeightDown, ScaleWeightUp, ScaleWeightDown;
+        float PdfWeight;
         int nPV, nElectrons, nVetoElectrons, nMuons, nLooseMuons, nJets, nFatJets, nBTagJets;
         float MaxJetBTag, MaxFatJetBTag, MinJetMetDPhi;
         

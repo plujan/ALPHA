@@ -1,31 +1,9 @@
 // -*- C++ -*-
-//
 // Package:    Analysis/HHAnalyzer
 // Class:      HHAnalyzer
-// 
-/**\class HHAnalyzer HHAnalyzer.cc Analysis/HHAnalyzer/plugins/HHAnalyzer.cc
- Description: [one line class summary]
- Implementation:     [Notes on implementation]
-*/
-//
-// Original Author:  Alberto Zucchetta
-// Created:  Thu, 28 Apr 2016 08:28:54 GMT
-// Modified for HH analysis - Sept 2016
-//
 
 #include "HHAnalyzer.h"
 
-//
-// constants, enums and typedefs
-//
-
-//
-// static data member definitions
-//
-
-//
-// constructors and destructor
-//
 HHAnalyzer::HHAnalyzer(const edm::ParameterSet& iConfig):
     GenPSet(iConfig.getParameter<edm::ParameterSet>("genSet")),
     PileupPSet(iConfig.getParameter<edm::ParameterSet>("pileupSet")),
@@ -57,8 +35,8 @@ HHAnalyzer::HHAnalyzer(const edm::ParameterSet& iConfig):
     TFileDirectory genDir=fs->mkdir("Gen/");
     TFileDirectory jetDir=fs->mkdir("Jets/");
     
-    // Make TH1F
-    std::vector<std::string> nLabels={"All (jets in Acc)", "Trigger", "# jets >3", "# med b-tag >0", "# med b-tag >1", "# med b-tag >2", "# med b-tag >3", "", "", ""};
+    // Make TH1F -- unused
+    std::vector<std::string> nLabels={"All (jets in Acc)", "Trigger", "# jets >4", "# med b-tag >0", "# med b-tag >1", "# med b-tag >2", "# med b-tag >4", "", "", ""};
     
     int nbins;
     float min, max;
@@ -100,10 +78,9 @@ HHAnalyzer::~HHAnalyzer() {
 }
 
 
-//
+// 
 // member functions
 //
-
 // ------------ method called for each event  ------------
 void HHAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
 
@@ -116,10 +93,12 @@ void HHAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
     EventInfo.setRun(iEvent.id().run());
     EventInfo.setIsMC(!iEvent.isRealData());
 
-    
-    EventWeight = StitchWeight = ZewkWeight = WewkWeight = PUWeight = TriggerWeight = LeptonWeight = 1.;
+   
+    EventWeight = StitchWeight = TriggerWeight = LeptonWeight = 1.;
+    PUWeight = PUWeightUp = PUWeightDown = 1.;
     FacWeightUp = FacWeightDown = RenWeightUp = RenWeightDown = ScaleWeightUp = ScaleWeightDown = 1.;
-    nPV = -1.;
+    PdfWeight = 1.;
+    nPV = nElectrons = nMuons = nJets = nFatJets = nBTagJets = -1;
 
     Hist["a_nEvents"]->Fill(1., EventWeight);
     
@@ -128,11 +107,13 @@ void HHAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
     // -----------------------------------
     
     // Pu weight
-    PUWeight = thePileupAnalyzer->GetPUWeight(iEvent);
-    EventInfo.setNumPV(thePileupAnalyzer->GetPV(iEvent));
-    Hist["a_nPVNoWeight"]->Fill(EventInfo.getNumPV(), EventWeight);
+    PUWeight     = thePileupAnalyzer->GetPUWeight(iEvent);
+    PUWeightUp   = thePileupAnalyzer->GetPUWeightUp(iEvent);
+    PUWeightDown = thePileupAnalyzer->GetPUWeightDown(iEvent);
+    nPV = thePileupAnalyzer->GetPV(iEvent);
+    Hist["a_nPVNoWeight"]->Fill(nPV, EventWeight);
     EventWeight *= PUWeight;
-    Hist["a_nPVReWeight"]->Fill(EventInfo.getNumPV(), EventWeight);
+    Hist["a_nPVReWeight"]->Fill(nPV, EventWeight);
     
     // Trigger
     std::map<std::string, bool> TriggerMap;
@@ -144,6 +125,11 @@ void HHAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
     
     // Electrons
     std::vector<pat::Electron> ElecVect = theElectronAnalyzer->FillElectronVector(iEvent);
+    nElectrons = ElecVect.size();
+    for(unsigned int i =0; i<ElecVect.size(); i++){
+        if(ElecVect.at(i).userInt("isVeto")==1) nVetoElectrons++;
+    }
+
     // Muons
     std::vector<pat::Muon> MuonVect = theMuonAnalyzer->FillMuonVector(iEvent);
     std::vector<pat::Muon> LooseMuonVect;
@@ -158,58 +144,61 @@ void HHAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
     theJetAnalyzer->CleanJetsFromElectrons(JetsVect, ElecVect, 0.4);
     nJets = JetsVect.size();
     nBTagJets = theJetAnalyzer->GetNBJets(JetsVect);
+
+    // Fat Jets
+    //std::vector<pat::Jet> FatJetsVect = theFatJetAnalyzer->FillJetVector(iEvent);
+    //nFatJets = FatJetsVect.size();
+
     // Missing Energy
     pat::MET MET = theJetAnalyzer->FillMetVector(iEvent);
     pat::MET Neutrino(MET);
-    float metNoMupx = MET.px();
-    float metNoMupy = MET.py();
-    for(unsigned int i=0; i<LooseMuonVect.size();i++){
-      metNoMupx -= LooseMuonVect.at(i).px();
-      metNoMupy -= LooseMuonVect.at(i).py();
-    }
-    reco::Particle::LorentzVector metNoMup4(metNoMupx, metNoMupy, 0, 0 );
-    MET.addUserFloat("metNoMu",metNoMup4.px());
-    MET.addUserFloat("phiNoMu",metNoMup4.phi());
+    //float metNoMupx = MET.px();
+    //float metNoMupy = MET.py();
+    //for(unsigned int i=0; i<LooseMuonVect.size();i++){
+    //  metNoMupx -= LooseMuonVect.at(i).px();
+    //  metNoMupy -= LooseMuonVect.at(i).py();
+    //}
+    //reco::Particle::LorentzVector metNoMup4(metNoMupx, metNoMupy, 0, 0 );
+    //MET.addUserFloat("metNoMu",metNoMup4.px());
+    //MET.addUserFloat("phiNoMu",metNoMup4.phi());
     
     // -----------------------------------
     //           GEN LEVEL
     // -----------------------------------
     
     // Gen weights
-    std::map<std::string, float> GenWeight = theGenAnalyzer->FillWeightsMap(iEvent);
-    float genWeight = GenWeight["event"];    
-    EventWeight *= genWeight;    
-    if(GenWeight.find("2") != GenWeight.end()) FacWeightUp     = GenWeight["2"];
-    if(GenWeight.find("3") != GenWeight.end()) FacWeightDown   = GenWeight["3"];
-    if(GenWeight.find("4") != GenWeight.end()) RenWeightUp     = GenWeight["4"];
-    if(GenWeight.find("7") != GenWeight.end()) RenWeightDown   = GenWeight["7"];
-    if(GenWeight.find("5") != GenWeight.end()) ScaleWeightUp   = GenWeight["5"];
-    if(GenWeight.find("9") != GenWeight.end()) ScaleWeightDown = GenWeight["9"];
+    std::map<int, float> GenWeight = theGenAnalyzer->FillWeightsMap(iEvent);
+    EventWeight *= GenWeight[-1];
+    if(GenWeight.find(2) != GenWeight.end()) FacWeightUp     = GenWeight[2];
+    if(GenWeight.find(3) != GenWeight.end()) FacWeightDown   = GenWeight[3];
+    if(GenWeight.find(4) != GenWeight.end()) RenWeightUp     = GenWeight[4];
+    if(GenWeight.find(7) != GenWeight.end()) RenWeightDown   = GenWeight[7];
+    if(GenWeight.find(5) != GenWeight.end()) ScaleWeightUp   = GenWeight[5];
+    if(GenWeight.find(9) != GenWeight.end()) ScaleWeightDown = GenWeight[9];
+    
+    float tmpPdfWeight = 0.;
+    int   tmpPdfN = 0;
+    for(auto const& pdfw : GenWeight) {
+        if (pdfw.first > 9 && pdfw.second>0) {
+            ++tmpPdfN;
+            //std::cout << "pdf " << tmpPdfN << " = " << pdfw.second << "\n";
+            tmpPdfWeight = tmpPdfWeight + pdfw.second*pdfw.second;
+        }
+    }
+    PdfWeight = sqrt(tmpPdfWeight/tmpPdfN);
+    //std::cout << "PdfWeight " << PdfWeight << "\n";
+
     // LHE Particles
     std::map<std::string, float> LheMap = theGenAnalyzer->FillLheMap(iEvent);
     // MC Stitching
     StitchWeight = theGenAnalyzer->GetStitchWeight(LheMap);
     // Gen Particles
-    std::vector<reco::GenParticle> GenPVect = theGenAnalyzer->FillGenVector(iEvent);
-    // Gen candidates
-    reco::Candidate* theGenZ = theGenAnalyzer->FindGenParticle(GenPVect, 23);
-    reco::Candidate* theGenW = theGenAnalyzer->FindGenParticle(GenPVect, 24);
-    // EWK corrections
-    if(theGenZ) ZewkWeight = theGenAnalyzer->GetZewkWeight(theGenZ->pt());
-    if(theGenW) WewkWeight = theGenAnalyzer->GetWewkWeight(theGenW->pt());
-    
-    EventWeight *= ZewkWeight * WewkWeight;
-
+    std::vector<reco::GenParticle> GenPVect = theGenAnalyzer->FillGenVector(iEvent);    
     std::vector<reco::GenParticle> GenHsPart;
     std::vector<reco::GenParticle> GenBFromHsPart = theGenAnalyzer->PartonsFromDecays({25}, GenHsPart);
     std::vector<reco::GenParticle> TL_GenHsPart = theGenAnalyzer->FirstNGenParticles({25}, 2);
-
-
-    // --- Trigger selection ---
-    // selection (if required) is made with HLT Analyzer (called before ntuple Analyzer)
+    
     Hist["a_nEvents"]->Fill(2., EventWeight);
-   
-    // ---------- Other Variables ----------    
     
     // Jet variables
     theJetAnalyzer->AddVariables(JetsVect, MET);
@@ -230,17 +219,19 @@ void HHAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
     // fill weights
     weightPairs.emplace_back("EventWeight", EventWeight);
-    weightPairs.emplace_back("GenWeight", genWeight);
     weightPairs.emplace_back("FacWeightUp", FacWeightUp);
     weightPairs.emplace_back("FacWeightDown", FacWeightDown);
     weightPairs.emplace_back("ScaleWeightUp", ScaleWeightUp);
     weightPairs.emplace_back("ScaleWeightDown", ScaleWeightDown);
+    weightPairs.emplace_back("PdfWeight", PdfWeight);
     weightPairs.emplace_back("StichWeight", StitchWeight);
-    weightPairs.emplace_back("ZewkWeight", ZewkWeight);
-    weightPairs.emplace_back("WewkWeight", WewkWeight);
     weightPairs.emplace_back("PUWeight", PUWeight);
+    weightPairs.emplace_back("PUWeightUp", PUWeightUp);
+    weightPairs.emplace_back("PUWeightDown", PUWeightDown);
     weightPairs.emplace_back("TriggerWeight", TriggerWeight);
     weightPairs.emplace_back("LeptonWeight", LeptonWeight);
+    weightPairs.emplace_back("LeptonWeightUp", LeptonWeightUp);
+    weightPairs.emplace_back("LeptonWeightDown", LeptonWeightDown);
 
 
     // fill sorting vectors
@@ -262,15 +253,15 @@ void HHAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
     // --- Fill nEvents histogram --- no effective selection applied
     // --- num jets selection ---
-    if(JetsVect.size() > 3) {
-      Hist["a_nEvents"]->Fill(3., EventWeight);
-
-      // --- b-Tag selection ---
-      if( Jets.at(j_sort_csv[0]).CSV() > 0.800) Hist["a_nEvents"]->Fill(4., EventWeight);
-      if( Jets.at(j_sort_csv[1]).CSV() > 0.800) Hist["a_nEvents"]->Fill(5., EventWeight);
-      if( Jets.at(j_sort_csv[2]).CSV() > 0.800) Hist["a_nEvents"]->Fill(6., EventWeight);
-      if( Jets.at(j_sort_csv[3]).CSV() > 0.800) Hist["a_nEvents"]->Fill(7., EventWeight);      
-    }
+    // commented to get faster execution
+    //if(JetsVect.size() > 3) {
+    //  Hist["a_nEvents"]->Fill(3., EventWeight);
+    // --- b-Tag selection ---
+    //  if( Jets.at(j_sort_csv[0]).CSV() > 0.800) Hist["a_nEvents"]->Fill(4., EventWeight);
+    //  if( Jets.at(j_sort_csv[1]).CSV() > 0.800) Hist["a_nEvents"]->Fill(5., EventWeight);
+    //  if( Jets.at(j_sort_csv[2]).CSV() > 0.800) Hist["a_nEvents"]->Fill(6., EventWeight);
+    //  if( Jets.at(j_sort_csv[3]).CSV() > 0.800) Hist["a_nEvents"]->Fill(7., EventWeight);      
+    //}
     
     // Fill tree
     tree->Fill();

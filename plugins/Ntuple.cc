@@ -124,8 +124,8 @@ void Ntuple::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     pat::MET MET = theJetAnalyzer->FillMetVector(iEvent);
     
     // Gen weights
-    std::map<std::string, float> GenWeight = theGenAnalyzer->FillWeightsMap(iEvent);
-    EventWeight *= GenWeight["event"];
+    std::map<int, float> GenWeight = theGenAnalyzer->FillWeightsMap(iEvent);
+    EventWeight *= GenWeight[-1];
     // Gen Particles
     std::vector<reco::GenParticle> GenPVect = theGenAnalyzer->FillGenVector(iEvent);
     // Gen candidates

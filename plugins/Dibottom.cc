@@ -332,17 +332,17 @@ Dibottom::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   // -----------------------------------
   
   // Gen weights
-  std::map<std::string, float> GenWeight = theGenAnalyzer->FillWeightsMap(iEvent);
-  EventWeight *= GenWeight["event"];
-  
+  std::map<int, float> GenWeight = theGenAnalyzer->FillWeightsMap(iEvent);
+  EventWeight *= GenWeight[-1];
+ 
   //product id
-  if(GenWeight.find("2") != GenWeight.end()) FacWeightUp     = GenWeight["2"];
-  if(GenWeight.find("3") != GenWeight.end()) FacWeightDown   = GenWeight["3"];
-  if(GenWeight.find("4") != GenWeight.end()) RenWeightUp     = GenWeight["4"];
-  if(GenWeight.find("7") != GenWeight.end()) RenWeightDown   = GenWeight["7"];
-  if(GenWeight.find("5") != GenWeight.end()) ScaleWeightUp   = GenWeight["5"];
-  if(GenWeight.find("9") != GenWeight.end()) ScaleWeightDown = GenWeight["9"];
-  
+  if(GenWeight.find(2) != GenWeight.end()) FacWeightUp     = GenWeight[2];
+  if(GenWeight.find(3) != GenWeight.end()) FacWeightDown   = GenWeight[3];
+  if(GenWeight.find(4) != GenWeight.end()) RenWeightUp     = GenWeight[4];
+  if(GenWeight.find(7) != GenWeight.end()) RenWeightDown   = GenWeight[7];
+  if(GenWeight.find(5) != GenWeight.end()) ScaleWeightUp   = GenWeight[5];
+  if(GenWeight.find(9) != GenWeight.end()) ScaleWeightDown = GenWeight[9];
+
   // Lhe Particles
   // reading LHE event content and prepare it in Map format std::map<std::string, float>
   std::map<std::string, float> LheMap = theGenAnalyzer->FillLheMap(iEvent);
@@ -591,7 +591,8 @@ Dibottom::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       
       // SF
       if(isMC) {                
-      /// FIXME -> APPLYING THE SF FOR Mu45eta2p1 HADRCODED <- FIXME ///
+      /// FIXME -> APPLYING THE SF FOR Mu45eta2p1 HADRCODED <- FIXME //
+    //DEBUG -- to be changed! 
 	LeptonWeight *= theMuonAnalyzer->GetMuonTriggerSFMu45eta2p1(TightMuonVect.at(0)); //include lepton trigger weight
 	LeptonWeight *= theMuonAnalyzer->GetMuonTriggerSFIsoMu22(TightMuonVect.at(0)); //added
 

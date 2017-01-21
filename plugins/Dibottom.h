@@ -4,9 +4,7 @@
 // Class:      dibottom
 // 
 /**\class dibottom dibottom.cc Analysis/dibottom/plugins/dibottom.cc
-
  Description: [one line class summary]
-
  Implementation:
      [Notes on implementation]
 */
