@@ -18,8 +18,8 @@ process = cms.Process('ALPHA')
 process.load('FWCore.MessageService.MessageLogger_cfi')
 process.MessageLogger.cerr.threshold = 'ERROR'
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
-#process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10000) )
+#process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(200) )
 
 # input
 # default: if no filelist from command line, run on specified samples
@@ -59,7 +59,9 @@ if len(options.inputFiles) == 0:
 #'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016D/SingleElectron/MINIAOD/23Sep2016-v1/90000/6CDD978C-D187-E611-A82A-0CC47A009E26.root',
 #'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016D/SingleElectron/MINIAOD/23Sep2016-v1/90000/6CDFF3EB-B487-E611-9F4C-02163E015F9C.root',
            
-           'root://cms-xrd-global.cern.ch//store/mc/RunIISummer16MiniAODv2/DYJetsToLL_M-50_HT-800to1200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/120000/480D3900-8CC0-E611-81E8-001E67504645.root', # DYJetsToLL
+#           'root://cms-xrd-global.cern.ch//store/mc/RunIISummer16MiniAODv2/DYJetsToLL_M-50_HT-800to1200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/120000/480D3900-8CC0-E611-81E8-001E67504645.root', # DYJetsToLL
+#           '/store/mc/RunIISummer16MiniAODv2/DYJetsToLL_M-50_HT-800to1200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/120000/480D3900-8CC0-E611-81E8-001E67504645.root',
+           '/store/data/Run2016D/SingleMuon/MINIAOD/23Sep2016-v1/90000/F627424B-0490-E611-8FB5-3417EBE64BA0.root'
         )
     )
 # production: read externally provided filelist
@@ -101,8 +103,10 @@ process.counter = cms.EDAnalyzer('CounterAnalyzer',
 )
 
 # Trigger filter
-import HLTrigger.HLTfilters.hltHighLevel_cfi
 triggerTag = 'HLT2' if isReHLT else 'HLT'
+
+'''
+import HLTrigger.HLTfilters.hltHighLevel_cfi
 process.HLTFilter = cms.EDFilter('HLTHighLevel',
     TriggerResultsTag = cms.InputTag('TriggerResults', '', triggerTag),
     HLTPaths = cms.vstring(
@@ -139,30 +143,43 @@ process.HLTFilter = cms.EDFilter('HLTHighLevel',
     throw = cms.bool(False)    # throw exception on unknown path names
 )
 
+'''
+
 #process.load('RecoMET.METFilters.metFilters_cff')
 
 process.load('RecoMET.METFilters.BadPFMuonFilter_cfi')
 process.BadPFMuonFilter.muons = cms.InputTag('slimmedMuons')
 process.BadPFMuonFilter.PFCandidates = cms.InputTag('packedPFCandidates')
+process.load('RecoMET.METFilters.BadPFMuonSummer16Filter_cfi')
+process.BadPFMuonSummer16Filter.muons = cms.InputTag("slimmedMuons")
+process.BadPFMuonSummer16Filter.PFCandidates = cms.InputTag("packedPFCandidates")
 
 process.load('RecoMET.METFilters.BadChargedCandidateFilter_cfi')
 process.BadChargedCandidateFilter.muons = cms.InputTag('slimmedMuons')
 process.BadChargedCandidateFilter.PFCandidates = cms.InputTag('packedPFCandidates')
+process.load('RecoMET.METFilters.BadChargedCandidateSummer16Filter_cfi')
+process.BadChargedCandidateSummer16Filter.muons = cms.InputTag('slimmedMuons')
+process.BadChargedCandidateSummer16Filter.PFCandidates = cms.InputTag('packedPFCandidates')
 
-process.METFilter = cms.EDFilter('HLTHighLevel',
-    TriggerResultsTag = cms.InputTag('TriggerResults', '', 'RECO'),
-    HLTPaths = cms.vstring(
-        'Flag_HBHENoiseFilter',
-        'Flag_HBHENoiseIsoFilter',
-        'Flag_EcalDeadCellTriggerPrimitiveFilter',
-        'Flag_goodVertices',
-        'Flag_eeBadScFilter',
-        'Flag_globalTightHalo2016Filter',
-    ),
-    eventSetupPathsKey = cms.string(''), # not empty => use read paths from AlCaRecoTriggerBitsRcd via this key
-    andOr = cms.bool(True),    # how to deal with multiple triggers: True (OR) accept if ANY is true, False (AND) accept if ALL are true
-    throw = cms.bool(False)    # throw exception on unknown path names
-)
+if isData:
+    filterString = "RECO"
+else:
+    filterString = "PAT"
+
+#process.METFilter = cms.EDFilter('HLTHighLevel',
+#    TriggerResultsTag = cms.InputTag('TriggerResults', '', filterString),
+#    HLTPaths = cms.vstring(
+#        'Flag_HBHENoiseFilter',
+#        'Flag_HBHENoiseIsoFilter',
+#        'Flag_EcalDeadCellTriggerPrimitiveFilter',
+#        'Flag_goodVertices',
+#        'Flag_eeBadScFilter',
+#        'Flag_globalTightHalo2016Filter',
+#    ),
+#    eventSetupPathsKey = cms.string(''), # not empty => use read paths from AlCaRecoTriggerBitsRcd via this key
+#    andOr = cms.bool(True),    # how to deal with multiple triggers: True (OR) accept if ANY is true, False (AND) accept if ALL are true
+#    throw = cms.bool(False)    # throw exception on unknown path names
+#)
 
 # Primary vertex
 import RecoVertex.PrimaryVertexProducer.OfflinePrimaryVertices_cfi
@@ -207,12 +224,29 @@ for ph_idmod in ph_id_modules:
     setupAllVIDIdsInModule(process,ph_idmod,setupVIDPhotonSelection)
 
 #muons upstream modules
-process.cleanedMuons = cms.EDProducer('PATMuonCleanerBySegments',
-    src = cms.InputTag('slimmedMuons'),#('calibratedMuons'),
-    preselection = cms.string('track.isNonnull'),
-    passthrough = cms.string('isGlobalMuon && numberOfMatches >= 2'),
-    fractionOfSharedSegments = cms.double(0.499)
-)
+if isData:
+    process.cleanedMuons = cms.EDProducer('PATMuonCleanerBySegments',
+                                          src = cms.InputTag('slimmedMuons'),#('calibratedMuons'),#
+                                          preselection = cms.string('track.isNonnull'),
+                                          passthrough = cms.string('isGlobalMuon && numberOfMatches >= 2'),
+                                          fractionOfSharedSegments = cms.double(0.499)
+                                          )
+else:
+    process.cleanedMuons = cms.EDProducer('PATMuonCleanerBySegments',
+                                          src = cms.InputTag('slimmedMuons'),#('calibratedMuons'),#
+                                          preselection = cms.string('track.isNonnull'),
+                                          passthrough = cms.string('isGlobalMuon && numberOfMatches >= 2'),
+                                          fractionOfSharedSegments = cms.double(0.499)
+                                          )
+
+#process.load('RecoMET.METFilters.BadPFMuonFilter_cfi')
+#process.BadPFMuonFilter.muons = cms.InputTag('cleanedMuons')
+#process.BadPFMuonFilter.PFCandidates = cms.InputTag('packedPFCandidates')
+
+#process.load('RecoMET.METFilters.BadChargedCandidateFilter_cfi')
+#process.BadChargedCandidateFilter.muons = cms.InputTag('cleanedMuons')
+#process.BadChargedCandidateFilter.PFCandidates = cms.InputTag('packedPFCandidates')
+
 
 # Jet corrector https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookJetEnergyCorrections#CorrOnTheFly
 process.load('JetMETCorrections.Configuration.JetCorrectors_cff')
@@ -357,6 +391,10 @@ process.ntuple = cms.EDAnalyzer('Diboson',
     triggerSet = cms.PSet(
         trigger = cms.InputTag('TriggerResults', '', triggerTag),
         paths = cms.vstring('HLT_Mu45_eta2p1_v', 'HLT_Mu50_v', 'HLT_TkMu50_v', 'HLT_IsoMu20_v', 'HLT_IsoTkMu20_v', 'HLT_IsoMu24_v', 'HLT_IsoTkMu24_v', 'HLT_Mu27_TkMu8_v', 'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v', 'HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v', 'HLT_Ele105_CaloIdVT_GsfTrkIdT_v', 'HLT_Ele115_CaloIdVT_GsfTrkIdT_v', 'HLT_Ele23_WPLoose_Gsf_v', 'HLT_Ele27_WPLoose_Gsf_v', 'HLT_Ele27_WPTight_Gsf_v', 'HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v', 'HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_v', 'HLT_PFMETNoMu90_PFMHTNoMu90_IDTight_v', 'HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v', 'HLT_PFMETNoMu90_JetIdCleaned_PFMHTNoMu90_IDTight_v', 'HLT_PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight_v', 'HLT_PFMET120_BTagCSV_p067_v', 'HLT_PFMET170_NotCleaned_v', 'HLT_PFMET170_NoiseCleaned_v', 'HLT_PFMET170_JetIdCleaned_v', 'HLT_PFMET170_HBHECleaned_v', 'HLT_DoublePhoton60_v',),
+        metfilters = cms.InputTag('TriggerResults', '', filterString),
+        metpaths = cms.vstring('Flag_HBHENoiseFilter', 'Flag_HBHENoiseIsoFilter', 'Flag_EcalDeadCellTriggerPrimitiveFilter', 'Flag_goodVertices', 'Flag_eeBadScFilter', 'Flag_globalTightHalo2016Filter'),
+        badPFMuonFilter = cms.InputTag("BadPFMuonFilter"),
+        badChCandFilter = cms.InputTag("BadChargedCandidateFilter"),
     ),
     electronSet = cms.PSet(
         #electrons = cms.InputTag('selectedElectrons'),
@@ -386,7 +424,7 @@ process.ntuple = cms.EDAnalyzer('Diboson',
         electron2pt = cms.double(20.),
     ),
     muonSet = cms.PSet(
-        muons = cms.InputTag('cleanedMuons'),#('slimmedMuons'),
+        muons = cms.InputTag('cleanedMuons'),#('slimmedMuons'),#
         vertices = cms.InputTag('offlineSlimmedPrimaryVertices'),
         muonTrkFileName = cms.string('%s/src/Analysis/ALPHA/data/TrkEff.root' % os.environ['CMSSW_BASE']),
         muonIdFileName = cms.string('%s/src/Analysis/ALPHA/data/MuonIdEfficienciesAndSF_MORIOND17.root' % os.environ['CMSSW_BASE']),
@@ -394,10 +432,10 @@ process.ntuple = cms.EDAnalyzer('Diboson',
         muonTrkHighptFileName = cms.string('%s/src/Analysis/ALPHA/data/trackHighPtID_effSF_80X.root' % os.environ['CMSSW_BASE']),
         muonTriggerFileName = cms.string('%s/src/Analysis/ALPHA/data/MuonTrigEfficienciesAndSF_MORIOND17_Period34.root' % os.environ['CMSSW_BASE']),
         doubleMuonTriggerFileName = cms.string('%s/src/Analysis/ALPHA/data/MuHLTEfficiencies_Run_2012ABCD_53X_DR03-2.root' % os.environ['CMSSW_BASE']),#obsolete
-        muon1id = cms.int32(-1), # 0: tracker high pt muon id, 1: loose, 2: medium, 3: tight, 4: high pt
-        muon2id = cms.int32(-1),
-        muon1iso = cms.int32(-1), # 0: trk iso (<0.1), 1: loose (<0.25), 2: tight (<0.15) (pfIso in cone 0.4)
-        muon2iso = cms.int32(-1),
+        muon1id = cms.int32(1), # 0: tracker high pt muon id, 1: loose, 2: medium, 3: tight, 4: high pt
+        muon2id = cms.int32(1),
+        muon1iso = cms.int32(1), # 0: trk iso (<0.1), 1: loose (<0.25), 2: tight (<0.15) (pfIso in cone 0.4)
+        muon2iso = cms.int32(1),
         muon1pt = cms.double(10.),
         muon2pt = cms.double(10.),
         useTuneP = cms.bool(True),
@@ -476,7 +514,14 @@ process.ntuple = cms.EDAnalyzer('Diboson',
         metRecoilData = cms.string('%s/src/Analysis/ALPHA/data/recoilfit_gjetsData_Zu1_pf_v5.root' % os.environ['CMSSW_BASE']),
         jerNameRes = cms.string('%s/src/Analysis/ALPHA/data/JER/Spring16_25nsV10_MC_PtResolution_AK4PFchs.txt' % os.environ['CMSSW_BASE']),
         jerNameSf = cms.string('%s/src/Analysis/ALPHA/data/JER/Spring16_25nsV10_MC_SF_AK4PFchs.txt' % os.environ['CMSSW_BASE']),
-
+        #filters = cms.InputTag('TriggerResults', '', 'RECO'),
+        #paths = cms.vstring(
+        #'Flag_HBHENoiseFilter',
+        #'Flag_HBHENoiseIsoFilter',
+        #'Flag_EcalDeadCellTriggerPrimitiveFilter',
+        #'Flag_goodVertices',
+        #'Flag_eeBadScFilter',
+        #'Flag_globalTightHalo2016Filter'),
     ),
     fatJetSet = cms.PSet(
         jets = cms.InputTag('slimmedJetsAK8'),#('slimmedJetsAK8'), #selectedPatJetsAK8PFCHSPrunedPacked
@@ -525,6 +570,14 @@ process.ntuple = cms.EDAnalyzer('Diboson',
         metRecoilData = cms.string(''),
         jerNameRes = cms.string('%s/src/Analysis/ALPHA/data/JER/Spring16_25nsV10_MC_PtResolution_AK8PFchs.txt' % os.environ['CMSSW_BASE']),
         jerNameSf = cms.string('%s/src/Analysis/ALPHA/data/JER/Spring16_25nsV10_MC_SF_AK8PFchs.txt' % os.environ['CMSSW_BASE']),
+        #filters = cms.InputTag('TriggerResults', '', 'RECO'),
+        #paths = cms.vstring(
+        #'Flag_HBHENoiseFilter',
+        #'Flag_HBHENoiseIsoFilter',
+        #'Flag_EcalDeadCellTriggerPrimitiveFilter',
+        #'Flag_goodVertices',
+        #'Flag_eeBadScFilter',
+        #'Flag_globalTightHalo2016Filter'),
     ),
     writeNElectrons = cms.int32(0),
     writeNMuons = cms.int32(0),
@@ -550,9 +603,6 @@ process.ntuple = cms.EDAnalyzer('Diboson',
 if isData:
     process.seq = cms.Sequence(
         process.counter *
-        #process.HLTFilter *
-
-        process.METFilter *
         process.BadPFMuonFilter *
         process.BadChargedCandidateFilter *
         
@@ -568,10 +618,8 @@ if isData:
 else:
     process.seq = cms.Sequence(
         process.counter *
-
-        process.BadPFMuonFilter *
-        process.BadChargedCandidateFilter *
-        
+        process.BadPFMuonFilter * process.BadPFMuonSummer16Filter *
+        process.BadChargedCandidateFilter * process.BadChargedCandidateSummer16Filter *
         process.primaryVertexFilter *
         process.egmGsfElectronIDSequence *
         process.calibratedPatElectrons *
