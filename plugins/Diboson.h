@@ -152,7 +152,9 @@ class Diboson : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
         Utilities* theUtilities;
         //BTagInterface* theBTagInterface;
         std::map<std::string, bool> TriggerMap;
+        std::map<std::string, bool> MetFiltersMap;
         std::map<std::string, TH1F*> Hist;
+        bool BadPFMuonFlag, BadChCandFlag;
             
         edm::Service<TFileService> fs;
         TTree* tree;
