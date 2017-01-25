@@ -18,8 +18,8 @@ process = cms.Process('ALPHA')
 process.load('FWCore.MessageService.MessageLogger_cfi')
 process.MessageLogger.cerr.threshold = 'ERROR'
 
-#process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(200) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+#process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(5000) )
 
 # input
 # default: if no filelist from command line, run on specified samples
@@ -105,45 +105,6 @@ process.counter = cms.EDAnalyzer('CounterAnalyzer',
 # Trigger filter
 triggerTag = 'HLT2' if isReHLT else 'HLT'
 
-'''
-import HLTrigger.HLTfilters.hltHighLevel_cfi
-process.HLTFilter = cms.EDFilter('HLTHighLevel',
-    TriggerResultsTag = cms.InputTag('TriggerResults', '', triggerTag),
-    HLTPaths = cms.vstring(
-        'HLT_Mu45_eta2p1_v*',
-        'HLT_Mu50_v*',
-        'HLT_TkMu50_v*',
-        'HLT_IsoMu20_v*',
-        'HLT_IsoTkMu20_v*',
-        'HLT_IsoMu24_v*',
-        'HLT_IsoTkMu24_v*',
-        'HLT_Mu27_TkMu8_v*',
-        'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v*',
-        'HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v*',
-        'HLT_Ele105_CaloIdVT_GsfTrkIdT_v*',
-        'HLT_Ele115_CaloIdVT_GsfTrkIdT_v*',
-        'HLT_Ele23_WPLoose_Gsf_v*',
-        'HLT_Ele27_WPLoose_Gsf_v*',
-        'HLT_Ele27_WPTight_Gsf_v*',
-        'HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v*',
-        'HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_v*',
-        'HLT_PFMETNoMu90_PFMHTNoMu90_IDTight_v*',
-        'HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v*',
-        'HLT_PFMETNoMu90_JetIdCleaned_PFMHTNoMu90_IDTight_v*',
-        'HLT_PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight_v*',
-        'HLT_PFMET120_BTagCSV_p067_v*',
-        'HLT_PFMET170_NotCleaned_v*',
-        'HLT_PFMET170_NoiseCleaned_v*',
-        'HLT_PFMET170_JetIdCleaned_v*',
-        'HLT_PFMET170_HBHECleaned_v*',
-        'HLT_DoublePhoton60_v*',
-    ),
-    eventSetupPathsKey = cms.string(''), # not empty => use read paths from AlCaRecoTriggerBitsRcd via this key
-    andOr = cms.bool(True),    # how to deal with multiple triggers: True (OR) accept if ANY is true, False (AND) accept if ALL are true
-    throw = cms.bool(False)    # throw exception on unknown path names
-)
-
-'''
 
 #process.load('RecoMET.METFilters.metFilters_cff')
 
@@ -165,21 +126,6 @@ if isData:
     filterString = "RECO"
 else:
     filterString = "PAT"
-
-#process.METFilter = cms.EDFilter('HLTHighLevel',
-#    TriggerResultsTag = cms.InputTag('TriggerResults', '', filterString),
-#    HLTPaths = cms.vstring(
-#        'Flag_HBHENoiseFilter',
-#        'Flag_HBHENoiseIsoFilter',
-#        'Flag_EcalDeadCellTriggerPrimitiveFilter',
-#        'Flag_goodVertices',
-#        'Flag_eeBadScFilter',
-#        'Flag_globalTightHalo2016Filter',
-#    ),
-#    eventSetupPathsKey = cms.string(''), # not empty => use read paths from AlCaRecoTriggerBitsRcd via this key
-#    andOr = cms.bool(True),    # how to deal with multiple triggers: True (OR) accept if ANY is true, False (AND) accept if ALL are true
-#    throw = cms.bool(False)    # throw exception on unknown path names
-#)
 
 # Primary vertex
 import RecoVertex.PrimaryVertexProducer.OfflinePrimaryVertices_cfi
@@ -238,14 +184,6 @@ else:
                                           passthrough = cms.string('isGlobalMuon && numberOfMatches >= 2'),
                                           fractionOfSharedSegments = cms.double(0.499)
                                           )
-
-#process.load('RecoMET.METFilters.BadPFMuonFilter_cfi')
-#process.BadPFMuonFilter.muons = cms.InputTag('cleanedMuons')
-#process.BadPFMuonFilter.PFCandidates = cms.InputTag('packedPFCandidates')
-
-#process.load('RecoMET.METFilters.BadChargedCandidateFilter_cfi')
-#process.BadChargedCandidateFilter.muons = cms.InputTag('cleanedMuons')
-#process.BadChargedCandidateFilter.PFCandidates = cms.InputTag('packedPFCandidates')
 
 
 # Jet corrector https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookJetEnergyCorrections#CorrOnTheFly
@@ -514,14 +452,6 @@ process.ntuple = cms.EDAnalyzer('Diboson',
         metRecoilData = cms.string('%s/src/Analysis/ALPHA/data/recoilfit_gjetsData_Zu1_pf_v5.root' % os.environ['CMSSW_BASE']),
         jerNameRes = cms.string('%s/src/Analysis/ALPHA/data/JER/Spring16_25nsV10_MC_PtResolution_AK4PFchs.txt' % os.environ['CMSSW_BASE']),
         jerNameSf = cms.string('%s/src/Analysis/ALPHA/data/JER/Spring16_25nsV10_MC_SF_AK4PFchs.txt' % os.environ['CMSSW_BASE']),
-        #filters = cms.InputTag('TriggerResults', '', 'RECO'),
-        #paths = cms.vstring(
-        #'Flag_HBHENoiseFilter',
-        #'Flag_HBHENoiseIsoFilter',
-        #'Flag_EcalDeadCellTriggerPrimitiveFilter',
-        #'Flag_goodVertices',
-        #'Flag_eeBadScFilter',
-        #'Flag_globalTightHalo2016Filter'),
     ),
     fatJetSet = cms.PSet(
         jets = cms.InputTag('slimmedJetsAK8'),#('slimmedJetsAK8'), #selectedPatJetsAK8PFCHSPrunedPacked
@@ -570,14 +500,6 @@ process.ntuple = cms.EDAnalyzer('Diboson',
         metRecoilData = cms.string(''),
         jerNameRes = cms.string('%s/src/Analysis/ALPHA/data/JER/Spring16_25nsV10_MC_PtResolution_AK8PFchs.txt' % os.environ['CMSSW_BASE']),
         jerNameSf = cms.string('%s/src/Analysis/ALPHA/data/JER/Spring16_25nsV10_MC_SF_AK8PFchs.txt' % os.environ['CMSSW_BASE']),
-        #filters = cms.InputTag('TriggerResults', '', 'RECO'),
-        #paths = cms.vstring(
-        #'Flag_HBHENoiseFilter',
-        #'Flag_HBHENoiseIsoFilter',
-        #'Flag_EcalDeadCellTriggerPrimitiveFilter',
-        #'Flag_goodVertices',
-        #'Flag_eeBadScFilter',
-        #'Flag_globalTightHalo2016Filter'),
     ),
     writeNElectrons = cms.int32(0),
     writeNMuons = cms.int32(0),

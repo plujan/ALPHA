@@ -74,8 +74,6 @@ Diboson::Diboson(const edm::ParameterSet& iConfig):
     std::vector<std::string> MetFiltersList(TriggerPSet.getParameter<std::vector<std::string> >("metpaths"));
     for(unsigned int i = 0; i < MetFiltersList.size(); i++) MetFiltersMap[ MetFiltersList[i] ] = false;
 
-    //edm::EDGetTokenT<edm::TriggerResults> TriggerToken(TriggerPSet.consumes<edm::TriggerResults>(TriggerPSet.getParameter<edm::InputTag>("trigger")));
-    //edm::EDGetTokenT<edm::TriggerResults> MetFiltersToken(TriggerPSet.consumes<edm::TriggerResults>(TriggerPSet.getParameter<edm::InputTag>("metfilters")));
         
     // ---------- Plots Initialization ----------
     TFileDirectory allDir=fs->mkdir("All/");
