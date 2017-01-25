@@ -170,21 +170,12 @@ for ph_idmod in ph_id_modules:
     setupAllVIDIdsInModule(process,ph_idmod,setupVIDPhotonSelection)
 
 #muons upstream modules
-if isData:
-    process.cleanedMuons = cms.EDProducer('PATMuonCleanerBySegments',
-                                          src = cms.InputTag('slimmedMuons'),#('calibratedMuons'),#
-                                          preselection = cms.string('track.isNonnull'),
-                                          passthrough = cms.string('isGlobalMuon && numberOfMatches >= 2'),
-                                          fractionOfSharedSegments = cms.double(0.499)
-                                          )
-else:
-    process.cleanedMuons = cms.EDProducer('PATMuonCleanerBySegments',
-                                          src = cms.InputTag('slimmedMuons'),#('calibratedMuons'),#
-                                          preselection = cms.string('track.isNonnull'),
-                                          passthrough = cms.string('isGlobalMuon && numberOfMatches >= 2'),
-                                          fractionOfSharedSegments = cms.double(0.499)
-                                          )
-
+process.cleanedMuons = cms.EDProducer('PATMuonCleanerBySegments',
+                                      src = cms.InputTag('slimmedMuons'),#('calibratedMuons'),#
+                                      preselection = cms.string('track.isNonnull'),
+                                      passthrough = cms.string('isGlobalMuon && numberOfMatches >= 2'),
+                                      fractionOfSharedSegments = cms.double(0.499)
+                                      )
 
 # Jet corrector https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookJetEnergyCorrections#CorrOnTheFly
 process.load('JetMETCorrections.Configuration.JetCorrectors_cff')
