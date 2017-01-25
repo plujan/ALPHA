@@ -161,11 +161,11 @@ private:
   
   bool isMC, isZtoEE, isZtoMM, isTtoEM, isWtoEN, isWtoMN, isZtoNN;
   long int EventNumber, RunNumber, LumiNumber;
-  float EventWeight, StitchWeight, ZewkWeight, WewkWeight, PUWeight, TriggerWeight, LeptonWeight;
+  float EventWeight, StitchWeight, ZewkWeight, WewkWeight, TopPtWeight, PUWeight, TriggerWeight, LeptonWeight;
   float FacWeightUp, FacWeightDown, RenWeightUp, RenWeightDown, ScaleWeightUp, ScaleWeightDown;
   int nPV, nElectrons, nMuons, nTaus, nPhotons, nJets, nBTagJets;
   int nTightElectrons, nTightMuons;
-  float MaxJetBTag, MinJetMetDPhi, Chi2;
+  float MaxJetBTag, MinJetMetDPhi, Chi2, massRecoilFormula;
   
   //Objects declared in Objects.h (constum struct type)
   std::vector<LeptonType> Electrons;
@@ -176,32 +176,12 @@ private:
   std::vector<JetType> Jets;
   
   MEtType MEt;
+  MEtType hadronicRecoil;
   CandidateType V;
   
   int nevent;
   bool isSR, isZCR, isWCR, isTCR;
   bool isSR1, isSR2;
-
-  //TTree* SR;
-  //TTree* ZCR;
-  //TTree* WCR;
-  //TTree* TCR;
-
-  TTree* users;
-
-  //user variable
-  float Fakemet;
-  float Zpt;
-  float Zmass;
-  float Zeta;
-  int nPVZ;
-
-  float Wpt;
-  float Wmass;
-  float Weta;
-  int nPVW;
-  
-  int SR_counter,SR1_counter,SR2_counter,ZCR_counter,WCR_counter,TCR_counter,Preselected_counter,null_state_counter;
 
   struct JetIndexByPt{
     const Bool_t operator() (const pat::Jet& j1, const pat::Jet& j2) {return ( (j1.pt()) > (j2.pt()) );}
