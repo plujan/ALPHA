@@ -434,6 +434,24 @@ void ObjectsFormat::FillFatJetType(FatJetType& I, const pat::Jet* R, bool isMC) 
     I.isTight     = R->hasUserInt("isTight") ? R->userInt("isTight") : false;
     I.isTightLepVeto     = R->hasUserInt("isTightLepVeto") ? R->userInt("isTightLepVeto") : false;
     I.isMatched   = (I.mother==25);
+    I.JESUnc      = R->hasUserFloat("JESUncertainty") ? R->userFloat("JESUncertainty") : -1.;
+    I.ptJERUp     = R->hasUserFloat("ptJERUp") ? R->userFloat("ptJERUp") : -1.;
+    I.etaJERUp    = R->hasUserFloat("etaJERUp") ? R->userFloat("etaJERUp") : -1.;
+    I.phiJERUp    = R->hasUserFloat("phiJERUp") ? R->userFloat("phiJERUp") : -9.;
+    I.energyJERUp = R->hasUserFloat("energyJERUp") ? R->userFloat("energyJERUp") : -1.;
+    I.ptJERDown   = R->hasUserFloat("ptJERDown") ? R->userFloat("ptJERDown") : -1.;
+    I.etaJERDown  = R->hasUserFloat("etaJERDown") ? R->userFloat("etaJERDown") : -1.;
+    I.phiJERDown  = R->hasUserFloat("phiJERDown") ? R->userFloat("phiJERDown") : -9.;
+    I.energyJERDown = R->hasUserFloat("energyJERDown") ? R->userFloat("energyJERDown") : -1.;
+    I.smearFact   = R->hasUserFloat("smearFactor") ? R->userFloat("smearFactor") : -1.;
+    I.smearFactUp   = R->hasUserFloat("smearFactorUp") ? R->userFloat("smearFactorUp") : -1.;
+    I.smearFactDown = R->hasUserFloat("smearFactorDown") ? R->userFloat("smearFactorDown") : -1.;
+    I.softdropPuppiMassCorrJMS = R->hasUserFloat("ak8PFJetsPuppiSoftDropMassCorrJMS") ? R->userFloat("ak8PFJetsPuppiSoftDropMassCorrJMS") : -1.;
+    I.softdropPuppiMassCorrJMSUp = R->hasUserFloat("ak8PFJetsPuppiSoftDropMassCorrJMSUp") ? R->userFloat("ak8PFJetsPuppiSoftDropMassCorrJMSUp") : -1.;
+    I.softdropPuppiMassCorrJMSDown = R->hasUserFloat("ak8PFJetsPuppiSoftDropMassCorrJMSDown") ? R->userFloat("ak8PFJetsPuppiSoftDropMassCorrJMSDown") : -1.;
+    I.softdropPuppiMassCorrJMR = R->hasUserFloat("ak8PFJetsPuppiSoftDropMassCorrJMR") ? R->userFloat("ak8PFJetsPuppiSoftDropMassCorrJMR") : -1.;
+    I.softdropPuppiMassCorrJMRUp = R->hasUserFloat("ak8PFJetsPuppiSoftDropMassCorrJMRUp") ? R->userFloat("ak8PFJetsPuppiSoftDropMassCorrJMRUp") : -1.;
+    I.softdropPuppiMassCorrJMRDown = R->hasUserFloat("ak8PFJetsPuppiSoftDropMassCorrJMRDown") ? R->userFloat("ak8PFJetsPuppiSoftDropMassCorrJMRDown") : -1.;
 }
 
 void ObjectsFormat::ResetFatJetType(FatJetType& I) {
@@ -502,9 +520,27 @@ void ObjectsFormat::ResetFatJetType(FatJetType& I) {
     I.isTight     = false;
     I.isTightLepVeto     = false;
     I.isMatched   = false;
+    I.JESUnc      = -1.;
+    I.ptJERUp     = -1.;
+    I.etaJERUp    = -1.;
+    I.phiJERUp    = -9.;
+    I.energyJERUp = -1.;
+    I.ptJERDown   = -1.;
+    I.etaJERDown  = -1.;
+    I.phiJERDown  = -9.;
+    I.energyJERDown = -1.;
+    I.smearFact   = -1.;
+    I.smearFactUp   = -1.;
+    I.smearFactDown = -1.;
+    I.softdropPuppiMassCorrJMS = -1.;
+    I.softdropPuppiMassCorrJMSUp = -1.;
+    I.softdropPuppiMassCorrJMSDown = -1.;
+    I.softdropPuppiMassCorrJMR = -1.;
+    I.softdropPuppiMassCorrJMRUp = -1.;
+    I.softdropPuppiMassCorrJMRDown = -1.;
 }
 
-std::string ObjectsFormat::ListFatJetType() {return "pt/F:eta/F:phi/F:mass/F:energy/F:ptRaw/F:ptUnc/F:dPhi_met/F:dPhi_Jet1/F:puId/F:CSV/F:CSVR/F:CSVRUp/F:CSVRDown/F:prunedMass/F:softdropMass/F:softdropPuppiMass/F:prunedMassCorr/F:softdropMassCorr/F:softdropPuppiMassCorr/F:pt1/F:eta1/F:phi1/F:mass1/F:CSV1/F:CSVR1/F:CSVR1Up/F:CSVR1Down/F:CMVA1/F:CMVAR1/F:CMVAR1Up/F:CMVAR1Down/F:flavour1/F:pt2/F:eta2/F:phi2/F:mass2/F:CSV2/F:CSVR2/F:CSVR2Up/F:CSVR2Down/F:CMVA2/F:CMVAR2/F:CMVAR2Up/F:CMVAR2Down/F:flavour2/F:dR/F:chsTau21/F:puppiTau21/F:ddtTau21/F:BDSV/F:chf/F:nhf/F:phf/F:elf/F:muf/F:chm/I:npr/I:flavour/I:mother/I:isLoose/O:isMedium/O:isTight/O:isTightLepVeto/O:isCSVL/O:isCSVM/O:isCSVT/O:isMatched/O";}
+std::string ObjectsFormat::ListFatJetType() {return "pt/F:eta/F:phi/F:mass/F:energy/F:ptRaw/F:ptUnc/F:dPhi_met/F:dPhi_Jet1/F:puId/F:CSV/F:CSVR/F:CSVRUp/F:CSVRDown/F:prunedMass/F:softdropMass/F:softdropPuppiMass/F:prunedMassCorr/F:softdropMassCorr/F:softdropPuppiMassCorr/F:pt1/F:eta1/F:phi1/F:mass1/F:CSV1/F:CSVR1/F:CSVR1Up/F:CSVR1Down/F:CMVA1/F:CMVAR1/F:CMVAR1Up/F:CMVAR1Down/F:flavour1/F:pt2/F:eta2/F:phi2/F:mass2/F:CSV2/F:CSVR2/F:CSVR2Up/F:CSVR2Down/F:CMVA2/F:CMVAR2/F:CMVAR2Up/F:CMVAR2Down/F:flavour2/F:dR/F:chsTau21/F:puppiTau21/F:ddtTau21/F:BDSV/F:chf/F:nhf/F:phf/F:elf/F:muf/F:chm/I:npr/I:flavour/I:mother/I:isLoose/O:isMedium/O:isTight/O:isTightLepVeto/O:isCSVL/O:isCSVM/O:isCSVT/O:isMatched/O:JESUnc/F:ptJERUp/F:etaJERUp/F:phiJERUp/F:energyJERUp/F:ptJERDown/F:etaJERDown/F:phiJERDown/F:energyJERDown/F:smearFact/F:smearFactUp/F:smearFactDown/F:softdropPuppiMassCorrJMS/F:softdropPuppiMassCorrJMSUp/F:softdropPuppiMassCorrJMSDown/F:softdropPuppiMassCorrJMR/F:softdropPuppiMassCorrJMRUp/F:softdropPuppiMassCorrJMRDown/F";}
 
 
 
