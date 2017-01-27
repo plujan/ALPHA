@@ -188,7 +188,7 @@ std::vector<pat::Jet> JetAnalyzer::FillJetVector(const edm::Event& iEvent) {
             jecUncMC->setJetPt(jet.pt()); // here you must use the CORRECTED jet pt
             jet.addUserFloat("JESUncertainty", jecUncMC->getUncertainty(true));
         }
-        
+	//std::cout << "JES uncertainty: " << jet.userFloat("JESUncertainty") <<std::endl;
         // PUPPI soft drop mass for AK8 jets
         if(jet.hasSubjets("SoftDropPuppi")) {
 //            TLorentzVector puppiSoftdrop, puppiSoftdropSubjet;
@@ -217,7 +217,7 @@ std::vector<pat::Jet> JetAnalyzer::FillJetVector(const edm::Event& iEvent) {
         if(SmearJets) {
             JME::JetParameters TheJetParameters;
             TheJetParameters.setJetPt(jet.pt());
-            TheJetParameters.setJetEta(jet.pt());
+            TheJetParameters.setJetEta(jet.eta());
             TheJetParameters.setRho(*rho_handle);
 
             float smearFactor = 1.;
@@ -229,33 +229,53 @@ std::vector<pat::Jet> JetAnalyzer::FillJetVector(const edm::Event& iEvent) {
                 float JERsf         = resolution_sf->getScaleFactor(TheJetParameters);
                 float JERsfUp       = resolution_sf->getScaleFactor(TheJetParameters, Variation::UP);
                 float JERsfDown     = resolution_sf->getScaleFactor(TheJetParameters, Variation::DOWN);
-//                 std::cout << "JERresolution " << JERresolution << "\n";
-//                 std::cout << "JERsf         " << JERsf << "\n";
-//                 std::cout << "JERsfUp       " << JERsfUp << "\n";
-//                 std::cout << "JERsfDown     " << JERsfDown << "\n";
+                //std::cout << "JERresolution " << JERresolution << "\n";
+                //std::cout << "JERsf         " << JERsf << "\n";
+                //std::cout << "JERsfUp       " << JERsfUp << "\n";
+                //std::cout << "JERsfDown     " << JERsfDown << "\n";
                 const reco::GenJet* genJet=jet.genJet();
                 if(genJet) {
                     if ( ( sqrt( pow(jet.eta() - genJet->eta(),2) + pow(jet.phi() - genJet->phi(),2) ) < 0.5*Rparameter )  &&
-                         fabs( jet.pt() - genJet->pt()) < 3.*JERresolution*genJet->pt() ) { // (DeltaR < R/2) AND (DeltaPt < 3*PtRes)
+                         fabs( jet.pt() - genJet->pt()) < 3.*JERresolution*jet.pt() ) { // (DeltaR < R/2) AND (DeltaPt < 3*PtRes)
                         smearFactor = max(0.,genJet->pt()+JERsf*(jet.pt() - genJet->pt()))/jet.pt();
                         smearFactorUp = max(0.,genJet->pt()+JERsfUp*(jet.pt() - genJet->pt()))/jet.pt();
                         smearFactorDown = max(0.,genJet->pt()+JERsfDown*(jet.pt() - genJet->pt()))/jet.pt();
                     }  
                     else {
                         TRandom3 rnd(0);
-                        smearFactor = rnd.Gaus(1.,sqrt(JERsf*JERsf-1.)*JERresolution*genJet->pt());
-                        smearFactorUp = rnd.Gaus(1.,sqrt(JERsfUp*JERsfUp-1.)*JERresolution*genJet->pt());
-                        smearFactorDown = rnd.Gaus(1.,sqrt(JERsfDown*JERsfDown-1.)*JERresolution*genJet->pt());
+                        smearFactor = 1. + rnd.Gaus(0.,JERresolution*sqrt(max(0.,JERsf*JERsf-1.)));
+                        smearFactorUp = 1. + rnd.Gaus(0.,JERresolution*sqrt(max(0.,JERsfUp*JERsfUp-1.)));
+                        smearFactorDown = 1. + rnd.Gaus(0.,JERresolution*sqrt(max(0.,JERsfDown*JERsfDown-1.)));
                     }
                 }
+		else {
+		    TRandom3 rnd(0);
+		    smearFactor = 1. + rnd.Gaus(0.,JERresolution*sqrt(max(0.,JERsf*JERsf-1.)));
+		    smearFactorUp = 1. + rnd.Gaus(0.,JERresolution*sqrt(max(0.,JERsfUp*JERsfUp-1.)));
+		    smearFactorDown = 1. + rnd.Gaus(0.,JERresolution*sqrt(max(0.,JERsfDown*JERsfDown-1.)));
+                }
             }        
-//             std::cout << "Rparameter      " << Rparameter << "\n";
-//             std::cout << "smearFactor     " << smearFactor << "\n";
-//             std::cout << "smearFactorUp   " << smearFactorUp << "\n";
-//             std::cout << "smearFactorDown " << smearFactorDown << "\n";
+            //std::cout << "Rparameter      " << Rparameter << "\n";
+            //std::cout << "smearFactor     " << smearFactor << "\n";
+            //std::cout << "smearFactorUp   " << smearFactorUp << "\n";
+            //std::cout << "smearFactorDown " << smearFactorDown << "\n";
+	    pat::Jet jetJERUp = jet;
+	    pat::Jet jetJERDown = jet;
             jet.setP4(jet.p4() * smearFactor);
-            jet.addUserFloat("JERUncertaintyUp", smearFactorUp);
-            jet.addUserFloat("JERUncertaintyDown", smearFactorDown);           
+            jetJERUp.setP4(jet.p4() * smearFactorUp);
+            jetJERDown.setP4(jet.p4() * smearFactorDown);
+            jet.addUserFloat("ptJERUp", jetJERUp.pt());
+            jet.addUserFloat("etaJERUp", jetJERUp.eta());
+            jet.addUserFloat("phiJERUp", jetJERUp.phi());
+            jet.addUserFloat("energyJERUp", jetJERUp.energy());
+            jet.addUserFloat("ptJERDown", jetJERDown.pt());
+            jet.addUserFloat("etaJERDown", jetJERDown.eta());
+            jet.addUserFloat("phiJERDown", jetJERDown.phi());
+            jet.addUserFloat("energyJERDown", jetJERDown.energy());
+
+            jet.addUserFloat("smearFactor", smearFactor);
+            jet.addUserFloat("smearFactorUp", smearFactorUp);
+            jet.addUserFloat("smearFactorDown", smearFactorDown);           
         }        
         // JER NEW IMPLEMENTATION        
 
@@ -344,22 +364,22 @@ void JetAnalyzer::CorrectMass(pat::Jet& jet, float rho, float nPV, bool isMC) {
     reco::Candidate::LorentzVector uncorrJet = jet.correctedP4(0);
     
     if(!isMC) {
-        jetCorrDATA->setJetEta( uncorrJet.Eta() );
-        jetCorrDATA->setJetPt ( uncorrJet.Pt() );
-        jetCorrDATA->setJetE  ( uncorrJet.E() );
-        jetCorrDATA->setJetA  ( jet.jetArea() );
-        jetCorrDATA->setRho   ( rho );
-        jetCorrDATA->setNPV   ( nPV );
-        corr = jetCorrDATA->getCorrection();
+        massCorrDATA->setJetEta( uncorrJet.Eta() );
+        massCorrDATA->setJetPt ( uncorrJet.Pt() );
+        massCorrDATA->setJetE  ( uncorrJet.E() );
+        massCorrDATA->setJetA  ( jet.jetArea() );
+        massCorrDATA->setRho   ( rho );
+        massCorrDATA->setNPV   ( nPV );
+        corr = massCorrDATA->getCorrection();
     }
     else {
-        jetCorrMC->setJetEta( uncorrJet.Eta() );
-        jetCorrMC->setJetPt ( uncorrJet.Pt() );
-        jetCorrMC->setJetE  ( uncorrJet.E() );
-        jetCorrMC->setJetA  ( jet.jetArea() );
-        jetCorrMC->setRho   ( rho );
-        jetCorrMC->setNPV   ( nPV );
-        corr = jetCorrMC->getCorrection();
+        massCorrMC->setJetEta( uncorrJet.Eta() );
+        massCorrMC->setJetPt ( uncorrJet.Pt() );
+        massCorrMC->setJetE  ( uncorrJet.E() );
+        massCorrMC->setJetA  ( jet.jetArea() );
+        massCorrMC->setRho   ( rho );
+        massCorrMC->setNPV   ( nPV );
+        corr = massCorrMC->getCorrection();
     }
     if(jet.hasUserFloat("ak8PFJetsCHSPrunedMass")) jet.addUserFloat("ak8PFJetsCHSPrunedMassCorr", jet.userFloat("ak8PFJetsCHSPrunedMass") * corr);
     if(jet.hasUserFloat("ak8PFJetsCHSSoftDropMass")) jet.addUserFloat("ak8PFJetsCHSSoftDropMassCorr", jet.userFloat("ak8PFJetsCHSSoftDropMass") * corr);

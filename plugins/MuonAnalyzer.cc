@@ -101,7 +101,7 @@ MuonAnalyzer::MuonAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CCo
     // FIXME -> STILL ICHEP-2016 -> TO BE UPDATED ?
     MuonTrkHighptFile=new TFile(MuonTrkHighptFileName.c_str(), "READ");
     if(!MuonTrkHighptFile->IsZombie()) {
-        MuonIdTrkHighpt=(TH2F*)MuonTrkHighptFile->Get("sf_trackHighPt_80X_pteta");
+        MuonIdTrkHighpt=(TH2F*)MuonTrkHighptFile->Get("scalefactor");
         isMuonTrkHighptFile=true;
     }
     else {
@@ -267,12 +267,8 @@ std::string MuonAnalyzer::GetMuon1Id(pat::Muon& mu){
 float MuonAnalyzer::GetMuonIdSF(pat::Muon& mu, int id) {
     if(id==0 && isMuonTrkHighptFile){
         double pt = std::min( std::max( MuonIdTrkHighpt->GetYaxis()->GetXmin(), mu.pt() ) , MuonIdTrkHighpt->GetYaxis()->GetXmax() - 0.000001 );
-        double eta = 0.;       
-        if (mu.eta() > 0)
-            eta = std::min( MuonIdTrkHighpt->GetXaxis()->GetXmax() - 0.000001 , mu.eta() );
-        else
-            eta = std::max( MuonIdTrkHighpt->GetXaxis()->GetXmin() + 0.000001 , mu.eta() );
-        return MuonIdTrkHighpt->GetBinContent( MuonIdTrkHighpt->FindBin(eta,pt) );
+        double abseta = std::min( MuonIdLoose->GetXaxis()->GetXmax() - 0.000001 , fabs(mu.eta()) );
+        return MuonIdTrkHighpt->GetBinContent( MuonIdTrkHighpt->FindBin(abseta,pt) );
     }
     if(id==1 && isMuonIdFile){
         double pt = std::min( std::max( MuonIdLoose->GetXaxis()->GetXmin(), mu.pt() ) , MuonIdLoose->GetXaxis()->GetXmax() - 0.000001 );
@@ -300,12 +296,8 @@ float MuonAnalyzer::GetMuonIdSF(pat::Muon& mu, int id) {
 float MuonAnalyzer::GetMuonIdSFError(pat::Muon& mu, int id) {
     if(id==0 && isMuonTrkHighptFile){
         double pt = std::min( std::max( MuonIdTrkHighpt->GetYaxis()->GetXmin(), mu.pt() ) , MuonIdTrkHighpt->GetYaxis()->GetXmax() - 0.000001 );
-        double eta = 0.;       
-        if (mu.eta() > 0)
-            eta = std::min( MuonIdTrkHighpt->GetXaxis()->GetXmax() - 0.000001 , mu.eta() );
-        else
-            eta = std::max( MuonIdTrkHighpt->GetXaxis()->GetXmin() + 0.000001 , mu.eta() );
-        return MuonIdTrkHighpt->GetBinError( MuonIdTrkHighpt->FindBin(eta,pt) );
+        double abseta = std::min( MuonIdLoose->GetXaxis()->GetXmax() - 0.000001 , fabs(mu.eta()) );
+        return MuonIdTrkHighpt->GetBinError( MuonIdTrkHighpt->FindBin(abseta,pt) );
     }
     if(id==1 && isMuonIdFile){
         double pt = std::min( std::max( MuonIdLoose->GetXaxis()->GetXmin(), mu.pt() ) , MuonIdLoose->GetXaxis()->GetXmax() - 0.000001 );
