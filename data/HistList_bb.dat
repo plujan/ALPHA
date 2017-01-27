@@ -1,4 +1,3 @@
-a_PrenEvents            ;Events                                     7     1     8   Log
 a_nEvents               ;Events                                    10     1    11   Log
 a_nEvents_0b            ;Events                                    10     1    11   Log
 a_nEvents_1b            ;Events                                    10     1    11   Log
@@ -54,6 +53,12 @@ g_Xmass                 ;Gen~m_{X}~[GeV]                         1000     0  500
 g_Xpt                   ;Gen~p_{T}^{X}~[GeV]                      100     0  1000   Lin
 g_Zmass                 ;Gen~m_{Z}~[GeV]                          100     0   250   Lin
 g_Zpt                   ;Gen~p_{T}^{Z}~[GeV]                      100     0  5000   Lin
+g_Zeta                  ;Gen~#eta^{Z}~[GeV]                       100    -5     5   Lin
+g_Zphi                  ;Gen~#varphi^{Z}~[GeV]                     50 -3.15  3.15   Lin
+g_Wmass                 ;Gen~m_{W}~[GeV]                          100     0   250   Lin
+g_Wpt                   ;Gen~p_{T}^{W}~[GeV]                      100     0  5000   Lin
+g_Weta                  ;Gen~#eta^{W}~[GeV]                       100    -5     5   Lin
+g_Wphi                  ;Gen~#varphi^{W}~[GeV]                     50 -3.15  3.15   Lin
 g_ZdR                   ;Gen~#DeltaR~(l_{1},l_{2})                100     0     5   Lin
 e_nEvents               ;Events                                    10     1    11   Log
 e_nEvents_0b            ;Events                                    10     1    11   Log

@@ -9,7 +9,7 @@
      [Notes on implementation]
 */
 //
-// Original Author:  Siew Yan Hoh
+// Original Author:  Alberto Zucchetta, Jacopo Pazzini, Siew Yan Hoh
 //         Created:  Wed, 20 Jul 2016 13:46:29 GMT
 //
 //
@@ -111,7 +111,7 @@
 // This will improve performance in multithreaded jobs.
 
 class Dibottom : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
-public:
+ public:
   explicit Dibottom(const edm::ParameterSet&);
   ~Dibottom();
   
@@ -120,7 +120,7 @@ public:
   float createFakeMETpt_e(std::vector<pat::Electron>& el, pat::MET& met);
   float createFakeMETpt_m(std::vector<pat::Muon>& mu, pat::MET& met);
   
-private:
+ private:
   virtual void beginJob() override;
   virtual void analyze(const edm::Event&, const edm::EventSetup&) override;
   virtual void endJob() override;
@@ -161,8 +161,12 @@ private:
   
   bool isMC, isZtoEE, isZtoMM, isTtoEM, isWtoEN, isWtoMN, isZtoNN;
   long int EventNumber, RunNumber, LumiNumber;
-  float EventWeight, StitchWeight, ZewkWeight, WewkWeight, TopPtWeight, PUWeight, TriggerWeight, LeptonWeight;
+  float EventWeight, StitchWeight, ZewkWeight, WewkWeight, TopPtWeight; 
+  float TriggerWeight;
+  float LeptonWeight, LeptonWeightUp, LeptonWeightDown;
+  float PUWeight, PUWeightUp, PUWeightDown;
   float FacWeightUp, FacWeightDown, RenWeightUp, RenWeightDown, ScaleWeightUp, ScaleWeightDown;
+  float PdfWeight;
   int nPV, nElectrons, nMuons, nTaus, nPhotons, nJets, nBTagJets;
   int nTightElectrons, nTightMuons;
   float MaxJetBTag, MinJetMetDPhi, Chi2, massRecoilFormula;
@@ -187,18 +191,14 @@ private:
     const Bool_t operator() (const pat::Jet& j1, const pat::Jet& j2) {return ( (j1.pt()) > (j2.pt()) );}
   };
 
-  struct MuonIndexByPt{
+  struct MuonIndexBy{
     const Bool_t operator() (const pat::Muon& m1, const pat::Muon& m2) {return ( (m1.pt()) > (m2.pt()) );}
   };
 
-  struct ElecIndexByPt{
+  struct ElectronIndexBy{
     const Bool_t operator() (const pat::Electron& e1, const pat::Electron& e2) {return ( (e1.pt()) > (e2.pt()) );}
   };
 
-  JetIndexByPt jetComparator;  
-  MuonIndexByPt muonComparator;
-  ElecIndexByPt elecComparator;
-  
 };
 
 #endif
