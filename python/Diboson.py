@@ -90,7 +90,7 @@ isReRecoEF = ('Run2016E-23Sep' in sample or 'Run2016F-23Sep' in sample)
 isReRecoG = ('Run2016G-23Sep' in sample)
 isReRecoH = ('Run2016H-PromptReco' in sample)
 isPromptReco = ('PromptReco' in sample and not 'Run2016H' in sample)
-isDibosonInclusive = (True if (sample=='WW_TuneCUETP8M1_13TeV-pythia8_v1' or sample=='WZ_TuneCUETP8M1_13TeV-pythia8_v1' or sample=='ZZ_TuneCUETP8M1_13TeV-pythia8_v1') else False)
+isDibosonInclusive = (True if (sample=='WW_TuneCUETP8M1_13TeV-pythia8_v1' or sample=='WZ_TuneCUETP8M1_13TeV-pythia8_v1' or sample=='ZZ_TuneCUETP8M1_13TeV-pythia8_v1' or sample=='ZZ_TuneCUETP8M1_13TeV-pythia8_ext1-v1') else False)
 if options.isInvisible:
     print '****************************************'
     print 'VZ > 2q 2nu invisible channel selections'
