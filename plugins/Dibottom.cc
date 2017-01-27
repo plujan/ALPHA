@@ -11,7 +11,7 @@
      [Notes on implementation]
 */
 //
-// Original Author:  Siew Yan Hoh
+// Original Author:  Alberto Zucchetta, Jacopo Pazzini, Siew Yan Hoh
 //         Created:  Wed, 20 Jul 2016 13:46:29 GMT
 //
 //
@@ -104,7 +104,7 @@ Dibottom::Dibottom(const edm::ParameterSet& iConfig):
             Hist[name]->SetOption(opt.c_str());
             // Particular histograms
             if(name=="a_nEvents" || name=="e_nEvents" || name=="m_nEvents") for(unsigned int i=0; i<nLabels.size(); i++) Hist[name]->GetXaxis()->SetBinLabel(i+1, nLabels[i].c_str());
-	    if(name=="a_PrenEvents") for(unsigned int i=0; i<labels.size(); i++) Hist[name]->GetXaxis()->SetBinLabel(i+1,labels[i].c_str());
+	    //if(name=="a_PrenEvents") for(unsigned int i=0; i<labels.size(); i++) Hist[name]->GetXaxis()->SetBinLabel(i+1,labels[i].c_str());
         }
     }
     histFile.close();
@@ -149,8 +149,12 @@ Dibottom::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   RunNumber = iEvent.id().run();
     
   //
-  EventWeight = StitchWeight = ZewkWeight = WewkWeight = TopPtWeight = PUWeight = TriggerWeight = LeptonWeight = 1.;
+  EventWeight = StitchWeight = ZewkWeight = WewkWeight = TopPtWeight = 1.;
+  TriggerWeight = 1.;
+  LeptonWeight = LeptonWeightUp = LeptonWeightDown = 1.;
+  PUWeight = PUWeightUp = PUWeightDown = 1.;
   FacWeightUp = FacWeightDown = RenWeightUp = RenWeightDown = ScaleWeightUp = ScaleWeightDown = 1.;
+  PdfWeight = 1.;
   isZtoEE = isZtoMM = isTtoEM = isWtoEN = isWtoMN = isZtoNN = false;
   nPV = nElectrons = nMuons = nTaus = nPhotons = nJets = nBTagJets = 0;
   nTightElectrons = nTightMuons = 0;
@@ -160,6 +164,7 @@ Dibottom::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
   AddFourMomenta addP4;
   
+  JetIndexByPt jetComparator;
   // Initialize types 
   // please refer to Objects.h (declared the struct of particle) and ObjectsFormat.h/.cc (declare the method to manipulate objects)
   for(int i = 0; i < WriteNElectrons; i++) ObjectsFormat::ResetLeptonType(Electrons[i]);
@@ -172,7 +177,6 @@ Dibottom::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   ObjectsFormat::ResetMEtType(hadronicRecoil);
   ObjectsFormat::ResetCandidateType(V);
 
-  Hist["a_PrenEvents"]->Fill(1., EventWeight);  
   Hist["a_nEvents"]->Fill(1., EventWeight);
   Hist["e_nEvents"]->Fill(1., EventWeight);
   Hist["m_nEvents"]->Fill(1., EventWeight);
@@ -183,6 +187,8 @@ Dibottom::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   
   // Pu weight
   PUWeight = thePileupAnalyzer->GetPUWeight(iEvent);
+  PUWeightUp   = thePileupAnalyzer->GetPUWeightUp(iEvent);
+  PUWeightDown = thePileupAnalyzer->GetPUWeightDown(iEvent);
   nPV = thePileupAnalyzer->GetPV(iEvent);
   Hist["a_nPVNoWeight"]->Fill(nPV, EventWeight);
   EventWeight *= PUWeight;
@@ -259,11 +265,23 @@ Dibottom::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   if(GenWeight.find(5) != GenWeight.end()) ScaleWeightUp   = GenWeight[5];
   if(GenWeight.find(9) != GenWeight.end()) ScaleWeightDown = GenWeight[9];
 
+  float tmpPdfWeight = 0.;
+  int   tmpPdfN = 0;
+  for(auto const& pdfw : GenWeight) {
+    if (pdfw.first > 9 && pdfw.second>0) {
+      ++tmpPdfN;
+      //std::cout << "pdf " << tmpPdfN << " = " << pdfw.second << "\n";
+      tmpPdfWeight = tmpPdfWeight + pdfw.second*pdfw.second;
+    }
+  }
+  PdfWeight = sqrt(tmpPdfWeight/tmpPdfN);
+  //     std::cout << "PdfWeight " << PdfWeight << "\n";
+  
+  
   // Lhe Particles
   // reading LHE event content and prepare it in Map format std::map<std::string, float>
   std::map<std::string, float> LheMap = theGenAnalyzer->FillLheMap(iEvent);
   
-  Hist["g_nPartons"]->Fill(LheMap["lhePartons"]);
   Hist["g_nBPartons"]->Fill(LheMap["lheBPartons"]);
   Hist["g_lheHT"]->Fill(LheMap["lheHT"]);
   Hist["g_lhePtZ"]->Fill(LheMap["lhePtZ"]);
@@ -319,16 +337,9 @@ Dibottom::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   //TriggerWeight*=theElectronAnalyzer->GetDoubleElectronTriggerSF(ElecVect.at(0), ElecVect.at(1));
   //TriggerWeight*=theMuonAnalyzer->GetDoubleMuonTriggerSF(MuonVect.at(0), MuonVect.at(1));
 
-  Hist["a_PrenEvents"]->Fill(2., EventWeight);
   Hist["a_nEvents"]->Fill(2., EventWeight);
   Hist["e_nEvents"]->Fill(2., EventWeight);
   Hist["m_nEvents"]->Fill(2., EventWeight);
-
-  Hist["a_PrenEvents"]->Fill(3., EventWeight);
-  
-  Hist["a_PrenEvents"]->Fill(4., EventWeight); //jetcut1
-  
-  Hist["a_PrenEvents"]->Fill(5., EventWeight); // suppose to be lepton cut.
   
   // -----------------------------------
   //           VECTOR BOSON
@@ -369,7 +380,6 @@ Dibottom::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   else if(isWtoEN || isWtoMN) {if(Verbose) std::cout << " - W->lnu candidate" << std::endl; }
   else if(isZtoNN) {if(Verbose) std::cout << " - Z->inv candidate" << std::endl; }
   
-  Hist["a_PrenEvents"]->Fill(6., EventWeight);
   Hist["a_nEvents"]->Fill(3., EventWeight);
   Hist["m_nEvents"]->Fill(8., EventWeight);
   
@@ -380,183 +390,182 @@ Dibottom::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
   pat::CompositeCandidate theV;
   
-if(isZtoMM) {
-        if(Verbose) std::cout << " - Try to reconstruct Z -> mm" << std::endl;
-        // Indentify leptons
-        int m1(-1), m2(-1);
-        float maxZpt(-1.);
-        for(unsigned int i = 0; i < MuonVect.size(); i++) {
-            for(unsigned int j = 1; j < MuonVect.size(); j++) {
-                if(i==j) continue;
-                if(MuonVect[i].charge() == MuonVect[j].charge()) continue;
-                float Zpt = (MuonVect[i].p4() + MuonVect[j].p4()).pt();
-                float Zmass = (MuonVect[i].p4() + MuonVect[j].p4()).mass();
-                if(Zmass > 70. && Zmass < 110. && Zpt > maxZpt) {m1 = i; m2 = j; maxZpt = Zpt;}
-            }
-        }
-        // Build candidate
-        if(m1 >= 0 && m2 >= 0) {
-            theV.addDaughter(MuonVect.at(m1).charge() < 0 ? MuonVect.at(m1) : MuonVect.at(m2));
-            theV.addDaughter(MuonVect.at(m1).charge() < 0 ? MuonVect.at(m2) : MuonVect.at(m1));
-            addP4.set(theV);
-            // SF
-            if(isMC) {
-                LeptonWeight *= theMuonAnalyzer->GetMuonTrkSF(MuonVect.at(m1));
-                LeptonWeight *= theMuonAnalyzer->GetMuonTrkSF(MuonVect.at(m2));
-                if (MuonVect.at(m1).pt() > MuonVect.at(m2).pt() ) {
-                    /// FIXME -> APPLYING THE SF FOR IsoMu22 HADRCODED <- FIXME ///
-//                     LeptonWeight *= theMuonAnalyzer->GetMuonTriggerSFIsoMu22(MuonVect.at(m1));
-                    LeptonWeight *= theMuonAnalyzer->GetMuonIdSF(MuonVect.at(m1), 3); // TightID
-                    LeptonWeight *= theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(m1), 2);// TightIso
-                    LeptonWeight *= theMuonAnalyzer->GetMuonIdSF(MuonVect.at(m2), 1); // LooseID
-                    LeptonWeight *= theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(m2), 1);// LooseIso
-                }
-                else {
-                    /// FIXME -> APPLYING THE SF FOR IsoMu22 HADRCODED <- FIXME ///
-//                     LeptonWeight *= theMuonAnalyzer->GetMuonTriggerSFIsoMu22(MuonVect.at(m2));
-                    LeptonWeight *= theMuonAnalyzer->GetMuonIdSF(MuonVect.at(m2), 3); // TightID
-                    LeptonWeight *= theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(m2), 2);// TightIso
-                    LeptonWeight *= theMuonAnalyzer->GetMuonIdSF(MuonVect.at(m1), 1); // LooseID
-                    LeptonWeight *= theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(m1), 1);// LooseIso
-                }
-            }
-        }
-        else { if(Verbose) std::cout << " - No OS muons" << std::endl; return; }
-        // Clean-up muon collection
-        pat::Muon Mu1 = MuonVect.at(m1), Mu2 = MuonVect.at(m2);
-        MuonVect.clear();
-        if(Mu1.pt() > Mu2.pt()) {MuonVect.push_back(Mu1); MuonVect.push_back(Mu2);}
-        else {MuonVect.push_back(Mu2); MuonVect.push_back(Mu1);}
-
-        float px = MET.px() + Mu1.px() + Mu2.px();
-        float py = MET.py() + Mu1.py() + Mu2.py();      
-        hadRecoil.setP4(reco::Particle::LorentzVector(px, py, 0, sqrt(px*px + py*py) ));
+  if(isZtoMM) {
+    if(Verbose) std::cout << " - Try to reconstruct Z -> mm" << std::endl;
+    // Indentify leptons
+    int m1(-1), m2(-1);
+    float maxZpt(-1.);
+    for(unsigned int i = 0; i < MuonVect.size(); i++) {
+      for(unsigned int j = 1; j < MuonVect.size(); j++) {
+	if(i==j) continue;
+	if(MuonVect[i].charge() == MuonVect[j].charge()) continue;
+	float Zpt = (MuonVect[i].p4() + MuonVect[j].p4()).pt();
+	float Zmass = (MuonVect[i].p4() + MuonVect[j].p4()).mass();
+	if(Zmass > 70. && Zmass < 110. && Zpt > maxZpt) {m1 = i; m2 = j; maxZpt = Zpt;}
+      }
     }
-    else if(isZtoEE) {
-        if(Verbose) std::cout << " - Try to reconstruct Z -> ee" << std::endl;
-        // Indentify leptons
-        int e1(-1), e2(-1);
-        float maxZpt(-1.);
-        for(unsigned int i = 0; i < ElecVect.size(); i++) {
-            for(unsigned int j = 1; j < ElecVect.size(); j++) {
-                if(i==j) continue;
-                if(ElecVect[i].charge() == ElecVect[j].charge()) continue;
-                float Zpt = (ElecVect[i].p4() + ElecVect[j].p4()).pt();
-                float Zmass = (ElecVect[i].p4() + ElecVect[j].p4()).mass();
-                if(Zmass > 70. && Zmass < 110. && Zpt > maxZpt) {e1 = i; e2 = j; maxZpt = Zpt;}
-            }
-        }
-        // Build candidate
-        if(e1 >= 0 && e2 >= 0) {
-            theV.addDaughter(ElecVect.at(e1).charge() ? ElecVect.at(e1) : ElecVect.at(e2));
-            theV.addDaughter(ElecVect.at(e1).charge() ? ElecVect.at(e2) : ElecVect.at(e1));
-            addP4.set(theV);
-            // SF
-            if(isMC) {
-                LeptonWeight *= theElectronAnalyzer->GetElectronRecoEffSF(ElecVect.at(e1));
-                LeptonWeight *= theElectronAnalyzer->GetElectronRecoEffSF(ElecVect.at(e2));
-                if (ElecVect.at(e1).pt() > ElecVect.at(e2).pt() ) {
-                /// FIXME -> APPLYING THE SF FOR Ele27 HADRCODED <- FIXME ///
-                    LeptonWeight *= theElectronAnalyzer->GetElectronTriggerSFEle27Tight(ElecVect.at(e1));
-                    LeptonWeight *= theElectronAnalyzer->GetElectronIdSF(ElecVect.at(e1), 3);// TightID
-                    LeptonWeight *= theElectronAnalyzer->GetElectronIdSF(ElecVect.at(e2), 1);// LooseID
-                }
-                else {
-                /// FIXME -> APPLYING THE SF FOR Ele27 HADRCODED <- FIXME ///
-                    LeptonWeight *= theElectronAnalyzer->GetElectronTriggerSFEle27Tight(ElecVect.at(e2));                
-                    LeptonWeight *= theElectronAnalyzer->GetElectronIdSF(ElecVect.at(e2), 3);// TightID
-                    LeptonWeight *= theElectronAnalyzer->GetElectronIdSF(ElecVect.at(e1), 1);// LooseID
-                }
-            }        
-        }
-        else { if(Verbose) std::cout << " - No OS electrons" << std::endl; return; }
-        // Clean-up electron collection
-        pat::Electron Ele1 = ElecVect.at(e1), Ele2 = ElecVect.at(e2);
-        ElecVect.clear();
-        if(Ele1.pt() > Ele2.pt()) {ElecVect.push_back(Ele1); ElecVect.push_back(Ele2);}
-        else {ElecVect.push_back(Ele2); ElecVect.push_back(Ele1);}
-
-        float px = MET.px() + Ele1.px() + Ele2.px();
-        float py = MET.py() + Ele1.py() + Ele2.py();      
-        hadRecoil.setP4(reco::Particle::LorentzVector(px, py, 0, sqrt(px*px + py*py) ));
+    // Build candidate
+    if(m1 >= 0 && m2 >= 0) {
+      theV.addDaughter(MuonVect.at(m1).charge() < 0 ? MuonVect.at(m1) : MuonVect.at(m2));
+      theV.addDaughter(MuonVect.at(m1).charge() < 0 ? MuonVect.at(m2) : MuonVect.at(m1));
+      addP4.set(theV);
+      // SF
+      if(isMC) {
+	LeptonWeight *= theMuonAnalyzer->GetMuonTrkSF(MuonVect.at(m1));
+	LeptonWeight *= theMuonAnalyzer->GetMuonTrkSF(MuonVect.at(m2));
+	if (MuonVect.at(m1).pt() > MuonVect.at(m2).pt() ) {
+	  /// FIXME -> APPLYING THE SF FOR IsoMu24 HADRCODED <- FIXME ///
+	  LeptonWeight *= theMuonAnalyzer->GetMuonTriggerSFIsoMu24(MuonVect.at(m1));
+	  LeptonWeight *= theMuonAnalyzer->GetMuonIdSF(MuonVect.at(m1), 3); // TightID
+	  LeptonWeight *= theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(m1), 2);// TightIso
+	  LeptonWeight *= theMuonAnalyzer->GetMuonIdSF(MuonVect.at(m2), 1); // LooseID
+	  LeptonWeight *= theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(m2), 1);// LooseIso
+	}
+	else {
+	  /// FIXME -> APPLYING THE SF FOR IsoMu24 HADRCODED <- FIXME ///
+	  LeptonWeight *= theMuonAnalyzer->GetMuonTriggerSFIsoMu24(MuonVect.at(m2));
+	  LeptonWeight *= theMuonAnalyzer->GetMuonIdSF(MuonVect.at(m2), 3); // TightID
+	  LeptonWeight *= theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(m2), 2);// TightIso
+	  LeptonWeight *= theMuonAnalyzer->GetMuonIdSF(MuonVect.at(m1), 1); // LooseID
+	  LeptonWeight *= theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(m1), 1);// LooseIso
+	}
+      }
     }
-    else if(isTtoEM) {
-        if(Verbose) std::cout << " - Try to reconstruct TT -> enmn" << std::endl;
-        theV.addDaughter(MuonVect.at(0));
-        theV.addDaughter(ElecVect.at(0));
+    else { if(Verbose) std::cout << " - No OS muons" << std::endl; return; }
+    // Clean-up muon collection
+    pat::Muon Mu1 = MuonVect.at(m1), Mu2 = MuonVect.at(m2);
+    MuonVect.clear();
+    if(Mu1.pt() > Mu2.pt()) {MuonVect.push_back(Mu1); MuonVect.push_back(Mu2);}
+    else {MuonVect.push_back(Mu2); MuonVect.push_back(Mu1);}
+    
+    float px = MET.px() + Mu1.px() + Mu2.px();
+    float py = MET.py() + Mu1.py() + Mu2.py();      
+    hadRecoil.setP4(reco::Particle::LorentzVector(px, py, 0, sqrt(px*px + py*py) ));
+  }
+  else if(isZtoEE) {
+    if(Verbose) std::cout << " - Try to reconstruct Z -> ee" << std::endl;
+    std::cout<<"nElectron = "<<nElectrons<<std::endl;
+    // Indentify leptons
+    int e1(-1), e2(-1);
+    float maxZpt(-1.);
+    for(unsigned int i = 0; i < ElecVect.size(); i++) {
+      for(unsigned int j = 1; j < ElecVect.size(); j++) {
+	if(i==j) continue;
+	if(ElecVect[i].charge() == ElecVect[j].charge()) continue;
+	float Zpt = (ElecVect[i].p4() + ElecVect[j].p4()).pt();
+	float Zmass = (ElecVect[i].p4() + ElecVect[j].p4()).mass();
+	if(Zmass > 70. && Zmass < 110. && Zpt > maxZpt) {e1 = i; e2 = j; maxZpt = Zpt;}
+      }
+    }
+    // Build candidate
+    if(e1 >= 0 && e2 >= 0) {
+      theV.addDaughter(ElecVect.at(e1).charge() ? ElecVect.at(e1) : ElecVect.at(e2));
+      theV.addDaughter(ElecVect.at(e1).charge() ? ElecVect.at(e2) : ElecVect.at(e1));
+      addP4.set(theV);
+      // SF
+      if(isMC) {
+	LeptonWeight *= theElectronAnalyzer->GetElectronRecoEffSF(ElecVect.at(e1));
+	LeptonWeight *= theElectronAnalyzer->GetElectronRecoEffSF(ElecVect.at(e2));
+	if (ElecVect.at(e1).pt() > ElecVect.at(e2).pt() ) {
+	  /// FIXME -> APPLYING THE SF FOR Ele27 HADRCODED <- FIXME ///
+	  LeptonWeight *= theElectronAnalyzer->GetElectronTriggerSFEle27Tight(ElecVect.at(e1));
+	  LeptonWeight *= theElectronAnalyzer->GetElectronIdSF(ElecVect.at(e1), 3);// TightID
+	  LeptonWeight *= theElectronAnalyzer->GetElectronIdSF(ElecVect.at(e2), 1);// LooseID
+	}
+	else {
+	  /// FIXME -> APPLYING THE SF FOR Ele27 HADRCODED <- FIXME ///
+	  LeptonWeight *= theElectronAnalyzer->GetElectronTriggerSFEle27Tight(ElecVect.at(e2));                
+	  LeptonWeight *= theElectronAnalyzer->GetElectronIdSF(ElecVect.at(e2), 3);// TightID
+	  LeptonWeight *= theElectronAnalyzer->GetElectronIdSF(ElecVect.at(e1), 1);// LooseID
+	}
+      }        
+    }
+    else { if(Verbose) std::cout << " - No OS electrons" << std::endl; return; }
+    // Clean-up electron collection
+    pat::Electron Ele1 = ElecVect.at(e1), Ele2 = ElecVect.at(e2);
+    ElecVect.clear();
+    if(Ele1.pt() > Ele2.pt()) {ElecVect.push_back(Ele1); ElecVect.push_back(Ele2);}
+    else {ElecVect.push_back(Ele2); ElecVect.push_back(Ele1);}
+    
+    float px = MET.px() + Ele1.px() + Ele2.px();
+    float py = MET.py() + Ele1.py() + Ele2.py();      
+    hadRecoil.setP4(reco::Particle::LorentzVector(px, py, 0, sqrt(px*px + py*py) ));
+  }
+  else if(isTtoEM) {
+    if(Verbose) std::cout << " - Try to reconstruct TT -> enmn" << std::endl;
+    theV.addDaughter(MuonVect.at(0));
+    theV.addDaughter(ElecVect.at(0));
+    addP4.set(theV);
+    // SF
+    if(isMC) {
+      ///Mu
+      LeptonWeight *= theMuonAnalyzer->GetMuonTrkSF(MuonVect.at(0));
+      LeptonWeight *= theMuonAnalyzer->GetMuonIdSF(MuonVect.at(0), 3); //TightID
+      LeptonWeight *= theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(0), 2);//TightIso
+      ///Ele
+      /// FIXME -> APPLYING THE SF FOR Ele27 HADRCODED <- FIXME ///
+      LeptonWeight *= theElectronAnalyzer->GetElectronTriggerSFEle27Tight(ElecVect.at(0));
+      LeptonWeight *= theElectronAnalyzer->GetElectronRecoEffSF(ElecVect.at(0));
+      LeptonWeight *= theElectronAnalyzer->GetElectronIdSF(ElecVect.at(0), 3);// TightID
+    }
+    
+    float px = MET.px() + MuonVect.at(0).px() + ElecVect.at(0).px();
+    float py = MET.py() + MuonVect.at(0).py() + ElecVect.at(0).py();      
+    hadRecoil.setP4(reco::Particle::LorentzVector(px, py, 0, sqrt(px*px + py*py) ));
+  }
+  else if(isWtoMN) {
+    if(Verbose) std::cout << " - Try to reconstruct W -> mn" << std::endl;
+    // W kinematic reconstruction
+    // float pz = theUtilities->RecoverNeutrinoPz(&MuonVect.at(0).p4(), &MET.p4());
+    // Neutrino.setP4(reco::Particle::LorentzVector(MET.px(), MET.py(), pz, sqrt(MET.pt()*MET.pt() + pz*pz) ));
+    theV.addDaughter(MuonVect.at(0));
+    theV.addDaughter(MET);
+    addP4.set(theV);
+    // SF
+    if(isMC) {
+      /// FIXME -> APPLYING THE SF FOR IsoMu22 HADRCODED <- FIXME ///
+      /// LeptonWeight *= theMuonAnalyzer->GetMuonTriggerSFIsoMu22(MuonVect.at(0));
+      LeptonWeight *= theMuonAnalyzer->GetMuonTrkSF(MuonVect.at(0));
+      LeptonWeight *= theMuonAnalyzer->GetMuonIdSF(MuonVect.at(0), 3); //TightID
+      LeptonWeight *= theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(0), 2);//TightIso
+    }
+    
+    float px = MET.px() + MuonVect.at(0).px();
+    float py = MET.py() + MuonVect.at(0).py();      
+    hadRecoil.setP4(reco::Particle::LorentzVector(px, py, 0, sqrt(px*px + py*py) ));
+  }
+  else if(isWtoEN) {
+    if(Verbose) std::cout << " - Try to reconstruct W -> em" << std::endl;
+    // W kinematic reconstruction
+    // float pz = theUtilities->RecoverNeutrinoPz(&ElecVect.at(0).p4(), &MET.p4());
+    // Neutrino.setP4(reco::Particle::LorentzVector(MET.px(), MET.py(), pz, sqrt(MET.pt()*MET.pt() + pz*pz) ));
+    theV.addDaughter(ElecVect.at(0));
+    theV.addDaughter(MET);
         addP4.set(theV);
         // SF
         if(isMC) {
-            ///Mu
-            LeptonWeight *= theMuonAnalyzer->GetMuonTrkSF(MuonVect.at(0));
-            LeptonWeight *= theMuonAnalyzer->GetMuonIdSF(MuonVect.at(0), 3); //TightID
-            LeptonWeight *= theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(0), 2);//TightIso
-            ///Ele
-            /// FIXME -> APPLYING THE SF FOR Ele27 HADRCODED <- FIXME ///
-            LeptonWeight *= theElectronAnalyzer->GetElectronTriggerSFEle27Tight(ElecVect.at(0));
-            LeptonWeight *= theElectronAnalyzer->GetElectronRecoEffSF(ElecVect.at(0));
-            LeptonWeight *= theElectronAnalyzer->GetElectronIdSF(ElecVect.at(0), 3);// TightID
+	  /// FIXME -> APPLYING THE SF FOR Ele27 HADRCODED <- FIXME ///
+	  LeptonWeight *= theElectronAnalyzer->GetElectronTriggerSFEle27Tight(ElecVect.at(0));
+	  LeptonWeight *= theElectronAnalyzer->GetElectronIdSF(ElecVect.at(0), 3); //TightID
+	  LeptonWeight *= theElectronAnalyzer->GetElectronRecoEffSF(ElecVect.at(0));
         }
-
-        float px = MET.px() + MuonVect.at(0).px() + ElecVect.at(0).px();
-        float py = MET.py() + MuonVect.at(0).py() + ElecVect.at(0).py();      
-        hadRecoil.setP4(reco::Particle::LorentzVector(px, py, 0, sqrt(px*px + py*py) ));
-    }
-    else if(isWtoMN) {
-        if(Verbose) std::cout << " - Try to reconstruct W -> mn" << std::endl;
-        // W kinematic reconstruction
-//         float pz = theUtilities->RecoverNeutrinoPz(&MuonVect.at(0).p4(), &MET.p4());
-//         Neutrino.setP4(reco::Particle::LorentzVector(MET.px(), MET.py(), pz, sqrt(MET.pt()*MET.pt() + pz*pz) ));
-        theV.addDaughter(MuonVect.at(0));
-        theV.addDaughter(MET);
-        addP4.set(theV);
-        // SF
-        if(isMC) {
-            /// FIXME -> APPLYING THE SF FOR IsoMu22 HADRCODED <- FIXME ///
-//             LeptonWeight *= theMuonAnalyzer->GetMuonTriggerSFIsoMu22(MuonVect.at(0));
-            LeptonWeight *= theMuonAnalyzer->GetMuonTrkSF(MuonVect.at(0));
-            LeptonWeight *= theMuonAnalyzer->GetMuonIdSF(MuonVect.at(0), 3); //TightID
-            LeptonWeight *= theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(0), 2);//TightIso
-        }
-
-        float px = MET.px() + MuonVect.at(0).px();
-        float py = MET.py() + MuonVect.at(0).py();      
-        hadRecoil.setP4(reco::Particle::LorentzVector(px, py, 0, sqrt(px*px + py*py) ));
-    }
-    else if(isWtoEN) {
-        if(Verbose) std::cout << " - Try to reconstruct W -> em" << std::endl;
-        // W kinematic reconstruction
-//         float pz = theUtilities->RecoverNeutrinoPz(&ElecVect.at(0).p4(), &MET.p4());
-//         Neutrino.setP4(reco::Particle::LorentzVector(MET.px(), MET.py(), pz, sqrt(MET.pt()*MET.pt() + pz*pz) ));
-        theV.addDaughter(ElecVect.at(0));
-        theV.addDaughter(MET);
-        addP4.set(theV);
-        // SF
-        if(isMC) {
-            /// FIXME -> APPLYING THE SF FOR Ele27 HADRCODED <- FIXME ///
-            LeptonWeight *= theElectronAnalyzer->GetElectronTriggerSFEle27Tight(ElecVect.at(0));
-            LeptonWeight *= theElectronAnalyzer->GetElectronIdSF(ElecVect.at(0), 3); //TightID
-            LeptonWeight *= theElectronAnalyzer->GetElectronRecoEffSF(ElecVect.at(0));
-        }
-
+	
         float px = MET.px() + ElecVect.at(0).px();
         float py = MET.py() + ElecVect.at(0).py();      
         hadRecoil.setP4(reco::Particle::LorentzVector(px, py, 0, sqrt(px*px + py*py) ));
-    }
-    else if(isZtoNN) {
-        if(Verbose) std::cout << " - Try to reconstruct Z -> nn" << std::endl;
-        theV.addDaughter(MET);
-        addP4.set(theV);
-    }
-    
-    else { if(Verbose) std::cout << " - No reconstructible V candidate" << std::endl; return; }
-
-
+  }
+  else if(isZtoNN) {
+    if(Verbose) std::cout << " - Try to reconstruct Z -> nn" << std::endl;
+    theV.addDaughter(MET);
+    addP4.set(theV);
+  }
+  
+  else { if(Verbose) std::cout << " - No reconstructible V candidate" << std::endl; return; }
+  
+  
   // Update event weight with lepton selections
   EventWeight *= LeptonWeight;
   
-  Hist["a_PrenEvents"]->Fill(7., EventWeight); //Reconstructed V candidate
-
   Hist["a_nEvents"]->Fill(4., EventWeight);
   Hist["m_nEvents"]->Fill(9., EventWeight);
   if(isZtoEE) Hist["e_nEvents"]->Fill(4., EventWeight);
@@ -564,17 +573,17 @@ if(isZtoMM) {
   
   if(isZtoEE) {
     Hist["e_Zmass"]->Fill(theV.mass(), EventWeight);
-    if(TightElecVect.at(0).isEB() && TightElecVect.at(1).isEB()) Hist["e_ZmassBB"]->Fill(theV.mass(), EventWeight);
-    if(TightElecVect.at(0).isEE() && TightElecVect.at(1).isEB()) Hist["e_ZmassEB"]->Fill(theV.mass(), EventWeight);
-    if(TightElecVect.at(0).isEB() && TightElecVect.at(1).isEE()) Hist["e_ZmassBE"]->Fill(theV.mass(), EventWeight);
-    if(TightElecVect.at(0).isEE() && TightElecVect.at(1).isEE()) Hist["e_ZmassEE"]->Fill(theV.mass(), EventWeight);
+    if(ElecVect.at(0).isEB() && ElecVect.at(1).isEB()) Hist["e_ZmassBB"]->Fill(theV.mass(), EventWeight);
+    if(ElecVect.at(0).isEE() && ElecVect.at(1).isEB()) Hist["e_ZmassEB"]->Fill(theV.mass(), EventWeight);
+    if(ElecVect.at(0).isEB() && ElecVect.at(1).isEE()) Hist["e_ZmassBE"]->Fill(theV.mass(), EventWeight);
+    if(ElecVect.at(0).isEE() && ElecVect.at(1).isEE()) Hist["e_ZmassEE"]->Fill(theV.mass(), EventWeight);
   }
   if(isZtoMM) {
     Hist["m_Zmass"]->Fill(theV.mass(), EventWeight);
-    if(abs(TightMuonVect.at(0).eta())<1.1 && abs(TightMuonVect.at(1).eta())<1.1) Hist["m_ZmassBB"]->Fill(theV.mass(), EventWeight);
-    if(abs(TightMuonVect.at(0).eta())>1.1 && abs(TightMuonVect.at(1).eta())<1.1) Hist["m_ZmassEB"]->Fill(theV.mass(), EventWeight);
-    if(abs(TightMuonVect.at(0).eta())<1.1 && abs(TightMuonVect.at(1).eta())>1.1) Hist["m_ZmassBE"]->Fill(theV.mass(), EventWeight);
-    if(abs(TightMuonVect.at(0).eta())>1.1 && abs(TightMuonVect.at(1).eta())>1.1) Hist["m_ZmassEE"]->Fill(theV.mass(), EventWeight);
+    if(abs(MuonVect.at(0).eta())<1.1 && abs(MuonVect.at(1).eta())<1.1) Hist["m_ZmassBB"]->Fill(theV.mass(), EventWeight);
+    if(abs(MuonVect.at(0).eta())>1.1 && abs(MuonVect.at(1).eta())<1.1) Hist["m_ZmassEB"]->Fill(theV.mass(), EventWeight);
+    if(abs(MuonVect.at(0).eta())<1.1 && abs(MuonVect.at(1).eta())>1.1) Hist["m_ZmassBE"]->Fill(theV.mass(), EventWeight);
+    if(abs(MuonVect.at(0).eta())>1.1 && abs(MuonVect.at(1).eta())>1.1) Hist["m_ZmassEE"]->Fill(theV.mass(), EventWeight);
   }
   
   if(Verbose) std::cout << " - Candidate built" << std::endl;
@@ -588,28 +597,28 @@ if(isZtoMM) {
   
   // Jet variables
   theJetAnalyzer->AddVariables(JetsVect, MET);
-  theElectronAnalyzer->AddVariables(TightElecVect, MET);
-  theMuonAnalyzer->AddVariables(TightMuonVect, MET);
+  theElectronAnalyzer->AddVariables(ElecVect, MET);
+  theMuonAnalyzer->AddVariables(MuonVect, MET);
   
   // ---------- Print Summary ----------
   if(Verbose) {
     std::cout << " --- Event n. " << iEvent.id().event() << ", lumi " << iEvent.luminosityBlock() << ", run " << iEvent.id().run() << ", weight " << EventWeight << std::endl;
-
-    std::cout << "number of Tight electrons: " << TightElecVect.size() << std::endl;
-    for(unsigned int i = 0; i < TightElecVect.size(); i++) std::cout << "  electron [" << i << "]\tpt: " << TightElecVect[i].pt() << "\teta: " << TightElecVect[i].eta() << "\tphi: " << TightElecVect[i].phi() << "\tmass: " << TightElecVect[i].mass() << "\tcharge: " << TightElecVect[i].charge() << std::endl;
-
-    std::cout << "number of Tight muons:     " << TightMuonVect.size() << std::endl;
-    for(unsigned int i = 0; i < TightMuonVect.size(); i++) std::cout << "  muon     [" << i << "]\tpt: " << TightMuonVect[i].pt() << "\teta: " << TightMuonVect[i].eta() << "\tphi: " << TightMuonVect[i].phi() << "\tmass: " << TightMuonVect[i].mass() << "\tcharge: " << TightMuonVect[i].charge() << std::endl;
-
+    
+    std::cout << "number of electrons: " << ElecVect.size() << std::endl;
+    for(unsigned int i = 0; i < ElecVect.size(); i++) std::cout << "  electron [" << i << "]\tpt: " << ElecVect[i].pt() << "\teta: " << ElecVect[i].eta() << "\tphi: " << ElecVect[i].phi() << "\tmass: " << ElecVect[i].mass() << "\tcharge: " << ElecVect[i].charge() << std::endl;
+    
+    std::cout << "number of muons:     " << MuonVect.size() << std::endl;
+    for(unsigned int i = 0; i < MuonVect.size(); i++) std::cout << "  muon     [" << i << "]\tpt: " << MuonVect[i].pt() << "\teta: " << MuonVect[i].eta() << "\tphi: " << MuonVect[i].phi() << "\tmass: " << MuonVect[i].mass() << "\tcharge: " << MuonVect[i].charge() << std::endl;
+    
     std::cout << "number of taus:  " << TauVect.size() << std::endl;
     for(unsigned int i = 0; i < TauVect.size(); i++) std::cout << "  tau  [" << i << "]\tpt: " << TauVect[i].pt() << "\teta: " << TauVect[i].eta() << "\tphi: " << TauVect[i].phi() << std::endl;
-
+    
     std::cout << "number of photons:  " << PhotonVect.size() << std::endl;
     for(unsigned int i = 0; i < PhotonVect.size(); i++) std::cout << "  photon  [" << i << "]\tpt: " << PhotonVect[i].pt() << "\teta: " << PhotonVect[i].eta() << "\tphi: " << PhotonVect[i].phi() << std::endl;
-
+    
     std::cout << "number of AK4 jets:  " << JetsVect.size() << std::endl;    
     for(unsigned int i = 0; i < JetsVect.size(); i++) std::cout << "  AK4 jet  [" << i << "]\tpt: " << JetsVect[i].pt() << "\teta: " << JetsVect[i].eta() << "\tphi: " << JetsVect[i].phi() << "\tmass: " << JetsVect[i].mass() << "\tBtag" <<JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag")) << std::endl;
-
+    
     std::cout << "Missing energy:      " << MET.pt() << std::endl;
     std::cout << "V leptonic mass:     " << theV.mass() << std::endl;
     std::cout<<std::endl;
@@ -621,17 +630,17 @@ if(isZtoMM) {
   
   //** saving only the tight lepton.
   if(isZtoEE || isWtoEN) 
-    for(unsigned int i = 0; i < Leptons.size() && i < TightElecVect.size(); i++) ObjectsFormat::FillElectronType(Leptons[i], &TightElecVect[i], isMC);
+    for(unsigned int i = 0; i < Leptons.size() && i < ElecVect.size(); i++) ObjectsFormat::FillElectronType(Leptons[i], &ElecVect[i], isMC);
   else if(isZtoMM || isWtoMN) 
-    for(unsigned int i = 0; i < Leptons.size() && i < TightMuonVect.size(); i++) ObjectsFormat::FillMuonType(Leptons[i], &TightMuonVect[i], isMC);
+    for(unsigned int i = 0; i < Leptons.size() && i < MuonVect.size(); i++) ObjectsFormat::FillMuonType(Leptons[i], &MuonVect[i], isMC);
   else if(isTtoEM && Leptons.size() >= 2) {
-    if(TightElecVect[0].pt() > TightMuonVect[0].pt()) {
-      ObjectsFormat::FillElectronType(Leptons[0], &TightElecVect[0], isMC);
-      ObjectsFormat::FillMuonType(Leptons[1], &TightMuonVect[0], isMC);
+    if(ElecVect[0].pt() > MuonVect[0].pt()) {
+      ObjectsFormat::FillElectronType(Leptons[0], &ElecVect[0], isMC);
+      ObjectsFormat::FillMuonType(Leptons[1], &MuonVect[0], isMC);
     }
     else {
-      ObjectsFormat::FillMuonType(Leptons[0], &TightMuonVect[0], isMC);
-      ObjectsFormat::FillElectronType(Leptons[1], &TightElecVect[0], isMC);
+      ObjectsFormat::FillMuonType(Leptons[0], &MuonVect[0], isMC);
+      ObjectsFormat::FillElectronType(Leptons[1], &ElecVect[0], isMC);
     }
   }
  
@@ -686,8 +695,13 @@ Dibottom::beginJob()
   tree->Branch("ZewkWeight", &ZewkWeight, "ZewkWeight/F");
   tree->Branch("WewkWeight", &WewkWeight, "WewkWeight/F");
   tree->Branch("PUWeight", &PUWeight, "PUWeight/F");
+  tree->Branch("PUWeightUp", &PUWeightUp, "PUWeightUp/F");
+  tree->Branch("PUWeightDown", &PUWeightDown, "PUWeightDown/F");
   tree->Branch("TriggerWeight", &TriggerWeight, "TriggerWeight/F");
+  tree->Branch("PdfWeight", &PdfWeight, "PdfWeight/F");
   tree->Branch("LeptonWeight", &LeptonWeight, "LeptonWeight/F");
+  tree->Branch("LeptonWeightUp", &LeptonWeightUp, "LeptonWeightUp/F");
+  tree->Branch("LeptonWeightDown", &LeptonWeightDown, "LeptonWeightDown/F");
   
   // Set trigger branches
   for(auto it = TriggerMap.begin(); it != TriggerMap.end(); it++) tree->Branch(it->first.c_str(), &(it->second), (it->first+"/O").c_str());
@@ -699,12 +713,6 @@ Dibottom::beginJob()
   tree->Branch("isWtoEN", &isWtoEN, "isWtoEN/O");
   tree->Branch("isWtoMN", &isWtoMN, "isWtoMN/O");
   tree->Branch("isZtoNN", &isZtoNN, "isZtoNN/O");
-  tree->Branch("isSR", &isSR, "isSR/O");
-  tree->Branch("isSR1", &isSR1, "isSR1/O");
-  tree->Branch("isSR2", &isSR2, "isSR2/O");
-  tree->Branch("isZCR", &isZCR, "isZCR/O");
-  tree->Branch("isWCR", &isWCR, "isWCR/O");
-  tree->Branch("isTCR", &isTCR, "isTCR/O");
   
   tree->Branch("nPV", &nPV, "nPV/I");
   tree->Branch("nElectrons", &nElectrons, "nElectrons/I");
@@ -739,7 +747,7 @@ Dibottom::beginJob()
 void 
 Dibottom::endJob() 
 {
-
+  std::cout<<"Number of event = "<<nevent<<std::endl;
 }
 
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
