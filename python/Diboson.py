@@ -66,8 +66,8 @@ if len(options.inputFiles) == 0:
 #'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016D/SingleElectron/MINIAOD/23Sep2016-v1/90000/6CDFF3EB-B487-E611-9F4C-02163E015F9C.root',
            
 #           'root://cms-xrd-global.cern.ch//store/mc/RunIISummer16MiniAODv2/DYJetsToLL_M-50_HT-800to1200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/120000/480D3900-8CC0-E611-81E8-001E67504645.root', # DYJetsToLL
-#           '/store/mc/RunIISummer16MiniAODv2/DYJetsToLL_M-50_HT-800to1200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/120000/480D3900-8CC0-E611-81E8-001E67504645.root',
-           '/store/data/Run2016D/SingleMuon/MINIAOD/23Sep2016-v1/90000/F627424B-0490-E611-8FB5-3417EBE64BA0.root'
+          '/store/mc/RunIISummer16MiniAODv2/DYJetsToLL_M-50_HT-800to1200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/120000/480D3900-8CC0-E611-81E8-001E67504645.root',
+           #'/store/data/Run2016D/SingleMuon/MINIAOD/23Sep2016-v1/90000/F627424B-0490-E611-8FB5-3417EBE64BA0.root'
         )
     )
 # production: read externally provided filelist
@@ -187,13 +187,18 @@ elif not(isData):   GT = '80X_mcRun2_asymptotic_2016_TrancheIV_v7'
 process.GlobalTag = GlobalTag(process.GlobalTag, GT)
 print 'GlobalTag', GT
 
+#electron/photon regression modules
+from EgammaAnalysis.ElectronTools.regressionWeights_cfi import regressionWeights
+process = regressionWeights(process)
+process.load('EgammaAnalysis.ElectronTools.regressionApplication_cff')
+
 #electrons upstream modules
 from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
 switchOnVIDElectronIdProducer(process, DataFormat.MiniAOD)
 ele_id_modules = ['RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Summer16_80X_V1_cff',
                   'RecoEgamma.ElectronIdentification.Identification.heepElectronID_HEEPV70_cff',
                   'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Spring16_GeneralPurpose_V1_cff']
-
+ 
 for ele_idmod in ele_id_modules:
     setupAllVIDIdsInModule(process,ele_idmod,setupVIDElectronSelection)
 
@@ -203,6 +208,7 @@ ph_id_modules = ['RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonI
                  'RecoEgamma.PhotonIdentification.Identification.mvaPhotonID_Spring16_nonTrig_V1_cff']
 for ph_idmod in ph_id_modules:
     setupAllVIDIdsInModule(process,ph_idmod,setupVIDPhotonSelection)
+
 
 #muons upstream modules
 process.cleanedMuons = cms.EDProducer('PATMuonCleanerBySegments',
@@ -376,13 +382,13 @@ process.ntuple = cms.EDAnalyzer('Diboson',
         eleMVATrigTightIdMap = cms.InputTag('egmGsfElectronIDs:mvaEleID-Spring16-GeneralPurpose-V1-wp80'), ### NOTE -> SAME AS NON-TRIG IN 2017
         eleEcalRecHitCollection = cms.InputTag("reducedEgamma:reducedEBRecHits"),
         eleSingleTriggerFileName = cms.string('%s/src/Analysis/ALPHA/data/SingleEleTriggerEff.root' % os.environ['CMSSW_BASE']),
-        eleVetoIdFileName = cms.string('%s/src/Analysis/ALPHA/data/eleVetoIDSF_ICHEP.root' % os.environ['CMSSW_BASE']),
-        eleLooseIdFileName = cms.string('%s/src/Analysis/ALPHA/data/eleLooseIDSF_ICHEP.root' % os.environ['CMSSW_BASE']),
-        eleMediumIdFileName = cms.string('%s/src/Analysis/ALPHA/data/eleMediumIDSF_ICHEP.root' % os.environ['CMSSW_BASE']),
-        eleTightIdFileName = cms.string('%s/src/Analysis/ALPHA/data/eleTightIDSF_ICHEP.root' % os.environ['CMSSW_BASE']),
-        eleMVATrigMediumIdFileName = cms.string('%s/src/Analysis/ALPHA/data/eleMVA90IDSF_ICHEP.root' % os.environ['CMSSW_BASE']),
-        eleMVATrigTightIdFileName = cms.string('%s/src/Analysis/ALPHA/data/eleMVA80IDSF_ICHEP.root' % os.environ['CMSSW_BASE']),
-        eleRecoEffFileName = cms.string('%s/src/Analysis/ALPHA/data/eleGSFTrackingSF_ICHEP.root' % os.environ['CMSSW_BASE']),
+        eleVetoIdFileName = cms.string('%s/src/Analysis/ALPHA/data/eleVetoIDSF_MORIOND17.root' % os.environ['CMSSW_BASE']),
+        eleLooseIdFileName = cms.string('%s/src/Analysis/ALPHA/data/eleLooseIDSF_MORIOND17.root' % os.environ['CMSSW_BASE']),
+        eleMediumIdFileName = cms.string('%s/src/Analysis/ALPHA/data/eleMediumIDSF_MORIOND17.root' % os.environ['CMSSW_BASE']),
+        eleTightIdFileName = cms.string('%s/src/Analysis/ALPHA/data/eleTightIDSF_MORIOND17.root' % os.environ['CMSSW_BASE']),
+        eleMVATrigMediumIdFileName = cms.string('%s/src/Analysis/ALPHA/data/eleMVA90IDSF_MORIOND17.root' % os.environ['CMSSW_BASE']),
+        eleMVATrigTightIdFileName = cms.string('%s/src/Analysis/ALPHA/data/eleMVA80IDSF_MORIOND17.root' % os.environ['CMSSW_BASE']),
+        eleRecoEffFileName = cms.string('%s/src/Analysis/ALPHA/data/eleRecoSF_MORIOND17.root' % os.environ['CMSSW_BASE']),
         electron1id = cms.int32(0 if options.isInvisible else -1), # 0: veto, 1: loose, 2: medium, 3: tight, 4: HEEP, 5: MVA medium nonTrig, 6: MVA tight nonTrig, 7: MVA medium Trig, 8: MVA tight Trig
         electron2id = cms.int32(0 if options.isInvisible else -1),
         electron1pt = cms.double(10 if options.isInvisible else 20.),
@@ -394,9 +400,9 @@ process.ntuple = cms.EDAnalyzer('Diboson',
         muonTrkFileName = cms.string('%s/src/Analysis/ALPHA/data/TrkEff.root' % os.environ['CMSSW_BASE']),
         muonIdFileName = cms.string('%s/src/Analysis/ALPHA/data/MuonIdEfficienciesAndSF_MORIOND17.root' % os.environ['CMSSW_BASE']),
         muonIsoFileName = cms.string('%s/src/Analysis/ALPHA/data/MuonIsoEfficienciesAndSF_MORIOND17.root' % os.environ['CMSSW_BASE']),
-        muonTrkHighptFileName = cms.string('%s/src/Analysis/ALPHA/data/tkhighpt_2016full_absetapt.root' % os.environ['CMSSW_BASE']),#updated
+        muonTrkHighptFileName = cms.string('%s/src/Analysis/ALPHA/data/tkhighpt_2016full_absetapt.root' % os.environ['CMSSW_BASE']),
         muonTriggerFileName = cms.string('%s/src/Analysis/ALPHA/data/MuonTrigEfficienciesAndSF_MORIOND17_Period34.root' % os.environ['CMSSW_BASE']),
-        doubleMuonTriggerFileName = cms.string('%s/src/Analysis/ALPHA/data/MuHLTEfficiencies_Run_2012ABCD_53X_DR03-2.root' % os.environ['CMSSW_BASE']),#obsolete
+        doubleMuonTriggerFileName = cms.string('%s/src/Analysis/ALPHA/data/MuHLTEfficiencies_Run_2012ABCD_53X_DR03-2.root' % os.environ['CMSSW_BASE']),#FIXME -> obsolete
         muon1id = cms.int32(1 if options.isInvisible else -1), # 0: tracker high pt muon id, 1: loose, 2: medium, 3: tight, 4: high pt
         muon2id = cms.int32(1 if options.isInvisible else -1),
         muon1iso = cms.int32(1 if options.isInvisible else -1), # 0: trk iso (<0.1), 1: loose (<0.25), 2: tight (<0.15) (pfIso in cone 0.4)
@@ -425,10 +431,10 @@ process.ntuple = cms.EDAnalyzer('Diboson',
         phoTightIdMap = cms.InputTag('egmPhotonIDs:cutBasedPhotonID-Spring16-V2p2-tight'),
         phoMVANonTrigMediumIdMap = cms.InputTag('egmPhotonIDs:mvaPhoID-Spring16-nonTrig-V1-wp90'),
         phoEcalRecHitCollection = cms.InputTag("reducedEgamma:reducedEBRecHits"),
-        phoLooseIdFileName = cms.string('%s/src/Analysis/ALPHA/data/phoLooseIDSF_ICHEP.root' % os.environ['CMSSW_BASE']),
-        phoMediumIdFileName = cms.string('%s/src/Analysis/ALPHA/data/phoMediumIDSF_ICHEP.root' % os.environ['CMSSW_BASE']),
-        phoTightIdFileName = cms.string('%s/src/Analysis/ALPHA/data/phoTightIDSF_ICHEP.root' % os.environ['CMSSW_BASE']),
-        phoMVANonTrigMediumIdFileName = cms.string('%s/src/Analysis/ALPHA/data/phoMVAIDSF_ICHEP.root' % os.environ['CMSSW_BASE']),
+        phoLooseIdFileName = cms.string('%s/src/Analysis/ALPHA/data/phoLooseIDSF_MORIOND17.root' % os.environ['CMSSW_BASE']),
+        phoMediumIdFileName = cms.string('%s/src/Analysis/ALPHA/data/phoMediumIDSF_MORIOND17.root' % os.environ['CMSSW_BASE']),
+        phoTightIdFileName = cms.string('%s/src/Analysis/ALPHA/data/phoTightIDSF_MORIOND17.root' % os.environ['CMSSW_BASE']),
+        phoMVANonTrigMediumIdFileName = cms.string('%s/src/Analysis/ALPHA/data/phoMVA90IDSF_MORIOND17.root' % os.environ['CMSSW_BASE']),
         photonid = cms.int32(1), # 1: loose, 2: medium, 3: tight, 4:MVA NonTrig medium
         photonpt = cms.double(15. if options.isInvisible else 20.),
     ),
@@ -570,6 +576,8 @@ else:
         process.BadPFMuonFilter * process.BadPFMuonSummer16Filter *
         process.BadChargedCandidateFilter * process.BadChargedCandidateSummer16Filter *
         process.primaryVertexFilter *
+        #process.EGMenergyCorrection *
+        process.regressionApplication *
         process.egmGsfElectronIDSequence *
         process.calibratedPatElectrons *
         process.egmPhotonIDSequence *

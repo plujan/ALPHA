@@ -18,7 +18,9 @@ Packages needed by ALPHA:
 Merge the most recent MET filters and EGM smearing, scale, and IDs
 ```bash
 git cms-merge-topic -u cms-met:fromCMSSW_8_0_20_postICHEPfilter
-### for future use, still not blessed by EGAMMA ###git cms-merge-topic -u rafaellopesdesa:Regression80XEgammaAnalysis
+
+git cms-merge-topic -u rafaellopesdesa:Regression80XEgammaAnalysis_v2 ### NEW!!!
+
 git cms-merge-topic -u shervin86:Moriond2017_JEC_energyScales
 cd EgammaAnalysis/ElectronTools/data
 # download the txt files with the corrections
