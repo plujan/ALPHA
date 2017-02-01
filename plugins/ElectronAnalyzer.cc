@@ -195,27 +195,7 @@ std::vector<pat::Electron> ElectronAnalyzer::FillElectronVector(const edm::Event
         }
         pat::Electron el=*it;
         pat::ElectronRef elRef(EleCollection, elIdx);
-                
-        
-        // Corrections for Ele Smearing (on data only) -- MORIOND 2017
-        double Ecorr=1;
-        if(!isMC) {
-            DetId detid = el.superCluster()->seed()->seed();
-            const EcalRecHit * rh = NULL;
-            if (detid.subdetId() == EcalBarrel) {
-                auto rh_i =  _ebrechits->find(detid);
-                            if( rh_i != _ebrechits->end()) rh =  &(*rh_i);
-                            else rh = NULL;
-                    } 
-            if(rh==NULL) Ecorr=1;
-            else{
-            if(rh->energy() > 200 && rh->energy()<300)  Ecorr=1.0199;
-            else if(rh->energy()>300 && rh->energy()<400) Ecorr=  1.052;
-            else if(rh->energy()>400 && rh->energy()<500) Ecorr = 1.015;
-            }
-        }
-        el.setP4(reco::Candidate::LorentzVector(el.px(), el.py(), el.pz(), Ecorr*el.energy() ));      
-        
+                        
         // Pt and eta
         if(el.pt()<PtTh || fabs(el.eta())>2.5) continue;
         // PF (?) Isolation R=0.4 https://twiki.cern.ch/twiki/bin/viewauth/CMS/EgammaPFBasedIsolation#for_PAT_electron_users_using_sta
