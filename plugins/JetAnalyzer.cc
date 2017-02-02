@@ -249,7 +249,7 @@ std::vector<pat::Jet> JetAnalyzer::FillJetVector(const edm::Event& iEvent) {
                     }
                 }
 		else {
-		    TRandom3 rnd(0);
+        	    TRandom3 rnd(0);
 		    smearFactor = 1. + rnd.Gaus(0.,JERresolution*sqrt(max(0.,JERsf*JERsf-1.)));
 		    smearFactorUp = 1. + rnd.Gaus(0.,JERresolution*sqrt(max(0.,JERsfUp*JERsfUp-1.)));
 		    smearFactorDown = 1. + rnd.Gaus(0.,JERresolution*sqrt(max(0.,JERsfDown*JERsfDown-1.)));
@@ -259,7 +259,7 @@ std::vector<pat::Jet> JetAnalyzer::FillJetVector(const edm::Event& iEvent) {
             //std::cout << "smearFactor     " << smearFactor << "\n";
             //std::cout << "smearFactorUp   " << smearFactorUp << "\n";
             //std::cout << "smearFactorDown " << smearFactorDown << "\n";
-	    pat::Jet jetJERUp = jet;
+    	    pat::Jet jetJERUp = jet;
 	    pat::Jet jetJERDown = jet;
             jet.setP4(jet.p4() * smearFactor);
             jetJERUp.setP4(jet.p4() * smearFactorUp);

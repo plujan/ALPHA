@@ -26,8 +26,8 @@ HHAnalyzer::HHAnalyzer(const edm::ParameterSet& iConfig):
     theTriggerAnalyzer  = new TriggerAnalyzer(TriggerPSet, consumesCollector());
     theElectronAnalyzer = new ElectronAnalyzer(ElectronPSet, consumesCollector());
     theMuonAnalyzer     = new MuonAnalyzer(MuonPSet, consumesCollector());
-    theJetAnalyzer      = new JetAnalyzer(JetPSet, consumesCollector());
-    
+    theJetAnalyzer      = new JetAnalyzer(JetPSet, consumesCollector());    
+
     std::vector<std::string> TriggerList(TriggerPSet.getParameter<std::vector<std::string> >("paths"));
         
     // ---------- Plots Initialization ----------
@@ -152,15 +152,6 @@ void HHAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
     // Missing Energy
     pat::MET MET = theJetAnalyzer->FillMetVector(iEvent);
     pat::MET Neutrino(MET);
-    //float metNoMupx = MET.px();
-    //float metNoMupy = MET.py();
-    //for(unsigned int i=0; i<LooseMuonVect.size();i++){
-    //  metNoMupx -= LooseMuonVect.at(i).px();
-    //  metNoMupy -= LooseMuonVect.at(i).py();
-    //}
-    //reco::Particle::LorentzVector metNoMup4(metNoMupx, metNoMupy, 0, 0 );
-    //MET.addUserFloat("metNoMu",metNoMup4.px());
-    //MET.addUserFloat("phiNoMu",metNoMup4.phi());
     
     // -----------------------------------
     //           GEN LEVEL

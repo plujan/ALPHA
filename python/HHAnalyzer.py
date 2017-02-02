@@ -12,8 +12,9 @@ import sys
 options = VarParsing ('analysis')
 options.register ('tCut', 0, options.multiplicity.singleton, options.varType.int,
                   "Trigger cut on/off")
+options.register ('Data', False, options.multiplicity.singleton, options.varType.bool,
+                  "Data on/off")
 options.parseArguments()
-
 #Un-comment to change output name - default is 'output' (useful for debug)
 #options.outputFile = 'test'
 
@@ -30,14 +31,13 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(options.maxE
 
 # input
 # default: if no filelist from command line, run on specified samples
-
 if len(options.inputFiles) == 0:
     process.source = cms.Source('PoolSource',
         fileNames = cms.untracked.vstring(
-            # one single HH SM sample for test
-            'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISpring16MiniAODv2/GluGluToHHTo4B_node_SM_13TeV-madgraph/MINIAODSIM/PUSpring16RAWAODSIM_reHLT_80X_mcRun2_asymptotic_v14-v1/70000/205E4ECB-FE3A-E611-9870-0CC47A1E046A.root'
-           #DATA Run2016 - BTagCSV :
-           #'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016C/SingleMuon/MINIAOD/PromptReco-v2/000/275/778/00000/B62129FE-A93C-E611-A937-02163E011C16.root'
+           # one single HH SM sample for test
+           # 'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISummer16MiniAODv2/GluGluToHHTo4B_node_SM_13TeV-madgraph/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/120000/0C2B8A9A-E7C9-E611-B1EE-0025905A610A.root'
+           #DATA reReco - BTagCSV :
+            'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/BTagCSV/MINIAOD/23Sep2016-v2/90000/04A95A66-E587-E611-BE8F-20CF307C98B5.root'
         )
     )
 # production: read externally provided filelist
@@ -52,17 +52,32 @@ process.TFileService = cms.Service('TFileService',
 )
 
 # Determine whether we are running on data or MC
-isData = ('/store/data/' in process.source.fileNames[0])
+isData = ('/store/data/' in process.source.fileNames[0] or options.Data==1)
 isCustom = ('GluGluToAToZhToLLBB' in process.source.fileNames[0])
 isReHLT = ('_reHLT_' in process.source.fileNames[0])
 isPythiaLO = (True if (sample=='' or sample=='') else False)
-print 'Running on', ('data' if isData else 'MC'), ', sample is', sample
+isReRecoBCD = ('Run2016B-23Sep' in sample or 'Run2016C-23Sep' in sample or 'Run2016D-23Sep' in sample or options.Data==1)
+isReRecoEF = ('Run2016E-23Sep' in sample or 'Run2016F-23Sep' in sample)
+isReRecoG = ('Run2016G-23Sep' in sample)
+isReRecoH = ('Run2016H-PromptReco' in sample)
+isPromptReco = (('PromptReco' in sample) and (not isReRecoH))
+print 'Running on', ('data' if isData else 'MC'),', sample is', sample
 if isReHLT: print '-> re-HLT sample'
 if isPythiaLO: print '-> Pythia LO sample'
-print 'maxEvents = ', options.maxEvents
+if isReRecoBCD:  JECstring = "Summer16_23Sep2016BCDV3"
+elif isReRecoEF: JECstring = "Summer16_23Sep2016EFV3"
+elif isReRecoG:  JECstring = "Summer16_23Sep2016GV3"
+elif isReRecoH:  JECstring = "Summer16_23Sep2016HV3"
+elif isPromptReco: JECstring = "Spring16_25nsV6"
+else: JECstring = "Summer16_23Sep2016BCDV3" # default value needed
+JECstring_MC = "Summer16_23Sep2016V3" # unique default option for MC
+JERstring = 'Spring16_25nsV10' # okay for moriond
+print ' JEC:', JECstring, JECstring_MC
+print ' JER:', JERstring
+print ' maxEvents:', options.maxEvents
 
 # Print trigger cut status
-if not isData: print 'Trigger cut is', ('off' if options.tCut == 0 else 'on')
+if not isData: print ' Trigger cut is', ('off' if options.tCut == 0 else 'on')
 
 #-----------------------#
 #        FILTERS        #
@@ -93,28 +108,25 @@ process.HLTFilter = cms.EDFilter('HLTHighLevel',
     throw = cms.bool(False)    # throw exception on unknown path names
 )
 
+# METFilters
 process.load('RecoMET.METFilters.BadPFMuonFilter_cfi')
 process.BadPFMuonFilter.muons = cms.InputTag('slimmedMuons')
 process.BadPFMuonFilter.PFCandidates = cms.InputTag('packedPFCandidates')
+process.load('RecoMET.METFilters.BadPFMuonSummer16Filter_cfi')
+process.BadPFMuonSummer16Filter.muons = cms.InputTag("slimmedMuons")
+process.BadPFMuonSummer16Filter.PFCandidates = cms.InputTag("packedPFCandidates")
 
 process.load('RecoMET.METFilters.BadChargedCandidateFilter_cfi')
 process.BadChargedCandidateFilter.muons = cms.InputTag('slimmedMuons')
 process.BadChargedCandidateFilter.PFCandidates = cms.InputTag('packedPFCandidates')
+process.load('RecoMET.METFilters.BadChargedCandidateSummer16Filter_cfi')
+process.BadChargedCandidateSummer16Filter.muons = cms.InputTag('slimmedMuons')
+process.BadChargedCandidateSummer16Filter.PFCandidates = cms.InputTag('packedPFCandidates')
 
-process.METFilter = cms.EDFilter('HLTHighLevel',
-    TriggerResultsTag = cms.InputTag('TriggerResults', '', 'RECO'),
-    HLTPaths = cms.vstring(
-        'Flag_HBHENoiseFilter',
-        'Flag_HBHENoiseIsoFilter',
-        'Flag_EcalDeadCellTriggerPrimitiveFilter',
-        'Flag_goodVertices',
-        'Flag_eeBadScFilter',
-        'Flag_globalTightHalo2016Filter',
-    ),
-    eventSetupPathsKey = cms.string(''), # not empty => use read paths from AlCaRecoTriggerBitsRcd via this key
-    andOr = cms.bool(True),    # how to deal with multiple triggers: True (OR) accept if ANY is true, False (AND) accept if ALL are true
-    throw = cms.bool(False)    # throw exception on unknown path names
-)
+if isData:
+    filterString = "RECO"
+else:
+    filterString = "PAT"
 
 # Primary vertex
 import RecoVertex.PrimaryVertexProducer.OfflinePrimaryVertices_cfi
@@ -131,6 +143,7 @@ process.primaryVertexFilter = cms.EDFilter('GoodVertexFilter',
 #-----------------------#
 
 #GLOBALTAG
+process.load('Configuration.StandardSequences.Services_cff')#Lisa
 process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
@@ -140,6 +153,11 @@ if isData:          GT = '80X_dataRun2_2016SeptRepro_v6'
 elif not(isData):   GT = '80X_mcRun2_asymptotic_2016_TrancheIV_v7'
 process.GlobalTag = GlobalTag(process.GlobalTag, GT)
 print 'GlobalTag', GT
+
+#electron/photon regression modules
+from EgammaAnalysis.ElectronTools.regressionWeights_cfi import regressionWeights
+process = regressionWeights(process)
+process.load('EgammaAnalysis.ElectronTools.regressionApplication_cff')
 
 #electrons upstream modules
 from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
@@ -218,12 +236,12 @@ process.ntuple = cms.EDAnalyzer('HHAnalyzer',
     pileupSet = cms.PSet(
         pileup = cms.InputTag('slimmedAddPileupInfo'),
         vertices = cms.InputTag('offlineSlimmedPrimaryVertices'),
-        dataFileName     = cms.string('%s/src/Analysis/ALPHA/data/PU_69200.root' % os.environ['CMSSW_BASE']),
-        dataFileNameUp   = cms.string('%s/src/Analysis/ALPHA/data/PU_72380.root' % os.environ['CMSSW_BASE']),
-        dataFileNameDown = cms.string('%s/src/Analysis/ALPHA/data/PU_66020.root' % os.environ['CMSSW_BASE']),
-        mcFileName = cms.string('%s/src/Analysis/ALPHA/data/PU_MC.root' % os.environ['CMSSW_BASE']),
+        dataFileName     = cms.string('%s/src/Analysis/ALPHA/data/PU_69200_ReReco.root' % os.environ['CMSSW_BASE']),
+        dataFileNameUp   = cms.string('%s/src/Analysis/ALPHA/data/PU_72380_ReReco.root' % os.environ['CMSSW_BASE']),
+        dataFileNameDown = cms.string('%s/src/Analysis/ALPHA/data/PU_66020_ReReco.root' % os.environ['CMSSW_BASE']),
+        mcFileName = cms.string('%s/src/Analysis/ALPHA/data/PU_MC_Moriond17.root' % os.environ['CMSSW_BASE']),
         dataName = cms.string('pileup'),
-        mcName = cms.string('2016_25ns_SpringMC_PUScenarioV1'),
+        mcName = cms.string('2016_25ns_Moriond17MC_PoissonOOTPU'),
     ),
     triggerSet = cms.PSet(
         trigger = cms.InputTag('TriggerResults', '', triggerTag),
@@ -244,9 +262,13 @@ process.ntuple = cms.EDAnalyzer('HHAnalyzer',
           'HLT_IsoMu24_v',
           'HLT_IsoTkMu24_v',
         ),
+        metfilters = cms.InputTag('TriggerResults', '', filterString),
+        metpaths = cms.vstring('Flag_HBHENoiseFilter', 'Flag_HBHENoiseIsoFilter', 'Flag_EcalDeadCellTriggerPrimitiveFilter', 'Flag_goodVertices', 'Flag_eeBadScFilter', 'Flag_globalTightHalo2016Filter'),
+        badPFMuonFilter = cms.InputTag("BadPFMuonFilter"),
+        badChCandFilter = cms.InputTag("BadChargedCandidateFilter"),
     ),
     electronSet = cms.PSet(
-        #electrons = cms.InputTag('selectedElectrons'),
+       #electrons = cms.InputTag('selectedElectrons'),
         electrons = cms.InputTag('slimmedElectrons'),
         vertices = cms.InputTag('offlineSlimmedPrimaryVertices'),
         eleVetoIdMap = cms.InputTag('egmGsfElectronIDs:cutBasedElectronID-Summer16-80X-V1-veto'),
@@ -260,27 +282,27 @@ process.ntuple = cms.EDAnalyzer('HHAnalyzer',
         eleMVATrigTightIdMap = cms.InputTag('egmGsfElectronIDs:mvaEleID-Spring16-GeneralPurpose-V1-wp80'), ### NOTE -> SAME AS NON-TRIG IN 2017
         eleEcalRecHitCollection = cms.InputTag("reducedEgamma:reducedEBRecHits"),
         eleSingleTriggerFileName = cms.string('%s/src/Analysis/ALPHA/data/SingleEleTriggerEff.root' % os.environ['CMSSW_BASE']),
-        eleVetoIdFileName = cms.string('%s/src/Analysis/ALPHA/data/eleVetoIDSF_ICHEP.root' % os.environ['CMSSW_BASE']),
-        eleLooseIdFileName = cms.string('%s/src/Analysis/ALPHA/data/eleLooseIDSF_ICHEP.root' % os.environ['CMSSW_BASE']),
-        eleMediumIdFileName = cms.string('%s/src/Analysis/ALPHA/data/eleMediumIDSF_ICHEP.root' % os.environ['CMSSW_BASE']),
-        eleTightIdFileName = cms.string('%s/src/Analysis/ALPHA/data/eleTightIDSF_ICHEP.root' % os.environ['CMSSW_BASE']),
-        eleMVATrigMediumIdFileName = cms.string('%s/src/Analysis/ALPHA/data/eleMVA90IDSF_ICHEP.root' % os.environ['CMSSW_BASE']),
-        eleMVATrigTightIdFileName = cms.string('%s/src/Analysis/ALPHA/data/eleMVA80IDSF_ICHEP.root' % os.environ['CMSSW_BASE']),
-        eleRecoEffFileName = cms.string('%s/src/Analysis/ALPHA/data/eleGSFTrackingSF_ICHEP.root' % os.environ['CMSSW_BASE']),
-       electron1id = cms.int32(-1), # 0: veto, 1: loose, 2: medium, 3: tight, 4: HEEP, 5: MVA medium nonTrig, 6: MVA tight nonTrig, 7: MVA medium Trig, 8: MVA tight Trig
+        eleVetoIdFileName = cms.string('%s/src/Analysis/ALPHA/data/eleVetoIDSF_MORIOND17.root' % os.environ['CMSSW_BASE']),
+        eleLooseIdFileName = cms.string('%s/src/Analysis/ALPHA/data/eleLooseIDSF_MORIOND17.root' % os.environ['CMSSW_BASE']),
+        eleMediumIdFileName = cms.string('%s/src/Analysis/ALPHA/data/eleMediumIDSF_MORIOND17.root' % os.environ['CMSSW_BASE']),
+        eleTightIdFileName = cms.string('%s/src/Analysis/ALPHA/data/eleTightIDSF_MORIOND17.root' % os.environ['CMSSW_BASE']),
+        eleMVATrigMediumIdFileName = cms.string('%s/src/Analysis/ALPHA/data/eleMVA90IDSF_MORIOND17.root' % os.environ['CMSSW_BASE']),
+        eleMVATrigTightIdFileName = cms.string('%s/src/Analysis/ALPHA/data/eleMVA80IDSF_MORIOND17.root' % os.environ['CMSSW_BASE']),
+        eleRecoEffFileName = cms.string('%s/src/Analysis/ALPHA/data/eleRecoSF_MORIOND17.root' % os.environ['CMSSW_BASE']),
+        electron1id = cms.int32(-1), # 0: veto, 1: loose, 2: medium, 3: tight, 4: HEEP, 5: MVA medium nonTrig, 6: MVA tight nonTrig, 7: MVA medium Trig, 8: MVA tight Trig
         electron2id = cms.int32(-1),
         electron1pt = cms.double(20.),
         electron2pt = cms.double(20.),
     ),
     muonSet = cms.PSet(
-        muons = cms.InputTag('cleanedMuons'),#('slimmedMuons'),
+        muons = cms.InputTag('cleanedMuons'),#('slimmedMuons'),#
         vertices = cms.InputTag('offlineSlimmedPrimaryVertices'),
         muonTrkFileName = cms.string('%s/src/Analysis/ALPHA/data/TrkEff.root' % os.environ['CMSSW_BASE']),
-        muonIdFileName = cms.string('%s/src/Analysis/ALPHA/data/MuonID_Z_RunBCD_prompt80X_7p65.root' % os.environ['CMSSW_BASE']),
-        muonIsoFileName = cms.string('%s/src/Analysis/ALPHA/data/MuonIso_Z_RunBCD_prompt80X_7p65.root' % os.environ['CMSSW_BASE']),
-        muonTrkHighptFileName = cms.string('%s/src/Analysis/ALPHA/data/trackHighPtID_effSF_80X.root' % os.environ['CMSSW_BASE']),
-        muonTriggerFileName = cms.string('%s/src/Analysis/ALPHA/data/SingleMuonTrigger_Z_RunBCD_prompt80X_7p65.root' % os.environ['CMSSW_BASE']),
-        doubleMuonTriggerFileName = cms.string('%s/src/Analysis/ALPHA/data/MuHLTEfficiencies_Run_2012ABCD_53X_DR03-2.root' % os.environ['CMSSW_BASE']),#obsolete
+        muonIdFileName = cms.string('%s/src/Analysis/ALPHA/data/MuonIdEfficienciesAndSF_MORIOND17.root' % os.environ['CMSSW_BASE']),
+        muonIsoFileName = cms.string('%s/src/Analysis/ALPHA/data/MuonIsoEfficienciesAndSF_MORIOND17.root' % os.environ['CMSSW_BASE']),
+        muonTrkHighptFileName = cms.string('%s/src/Analysis/ALPHA/data/tkhighpt_2016full_absetapt.root' % os.environ['CMSSW_BASE']),
+        muonTriggerFileName = cms.string('%s/src/Analysis/ALPHA/data/MuonTrigEfficienciesAndSF_MORIOND17_Period34.root' % os.environ['CMSSW_BASE']),
+        doubleMuonTriggerFileName = cms.string('%s/src/Analysis/ALPHA/data/MuHLTEfficiencies_Run_2012ABCD_53X_DR03-2.root' % os.environ['CMSSW_BASE']),#FIXME -> obsolete
         muon1id = cms.int32(-1), # 0: tracker high pt muon id, 1: loose, 2: medium, 3: tight, 4: high pt
         muon2id = cms.int32(-1),
         muon1iso = cms.int32(-1), # 0: trk iso (<0.1), 1: loose (<0.25), 2: tight (<0.15) (pfIso in cone 0.4)
@@ -291,53 +313,56 @@ process.ntuple = cms.EDAnalyzer('HHAnalyzer',
         doRochester = cms.bool(False),
     ),
     jetSet = cms.PSet(
+        #https://twiki.cern.ch/twiki/bin/view/CMS/JECDataMC#Jet_Energy_Corrections_in_Run2
         jets = cms.InputTag('slimmedJets'),#('slimmedJetsAK8'), #selectedPatJetsAK8PFCHSPrunedPacked
         jetid = cms.int32(1), # 0: no selection, 1: loose, 2: medium, 3: tight
         jet1pt = cms.double(30.),
         jet2pt = cms.double(30.),
-        jeteta = cms.double(2.5),
+        jeteta = cms.double(2.4),
         addQGdiscriminator = cms.bool(True),
         recalibrateJets = cms.bool(True),
         recalibrateMass = cms.bool(False),
         recalibratePuppiMass = cms.bool(False),
         smearJets = cms.bool(True),
         vertices = cms.InputTag('offlineSlimmedPrimaryVertices'),
-        rho = cms.InputTag('fixedGridRhoFastjetAll'),        
-        jecUncertaintyDATA = cms.string('%s/src/Analysis/ALPHA/data/Spring16_25nsV6_DATA/Spring16_25nsV6_DATA_Uncertainty_AK4PFchs.txt' % os.environ['CMSSW_BASE']),
-        jecUncertaintyMC = cms.string('%s/src/Analysis/ALPHA/data/Spring16_25nsV6_MC/Spring16_25nsV6_MC_Uncertainty_AK4PFchs.txt' % os.environ['CMSSW_BASE']),
+        rho = cms.InputTag('fixedGridRhoFastjetAll'),
+        jecShift = cms.int32(0),  # -1: down, 0: nominal, 1: up
+        jecUncertaintyDATA = cms.string('{0}/src/Analysis/ALPHA/data/{1}_DATA/{1}_DATA_Uncertainty_AK4PFchs.txt'.format(os.environ['CMSSW_BASE'], JECstring) ),
+        jecUncertaintyMC = cms.string('{0}/src/Analysis/ALPHA/data/{1}_MC/{1}_MC_Uncertainty_AK4PFchs.txt'.format(os.environ['CMSSW_BASE'], JECstring_MC) ),
         jecCorrectorDATA = cms.vstring(
-            '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_DATA/Spring16_25nsV6_DATA_L1FastJet_AK4PFchs.txt' % os.environ['CMSSW_BASE'],
-            '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_DATA/Spring16_25nsV6_DATA_L2Relative_AK4PFchs.txt' % os.environ['CMSSW_BASE'],
-            '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_DATA/Spring16_25nsV6_DATA_L3Absolute_AK4PFchs.txt' % os.environ['CMSSW_BASE'],
-            '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_DATA/Spring16_25nsV6_DATA_L2L3Residual_AK4PFchs.txt' % os.environ['CMSSW_BASE'],
+            '{0}/src/Analysis/ALPHA/data/{1}_DATA/{1}_DATA_L1FastJet_AK4PFchs.txt'.format(os.environ['CMSSW_BASE'], JECstring),
+            '{0}/src/Analysis/ALPHA/data/{1}_DATA/{1}_DATA_L2Relative_AK4PFchs.txt'.format(os.environ['CMSSW_BASE'], JECstring),
+            '{0}/src/Analysis/ALPHA/data/{1}_DATA/{1}_DATA_L3Absolute_AK4PFchs.txt'.format(os.environ['CMSSW_BASE'], JECstring),
+            '{0}/src/Analysis/ALPHA/data/{1}_DATA/{1}_DATA_L2L3Residual_AK4PFchs.txt'.format(os.environ['CMSSW_BASE'], JECstring),
         ),
         jecCorrectorMC = cms.vstring(
-            '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_MC/Spring16_25nsV6_MC_L1FastJet_AK4PFchs.txt' % os.environ['CMSSW_BASE'],
-            '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_MC/Spring16_25nsV6_MC_L2Relative_AK4PFchs.txt' % os.environ['CMSSW_BASE'],
-            '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_MC/Spring16_25nsV6_MC_L3Absolute_AK4PFchs.txt' % os.environ['CMSSW_BASE'],
+            '{0}/src/Analysis/ALPHA/data/{1}_MC/{1}_MC_L1FastJet_AK4PFchs.txt'.format(os.environ['CMSSW_BASE'], JECstring_MC),
+            '{0}/src/Analysis/ALPHA/data/{1}_MC/{1}_MC_L2Relative_AK4PFchs.txt'.format(os.environ['CMSSW_BASE'], JECstring_MC),
+            '{0}/src/Analysis/ALPHA/data/{1}_MC/{1}_MC_L3Absolute_AK4PFchs.txt'.format(os.environ['CMSSW_BASE'], JECstring_MC),
         ),
         massCorrectorDATA = cms.vstring(
-            '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_DATA/Spring16_25nsV6_DATA_L2Relative_AK4PFchs.txt' % os.environ['CMSSW_BASE'],
-            '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_DATA/Spring16_25nsV6_DATA_L3Absolute_AK4PFchs.txt' % os.environ['CMSSW_BASE'],
-            '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_DATA/Spring16_25nsV6_DATA_L2L3Residual_AK4PFchs.txt' % os.environ['CMSSW_BASE'],
+            '{0}/src/Analysis/ALPHA/data/{1}_DATA/{1}_DATA_L2Relative_AK4PFchs.txt'.format(os.environ['CMSSW_BASE'], JECstring),
+            '{0}/src/Analysis/ALPHA/data/{1}_DATA/{1}_DATA_L3Absolute_AK4PFchs.txt'.format(os.environ['CMSSW_BASE'], JECstring),
+            '{0}/src/Analysis/ALPHA/data/{1}_DATA/{1}_DATA_L2L3Residual_AK4PFchs.txt'.format(os.environ['CMSSW_BASE'], JECstring),
         ),
         massCorrectorMC = cms.vstring(
-            '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_MC/Spring16_25nsV6_MC_L2Relative_AK4PFchs.txt' % os.environ['CMSSW_BASE'],
-            '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_MC/Spring16_25nsV6_MC_L3Absolute_AK4PFchs.txt' % os.environ['CMSSW_BASE'],
+            '{0}/src/Analysis/ALPHA/data/{1}_MC/{1}_MC_L2Relative_AK4PFchs.txt'.format(os.environ['CMSSW_BASE'], JECstring_MC),
+            '{0}/src/Analysis/ALPHA/data/{1}_MC/{1}_MC_L3Absolute_AK4PFchs.txt'.format(os.environ['CMSSW_BASE'], JECstring_MC),
         ),
-        massCorrectorPuppi = cms.string('%s/src/Analysis/ALPHA/data/puppiJecCorr.root' % os.environ['CMSSW_BASE']),
+        massCorrectorPuppi = cms.string('%s/src/Analysis/ALPHA/data/puppiCorrSummer16.root' % os.environ['CMSSW_BASE']),
         reshapeBTag = cms.bool(True),
         btag = cms.string('pfCombinedInclusiveSecondaryVertexV2BJetTags'),
-        btagDB = cms.string('%s/src/Analysis/ALPHA/data/CSVv2.csv' % os.environ['CMSSW_BASE']),
+        btagDB = cms.string('{0}/src/Analysis/ALPHA/data/CSVv2.csv'.format(os.environ['CMSSW_BASE'])),
         jet1btag = cms.int32(0), # 0: no selection, 1: loose, 2: medium, 3: tight
         jet2btag = cms.int32(0),
         met = cms.InputTag('slimmedMETs'),
         metRecoil = cms.bool(False),
-        metRecoilMC = cms.string('%s/src/Analysis/ALPHA/data/recoilfit_gjetsMC_Zu1_pf_v5.root' % os.environ['CMSSW_BASE']),
-        metRecoilData = cms.string('%s/src/Analysis/ALPHA/data/recoilfit_gjetsData_Zu1_pf_v5.root' % os.environ['CMSSW_BASE']),
-        jerNameRes = cms.string('%s/src/Analysis/ALPHA/data/JER/Spring16_25nsV10_MC_PtResolution_AK4PFchs.txt' % os.environ['CMSSW_BASE']),
-        jerNameSf = cms.string('%s/src/Analysis/ALPHA/data/JER/Spring16_25nsV10_MC_SF_AK4PFchs.txt' % os.environ['CMSSW_BASE']),
-
+        metRecoilMC = cms.string('{0}/src/Analysis/ALPHA/data/recoilfit_gjetsMC_Zu1_pf_v5.root'.format(os.environ['CMSSW_BASE'])),
+        metRecoilData = cms.string('{0}/src/Analysis/ALPHA/data/recoilfit_gjetsData_Zu1_pf_v5.root'.format(os.environ['CMSSW_BASE'])),
+        jerShift = cms.int32(0),  # -1: down, 0: nominal, 1: up
+        jerNameRes = cms.string('{0}/src/Analysis/ALPHA/data/JER/{1}_MC_PtResolution_AK4PFchs.txt'.format(os.environ['CMSSW_BASE'], JERstring)),
+        jerNameSf = cms.string('{0}/src/Analysis/ALPHA/data/JER/{1}_MC_SF_AK4PFchs.txt'.format(os.environ['CMSSW_BASE'], JERstring)),
+    
     ),
     fatJetSet = cms.PSet(
         jets = cms.InputTag('slimmedJetsAK8'),#('slimmedJetsAK8'), #selectedPatJetsAK8PFCHSPrunedPacked
@@ -351,48 +376,51 @@ process.ntuple = cms.EDAnalyzer('HHAnalyzer',
         recalibratePuppiMass = cms.bool(True),
         vertices = cms.InputTag('offlineSlimmedPrimaryVertices'),
         smearJets = cms.bool(True),
-        rho = cms.InputTag('fixedGridRhoFastjetAll'),        
-        jecUncertaintyDATA = cms.string('%s/src/Analysis/ALPHA/data/Spring16_25nsV6_DATA/Spring16_25nsV6_DATA_Uncertainty_AK8PFPuppi.txt' % os.environ['CMSSW_BASE']),
-        jecUncertaintyMC = cms.string('%s/src/Analysis/ALPHA/data/Spring16_25nsV6_MC/Spring16_25nsV6_MC_Uncertainty_AK8PFPuppi.txt' % os.environ['CMSSW_BASE']),
+        rho = cms.InputTag('fixedGridRhoFastjetAll'),       
+        jecShift = cms.int32(0),  # -1: down, 0: nominal, 1: up      
+        jecUncertaintyDATA = cms.string('{0}/src/Analysis/ALPHA/data/{1}_DATA/{1}_DATA_Uncertainty_AK8PFPuppi.txt'.format(os.environ['CMSSW_BASE'], JECstring)),
+        jecUncertaintyMC = cms.string('{0}/src/Analysis/ALPHA/data/{1}_MC/{1}_MC_Uncertainty_AK8PFPuppi.txt'.format(os.environ['CMSSW_BASE'], JECstring_MC)),
         jecCorrectorDATA = cms.vstring(
-            '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_DATA/Spring16_25nsV6_DATA_L1FastJet_AK8PFchs.txt' % os.environ['CMSSW_BASE'],
-            '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_DATA/Spring16_25nsV6_DATA_L2Relative_AK8PFchs.txt' % os.environ['CMSSW_BASE'],
-            '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_DATA/Spring16_25nsV6_DATA_L3Absolute_AK8PFchs.txt' % os.environ['CMSSW_BASE'],
-            '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_DATA/Spring16_25nsV6_DATA_L2L3Residual_AK8PFchs.txt' % os.environ['CMSSW_BASE'],
+            '{0}/src/Analysis/ALPHA/data/{1}_DATA/{1}_DATA_L1FastJet_AK8PFchs.txt'.format(os.environ['CMSSW_BASE'], JECstring),
+            '{0}/src/Analysis/ALPHA/data/{1}_DATA/{1}_DATA_L2Relative_AK8PFchs.txt'.format(os.environ['CMSSW_BASE'], JECstring),
+            '{0}/src/Analysis/ALPHA/data/{1}_DATA/{1}_DATA_L3Absolute_AK8PFchs.txt'.format(os.environ['CMSSW_BASE'], JECstring),
+            '{0}/src/Analysis/ALPHA/data/{1}_DATA/{1}_DATA_L2L3Residual_AK8PFchs.txt'.format(os.environ['CMSSW_BASE'], JECstring),
         ),
         jecCorrectorMC = cms.vstring(
-            '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_MC/Spring16_25nsV6_MC_L1FastJet_AK8PFchs.txt' % os.environ['CMSSW_BASE'],
-            '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_MC/Spring16_25nsV6_MC_L2Relative_AK8PFchs.txt' % os.environ['CMSSW_BASE'],
-            '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_MC/Spring16_25nsV6_MC_L3Absolute_AK8PFchs.txt' % os.environ['CMSSW_BASE'],
+            '{0}/src/Analysis/ALPHA/data/{1}_MC/{1}_MC_L1FastJet_AK8PFchs.txt'.format(os.environ['CMSSW_BASE'], JECstring_MC),
+            '{0}/src/Analysis/ALPHA/data/{1}_MC/{1}_MC_L2Relative_AK8PFchs.txt'.format(os.environ['CMSSW_BASE'], JECstring_MC),
+            '{0}/src/Analysis/ALPHA/data/{1}_MC/{1}_MC_L3Absolute_AK8PFchs.txt'.format(os.environ['CMSSW_BASE'], JECstring_MC),
         ),
         massCorrectorDATA = cms.vstring(
-            '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_DATA/Spring16_25nsV6_DATA_L2Relative_AK8PFchs.txt' % os.environ['CMSSW_BASE'],
-            '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_DATA/Spring16_25nsV6_DATA_L3Absolute_AK8PFchs.txt' % os.environ['CMSSW_BASE'],
-            '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_DATA/Spring16_25nsV6_DATA_L2L3Residual_AK8PFchs.txt' % os.environ['CMSSW_BASE'],
+            '{0}/src/Analysis/ALPHA/data/{1}_DATA/{1}_DATA_L2Relative_AK8PFchs.txt'.format(os.environ['CMSSW_BASE'], JECstring),
+            '{0}/src/Analysis/ALPHA/data/{1}_DATA/{1}_DATA_L3Absolute_AK8PFchs.txt'.format(os.environ['CMSSW_BASE'], JECstring),
+            '{0}/src/Analysis/ALPHA/data/{1}_DATA/{1}_DATA_L2L3Residual_AK8PFchs.txt'.format(os.environ['CMSSW_BASE'], JECstring),
         ),
         massCorrectorMC = cms.vstring(
-            '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_MC/Spring16_25nsV6_MC_L2Relative_AK8PFchs.txt' % os.environ['CMSSW_BASE'],
-            '%s/src/Analysis/ALPHA/data/Spring16_25nsV6_MC/Spring16_25nsV6_MC_L3Absolute_AK8PFchs.txt' % os.environ['CMSSW_BASE'],
+            '{0}/src/Analysis/ALPHA/data/{1}_MC/{1}_MC_L2Relative_AK8PFchs.txt'.format(os.environ['CMSSW_BASE'], JECstring_MC),
+            '{0}/src/Analysis/ALPHA/data/{1}_MC/{1}_MC_L3Absolute_AK8PFchs.txt'.format(os.environ['CMSSW_BASE'], JECstring_MC),
         ),
-        massCorrectorPuppi = cms.string('%s/src/Analysis/ALPHA/data/puppiJecCorr.root' % os.environ['CMSSW_BASE']),
+        massCorrectorPuppi = cms.string('%s/src/Analysis/ALPHA/data/puppiCorrSummer16.root' % os.environ['CMSSW_BASE']),
         reshapeBTag = cms.bool(True),
         btag = cms.string('pfCombinedInclusiveSecondaryVertexV2BJetTags'),
-        btagDB = cms.string('%s/src/Analysis/ALPHA/data/CSVv2.csv' % os.environ['CMSSW_BASE']),
+        btagDB = cms.string('{0}/src/Analysis/ALPHA/data/CSVv2.csv'.format(os.environ['CMSSW_BASE'])),
         jet1btag = cms.int32(0), # 0: no selection, 1: loose, 2: medium, 3: tight
         jet2btag = cms.int32(0),
         met = cms.InputTag('slimmedMETs'),
         metRecoil = cms.bool(False),
         metRecoilMC = cms.string(''),
         metRecoilData = cms.string(''),
-        jerNameRes = cms.string('%s/src/Analysis/ALPHA/data/JER/Spring16_25nsV10_MC_PtResolution_AK8PFchs.txt' % os.environ['CMSSW_BASE']),
-        jerNameSf = cms.string('%s/src/Analysis/ALPHA/data/JER/Spring16_25nsV10_MC_SF_AK8PFchs.txt' % os.environ['CMSSW_BASE']),
-   ),
+        jerShift = cms.int32(0),  # -1: down, 0: nominal, 1: up
+        jerNameRes = cms.string('{0}/src/Analysis/ALPHA/data/JER/{1}_MC_PtResolution_AK8PFchs.txt'.format(os.environ['CMSSW_BASE'], JERstring)),
+        jerNameSf = cms.string('{0}/src/Analysis/ALPHA/data/JER/{1}_MC_SF_AK8PFchs.txt'.format(os.environ['CMSSW_BASE'], JERstring)),
+
+    ),
     writeNElectrons = cms.int32(0),
     writeNMuons = cms.int32(0),
     writeNLeptons = cms.int32(2),
     writeNJets = cms.int32(0),
     writeNFatJets = cms.int32(1),
-    histFile = cms.string('%s/src/Analysis/ALPHA/data/HistList_HH.dat' % os.environ['CMSSW_BASE']),
+    histFile = cms.string('{0}/src/Analysis/ALPHA/data/HistList_HH.dat'.format(os.environ['CMSSW_BASE'])),
     verbose  = cms.bool(False),
 )
 
@@ -401,7 +429,6 @@ if isData:
         process.counter *
         
         #process.HLTFilter *
-        process.METFilter *
         process.BadPFMuonFilter *
         process.BadChargedCandidateFilter *
         
@@ -418,10 +445,10 @@ elif not options.tCut == 0:
         process.counter *
         
         process.HLTFilter *
-        process.BadPFMuonFilter *
-        process.BadChargedCandidateFilter *
-        
+        process.BadPFMuonFilter * process.BadPFMuonSummer16Filter *
+        process.BadChargedCandidateFilter * process.BadChargedCandidateSummer16Filter *        
         process.primaryVertexFilter *
+        process.regressionApplication * #debug
         process.egmGsfElectronIDSequence *
         process.calibratedPatElectrons *
         process.cleanedMuons *
@@ -433,10 +460,10 @@ else:
     process.seq = cms.Sequence(
         process.counter *
 
-        process.BadPFMuonFilter *
-        process.BadChargedCandidateFilter *
-        
+        process.BadPFMuonFilter * process.BadPFMuonSummer16Filter *
+        process.BadChargedCandidateFilter * process.BadChargedCandidateSummer16Filter *        
         process.primaryVertexFilter *
+        process.regressionApplication * #debug
         process.egmGsfElectronIDSequence *
         process.calibratedPatElectrons *
         process.cleanedMuons *
