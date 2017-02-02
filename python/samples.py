@@ -4,7 +4,7 @@
 #
 
 sample = {
-    #Re-Reco
+    ########## DATA ##########
     'METRun2016B-23Sep2016-v2' : {
         'nevents' : 583427,
         'xsec'    : 1.,
@@ -65,6 +65,117 @@ sample = {
         'matcheff': 1.,
         'kfactor' : 1.,
     },    
+
+    'SingleMuonRun2016B-23Sep2016-v1' : {
+        'nevents' : 2789243,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'SingleMuonRun2016B-23Sep2016-v3' : {
+        'nevents' : 158145722,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'SingleMuonRun2016C-23Sep2016-v1' : {
+        'nevents' : 67441308,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'SingleMuonRun2016D-23Sep2016-v1' : {
+        'nevents' : 98017996,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'SingleMuonRun2016E-23Sep2016-v1' : {
+        'nevents' : 90984718,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'SingleMuonRun2016F-23Sep2016-v1' : {
+        'nevents' : 65425108,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'SingleMuonRun2016G-23Sep2016-v1' : {
+        'nevents' : 149916849,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'SingleMuonRun2016H-PromptReco-v2' : {
+        'nevents' : 171134793,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'SingleMuonRun2016H-PromptReco-v3' : {
+        'nevents' : 4393222,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+
+    'BTagCSVRun2016B-23Sep2016-v2' : {
+        'nevents' : 1972666,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'BTagCSVRun2016B-23Sep2016-v3' : {
+        'nevents' : 77890616,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'BTagCSVRun2016C-23Sep2016-v1' : {
+        'nevents' : 30358567,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'BTagCSVRun2016D-23Sep2016-v1' : {
+        'nevents' : 56527008,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'BTagCSVRun2016E-23Sep2016-v1' : {
+        'nevents' : 60415444,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'BTagCSVRun2016F-23Sep2016-v1' : {
+        'nevents' : 37608672,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'BTagCSVRun2016G-23Sep2016-v1' : {
+        'nevents' : 100834056,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'BTagCSVRun2016H-PromptReco-v2' : {
+        'nevents' : 64179785,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'BTagCSVRun2016H-PromptReco-v3' : {
+        'nevents' : 1695733,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,  
+    },
+
     ########## MC ##########
     #DYJetsToNuNu_PtZ
     'DYJetsToNuNu_PtZ-50To100_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8-v1' : {
@@ -248,7 +359,100 @@ sample = {
         'matcheff': 1.,
         'kfactor' : 1.,
     },
-    # Signal
+    # FIXME - check xs for QCD (taken from ichep)
+    'QCD_HT100to200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1' : {
+        'nevents' : 80684349,
+        'xsec'    : 1712000.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'QCD_HT200to300_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1' : {
+        'nevents' : 18722416,
+        'xsec'    : 1712000.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'QCD_HT200to300_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1-v1' : {
+        'nevents' : 38857977,
+        'xsec'    : 1712000.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'QCD_HT300to500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1' : {
+        'nevents' : 17035891,
+        'xsec'    : 347700.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'QCD_HT300to500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1-v1' : {
+        'nevents' : 37502012,
+        'xsec'    : 347700.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'QCD_HT500to700_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1' : {
+        'nevents' : 18929951,
+        'xsec'    : 32100.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'QCD_HT500to700_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1-v2' : {
+        'nevents' : 43341392,
+        'xsec'    : 32100.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'QCD_HT700to1000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1' : {
+        'nevents' : 15629253,
+        'xsec'    : 6831.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'QCD_HT700to1000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1-v1' : {
+        'nevents' : 29783527,
+        'xsec'    : 6831.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },   
+    'QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1' : {
+        'nevents' : 4767100,
+        'xsec'    : 1207.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'QCD_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1-v1' : {
+        'nevents' : 10360193,
+        'xsec'    : 1207.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1' : {
+        'nevents' : 3970819,
+        'xsec'    : 119.9,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'QCD_HT1500to2000_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1-v1' : {
+        'nevents' : 7855883,
+        'xsec'    : 119.9,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'QCD_HT2000toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1' : {
+        'nevents' : 1991645,
+        'xsec'    : 25.24,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'QCD_HT2000toInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1-v1' : {
+        'nevents' : 4047360,
+        'xsec'    : 25.24,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+
+
+    ### Signal ###
     #ZHadZinv
     'BulkGravToZZToZhadZinv_narrow_M-600_13TeV-madgraph-v1' : {
         'nevents' : 100000,
@@ -325,6 +529,98 @@ sample = {
     'BulkGravToZZToZhadZinv_narrow_M-4500_13TeV-madgraph-v1' : {
         'nevents' : 100000,
         'xsec'    : 2.*0.6991*0.20,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+
+    #HH FIXME - bsm xs
+    'GluGluToHHTo4B_node_2_13TeV-madgraph-v1' : {
+        'nevents' : 299600,
+        'xsec'    : 1.*0.577*0.577,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'GluGluToHHTo4B_node_3_13TeV-madgraph-v1' : {
+        'nevents' : 299800,
+        'xsec'    : 1.*0.577*0.577,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'GluGluToHHTo4B_node_4_13TeV-madgraph-v1' : {
+        'nevents' : 297000,
+        'xsec'    : 1.*0.577*0.577,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'GluGluToHHTo4B_node_5_13TeV-madgraph-v1' : {
+        'nevents' : 300000,
+        'xsec'    : 1.*0.577*0.577,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'GluGluToHHTo4B_node_6_13TeV-madgraph-v1' : {
+        'nevents' : 300000,
+        'xsec'    : 1.*0.577*0.577,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'GluGluToHHTo4B_node_7_13TeV-madgraph-v1' : {
+        'nevents' : 300000,
+        'xsec'    : 1.*0.577*0.577,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'GluGluToHHTo4B_node_8_13TeV-madgraph-v1' : {
+        'nevents' : 300000,
+        'xsec'    : 1.*0.577*0.577,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'GluGluToHHTo4B_node_9_13TeV-madgraph-v1' : {
+        'nevents' : 298200,
+        'xsec'    : 1.*0.577*0.577,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'GluGluToHHTo4B_node_10_13TeV-madgraph-v1' : {
+        'nevents' : 300000,
+        'xsec'    : 1.*0.577*0.577,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'GluGluToHHTo4B_node_11_13TeV-madgraph-v1' : {
+        'nevents' : 300000,
+        'xsec'    : 1.*0.577*0.577,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'GluGluToHHTo4B_node_12_13TeV-madgraph-v1' : {
+        'nevents' : 299400,
+        'xsec'    : 1.*0.577*0.577,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'GluGluToHHTo4B_node_13_13TeV-madgraph-v1' : {
+        'nevents' : 300000,
+        'xsec'    : 1.*0.577*0.577,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'GluGluToHHTo4B_node_box_13TeV-madgraph-v1' : {
+        'nevents' : 278600,
+        'xsec'    : 1.*0.577*0.577,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'GluGluToHHTo4B_node_SM_13TeV-madgraph-v1' : {
+        'nevents' : 299800,
+        'xsec'    : 0.03345*0.577*0.577,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'VBFHHTo4B_CV_1_C2V_1_C3_1_13TeV-madgraph-v1' : {
+        'nevents' : 297969,
+        'xsec'    : 1.*0.577*0.577,
         'matcheff': 1.,
         'kfactor' : 1.,
     },
