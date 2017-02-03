@@ -223,26 +223,35 @@ FatJetType(): pt(-1.), eta(-9.), phi(-9.), mass(-1.), energy(-1.), ptRaw(-1.), p
 //};
 
 struct MEtType {
-    MEtType(): pt(-1.), eta(-9.), phi(-9.), sign(-1.), ptRaw(-1.), phiRaw(-9.), ptType1(-1.), phiType1(-9.), ptGen(-1.), phiGen(-9.), ptScaleUp(-1.), ptScaleDown(-1.), ptResUp(-1.), ptResDown(-1.), ptCalo(-1.) {}
+  //MEtType(): pt(-1.), eta(-9.), phi(-9.), sign(-1.), ptRaw(-1.), phiRaw(-9.), ptType1(-1.), phiType1(-9.), ptGen(-1.), phiGen(-9.), ptScaleUp(-1.), ptScaleDown(-1.), ptResUp(-1.), ptResDown(-1.), ptCalo(-1.) {}
+    MEtType(): pt(-1.), eta(-9.), phi(-9.), sign(-1.), ptShiftJetResUp(-1.), ptShiftJetResDown(-1.), ptShiftJetEnUp(-1.), ptShiftJetEnDown(-1.), ptShiftUnclusteredEnUp(-1.), ptShiftUnclusteredEnDown(-1.), ptShiftJetResUpSmear(-1.), ptShiftJetResDownSmear(-1.), ptRaw(-1.), phiRaw(-9.), ptGen(-1.), phiGen(-9.), ptCalo(-1.) {}
     float pt;
     float eta;
     float phi;
     float sign;
+    float ptShiftJetResUp;
+    float ptShiftJetResDown;
+    float ptShiftJetEnUp;
+    float ptShiftJetEnDown;
+    float ptShiftUnclusteredEnUp;
+    float ptShiftUnclusteredEnDown;
+    float ptShiftJetResUpSmear;
+    float ptShiftJetResDownSmear;
     float ptRaw;
     float phiRaw;
-    float ptType1;
-    float phiType1;
+  //float ptType1;
+  //float phiType1;
     float ptGen;
     float phiGen;
-    float ptScaleUp;
-    float ptScaleDown;
-    float ptResUp;
-    float ptResDown;
+  //float ptScaleUp;
+  //float ptScaleDown;
+  //float ptResUp;
+  //float ptResDown;
     float ptCalo;
 };
 
 struct MEtFullType {
-    MEtFullType(): pt(-1.), eta(-9.), phi(-9.), sign(-1.), ptRaw(-1.), phiRaw(-9.), ptGen(-1.), phiGen(-9.), ptJERUp(-1.), ptJERDown(-1.), ptJESUp(-1.), ptJESDown(-1.), ptMUSUp(-1.), ptMUSDown(-1.), ptELSUp(-1.), ptELSDown(-1.), ptTAUUp(-1.), ptTAUDown(-1.), ptUNCUp(-1.), ptUNCDown(-1.), ptPHOUp(-1.), ptPHODown(-1.), phf(-1.), nhf(-1.), elf(-1.), chf(-1.), muf(-1.) {}
+    MEtFullType(): pt(-1.), eta(-9.), phi(-9.), sign(-1.), ptRaw(-1.), phiRaw(-9.), ptGen(-1.), phiGen(-9.), ptJERUp(-1.), ptJERDown(-1.), ptJERUpSmear(-1.), ptJERDownSmear(-1.), ptJESUp(-1.), ptJESDown(-1.), ptMUSUp(-1.), ptMUSDown(-1.), ptELSUp(-1.), ptELSDown(-1.), ptTAUUp(-1.), ptTAUDown(-1.), ptUNCUp(-1.), ptUNCDown(-1.), ptPHOUp(-1.), ptPHODown(-1.), phf(-1.), nhf(-1.), elf(-1.), chf(-1.), muf(-1.) {}
     float pt;
     float eta;
     float phi;
@@ -253,6 +262,8 @@ struct MEtFullType {
     float phiGen;
     float ptJERUp;
     float ptJERDown;
+    float ptJERUpSmear;
+    float ptJERDownSmear;
     float ptJESUp;
     float ptJESDown;
     float ptMUSUp;
