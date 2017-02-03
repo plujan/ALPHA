@@ -1,0 +1,2 @@
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISummer16MiniAODv2/TTToHplusToWZprime_WToMuNu_ZToMuMu_MH-120_MZ-5_13TeV-madgraph/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/110000/886BA70D-31E3-E611-B414-002590E7DE26.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISummer16MiniAODv2/TTToHplusToWZprime_WToMuNu_ZToMuMu_MH-120_MZ-5_13TeV-madgraph/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/110000/A2157B12-A3E3-E611-A749-0CC47A1E0488.root
