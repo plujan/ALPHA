@@ -206,10 +206,11 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     EventWeight *= TriggerWeight;
     
     // Electrons
-    std::vector<pat::Electron> ElecVect = theElectronAnalyzer->FillElectronVector(iEvent);
-    nElectrons = ElecVect.size();
-    for(unsigned int i =0; i<ElecVect.size(); i++){
-        if(ElecVect.at(i).userInt("isVeto")==1) nVetoElectrons++;
+    std::vector<pat::Electron> ElecVetoVect = theElectronAnalyzer->FillElectronVector(iEvent);
+    nVetoElectrons = ElecVetoVect.size();
+    std::vector<pat::Electron> ElecVect; 
+    for(unsigned int i =0; i<ElecVetoVect.size(); i++){
+        if(ElecVetoVect.at(i).userInt("isLoose")==1 && ElecVetoVect.at(i).pt()>20) ElecVect.push_back(ElecVetoVect.at(i));
     }
 
     // Muons
@@ -470,7 +471,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
 //     }
     
     // ----------- Z TO NEUTRINOS ---------------
-    else if(MuonLooseVect.size()==0 && ElecVect.size()==0 && MET.pt() > 100.) {
+    else if(nLooseMuons==0 && nVetoElectrons==0 && MET.pt() > 100.) {
         isZtoNN=true;
         if(Verbose) std::cout << " - No charged leptons" << std::endl;
     }
