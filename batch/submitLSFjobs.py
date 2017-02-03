@@ -58,7 +58,7 @@ for l in samplelists:
     if not l in sample:
         print l, 'not in samples\n'
         continue
-    dir= 'Run2016' if 'Run2016' in l else 'Spring16'
+    dir= 'Run2016' if 'Run2016' in l else 'Summer16'
     file=open(os.path.expandvars(options.base+'filelists/'+dir+'/'+l+'.txt'),'r')
     filelist = file.readlines()
     splitting= max(int(float(sample[l]['nevents'])/(options.maxlsftime*3600*options.eventspersec)),1)
