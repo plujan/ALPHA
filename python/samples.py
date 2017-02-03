@@ -446,7 +446,7 @@ sample = {
     # FIXME - check xs for QCD (taken from ichep)
     'QCD_HT100to200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1' : {
         'nevents' : 80684349,
-        'xsec'    : 1712000.,
+        'xsec'    : 27990000.,
         'matcheff': 1.,
         'kfactor' : 1.,
     },
