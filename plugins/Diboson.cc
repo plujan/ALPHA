@@ -177,7 +177,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     for(int i = 0; i < WriteNPhotons; i++) ObjectsFormat::ResetPhotonType(Photons[i]);
     for(int i = 0; i < WriteNJets; i++) ObjectsFormat::ResetJetType(Jets[i]);
     for(int i = 0; i < WriteNFatJets; i++) ObjectsFormat::ResetFatJetType(FatJets[i]);
-    ObjectsFormat::ResetMEtFullType(MEt);
+    ObjectsFormat::ResetMEtType(MEt);
     ObjectsFormat::ResetCandidateType(V);
     ObjectsFormat::ResetCandidateType(X);
 
@@ -765,7 +765,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     for(unsigned int i = 0; i < Photons.size() && i < PhotonVect.size(); i++) ObjectsFormat::FillPhotonType(Photons[i], &PhotonVect[i], isMC);
     for(unsigned int i = 0; i < Jets.size() && i < JetsVect.size(); i++) ObjectsFormat::FillJetType(Jets[i], &JetsVect[i], isMC);
     for(unsigned int i = 0; i < FatJets.size() && i < FatJetsVect.size(); i++) ObjectsFormat::FillFatJetType(FatJets[i], &FatJetsVect[i], isMC);
-    ObjectsFormat::FillMEtFullType(MEt, &MET, isMC);
+    ObjectsFormat::FillMEtType(MEt, &MET, isMC);
     ObjectsFormat::FillCandidateType(V, &theV, isMC);
     ObjectsFormat::FillCandidateType(X, &theX, isMC);
     if(V.pt < 100.) return;
