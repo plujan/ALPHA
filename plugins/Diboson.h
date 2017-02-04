@@ -183,7 +183,7 @@ class Diboson : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
         std::vector<PhotonType> Photons;
         std::vector<JetType> Jets;
         std::vector<FatJetType> FatJets;
-        MEtFullType MEt;
+        MEtType MEt;
         CandidateType V, X;
 };
 
