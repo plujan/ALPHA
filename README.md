@@ -18,12 +18,8 @@ Packages needed by ALPHA:
 Merge the most recent MET filters and EGM smearing, scale, and IDs
 ```bash
 git cms-merge-topic -u cms-met:fromCMSSW_8_0_20_postICHEPfilter
-<<<<<<< HEAD
-git cms-merge-topic -u cms-met:METRecipe_8020 #New! needed to re-compute MET corrections and uncertainties 
-
-=======
 git cms-merge-topic -u cms-met:METRecipe_8020 #New! needed to re-compute MET corrections and uncertainties
->>>>>>> 3b53d5d1ad376006c3395753308b842712addda1
+
 git cms-merge-topic -u rafaellopesdesa:Regression80XEgammaAnalysis_v2 ### NEW!!!
 
 git cms-merge-topic -u shervin86:Moriond2017_JEC_energyScales
