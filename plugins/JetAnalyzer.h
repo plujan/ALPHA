@@ -35,7 +35,8 @@
 #include "JetMETCorrections/Modules/interface/JetResolution.h"
 #include <CondFormats/JetMETObjects/interface/JetResolutionObject.h>
 
-#include "BTagCalibrationStandalone.h"
+#include "CondFormats/BTauObjects/interface/BTagCalibration.h"
+#include "CondTools/BTau/interface/BTagCalibrationReader.h"
 
 #include "DataFormats/Common/interface/Ptr.h"
 
@@ -113,20 +114,10 @@ class JetAnalyzer {
         
         // Btag calibrations
         BTagCalibration       * calib;
-    
-        BTagCalibrationReader * reader;
-        BTagCalibrationReader * reader_up_jes;
-        BTagCalibrationReader * reader_down_jes;
-//        BTagCalibrationReader * reader_up_lf;
-//        BTagCalibrationReader * reader_up_hfstats1;
-//        BTagCalibrationReader * reader_up_hfstats2;
-//        BTagCalibrationReader * reader_up_cferr1;
-//        BTagCalibrationReader * reader_up_cferr2;
-//        BTagCalibrationReader * reader_down_lf;
-//        BTagCalibrationReader * reader_down_hfstats1;
-//        BTagCalibrationReader * reader_down_hfstats2;
-//        BTagCalibrationReader * reader_down_cferr1;
-//        BTagCalibrationReader * reader_down_cferr2;
+	std::map < int , BTagEntry::JetFlavor > flavour_map; 
+	std::map< BTagEntry::JetFlavor, std::vector<std::string>> syst_map; 
+	std::map<std::string, BTagCalibrationReader> cr_map;
+	std::string sf_mode;
         
         //JME
         JME::JetResolution              * resolution;
