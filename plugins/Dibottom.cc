@@ -65,6 +65,9 @@ Dibottom::Dibottom(const edm::ParameterSet& iConfig):
     
     std::vector<std::string> TriggerList(TriggerPSet.getParameter<std::vector<std::string> >("paths"));
     for(unsigned int i = 0; i < TriggerList.size(); i++) TriggerMap[ TriggerList[i] ] = false;
+
+    std::vector<std::string> MetFiltersList(TriggerPSet.getParameter<std::vector<std::string> >("metpaths"));
+    for(unsigned int i = 0; i < MetFiltersList.size(); i++) MetFiltersMap[ MetFiltersList[i] ] = false;
         
     // ---------- Plots Initialization ----------
     TFileDirectory allDir=fs->mkdir("All/");
@@ -196,6 +199,9 @@ Dibottom::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
   // Trigger
   theTriggerAnalyzer->FillTriggerMap(iEvent, TriggerMap);
+  theTriggerAnalyzer->FillMetFiltersMap(iEvent, MetFiltersMap);
+  BadPFMuonFlag = theTriggerAnalyzer->GetBadPFMuonFlag(iEvent);
+  BadChCandFlag = theTriggerAnalyzer->GetBadChCandFlag(iEvent);
   EventWeight *= TriggerWeight;
 
   // Electrons 
@@ -705,7 +711,11 @@ Dibottom::beginJob()
   
   // Set trigger branches
   for(auto it = TriggerMap.begin(); it != TriggerMap.end(); it++) tree->Branch(it->first.c_str(), &(it->second), (it->first+"/O").c_str());
-  
+  for(auto it = MetFiltersMap.begin(); it != MetFiltersMap.end(); it++) tree->Branch(it->first.c_str(), &(it->second), (it->first+"/O").c_str());
+
+  tree->Branch("Flag_BadPFMuon", &BadPFMuonFlag, "Flag_BadPFMuon/O");  
+  tree->Branch("Flag_BadChCand", &BadChCandFlag, "Flag_BadChCand/O");
+
   // Analysis variables
   tree->Branch("isZtoEE", &isZtoEE, "isZtoEE/O");
   tree->Branch("isZtoMM", &isZtoMM, "isZtoMM/O");

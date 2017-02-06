@@ -152,10 +152,11 @@ class Dibottom : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
   PhotonAnalyzer* thePhotonAnalyzer;
   JetAnalyzer* theJetAnalyzer;
   //BTagInterface* theBTagAnalyzer;
-  
+  Utilities* theUtilities;
   std::map<std::string, bool> TriggerMap;
   std::map<std::string, TH1F*> Hist;
-  
+  std::map<std::string, bool> MetFiltersMap;
+  bool BadPFMuonFlag, BadChCandFlag;
   edm::Service<TFileService> fs;
   TTree* tree;
   
