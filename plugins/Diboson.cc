@@ -256,25 +256,39 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     
     // Gen weights
     std::map<int, float> GenWeight = theGenAnalyzer->FillWeightsMap(iEvent);
-    EventWeight *= GenWeight[-1];
-    if(GenWeight.find(2) != GenWeight.end()) FacWeightUp     = GenWeight[2];
-    if(GenWeight.find(3) != GenWeight.end()) FacWeightDown   = GenWeight[3];
-    if(GenWeight.find(4) != GenWeight.end()) RenWeightUp     = GenWeight[4];
-    if(GenWeight.find(7) != GenWeight.end()) RenWeightDown   = GenWeight[7];
-    if(GenWeight.find(5) != GenWeight.end()) ScaleWeightUp   = GenWeight[5];
-    if(GenWeight.find(9) != GenWeight.end()) ScaleWeightDown = GenWeight[9];
+
+//     if(GenWeight.find(0) != GenWeight.end()) EventWeight    *= GenWeight[0];
+    if(GenWeight.find(-1) != GenWeight.end()) EventWeight   *= GenWeight[-1];
+    if(GenWeight.find(1) != GenWeight.end()) FacWeightUp     = GenWeight[1];
+    if(GenWeight.find(2) != GenWeight.end()) FacWeightDown   = GenWeight[2];
+    if(GenWeight.find(3) != GenWeight.end()) RenWeightUp     = GenWeight[3];
+    if(GenWeight.find(6) != GenWeight.end()) RenWeightDown   = GenWeight[6];
+    if(GenWeight.find(4) != GenWeight.end()) ScaleWeightUp   = GenWeight[4];
+    if(GenWeight.find(8) != GenWeight.end()) ScaleWeightDown = GenWeight[8];
     
-    float tmpPdfWeight = 0.;
+    float sumPdfWeight = 0.;
+    float sqsumPdfWeight = 0.;
     int   tmpPdfN = 0;
     for(auto const& pdfw : GenWeight) {
-        if (pdfw.first > 9 && pdfw.second>0) {
+        if (pdfw.first >=   9  && 
+            pdfw.first <= 109  && 
+            pdfw.second>0) { 
             ++tmpPdfN;
-//             std::cout << "pdf " << tmpPdfN << " = " << pdfw.second << "\n";
-            tmpPdfWeight = tmpPdfWeight + pdfw.second*pdfw.second;
+            sumPdfWeight   = sumPdfWeight   + pdfw.second;
+            sqsumPdfWeight = sqsumPdfWeight + pdfw.second*pdfw.second;
         }
     }
-    PdfWeight = sqrt(tmpPdfWeight/tmpPdfN);
-//     std::cout << "PdfWeight " << PdfWeight << "\n";
+    if (tmpPdfN>0) PdfWeight = 1. + sqrt(sqsumPdfWeight/float(tmpPdfN)) - sumPdfWeight/float(tmpPdfN); /// 1 + RMS - MEAN
+
+//     std::cout << "GenWeight       " << GenWeight[-1] << "\n";
+//     std::cout << "GenWeight       " << GenWeight[0] << "\n";
+//     std::cout << "FacWeightUp     " << FacWeightUp << "\n";
+//     std::cout << "FacWeightDown   " << FacWeightDown << "\n";
+//     std::cout << "RenWeightUp     " << RenWeightUp << "\n";
+//     std::cout << "RenWeightDown   " << RenWeightDown << "\n";
+//     std::cout << "ScaleWeightUp   " << ScaleWeightUp << "\n";
+//     std::cout << "ScaleWeightDown " << ScaleWeightDown << "\n";
+//     std::cout << "PdfWeight       " << PdfWeight << "  " << sqrt(sqsumPdfWeight/float(tmpPdfN)) << "\n";
 
     // Lhe Particles
     std::map<std::string, float> LheMap = theGenAnalyzer->FillLheMap(iEvent);

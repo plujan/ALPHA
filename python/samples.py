@@ -487,13 +487,13 @@ sample = {
     },
     'TTJets_SingleLeptFromT_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1-v1' : {
         'nevents' : 50016934, 
-        'xsec'    : 831.73*(1-0.6760)*0.6760., # 364.33766304
+        'xsec'    : 831.73*(1-0.6760)*0.6760, # 364.33766304
         'matcheff': 1.,
         'kfactor' : 1.,
     },
     'TTJets_SingleLeptFromTbar_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1-v1' : {
         'nevents' : 48266353,
-        'xsec'    : 831.73*(1-0.6760)*0.6760., # 364.33766304
+        'xsec'    : 831.73*(1-0.6760)*0.6760, # 364.33766304
         'matcheff': 1.,
         'kfactor' : 1.,
     },
