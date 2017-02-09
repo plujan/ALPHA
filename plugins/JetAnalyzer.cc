@@ -90,19 +90,51 @@ JetAnalyzer::JetAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl
     // BTag calibrator
     if(UseReshape) {
         calib           = new BTagCalibration("CSVv2", BTagDB);
-        reader          = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","central");
-        reader_up_jes   = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","up_jes");
-        reader_down_jes = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","down_jes");
-    //    reader_up_lf        = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","up_lf");
-    //    reader_up_hfstats1  = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","up_hfstats1");
-    //    reader_up_hfstats2  = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","up_hfstats2");
-    //    reader_up_cferr1    = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","up_cferr1");
-    //    reader_up_cferr2    = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","up_cferr2");
-    //    reader_down_lf        = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","down_lf");
-    //    reader_down_hfstats1  = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","down_hfstats1");
-    //    reader_down_hfstats2  = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","down_hfstats2");
-    //    reader_down_cferr1    = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","down_cferr1");
-    //    reader_down_cferr2    = new BTagCalibrationReader(calib,BTagEntry::OP_RESHAPING,"iterativefit","down_cferr2");
+	
+	// Set up readers for systematics. This code is largely thanks to Martino & Pablo in
+	// https://github.com/cms-hh-pd/alp_analysis/blob/master/interface/BTagFilterOperator.h
+	
+	// Map of flavor type
+	flavour_map = {{5, BTagEntry::FLAV_B},
+		       {4, BTagEntry::FLAV_C},
+		       {0, BTagEntry::FLAV_UDSG}};
+	// Systematics to use for each flavor type
+	syst_map = {{BTagEntry::FLAV_B, {"up_jes","down_jes",
+					 "up_lf","down_lf",
+					 "up_hfstats1", "down_hfstats1",
+					 "up_hfstats2", "down_hfstats2"}},
+                    {BTagEntry::FLAV_C, {"up_cferr1","down_cferr1",
+                                         "up_cferr2", "down_cferr2"}},
+                    {BTagEntry::FLAV_UDSG, {"up_jes","down_jes",
+                                            "up_hf","down_hf",
+                                            "up_lfstats1", "down_lfstats1",
+					    "up_lfstats2", "down_lfstats2"}}};
+	
+	sf_mode = "iterativefit";
+	
+	// Load the reader with each systematic type.
+	cr_map.emplace("central",
+		       BTagCalibrationReader{BTagEntry::OP_RESHAPING,
+			       "central", {}});
+	for (const auto & kv : flavour_map) 
+	    cr_map.at("central").load(*calib, kv.second, sf_mode);
+	// for every flavour
+	for (const auto & kv : syst_map) {
+	    auto & syst_vector = kv.second;
+	    // for every systematic relevant per flavour
+	    for (const auto & syst : syst_vector) {
+		auto it = cr_map.find(syst);
+		if (it ==cr_map.end()) {
+		    // return iterator as first pair element
+		    it = cr_map.emplace(syst,
+					BTagCalibrationReader{BTagEntry::OP_RESHAPING,
+						syst, {}})
+			.first;
+		}
+		// load calibration for this flavour and reader
+		it->second.load(*calib, kv.first, sf_mode);
+	    }
+	}
     }
     // Recoil Corrector
     if(UseRecoil) {
@@ -110,7 +142,6 @@ JetAnalyzer::JetAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl
         recoilCorr->addDataFile(RecoilDataFile);
         recoilCorr->addMCFile(RecoilMCFile);
     }
-    
     
     std::cout << " --- JetAnalyzer initialization ---" << std::endl;
     std::cout << "  jet Id            :\t" << JetId << std::endl;
@@ -127,13 +158,9 @@ JetAnalyzer::JetAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl
 JetAnalyzer::~JetAnalyzer() {
     if(RecalibratePuppiMass) PuppiCorrFile->Close();
 
-//    Creates segmentation fault (?)
-//    if(UseReshape) {
-//        delete reader;
-//        delete reader_up_jes;
-//        delete reader_down_jes;
-//        delete calib;
-//    }
+    if(UseReshape) {
+	delete calib;
+    }
     delete jecUncMC;
     delete jecUncDATA;
     if(UseRecoil) delete recoilCorr;
@@ -249,7 +276,7 @@ std::vector<pat::Jet> JetAnalyzer::FillJetVector(const edm::Event& iEvent) {
                     }
                 }
 		else {
-        	    TRandom3 rnd(0);
+		    TRandom3 rnd(0);
 		    smearFactor = 1. + rnd.Gaus(0.,JERresolution*sqrt(max(0.,JERsf*JERsf-1.)));
 		    smearFactorUp = 1. + rnd.Gaus(0.,JERresolution*sqrt(max(0.,JERsfUp*JERsfUp-1.)));
 		    smearFactorDown = 1. + rnd.Gaus(0.,JERresolution*sqrt(max(0.,JERsfDown*JERsfDown-1.)));
@@ -259,7 +286,7 @@ std::vector<pat::Jet> JetAnalyzer::FillJetVector(const edm::Event& iEvent) {
             //std::cout << "smearFactor     " << smearFactor << "\n";
             //std::cout << "smearFactorUp   " << smearFactorUp << "\n";
             //std::cout << "smearFactorDown " << smearFactorDown << "\n";
-    	    pat::Jet jetJERUp = jet;
+	    pat::Jet jetJERUp = jet;
 	    pat::Jet jetJERDown = jet;
             jet.setP4(jet.p4() * smearFactor);
             jetJERUp.setP4(jet.p4() * smearFactorUp);
@@ -291,7 +318,7 @@ std::vector<pat::Jet> JetAnalyzer::FillJetVector(const edm::Event& iEvent) {
 //                 jet.setP4(smearedP4);
 //             }
 //         }
-        
+
         // Pt and eta cut
         if(jet.pt()<PtTh || fabs(jet.eta())>EtaTh) continue;
         // Quality cut
@@ -304,19 +331,21 @@ std::vector<pat::Jet> JetAnalyzer::FillJetVector(const edm::Event& iEvent) {
         jet.addUserInt("isLoose", isLooseJet(jet) ? 1 : 0);
         jet.addUserInt("isTight", isTightJet(jet) ? 1 : 0);
         jet.addUserInt("isTightLepVeto", isTightLepVetoJet(jet) ? 1 : 0);
-        jet.addUserFloat("ReshapedDiscriminator", ReshapeBtagDiscriminator(jet)[0]);
-        jet.addUserFloat("ReshapedDiscriminatorUp", ReshapeBtagDiscriminator(jet)[1]);
-        jet.addUserFloat("ReshapedDiscriminatorDown", ReshapeBtagDiscriminator(jet)[2]);
-
+	std::vector<float> reshapedDiscriminator = ReshapeBtagDiscriminator(jet);
+        jet.addUserFloat("ReshapedDiscriminator", reshapedDiscriminator[0]);
+        jet.addUserFloat("ReshapedDiscriminatorUp", reshapedDiscriminator[1]);
+        jet.addUserFloat("ReshapedDiscriminatorDown", reshapedDiscriminator[2]);
+	
         // CSV reshaping for soft drop subjets
         if(jet.hasSubjets("SoftDrop")) {
             auto const & sdSubjets = jet.subjets("SoftDrop");
             short nsj = 1;
             for (auto const & it : sdSubjets) {
                 pat::Jet subjet = it;
-                jet.addUserFloat(Form("ReshapedDiscriminator%d",nsj), ReshapeBtagDiscriminator(subjet)[0]);
-                jet.addUserFloat(Form("ReshapedDiscriminatorUp%d",nsj), ReshapeBtagDiscriminator(subjet)[1]);
-                jet.addUserFloat(Form("ReshapedDiscriminatorDown%d",nsj), ReshapeBtagDiscriminator(subjet)[2]);
+		std::vector<float> reshapedDiscriminatorSubjet = ReshapeBtagDiscriminator(subjet);
+                jet.addUserFloat(Form("ReshapedDiscriminator%d",nsj), reshapedDiscriminatorSubjet[0]);
+                jet.addUserFloat(Form("ReshapedDiscriminatorUp%d",nsj), reshapedDiscriminatorSubjet[1]);
+                jet.addUserFloat(Form("ReshapedDiscriminatorDown%d",nsj), reshapedDiscriminatorSubjet[2]);
                 ++nsj;
             }
         }
@@ -647,38 +676,44 @@ bool JetAnalyzer::isTightLepVetoJet(pat::Jet& jet) {
 std::vector<float> JetAnalyzer::ReshapeBtagDiscriminator(pat::Jet& jet) {
     float pt(jet.pt()), eta(fabs(jet.eta())), discr(jet.bDiscriminator(BTag));
     int hadronFlavour_ = std::abs(jet.hadronFlavour());
-    std::vector<float> reshapedDiscr = {discr,discr,discr};
+    std::vector<float> reshapedDiscr(3, discr);
     
     if(UseReshape) {
         BTagEntry::JetFlavor jf = BTagEntry::FLAV_UDSG;
         if (hadronFlavour_ == 5) jf = BTagEntry::FLAV_B;
-        else if (hadronFlavour_ == 4) jf = BTagEntry::FLAV_C;
-        else if (hadronFlavour_ == 0) jf = BTagEntry::FLAV_UDSG;
+	else if (hadronFlavour_ == 4) jf = BTagEntry::FLAV_C;
+	else if (hadronFlavour_ == 0) jf = BTagEntry::FLAV_UDSG;
 
-        reshapedDiscr[0] = discr*reader->eval(jf, eta, pt, discr); 
-        reshapedDiscr[1] = discr*reader_up_jes->eval(jf, eta, pt, discr); 
-        reshapedDiscr[2] = discr*reader_down_jes->eval(jf, eta, pt, discr); 
-    
-//     float reshapedDiscr_up_jes        = discr*reader_up_jes->eval(jf, eta, pt); 
-//     float reshapedDiscr_up_lf         = discr*reader_up_lf->eval(jf, eta, pt); 
-//     float reshapedDiscr_up_hfstats1   = discr*reader_up_hfstats1->eval(jf, eta, pt); 
-//     float reshapedDiscr_up_hfstats2   = discr*reader_up_hfstats2->eval(jf, eta, pt); 
-//     float reshapedDiscr_up_cferr1     = discr*reader_up_cferr1->eval(jf, eta, pt); 
-//     float reshapedDiscr_up_cferr2     = discr*reader_up_cferr2->eval(jf, eta, pt); 
-//     float reshapedDiscr_down_jes        = discr*reader_down_jes->eval(jf, eta, pt); 
-//     float reshapedDiscr_down_lf         = discr*reader_down_lf->eval(jf, eta, pt); 
-//     float reshapedDiscr_down_hfstats1   = discr*reader_down_hfstats1->eval(jf, eta, pt); 
-//     float reshapedDiscr_down_hfstats2   = discr*reader_down_hfstats2->eval(jf, eta, pt); 
-//     float reshapedDiscr_down_cferr1     = discr*reader_down_cferr1->eval(jf, eta, pt); 
-//     float reshapedDiscr_down_cferr2     = discr*reader_down_cferr2->eval(jf, eta, pt); 
-    
-//     std::cout << Form("pt, eta, b-tag, flav, reshapedDiscr      : %f, %f, %f, %d, %f\n", pt, eta, discr, jf, reshapedDiscr);
-//     std::cout << Form(" jes     : %f / %f\n", reshapedDiscr_up_jes, reshapedDiscr_down_jes);
-//     std::cout << Form(" lf      : %f / %f\n", reshapedDiscr_up_lf, reshapedDiscr_down_lf);
-//     std::cout << Form(" hfstats1: %f / %f\n", reshapedDiscr_up_hfstats1, reshapedDiscr_down_hfstats1);
-//     std::cout << Form(" hfstats2: %f / %f\n", reshapedDiscr_up_hfstats2, reshapedDiscr_down_hfstats2);
-//     std::cout << Form(" cferr1  : %f / %f\n", reshapedDiscr_up_cferr1, reshapedDiscr_down_cferr1);
-//     std::cout << Form(" cferr2  : %f / %f\n", reshapedDiscr_up_cferr2, reshapedDiscr_down_cferr2);
+	auto central_sf = cr_map.at("central").eval_auto_bounds("central", jf, eta, pt, discr);
+	// default to 1 rather than 0 if out of bounds
+	if (central_sf == 0) central_sf = 1.0;
+	
+	// Get the systematic shifts. For the time being just add up the differences from the central
+	// value in quadrature and take that as the overall systematic.
+	float up_total2 = 0;
+	float down_total2 = 0;
+	for (const auto & syst : syst_map.at(jf)) {
+	    auto syst_sf = cr_map.at(syst).eval_auto_bounds(syst, jf, eta, pt, discr);
+	    // default to 1, as above
+	    if (syst_sf == 0) syst_sf = 1.0;
+
+	    if (syst.find("up") != std::string::npos) {
+		up_total2 += (syst_sf-central_sf)*(syst_sf-central_sf);
+	    } else if (syst.find("down") != std::string::npos) {
+		down_total2 += (syst_sf-central_sf)*(syst_sf-central_sf);
+	    } else {
+		std::cerr << "Unknown systematic " << syst << " -- don't know if this is up or down!" << std::endl;
+	    }
+	}
+	float up_sf = central_sf - sqrt(up_total2);
+	float down_sf = central_sf + sqrt(down_total2);
+
+	reshapedDiscr[0] = discr*central_sf;
+	reshapedDiscr[1] = discr*up_sf;
+	reshapedDiscr[2] = discr*down_sf;
+	  
+	//std::cout << Form("pt, eta, b-tag, flav, reshapedDiscr : %f, %f, %f, %d, %f, %f, %f\n",
+	// 		  pt, eta, discr, jf, reshapedDiscr[0], reshapedDiscr[1], reshapedDiscr[2]);
     }
     return reshapedDiscr;
 }
