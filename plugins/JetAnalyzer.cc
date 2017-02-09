@@ -248,11 +248,11 @@ std::vector<pat::Jet> JetAnalyzer::FillJetVector(const edm::Event& iEvent) {
                         smearFactorDown = 1. + rnd.Gaus(0.,JERresolution*sqrt(max(0.,JERsfDown*JERsfDown-1.)));
                     }
                 }
-		        else {
-        		    TRandom3 rnd(0);
-		            smearFactor = 1. + rnd.Gaus(0.,JERresolution*sqrt(max(0.,JERsf*JERsf-1.)));
-		            smearFactorUp = 1. + rnd.Gaus(0.,JERresolution*sqrt(max(0.,JERsfUp*JERsfUp-1.)));
-		            smearFactorDown = 1. + rnd.Gaus(0.,JERresolution*sqrt(max(0.,JERsfDown*JERsfDown-1.)));
+		else {
+        	    TRandom3 rnd(0);
+		    smearFactor = 1. + rnd.Gaus(0.,JERresolution*sqrt(max(0.,JERsf*JERsf-1.)));
+		    smearFactorUp = 1. + rnd.Gaus(0.,JERresolution*sqrt(max(0.,JERsfUp*JERsfUp-1.)));
+		    smearFactorDown = 1. + rnd.Gaus(0.,JERresolution*sqrt(max(0.,JERsfDown*JERsfDown-1.)));
                 }
             }        
             //std::cout << "Rparameter      " << Rparameter << "\n";
@@ -260,7 +260,7 @@ std::vector<pat::Jet> JetAnalyzer::FillJetVector(const edm::Event& iEvent) {
             //std::cout << "smearFactorUp   " << smearFactorUp << "\n";
             //std::cout << "smearFactorDown " << smearFactorDown << "\n";
     	    pat::Jet jetJERUp = jet;
-	        pat::Jet jetJERDown = jet;
+	    pat::Jet jetJERDown = jet;
             jet.setP4(jet.p4() * smearFactor);
             jetJERUp.setP4(jet.p4() * smearFactorUp);
             jetJERDown.setP4(jet.p4() * smearFactorDown);
@@ -460,10 +460,18 @@ pat::MET JetAnalyzer::FillMetVector(const edm::Event& iEvent) {
     edm::Handle<std::vector<pat::MET> > MetCollection;
     iEvent.getByToken(MetToken, MetCollection);
     pat::MET MEt = MetCollection->front();
+    MEt.addUserFloat("ptShiftJetResUp", MEt.shiftedPt(pat::MET::METUncertainty::JetResUp));
+    MEt.addUserFloat("ptShiftJetResDown", MEt.shiftedPt(pat::MET::METUncertainty::JetResDown));
+    MEt.addUserFloat("ptShiftJetEnUp", MEt.shiftedPt(pat::MET::METUncertainty::JetEnUp));
+    MEt.addUserFloat("ptShiftJetEnDown", MEt.shiftedPt(pat::MET::METUncertainty::JetEnDown));
+    MEt.addUserFloat("ptShiftUnclusteredEnUp", MEt.shiftedPt(pat::MET::METUncertainty::UnclusteredEnUp));
+    MEt.addUserFloat("ptShiftUnclusteredEnDown", MEt.shiftedPt(pat::MET::METUncertainty::UnclusteredEnDown));
+    //MEt.addUserFloat("ptShiftJetResUpSmear", MEt.shiftedPt(pat::MET::METUncertainty::JetResUpSmear));
+    //MEt.addUserFloat("ptShiftJetResDownSmear", MEt.shiftedPt(pat::MET::METUncertainty::JetResDownSmear));
     MEt.addUserFloat("ptRaw", MEt.uncorPt());
     MEt.addUserFloat("phiRaw", MEt.uncorPhi());
-    MEt.addUserFloat("ptType1", MEt.pt());
-    MEt.addUserFloat("phiType1", MEt.phi());
+    //MEt.addUserFloat("ptType1", MEt.pt());
+    //MEt.addUserFloat("phiType1", MEt.phi());
     return MEt;
 }
 

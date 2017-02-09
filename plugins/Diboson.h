@@ -129,6 +129,7 @@ class Diboson : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
         edm::ParameterSet TriggerPSet;
         edm::ParameterSet ElectronPSet;
         edm::ParameterSet MuonPSet;
+        edm::ParameterSet MuonLoosePSet;
         edm::ParameterSet TauPSet;
         edm::ParameterSet PhotonPSet;
         edm::ParameterSet JetPSet;
@@ -145,6 +146,7 @@ class Diboson : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
         TriggerAnalyzer* theTriggerAnalyzer;
         ElectronAnalyzer* theElectronAnalyzer;
         MuonAnalyzer* theMuonAnalyzer;
+        MuonAnalyzer* theMuonLooseAnalyzer;
         TauAnalyzer* theTauAnalyzer;
         PhotonAnalyzer* thePhotonAnalyzer;
         JetAnalyzer* theJetAnalyzer;

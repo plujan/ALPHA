@@ -95,15 +95,12 @@ std::map<int, float> GenAnalyzer::FillWeightsMap(const edm::Event& iEvent) {
     iEvent.getByToken(LheToken, LheEventCollection);
     const LHEEventProduct* Product = LheEventCollection.product();
     
-    Weights[-1] = fabs(Product->originalXWGTUP()) / Product->originalXWGTUP();
-    
+    Weights[-1] = GenEventCollection->weight()/fabs(GenEventCollection->weight());
+     
     for(unsigned int i = 0; i < Product->weights().size(); i++) {
-        Weights[ std::stoi(Product->weights()[i].id) ] = Product->weights()[i].wgt / Product->originalXWGTUP();
+        Weights[ i ] = Product->weights()[i].wgt / Product->originalXWGTUP();
     }
-//    for(auto it = Product->weights().begin(); it != Product->weights().end(), i<10; ++it, i++) {
-//        std::cout << it->id << "     " << it->wgt << std::endl;
-//        Weights[it->id] = it->wgt;
-//    }
+
     return Weights;
 }
 

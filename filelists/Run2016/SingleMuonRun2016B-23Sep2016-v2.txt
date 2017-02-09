@@ -16,6 +16,7 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/Sing
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/0E89D646-A58B-E611-A267-FA163EC8BACB.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/0EE05A78-5C8B-E611-B3A6-FA163E4B71EE.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/0EF23120-3F8B-E611-A3F8-02163E019A7E.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/10030775-5C8B-E611-B972-FA163EC8CD1D.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/102E7907-508B-E611-AFBC-02163E00AE85.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/108969E8-5A8B-E611-A16D-FA163EA7BF64.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/14E54606-A58B-E611-B2A9-0025905B858A.root
@@ -23,6 +24,7 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/Sing
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/16354C5E-A58B-E611-9078-0CC47A78A340.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/166C1CCF-788B-E611-A130-0025905B8592.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/16B27544-A58B-E611-AE06-FA163ECA7BC7.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/16B62799-638B-E611-9789-0CC47A4C8E8A.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/186EB666-4D8B-E611-9457-0025905A611E.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/18E0FF7D-5C8B-E611-978B-FA163E7A8493.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/1A08B42B-588B-E611-868E-FA163EF8497C.root
@@ -35,6 +37,7 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/Sing
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/20A74429-7A8B-E611-BB42-0CC47A7C35D2.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/228F4306-508B-E611-A845-02163E013A9D.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/2433E628-628B-E611-912B-0CC47A7C3604.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/26010466-558B-E611-834D-FA163E4DCCC1.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/26C003CC-718B-E611-90C6-0CC47A7C34C4.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/2A6CF918-618B-E611-960A-0025905B85B2.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/2A762E4A-A58B-E611-AB8C-FA163E04427F.root
@@ -54,6 +57,7 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/Sing
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/3237A4F1-5A8B-E611-99C0-FA163E43B8FA.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/3286278D-428B-E611-AD6D-FA163EC63B51.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/361AAD9B-3E8B-E611-9B3F-0025905B857C.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/362F35F8-538B-E611-9779-FA163EBD86CA.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/36D3A55A-A58B-E611-981B-0025905B8576.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/3824A73D-468B-E611-A982-FA163E8336C0.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/38E0DA13-A88B-E611-B5C2-FA163EFDB13E.root
@@ -67,6 +71,7 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/Sing
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/428FE720-3F8B-E611-8C39-02163E0176BA.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/4296A91D-5B8B-E611-A582-FA163E6986B8.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/42FF3A7C-708B-E611-8CCA-0CC47A7C34B0.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/44462AD4-678B-E611-89CA-0CC47A4D7692.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/4476F96F-548B-E611-8FD5-02163E00BF65.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/4613E042-518B-E611-A974-0025905A6060.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/46505694-5B8B-E611-8C2E-0025905A60B4.root
@@ -113,6 +118,8 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/Sing
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/6A33A086-598B-E611-B6DB-0CC47A7C354C.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/6A526530-588B-E611-BA19-FA163E7EAE72.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/6C06561F-818B-E611-B7D5-0CC47A4C8F30.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/6C86AE24-628B-E611-84E0-0CC47A4D7618.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/6E06B1E6-758B-E611-816B-FA163ED40393.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/6E4FF729-448B-E611-88BB-0025905B85D0.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/6EF80133-418B-E611-81C9-0025905B857C.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/70166495-3E8B-E611-9998-FA163ED21222.root
@@ -187,17 +194,22 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/Sing
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/AA2CB5C2-428B-E611-83EB-0CC47A4D7632.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/AC4D4CC2-428B-E611-A830-0CC47A7C3610.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/ACB1F9D0-4F8B-E611-91AE-FA163EFA5204.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/ACD2AE37-548B-E611-92B2-0025905B85EE.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/ACECF659-4D8B-E611-96B7-FA163EB193ED.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/AE384B6F-778B-E611-9EA3-0CC47A4C8EE2.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/AE43A83B-7A8B-E611-94C3-02163E013EA5.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/AE4B5ADD-6E8B-E611-BABE-0CC47A4D7616.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/B02E4165-4D8B-E611-9480-FA163EFFAFAA.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/B0E94560-5B8B-E611-8602-0CC47A4D7654.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/B0F1B837-548B-E611-B782-0CC47A4C8E56.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/B201B9C1-678B-E611-9241-FA163E0CFA2B.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/B24013F6-538B-E611-BC9E-02163E0131CB.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/B436CA3E-618B-E611-812E-0025905A48F0.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/B43DD296-638B-E611-BCB6-0CC47A4D769E.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/B4B48892-588B-E611-BDD2-0025905A60D0.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/B6C4CBC2-4B8B-E611-9DB9-FA163E69DCF7.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/B8167864-638B-E611-BE1A-0025905B856C.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/B81AF41B-458B-E611-88F7-0025905B85B8.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/B83D0742-618B-E611-A159-0025905B861C.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/B8778E6F-778B-E611-A375-0025905A48BC.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/BA546F94-5B8B-E611-A610-0025905B85FC.root
@@ -206,7 +218,9 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/Sing
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/BC6A3B41-618B-E611-AA53-0025905A607A.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/BEA3F13B-7A8B-E611-AE57-0CC47A4C8E66.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/BED8D07A-638B-E611-B20D-003048FFCBB2.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/C0BA5231-658B-E611-A7CD-0025905A48F0.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/C210887D-638B-E611-881F-0025905A48F0.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/C40A6323-A58B-E611-862E-FA163E2B7B14.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/C40EB240-628B-E611-8C89-002618FDA265.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/C442029C-738B-E611-AB6C-02163E01772A.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/C457B969-4D8B-E611-AEAF-0025905A612A.root
@@ -271,6 +285,7 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/Sing
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/F6E47B56-618B-E611-A95B-0CC47A4D76CC.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/F6FB43C3-428B-E611-BBA3-0CC47A78A3F4.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/F818D9C1-6C8B-E611-AC66-FA163EF1C78F.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/F8962178-638B-E611-9E58-0CC47A4D76AA.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/F8FA1E88-5B8B-E611-A0A7-0CC47A4C8E46.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/FA4FBC99-558B-E611-A193-0CC47A4C8E56.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/100000/FA7CBC66-518B-E611-AB64-02163E00BF65.root
@@ -283,6 +298,7 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/Sing
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/70000/02ED7119-8185-E611-BA67-0CC47A7E68AA.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/70000/045F536A-5C86-E611-B05B-00266CFCCDC8.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/70000/08FD4CA0-1484-E611-96F2-24BE05C6D5B1.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/70000/0ADE523B-C086-E611-BBBC-008CFA110C78.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/70000/0CD93459-0284-E611-8737-0026B9278610.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/70000/0E7FD862-CF84-E611-BECD-F04DA275C013.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/70000/122F424E-B284-E611-831E-00266CFFBCE0.root
@@ -297,6 +313,7 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/Sing
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/70000/22E663D3-8485-E611-BD09-002590E2DD10.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/70000/2455D9F7-F383-E611-AC97-7845C4FC3A0D.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/70000/2A3464DE-7083-E611-9FA0-6CC2173BBF40.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/70000/2C0475E4-8A85-E611-87C7-44A842BECCB1.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/70000/2C56380D-BA86-E611-9477-02163E017656.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/70000/2E007A69-9287-E611-B9F8-0CC47A6C1402.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/70000/2EF1CD53-A883-E611-9B11-002590E7DE36.root
@@ -308,11 +325,13 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/Sing
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/70000/429C2399-7E85-E611-9AAA-0CC47A7E6A56.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/70000/46F9D872-D183-E611-B9E6-20CF305616D7.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/70000/48E13A56-E982-E611-B3F8-002590D9D822.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/70000/4E92518B-AF87-E611-B5FA-20CF305616BB.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/70000/50290BB1-9F83-E611-AFCE-008CFA56D794.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/70000/50DCAF99-A687-E611-A852-00215E2EAD28.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/70000/58DCA865-8086-E611-AE61-002590DE6E74.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/70000/5A7EF002-9787-E611-8231-FA163E93F3F0.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/70000/5AF8764B-A283-E611-8B7A-001F29EACF54.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/70000/5C5B6446-2586-E611-A53D-0002C94D5610.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/70000/6035FF89-4D83-E611-B731-002590D60194.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/70000/608D49AE-9F83-E611-9609-5065F38172A1.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/70000/64447FDA-8887-E611-836A-0CC47A4D768C.root
@@ -334,11 +353,15 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/Sing
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/70000/827162F6-9986-E611-888C-0025901D4982.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/70000/846198FD-8D86-E611-A3A9-002590DE6E7C.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/70000/848A480B-BD84-E611-B764-9CB654AD73FC.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/70000/8A4A3C1D-C083-E611-B0E1-5065F381C251.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/70000/8A50BE37-4E85-E611-A955-24BE05C6D5B1.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/70000/8AC84ED9-8887-E611-A8C4-FA163E757D62.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/70000/90636F45-8585-E611-A84C-001E673CFC91.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/70000/90B0004D-B385-E611-BECA-0CC47A1DF81E.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/70000/9211B570-9E87-E611-8145-141877638F39.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/70000/925C2D44-D483-E611-BB15-0002C94CD0C0.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/70000/928FAE0F-8A85-E611-A588-0CC47A010010.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/70000/92B38B1C-A886-E611-B2EC-0242AC130005.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/70000/92B7281A-1783-E611-A343-008CFAFBF52E.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/70000/941F048A-8F87-E611-9910-008CFA1112E4.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/70000/968019EC-D084-E611-A083-44A842CF0634.root
@@ -363,6 +386,7 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/Sing
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/70000/BA73D76F-AD86-E611-AD4D-0025901D46E4.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/70000/BA8DDFE1-5B85-E611-B0D0-A0000420FE80.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/70000/C0D23D57-CA84-E611-A1ED-20CF3056170E.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/70000/C206C6E8-8885-E611-B074-008CFAF554D0.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/70000/C274A7BA-C086-E611-83A3-02163E017702.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/70000/C277ED41-D182-E611-AC93-7845C4F92EC7.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/70000/CACED99E-B587-E611-9ED7-C45444922D3C.root
@@ -379,6 +403,7 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/Sing
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/70000/E2FF2370-C086-E611-917C-FA163E325FB4.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/70000/ECEFD0F1-4583-E611-AAC7-001D09FDDF6C.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/70000/F4409373-CF84-E611-9CAB-008CFAF74B22.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/70000/F89AEADF-CB84-E611-A48C-901B0E542804.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/0026FC75-A386-E611-BFF5-FA163E4D0B04.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/00746CB5-AA86-E611-BFFA-02163E017614.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/00A4B26D-0387-E611-865C-0CC47A4D7630.root
@@ -407,6 +432,8 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/Sing
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/0840E396-7B84-E611-A426-0CC47A57CBBC.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/08627AE5-3E87-E611-B9A3-0025905B8596.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/08DFD754-4587-E611-BF1E-001E67581344.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/08E2B3A0-7586-E611-9BBC-FA163E780213.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/08E6E333-CC86-E611-8C1F-002590DE6E22.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/0A32E57F-3087-E611-8561-002590DE6E5C.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/0A3D817F-7087-E611-B948-C45444922C46.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/0A42E6A5-3087-E611-8834-FA163E5EDDD0.root
@@ -428,6 +455,7 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/Sing
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/0E77C91E-C486-E611-912B-C45444922949.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/0ECCF7C9-4487-E611-89A7-F04DA2757237.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/0ECD7646-9E86-E611-8076-FA163E42AD0E.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/0ED72E90-6086-E611-B36B-D4AE526A0A39.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/0EDD59D3-AA86-E611-A1C2-00266CF94A84.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/101C4A7A-B986-E611-AD84-FA163E5EDD1D.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/106D0D4B-3887-E611-8155-FA163EA08A8F.root
@@ -458,6 +486,7 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/Sing
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/1899EB5D-9F82-E611-A8C6-008CFA197DB8.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/18C8DE61-D986-E611-B010-0CC47A1E0C76.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/18DE38F1-3D87-E611-8EC1-FA163EB60CA4.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/1A020A90-B786-E611-8301-842B2B5C2299.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/1A0DC914-6D87-E611-9643-02163E015E42.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/1A55940B-FA86-E611-A924-FA163E652759.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/1A7B4802-2987-E611-A93E-3417EBE706C6.root
@@ -482,9 +511,11 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/Sing
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/1EE3375D-6E86-E611-AA17-FA163E0F6259.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/1EF9D5A0-8E87-E611-9333-0242AC130002.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/201FC070-0787-E611-B0D0-B083FED13C9E.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/2025ACF8-9C86-E611-A8D7-B499BAABD8C6.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/2064E7DA-4487-E611-A50C-D8D385AE8BD0.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/206EDE71-3F86-E611-9302-02163E015DE6.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/20811501-0187-E611-B478-FA163EDA9587.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/2094F181-4587-E611-9CA8-2C600C7BF9BE.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/20991F1A-3E87-E611-9D06-0025901D46E4.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/20B3FE98-9D87-E611-B359-0CC47A706FD6.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/20EFF833-BE86-E611-9712-0CC47AC08BF8.root
@@ -506,6 +537,7 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/Sing
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/22F6268F-3087-E611-A32F-02163E01140E.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/22FA23BC-B385-E611-A187-02163E015110.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/22FCBD05-FA86-E611-8830-FA163E1755A3.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/243ECED5-0287-E611-A96E-002590DE6E3C.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/2460B404-9383-E611-9F89-001E67F8FA3D.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/24977F0E-9D86-E611-BD7D-FA163E630806.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/249FF77A-B086-E611-8056-FA163E0AC266.root
@@ -525,6 +557,7 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/Sing
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/2A53E396-1687-E611-8685-02163E016438.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/2A8F7D0E-DF84-E611-8A68-00259029E84C.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/2A971D08-9686-E611-B152-02163E014A94.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/2A9A3685-7586-E611-952B-FA163ED08EC3.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/2AA8A24D-7D87-E611-A42D-0CC47A4D7614.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/2AC2861A-9086-E611-AF54-FA163E9FDE85.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/2AC877F2-3D87-E611-BA85-FA163E5EB566.root
@@ -544,6 +577,7 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/Sing
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/2CE2360C-3087-E611-97F7-0025904C637A.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/2CF8AD59-E786-E611-A45F-FA163E4AFDC4.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/2CFC91CC-E686-E611-B1EA-FA163E9F6DF2.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/2E098862-4B87-E611-AB1D-0025905B85EE.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/2E0BB683-8286-E611-B534-FA163EEF24EE.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/2E53B76B-FB86-E611-89FE-FA163EEBEE73.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/2ED9DAE7-7B86-E611-ACF5-0CC47A1DF60C.root
@@ -551,6 +585,7 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/Sing
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/3000D1EE-3286-E611-8989-3417EBE70684.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/301E5B0A-3787-E611-BA06-002590E7E07A.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/30308B3C-0987-E611-8176-02163E00EAB2.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/303A93DF-2E84-E611-B413-24BE05C6E742.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/305FA26E-6D87-E611-B449-0242AC130003.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/306D5CF8-5787-E611-A693-FA163E48A01C.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/3073D661-B086-E611-A612-90B11CBCFF8F.root
@@ -580,6 +615,7 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/Sing
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/3861799A-F786-E611-9AA6-0242AC130003.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/386BC870-AD83-E611-92D6-008CFA197DB4.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/389278D5-5E87-E611-A89F-0025905B85BC.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/389BD28D-B786-E611-A29E-002590E7E02E.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/38E27E7A-FA86-E611-A271-901B0E5427A4.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/3A110706-0187-E611-8941-FA163E4EF10F.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/3A2935FC-2387-E611-9768-FA163EDA0E29.root
@@ -604,6 +640,7 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/Sing
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/3E6DC270-A386-E611-B571-FA163E04FBD7.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/3E723095-5187-E611-B61E-0025905B85B6.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/3E826ACC-8F86-E611-9EB4-FA163E9BE3A6.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/3E8DB49F-0787-E611-9C04-02163E012EC0.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/3EC0C913-C486-E611-928A-00269E95B1B8.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/3ECEEC85-8987-E611-80EB-1C6A7A21B7AD.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/3EFA8646-6787-E611-BDE0-0CC47A4D7626.root
@@ -682,6 +719,7 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/Sing
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/50CFCE76-A486-E611-BC5A-FA163E5CAEB8.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/50E791DC-F486-E611-A573-0025B3E025B6.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/520501A2-5987-E611-B575-FA163E652759.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/5225DF1E-3E87-E611-9C3D-1CB72C1B2D80.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/525E1E3E-EF84-E611-BE01-0CC47A6C06C4.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/5270F092-1F85-E611-A7F5-BC305B390A66.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/52CAF74F-7787-E611-AAAE-00266CF94C44.root
@@ -706,9 +744,12 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/Sing
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/58C60DF7-F986-E611-BFF8-FA163E14FF7A.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/58CD8448-8A86-E611-92FD-FA163E1E3A6F.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/58CE6965-6887-E611-80CE-02163E00CE62.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/5A0A94DA-4487-E611-B35E-0CC47A6C14C8.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/5A0D5CF3-3D87-E611-AE5C-0025905A60B6.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/5A2FD7B1-8886-E611-81A8-0025905C2D9A.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/5A61B931-CC86-E611-94C9-001E67FA403C.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/5A649301-0187-E611-9B5E-FA163E0BC254.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/5AC13F14-9987-E611-A8A4-0025904C5182.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/5AC8567C-FA86-E611-989D-001E67F8FA4C.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/5ADF334F-8986-E611-9924-901B0E5427B6.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/5C130F43-2987-E611-AC7D-001E6739C8C1.root
@@ -743,6 +784,7 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/Sing
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/646E6C57-6E86-E611-BE24-FA163EC062B3.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/648162C7-4487-E611-ACF3-C45444922C46.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/64A11467-9B87-E611-84C4-02163E00BF00.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/64A60ABB-ED86-E611-AB9B-02163E01646D.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/64B2FAEB-1587-E611-AF81-FA163E3F5DC9.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/64B3CE0A-9587-E611-BE4F-0242AC130002.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/64D88CC8-1886-E611-A719-02163E0130D0.root
@@ -778,6 +820,7 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/Sing
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/6A6DF15A-A486-E611-B716-02163E01653D.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/6A827E11-9786-E611-870B-02163E015FA4.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/6ADEB678-FA86-E611-87E0-00237DF29430.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/6C18088D-4487-E611-966B-0025905B8612.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/6C2C86DA-EC86-E611-945F-0CC47A706FD6.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/6C39C5EA-6C87-E611-A9F5-7845C4F9CF06.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/6C91680D-BD87-E611-9A07-001E6739AC71.root
@@ -795,6 +838,7 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/Sing
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/726B8ACC-EE85-E611-AE73-02163E00F4B8.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/728F2F20-9086-E611-B1DF-0017A4770C3C.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/72AD2941-7586-E611-B68C-02163E014A54.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/72AE5DAB-1286-E611-8E0C-FA163E59232E.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/72F759F0-5E87-E611-B9F3-009C02AAB554.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/72FD67C3-6887-E611-B888-002590E7E004.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/74092B9A-8E87-E611-9259-C454449229EB.root
@@ -811,6 +855,7 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/Sing
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/76141B49-3887-E611-9621-02163E01604A.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/7655A273-F982-E611-B8D3-008CFA197D38.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/769B8CC1-FC83-E611-8ECC-44A842CFC9F3.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/76A20114-3087-E611-90AD-0CC47A7C34B0.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/7800F91E-D584-E611-A496-008CFA06477C.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/780BB14F-8A86-E611-BCCA-FA163E677F6D.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/780FA777-F486-E611-9070-848F69FBC12A.root
@@ -832,6 +877,7 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/Sing
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/7A4A2CDF-1884-E611-BC7F-0CC47A1E046C.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/7A4DAE99-A184-E611-A400-38EAA7A6DBC8.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/7A6D5C88-E786-E611-B736-002590E7DF2A.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/7A922773-A386-E611-9D7D-FA163E5EDDD0.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/7A9DF744-3787-E611-B201-002590DE6E6A.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/7AD3D677-BF84-E611-ACF1-00266CFCC214.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/7AD4F372-A486-E611-99C3-FA163EC29AB0.root
@@ -839,6 +885,7 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/Sing
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/7C0E1481-5584-E611-A94E-00266CFE6BD0.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/7C0EC7C0-4B87-E611-87AB-0CC47A0092D0.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/7C168990-6687-E611-B5BC-00266CF94EAC.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/7C3AA2CD-8886-E611-9091-FA163E325FB4.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/7C3CE16C-8F86-E611-B504-002590E7DFFC.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/7C3E937F-8286-E611-9104-20CF305B064B.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/7C443770-8287-E611-936A-7845C4FC37C1.root
@@ -855,12 +902,14 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/Sing
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/7E2EA2E9-2F87-E611-AEC8-20CF3027A592.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/7E7CBABC-8787-E611-8589-FA163EB9D731.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/7E81C82D-BE86-E611-80B5-9CB654AEB2C6.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/7E91CAC9-8886-E611-A829-001E67C9AF38.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/7E92C692-D483-E611-95E6-001E67504445.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/7EC1E8D6-AA86-E611-A415-68B59972C37E.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/7EC8AC66-FA86-E611-952F-02163E015EB7.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/7EDBF89F-2F87-E611-B24B-0CC47AA992D0.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/7EE40418-3E87-E611-8E21-0242AC130002.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/7EF37366-5887-E611-9D55-0242AC130002.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/7EF988DA-5F87-E611-AA7C-FA163E8F8452.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/800147B7-DF85-E611-860C-02163E013CD5.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/802D8218-3E87-E611-8595-002590E7DDE6.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/80322327-B786-E611-9166-0025904B2C2C.root
@@ -888,10 +937,12 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/Sing
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/860BCF2A-9687-E611-8ABA-0025907254D4.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/861F3CDA-7487-E611-9944-003048FFCBB8.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/8635AACA-4B87-E611-BD7C-008CFA05EA18.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/867AEE75-BD86-E611-9853-0025905C94D2.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/86A124B2-8584-E611-81C7-1CB72C1B2D80.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/86BBC973-6687-E611-94DC-FA163E380147.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/88601372-CD86-E611-A675-FA163E53FF71.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/887A8CB6-5E87-E611-AABA-FA163E1F8766.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/88BE1B02-DE84-E611-8AD2-008CFA05E898.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/88C67237-8986-E611-ABAB-FA163EF77932.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/8A037F2D-AC86-E611-9B7B-02163E00B9D2.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/8A4D0A9A-6C84-E611-B6C8-0CC47A7DFEC4.root
@@ -938,6 +989,7 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/Sing
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/94CBF7A4-5386-E611-8A0A-FA163E780213.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/960F3EF7-9C86-E611-BBEE-D4856459AC30.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/9615E3FF-0187-E611-9162-02163E014989.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/96354394-C784-E611-9E3F-00237DF26440.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/96D79F51-2287-E611-850E-001EC9ADC7E9.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/96D9687E-F386-E611-B5A9-FA163E7C4AF3.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/96E58ECD-4487-E611-953D-0025901D46E4.root
@@ -948,6 +1000,7 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/Sing
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/98A1F900-EE86-E611-B9C0-6CC2173C4580.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/98BDDA85-5D86-E611-AA34-008CFA051614.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/98C34A1E-B183-E611-A3E1-008CFA000898.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/98D48585-4587-E611-A70C-FA163E97E95E.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/98FA5931-1D87-E611-A212-02163E015E42.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/9A0400DD-6E87-E611-A4A8-FA163EACCF1F.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/9A5CEB4F-6E86-E611-AFCC-FA163E97E95E.root
@@ -997,6 +1050,7 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/Sing
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/A8CD2235-2F84-E611-82E7-549F35AD8B88.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/A8EB85FF-9586-E611-883A-0025905C4300.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/A8F97346-A386-E611-9449-842B2B7609C0.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/AA12F655-D386-E611-A6EA-001E67504FFD.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/AA15C35D-4B87-E611-8487-FA163E5C84A6.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/AA44C5C6-5187-E611-99AB-20CF3027A56A.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/AA57E87D-9B87-E611-969D-FA163E16E2D5.root
@@ -1017,6 +1071,7 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/Sing
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/ACF994A6-E686-E611-8CAD-FA163E325FB4.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/AE0E28A5-C586-E611-8F1D-FA163EF71288.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/AE6274DA-6C87-E611-BEFD-FA163E7C56FB.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/AE814575-5F87-E611-A262-0025901D48AA.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/AE913214-8287-E611-A4EF-FA163E8CCFC6.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/AE917A77-FA86-E611-8AA0-34E6D7BEAF0E.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/AE93F46E-0A86-E611-A318-0025905C3D3E.root
@@ -1025,9 +1080,11 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/Sing
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/AEE9E6F6-3D87-E611-93E6-0025905B859A.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/B00B74BB-2287-E611-986F-FA163EFB7320.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/B0119800-E186-E611-A9F7-FA163E4ADEA2.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/B070CFCF-DF86-E611-9032-FA163E01BCAD.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/B078C22F-8487-E611-9262-00266CFE6C40.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/B0C6B4BD-F484-E611-8DF4-B8CA3A70BAC8.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/B0F17054-DC83-E611-A62A-001E67F8F6F0.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/B0F1E7DC-7487-E611-97CF-848F69FD477B.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/B2013D03-0187-E611-817D-FA163E50F7ED.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/B210821E-A983-E611-904F-0025901D0948.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/B2255DD2-7487-E611-986F-0025904CF766.root
@@ -1060,6 +1117,7 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/Sing
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/B8897D1A-A287-E611-955A-0242AC130002.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/B8946392-8F86-E611-A374-FA163E3D6D19.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/B898588F-B786-E611-80BA-34E6D7E05F01.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/B8A87094-0787-E611-A565-FA163E03104E.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/B8AB54E1-C486-E611-9A9F-00259021A076.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/B8E0E319-3187-E611-B099-008CFA06470C.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/B8ED46DE-7487-E611-A0CD-02163E01762A.root
@@ -1137,6 +1195,7 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/Sing
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/CA72A970-7587-E611-8D03-0025904C6376.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/CABAC5E4-1587-E611-B6FB-FA163E4ADEA2.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/CAE89C30-7E87-E611-BC8A-842B2B7680DF.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/CC113433-D386-E611-9EBC-1CB72C0A3DBD.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/CC2C7620-7586-E611-9A01-02163E013BF9.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/CC504ED2-CD84-E611-8FC4-549F358EB762.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/CC7137E6-9882-E611-A37E-0242AC130003.root
@@ -1158,6 +1217,7 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/Sing
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/D03BB200-A784-E611-AEA8-0017A4770C00.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/D044B728-6D83-E611-A60F-FA163E245C03.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/D053A384-7B87-E611-B6CC-008CFA197DF8.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/D06AB1FE-FB85-E611-94C5-0CC47A07FA1C.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/D07C2C36-F383-E611-AF55-3417EBE706C3.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/D0C734FA-2887-E611-ADD6-901B0E5427B0.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/D0EE0B31-0887-E611-A7C0-0025905B85AE.root
@@ -1190,8 +1250,10 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/Sing
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/D8088FE6-2F87-E611-B4A5-20CF3027A5EF.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/D80CF479-B186-E611-9236-02163E015142.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/D86BCA67-D986-E611-80B0-001E67FA413B.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/D86E41C0-C586-E611-94FA-00144F4525AE.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/D87C5334-6887-E611-BBAE-FA163EFAF74E.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/D87E2DD5-AA86-E611-BC53-0CC47A1E0DCA.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/D88AF974-AB86-E611-897C-001E67505005.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/D88B6EDB-EC86-E611-903E-002590DE6E64.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/D89E9719-3187-E611-A032-FA163E6B03F9.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/D8B47D6A-8F86-E611-966A-001E4F1BC1D4.root
@@ -1205,6 +1267,7 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/Sing
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/DAF6B529-1C87-E611-91C6-02163E01494B.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/DC377D74-F486-E611-944C-0CC47A1E048C.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/DC879558-7B86-E611-B61B-02163E00B9D2.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/DC8BADB4-B385-E611-AF9A-FA163EE9A603.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/DE2CD61C-7586-E611-BFC3-FA163ED08EC3.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/DE456C77-D986-E611-B72D-FA163EE209EF.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/DE56B865-A187-E611-AF3E-FA163EB3D773.root
@@ -1233,6 +1296,7 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/Sing
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/E4F3AFDC-4487-E611-9CB5-002590D60000.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/E628E505-3084-E611-85F5-44A842CFD60C.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/E65F624B-8986-E611-B0D8-00237DF2B4E0.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/E69121E1-1587-E611-9F55-0CC47A4C8E34.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/E697AF9C-F386-E611-90C9-0025905D1D00.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/E69ACD56-2287-E611-A07C-002590E7E02E.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/E6F18820-8287-E611-80CD-C454449229AF.root
@@ -1258,6 +1322,7 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/Sing
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/EE410D66-0984-E611-8FCD-4C79BA320D1D.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/EE66EF12-3E87-E611-933D-002481DE4CC2.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/EE68AF05-1687-E611-8AA1-002590D8C7E2.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/EE6BAAF9-9C86-E611-92C9-001EC9ADC9BF.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/EE8DFA78-BB85-E611-8DE1-02163E012EC2.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/EEA27B8C-5187-E611-9A3E-7845C4FC3A61.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80000/EEF21E2A-3E87-E611-A89A-001E67504D2D.root
@@ -1348,6 +1413,7 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/Sing
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80001/203CAF2E-EC87-E611-905C-14187764197C.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80001/26E5EDFB-AE87-E611-993E-001E6757E05C.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80001/2AF027DF-2288-E611-BF02-008CFA197DA8.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80001/2CDEAF86-A888-E611-8D2B-002590E7DF2A.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80001/2E5239F5-8A88-E611-AC70-002590207D00.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80001/2EB587C6-C688-E611-893C-02163E01494E.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80001/309EAB6D-CB87-E611-981E-001E0BC1E0AC.root
@@ -1372,6 +1438,7 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/Sing
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80001/56B0A82C-DC87-E611-A824-0025905C3D40.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80001/56EDEAAE-0288-E611-9B5F-0025904AC2CC.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80001/58753AF9-9C88-E611-B32E-9CB65404FBA0.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80001/5C69BC5D-B587-E611-A8F4-0CC47A4D760C.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80001/5EDBBB70-AB88-E611-8C75-0025905D1C54.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80001/5EE55177-A187-E611-9AE5-0025905B8606.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80001/620A060B-BD87-E611-B39E-002590E7DE36.root
@@ -1384,6 +1451,8 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/Sing
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80001/6E4F37D5-5188-E611-B807-5C260AFFFB63.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80001/6EF51CAC-DB87-E611-91C0-0CC47A706D26.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80001/7054FE69-D687-E611-976C-0025905A60D0.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80001/70A59E38-D087-E611-A658-842B2B7609C0.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80001/70F15BC1-FC87-E611-9EB0-0CC47A78A33E.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80001/74A88973-A788-E611-A220-0CC47A01035C.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80001/760B14B5-D687-E611-8697-0CC47ABB517C.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80001/7648B8C8-BE87-E611-B2B5-0CC47A13D2A4.root
@@ -1408,6 +1477,7 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/Sing
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80001/A208E9A5-CE87-E611-8C54-0242AC130004.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80001/A26DF50E-C287-E611-89E4-0025905A6080.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80001/A6474CA0-4089-E611-B767-0CC47A78A3F8.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80001/A6B5C41F-D287-E611-941D-38EAA7A6D65C.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80001/A6BF3F16-E887-E611-AB37-C45444922D6C.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80001/A6D296A7-A187-E611-BE41-02163E014CAE.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80001/AA10C60B-C287-E611-A892-0CC47A4C8EA8.root
@@ -1436,6 +1506,7 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/Sing
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80001/DEF946FE-AE87-E611-BD1D-0026B94DBDFD.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80001/E0C7B115-D587-E611-A5C2-0CC47A706D18.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80001/E0D41BB4-B587-E611-8D29-90B11C2C93B1.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80001/E49F7AB9-AF87-E611-8C72-0CC47A78A360.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80001/E6EA2673-CA87-E611-B8F9-3417EBE520A5.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80001/EA3235F9-A887-E611-BF5E-002590E3A0FA.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/80001/EC9F4D50-A287-E611-9CCA-D48564599C64.root
@@ -1450,10 +1521,13 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/Sing
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/90000/0A1D2674-5083-E611-AD04-A0000420FE80.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/90000/0C885375-D184-E611-AB5C-001F2908BE30.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/90000/0CDE8C03-5D86-E611-B0E4-008CFA051614.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/90000/0E4E584C-9185-E611-931E-0CC47A1DF1A4.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/90000/121A0B3B-7C83-E611-9E52-A0369F6369D2.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/90000/14168575-F183-E611-ACC8-002590D8C800.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/90000/14D43B12-0E83-E611-9D34-901B0E542804.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/90000/1A67110E-9384-E611-9569-848F69FD4ED4.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/90000/1E2ECF65-FE83-E611-86BB-00269E95B124.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/90000/1EF75479-A485-E611-B0F3-D4856459AC30.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/90000/20E2CD8F-C984-E611-AD07-00266CFFC0C0.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/90000/20E98A65-2184-E611-9169-24BE05C33C81.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/90000/246A2702-0083-E611-9284-A0369F7F92E8.root
@@ -1467,6 +1541,7 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/Sing
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/90000/42B2DE7E-B984-E611-B572-008CFA05E874.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/90000/44B2880A-6F83-E611-9A20-7845C4F92E7F.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/90000/4C7BD153-CC86-E611-8AAB-FA163E4CD9FC.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/90000/4CBB0C27-2184-E611-8FFC-001E673C84B9.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/90000/50F52669-1483-E611-AE99-848F69FDFC5C.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/90000/54443850-0583-E611-9B2C-001E67504F1D.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/90000/5478C007-AA83-E611-AEF7-3417EBE52852.root
@@ -1479,6 +1554,7 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/Sing
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/90000/7246DFCA-2283-E611-8464-0025901993A2.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/90000/7260CA5D-3083-E611-9910-008CFA13B8A8.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/90000/72EB80DF-4E83-E611-9997-001E67FA394D.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/90000/78A4A786-8286-E611-B4AB-002590DE6E86.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/90000/78C6F66A-1C83-E611-B436-0CC47A1E0DC2.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/90000/78F1B190-D284-E611-A7E5-E41D2D08DFB0.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/90000/8035ECB7-D984-E611-8782-001E675827BC.root
@@ -1501,10 +1577,12 @@ dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/Sing
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/90000/CA39ADBC-D984-E611-BDA5-F4E9D497BBE0.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/90000/CA5ADD6A-6784-E611-B7FB-0025904B7FC0.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/90000/CC823B3F-6183-E611-86D5-842B2B76832A.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/90000/D47FA523-E182-E611-B90A-10BF481A0263.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/90000/D8C20D77-F282-E611-949C-848F69FD4C76.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/90000/DC40F3D8-5E84-E611-A28A-28924A33B9AA.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/90000/E490B72D-2183-E611-A11F-002590DE3AC0.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/90000/E6A78A49-FF83-E611-9ACE-00266CFB9008.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/90000/EEE738EE-B686-E611-98A6-0CC47AC08C34.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/90000/F4FE3939-8185-E611-B42A-008CFAFC0416.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/90000/FAF4EE8B-A986-E611-A2A6-0CC47A706DC0.root
 dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleMuon/MINIAOD/23Sep2016-v2/90000/FE8B3E77-5483-E611-83B6-0023AEEEB559.root
