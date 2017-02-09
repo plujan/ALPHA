@@ -34,10 +34,19 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(options.maxE
 if len(options.inputFiles) == 0:
     process.source = cms.Source('PoolSource',
         fileNames = cms.untracked.vstring(
-           # one single HH SM sample for test
-           # 'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISummer16MiniAODv2/GluGluToHHTo4B_node_SM_13TeV-madgraph/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/120000/0C2B8A9A-E7C9-E611-B1EE-0025905A610A.root'
+           # HH SM samplests for test or local running:
+           'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISummer16MiniAODv2/GluGluToHHTo4B_node_SM_13TeV-madgraph/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/120000/0C2B8A9A-E7C9-E611-B1EE-0025905A610A.root',
+#'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISummer16MiniAODv2/GluGluToHHTo4B_node_SM_13TeV-madgraph/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/120000/0E0B986A-D2C9-E611-8317-0CC47A78A42E.root',
+#'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISummer16MiniAODv2/GluGluToHHTo4B_node_SM_13TeV-madgraph/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/120000/2AE330EF-01CA-E611-BAF0-0025905A6084.root',
+#'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISummer16MiniAODv2/GluGluToHHTo4B_node_SM_13TeV-madgraph/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/120000/76325CFF-20CA-E611-900C-0025905A612C.root',
+#'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISummer16MiniAODv2/GluGluToHHTo4B_node_SM_13TeV-madgraph/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/120000/769A99FD-D7C9-E611-917F-0025905A60B6.root',
+#'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISummer16MiniAODv2/GluGluToHHTo4B_node_SM_13TeV-madgraph/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/120000/9420C777-D7C9-E611-9239-0025905B8604.root',
+#'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISummer16MiniAODv2/GluGluToHHTo4B_node_SM_13TeV-madgraph/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/120000/AEA10E99-E7C9-E611-AE8F-0CC47A78A458.root',
+#'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISummer16MiniAODv2/GluGluToHHTo4B_node_SM_13TeV-madgraph/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/120000/B8E39736-FCC9-E611-80DB-0CC47A7C35D2.root',
+#'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISummer16MiniAODv2/GluGluToHHTo4B_node_SM_13TeV-madgraph/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/120000/C24A74F1-20CA-E611-A482-0025905A612A.root',
+#'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISummer16MiniAODv2/GluGluToHHTo4B_node_SM_13TeV-madgraph/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/70000/E09AB7DB-FAC7-E611-B51C-0CC47A7C3420.root'
            #DATA reReco - BTagCSV :
-            'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/BTagCSV/MINIAOD/23Sep2016-v2/90000/04A95A66-E587-E611-BE8F-20CF307C98B5.root'
+           # 'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/BTagCSV/MINIAOD/23Sep2016-v2/90000/04A95A66-E587-E611-BE8F-20CF307C98B5.root'
         )
     )
 # production: read externally provided filelist
@@ -122,6 +131,36 @@ process.BadChargedCandidateFilter.PFCandidates = cms.InputTag('packedPFCandidate
 process.load('RecoMET.METFilters.BadChargedCandidateSummer16Filter_cfi')
 process.BadChargedCandidateSummer16Filter.muons = cms.InputTag('slimmedMuons')
 process.BadChargedCandidateSummer16Filter.PFCandidates = cms.InputTag('packedPFCandidates')
+
+#MET corrections and uncertainties
+#from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
+#if isData:
+#    jecFile = cms.string('%s/src/Analysis/ALPHA/data/%s/%s_Uncertainty_AK4PFchs.txt' % (os.environ['CMSSW_BASE'], JECstring, JECstring))
+#else:
+#    jecFile = cms.string('%s/src/Analysis/ALPHA/data/Summer16_23Sep2016V3_MC/Summer16_23Sep2016V3_MC_Uncertainty_AK4PFchs.txt' % os.environ['CMSSW_BASE'])
+#
+#runMetCorAndUncFromMiniAOD(process,
+ #                           #metType="PF",
+ #                           #correctionLevel=["T1","Smear"],
+ #                           #computeUncertainties=True,
+ #                          #produceIntermediateCorrections=False,
+ #                           #addToPatDefaultSequence=False,
+ #                           isData=isData,
+ #                           #onMiniAOD=True,
+ #                           #reapplyJEC=reapplyJEC,
+ #                           #reclusterJets=reclusterJets,
+ #                           #jetSelection=jetSelection,
+ #                           #recoMetFromPFCs=recoMetFromPFCs,
+ #                           #autoJetCleaning=jetCleaning,
+ #                           #manualJetConfig=manualJetConfig,
+ #                           #jetFlavor=jetFlavor,
+ #                           #jetCorLabelUpToL3=jetCorLabelL3,
+ #                          #jetCorLabelL3Res=jetCorLabelRes,
+ #                          #jecUnFile=jecFile,
+ #                           #CHS=CHS,
+ #                           #postfix=postfix,
+ #                           )
+#
 
 if isData:
     filterString = "RECO"
@@ -355,7 +394,7 @@ process.ntuple = cms.EDAnalyzer('HHAnalyzer',
         btagDB = cms.string('{0}/src/Analysis/ALPHA/data/CSVv2.csv'.format(os.environ['CMSSW_BASE'])),
         jet1btag = cms.int32(0), # 0: no selection, 1: loose, 2: medium, 3: tight
         jet2btag = cms.int32(0),
-        met = cms.InputTag('slimmedMETs'),
+        met = cms.InputTag('slimmedMETs','','ALPHA'),#("patPFMetT1Smear"),#
         metRecoil = cms.bool(False),
         metRecoilMC = cms.string('{0}/src/Analysis/ALPHA/data/recoilfit_gjetsMC_Zu1_pf_v5.root'.format(os.environ['CMSSW_BASE'])),
         metRecoilData = cms.string('{0}/src/Analysis/ALPHA/data/recoilfit_gjetsData_Zu1_pf_v5.root'.format(os.environ['CMSSW_BASE'])),
@@ -406,7 +445,7 @@ process.ntuple = cms.EDAnalyzer('HHAnalyzer',
         btagDB = cms.string('{0}/src/Analysis/ALPHA/data/CSVv2.csv'.format(os.environ['CMSSW_BASE'])),
         jet1btag = cms.int32(0), # 0: no selection, 1: loose, 2: medium, 3: tight
         jet2btag = cms.int32(0),
-        met = cms.InputTag('slimmedMETs'),
+        met = cms.InputTag('slimmedMETs','','ALPHA'),#("patPFMetT1Smear"),#
         metRecoil = cms.bool(False),
         metRecoilMC = cms.string(''),
         metRecoilData = cms.string(''),
