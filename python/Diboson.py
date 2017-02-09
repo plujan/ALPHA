@@ -246,11 +246,11 @@ process.load('JetMETCorrections.Configuration.JetCorrectors_cff')
 
 #quark gluon likelihood upstream modules
 qgDatabaseVersion = 'v2b' # check https://twiki.cern.ch/twiki/bin/viewauth/CMS/QGDataBaseVersion
-from CondCore.DBCommon.CondDBSetup_cfi import *
+from CondCore.CondDB.CondDB_cfi import *
+CondDB.connect = cms.string('frontier://FrontierProd/CMS_COND_PAT_000')
 QGPoolDBESSource = cms.ESSource('PoolDBESSource',
-      CondDBSetup,
-      toGet = cms.VPSet(),
-      connect = cms.string('frontier://FrontierProd/CMS_COND_PAT_000'),
+      CondDB,
+      toGet = cms.VPSet()
 )
 for type in ['AK4PFchs','AK4PFchs_antib']:
     QGPoolDBESSource.toGet.extend(cms.VPSet(cms.PSet(
