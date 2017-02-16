@@ -14,7 +14,7 @@ process = cms.Process('ALPHA')
 process.load('FWCore.MessageService.MessageLogger_cfi')
 process.MessageLogger.cerr.threshold = 'ERROR'
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(5000) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
 
 # input
 # default: if no filelist from command line, run on specified samples
@@ -41,11 +41,34 @@ process.TFileService = cms.Service('TFileService',
 isData = ('/store/data/' in process.source.fileNames[0])
 isCustom = ('GluGluToAToZhToLLBB' in process.source.fileNames[0])
 isReHLT = ('_reHLT_' in process.source.fileNames[0])
+isReRecoBCD = ('Run2016B-23Sep' in sample or 'Run2016C-23Sep' in sample or 'Run2016D-23Sep' in sample)
+isReRecoEF = ('Run2016E-23Sep' in sample or 'Run2016F-23Sep' in sample)
+isReRecoG = ('Run2016G-23Sep' in sample)
+isReRecoH = ('Run2016H-PromptReco' in sample)
+isPromptReco = (('PromptReco' in sample) and (not isReRecoH))
 print 'Running on', ('data' if isData else 'MC'), ', sample is', (
       'Default dataset' if len(options.inputFiles) == 0 else sample)
 if isReHLT: print '-> re-HLT sample'
 isDibosonInclusive = (True if (sample=='WW_TuneCUETP8M1_13TeV-pythia8_v1' or sample=='WZ_TuneCUETP8M1_13TeV-pythia8_v1' or sample=='ZZ_TuneCUETP8M1_13TeV-pythia8_v1') else False)
 if isDibosonInclusive: print '-> Pythia LO sample'
+if isReRecoBCD:
+    print "ReReco B-C-D era for JEC on data"
+    JECstring = "Summer16_23Sep2016BCDV3_DATA"
+elif isReRecoEF:
+    print "ReReco E-F era for JEC on data"
+    JECstring = "Summer16_23Sep2016EFV3_DATA"
+elif isReRecoG:
+    print "ReReco G era for JEC on data"
+    JECstring = "Summer16_23Sep2016GV3_DATA"
+elif isReRecoH:
+    print "ReReco H era for JEC on data"
+    JECstring = "Summer16_23Sep2016HV3_DATA"
+elif isPromptReco:
+    print "Prompt reco, old V6 JEC (before dec 2016)"
+    JECstring = "Spring16_25nsV6_DATA"
+else:
+    #print "MC for JEC"
+    JECstring = "Spring16_25nsV6_DATA"
 #isData = False
 
 #-----------------------#
@@ -157,6 +180,11 @@ elif not(isData): GT = '80X_mcRun2_asymptotic_2016_TrancheIV_v7'
 process.GlobalTag = GlobalTag(process.GlobalTag, GT)
 print 'GlobalTag', GT
 
+#electron/photon regression modules
+from EgammaAnalysis.ElectronTools.regressionWeights_cfi import regressionWeights
+process = regressionWeights(process)
+process.load('EgammaAnalysis.ElectronTools.regressionApplication_cff')
+
 #electrons upstream modules
 from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
 switchOnVIDElectronIdProducer(process, DataFormat.MiniAOD)
@@ -187,11 +215,11 @@ process.load('JetMETCorrections.Configuration.JetCorrectors_cff')
 
 #quark gluon likelihood upstream modules
 qgDatabaseVersion = 'v2b' # check https://twiki.cern.ch/twiki/bin/viewauth/CMS/QGDataBaseVersion
-from CondCore.DBCommon.CondDBSetup_cfi import *
+from CondCore.CondDB.CondDB_cfi import *
+CondDB.connect = cms.string('frontier://FrontierProd/CMS_COND_PAT_000')
 QGPoolDBESSource = cms.ESSource('PoolDBESSource',
-      CondDBSetup,
-      toGet = cms.VPSet(),
-      connect = cms.string('frontier://FrontierProd/CMS_COND_PAT_000'),
+      CondDB,
+      toGet = cms.VPSet()
 )
 for type in ['AK4PFchs','AK4PFchs_antib']:
     QGPoolDBESSource.toGet.extend(cms.VPSet(cms.PSet(
@@ -341,13 +369,13 @@ process.ntuple = cms.EDAnalyzer('Dibottom',
         eleMVATrigTightIdMap = cms.InputTag('egmGsfElectronIDs:mvaEleID-Spring16-GeneralPurpose-V1-wp80'), # same as non-trig in 2017
         eleEcalRecHitCollection = cms.InputTag("reducedEgamma:reducedEBRecHits"),
         eleSingleTriggerFileName = cms.string('%s/src/Analysis/ALPHA/data/SingleEleTriggerEff.root' % os.environ['CMSSW_BASE']),
-        eleVetoIdFileName = cms.string('%s/src/Analysis/ALPHA/data/eleVetoIDSF_ICHEP.root' % os.environ['CMSSW_BASE']),
-        eleLooseIdFileName = cms.string('%s/src/Analysis/ALPHA/data/eleLooseIDSF_ICHEP.root' % os.environ['CMSSW_BASE']),
-        eleMediumIdFileName = cms.string('%s/src/Analysis/ALPHA/data/eleMediumIDSF_ICHEP.root' % os.environ['CMSSW_BASE']),
-        eleTightIdFileName = cms.string('%s/src/Analysis/ALPHA/data/eleTightIDSF_ICHEP.root' % os.environ['CMSSW_BASE']),
-        eleMVATrigMediumIdFileName = cms.string('%s/src/Analysis/ALPHA/data/eleMVA90IDSF_ICHEP.root' % os.environ['CMSSW_BASE']),
-        eleMVATrigTightIdFileName = cms.string('%s/src/Analysis/ALPHA/data/eleMVA80IDSF_ICHEP.root' % os.environ['CMSSW_BASE']),
-        eleRecoEffFileName = cms.string('%s/src/Analysis/ALPHA/data/eleGSFTrackingSF_ICHEP.root' % os.environ['CMSSW_BASE']),
+        eleVetoIdFileName = cms.string('%s/src/Analysis/ALPHA/data/eleVetoIDSF_MORIOND17.root' % os.environ['CMSSW_BASE']),
+        eleLooseIdFileName = cms.string('%s/src/Analysis/ALPHA/data/eleLooseIDSF_MORIOND17.root' % os.environ['CMSSW_BASE']),
+        eleMediumIdFileName = cms.string('%s/src/Analysis/ALPHA/data/eleMediumIDSF_MORIOND17.root' % os.environ['CMSSW_BASE']),
+        eleTightIdFileName = cms.string('%s/src/Analysis/ALPHA/data/eleTightIDSF_MORIOND17.root' % os.environ['CMSSW_BASE']),
+        eleMVATrigMediumIdFileName = cms.string('%s/src/Analysis/ALPHA/data/eleMVA90IDSF_MORIOND17.root' % os.environ['CMSSW_BASE']),
+        eleMVATrigTightIdFileName = cms.string('%s/src/Analysis/ALPHA/data/eleMVA80IDSF_MORIOND17.root' % os.environ['CMSSW_BASE']),
+        eleRecoEffFileName = cms.string('%s/src/Analysis/ALPHA/data/eleRecoSF_MORIOND17.root' % os.environ['CMSSW_BASE']),
         electron1id = cms.int32(0), # 0: veto, 1: loose, 2: medium, 3: tight, 4: HEEP, 5: MVA medium nonTrig, 6: MVA tight nonTrig, 7: MVA medium Trig, 8: MVA tight Trig, -1: noID
         electron2id = cms.int32(0),
         electron1pt = cms.double(10.),
@@ -390,10 +418,10 @@ process.ntuple = cms.EDAnalyzer('Dibottom',
         phoTightIdMap = cms.InputTag('egmPhotonIDs:cutBasedPhotonID-Spring16-V2p2-tight'),
         phoMVANonTrigMediumIdMap = cms.InputTag('egmPhotonIDs:mvaPhoID-Spring16-nonTrig-V1-wp90'),
         phoEcalRecHitCollection = cms.InputTag("reducedEgamma:reducedEBRecHits"),
-        phoLooseIdFileName = cms.string('%s/src/Analysis/ALPHA/data/phoLooseIDSF_ICHEP.root' % os.environ['CMSSW_BASE']),
-        phoMediumIdFileName = cms.string('%s/src/Analysis/ALPHA/data/phoMediumIDSF_ICHEP.root' % os.environ['CMSSW_BASE']),
-        phoTightIdFileName = cms.string('%s/src/Analysis/ALPHA/data/phoTightIDSF_ICHEP.root' % os.environ['CMSSW_BASE']),
-        phoMVANonTrigMediumIdFileName = cms.string('%s/src/Analysis/ALPHA/data/phoMVAIDSF_ICHEP.root' % os.environ['CMSSW_BASE']),
+        phoLooseIdFileName = cms.string('%s/src/Analysis/ALPHA/data/phoLooseIDSF_MORIOND17.root' % os.environ['CMSSW_BASE']),
+        phoMediumIdFileName = cms.string('%s/src/Analysis/ALPHA/data/phoMediumIDSF_MORIOND17.root' % os.environ['CMSSW_BASE']),
+        phoTightIdFileName = cms.string('%s/src/Analysis/ALPHA/data/phoTightIDSF_MORIOND17.root' % os.environ['CMSSW_BASE']),
+        phoMVANonTrigMediumIdFileName = cms.string('%s/src/Analysis/ALPHA/data/phoMVA90IDSF_MORIOND17.root' % os.environ['CMSSW_BASE']),
         photonid = cms.int32(1), # 1: loose, 2: medium, 3: tight, 4:MVA NonTrig medium
         photonpt = cms.double(15.),
     ),
@@ -481,6 +509,8 @@ else:
         process.BadChargedCandidateFilter *
         process.BadChargedCandidateSummer16Filter *
         process.primaryVertexFilter *
+         #process.EGMenergyCorrection *
+        process.regressionApplication *
         process.egmGsfElectronIDSequence *
         process.calibratedPatElectrons *
         process.egmPhotonIDSequence *
