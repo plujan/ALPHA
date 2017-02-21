@@ -183,8 +183,8 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
 from Configuration.AlCa.GlobalTag import GlobalTag
 GT = ''
-if isData:          GT = '80X_dataRun2_2016SeptRepro_v6'
-elif not(isData):   GT = '80X_mcRun2_asymptotic_2016_TrancheIV_v7'
+if isData:          GT = '80X_dataRun2_2016SeptRepro_v7'
+elif not(isData):   GT = '80X_mcRun2_asymptotic_2016_TrancheIV_v8'
 process.GlobalTag = GlobalTag(process.GlobalTag, GT)
 print 'GlobalTag', GT
 
