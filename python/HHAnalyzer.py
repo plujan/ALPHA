@@ -130,18 +130,18 @@ process.BadChargedCandidateSummer16Filter.muons = cms.InputTag('slimmedMuons')
 process.BadChargedCandidateSummer16Filter.PFCandidates = cms.InputTag('packedPFCandidates')
 
 #MET corrections and uncertainties
-#from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
-#if isData:
-#    jecFile = cms.string('{0}/src/Analysis/ALPHA/data/{1}_DATA/{1}_DATA_L2Relative_AK4PFchs.txt'.format(os.environ['CMSSW_BASE'], JECstring))
-#else:
-#    jecFile = cms.string('{0}/src/Analysis/ALPHA/data/{1}_MC/{1}_MC_L2Relative_AK4PFchs.txt'.format(os.environ['CMSSW_BASE'], JECstring))
-#runMetCorAndUncFromMiniAOD(process,
+from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
+if isData:
+    jecFile = cms.string('{0}/src/Analysis/ALPHA/data/{1}_DATA/{1}_DATA_Uncertainty_AK4PFchs.txt'.format(os.environ['CMSSW_BASE'], JECstring))
+else:
+    jecFile = cms.string('{0}/src/Analysis/ALPHA/data/{1}_MC/{1}_MC_Uncertainty_AK4PFchs.txt'.format(os.environ['CMSSW_BASE'], JECstring))
+runMetCorAndUncFromMiniAOD(process,
                             #metType="PF",
                             #correctionLevel=["T1","Smear"],
                             #computeUncertainties=True,
                             #produceIntermediateCorrections=False,
                             #addToPatDefaultSequence=False,
- #                           isData=isData,
+                            isData=isData,
                             #onMiniAOD=True,
                             #reapplyJEC=reapplyJEC,
                             #reclusterJets=reclusterJets,
@@ -155,7 +155,7 @@ process.BadChargedCandidateSummer16Filter.PFCandidates = cms.InputTag('packedPFC
                             #jecUnFile=jecFile,
                             #CHS=CHS,
                             #postfix=postfix,
-  #                         )
+                           )
 
 if isData:
     filterString = "RECO"
@@ -183,8 +183,8 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
 from Configuration.AlCa.GlobalTag import GlobalTag
 GT = ''
-if isData:          GT = '80X_dataRun2_2016SeptRepro_v6'
-elif not(isData):   GT = '80X_mcRun2_asymptotic_2016_TrancheIV_v7'
+if isData:          GT = '80X_dataRun2_2016SeptRepro_v7'
+elif not(isData):   GT = '80X_mcRun2_asymptotic_2016_TrancheIV_v8'
 process.GlobalTag = GlobalTag(process.GlobalTag, GT)
 print 'GlobalTag', GT
 
@@ -389,7 +389,7 @@ process.ntuple = cms.EDAnalyzer('HHAnalyzer',
         btagDB = cms.string('{0}/src/Analysis/ALPHA/data/CSVv2_Moriond17_B_H.csv'.format(os.environ['CMSSW_BASE'])),
         jet1btag = cms.int32(0), # 0: no selection, 1: loose, 2: medium, 3: tight
         jet2btag = cms.int32(0),
-        met = cms.InputTag('slimmedMETs'),#,'','ALPHA'),#("patPFMetT1Smear"),#
+        met = cms.InputTag('slimmedMETs','','ALPHA'),#("patPFMetT1Smear"),#
         metRecoil = cms.bool(False),
         metRecoilMC = cms.string('{0}/src/Analysis/ALPHA/data/recoilfit_gjetsMC_Zu1_pf_v5.root'.format(os.environ['CMSSW_BASE'])),
         metRecoilData = cms.string('{0}/src/Analysis/ALPHA/data/recoilfit_gjetsData_Zu1_pf_v5.root'.format(os.environ['CMSSW_BASE'])),
@@ -440,7 +440,7 @@ process.ntuple = cms.EDAnalyzer('HHAnalyzer',
         btagDB = cms.string('{0}/src/Analysis/ALPHA/data/CSVv2_Moriond17_B_H.csv'.format(os.environ['CMSSW_BASE'])),
         jet1btag = cms.int32(0), # 0: no selection, 1: loose, 2: medium, 3: tight
         jet2btag = cms.int32(0),
-        met = cms.InputTag('slimmedMETs'),#,'','ALPHA'),#("patPFMetT1Smear"),#
+        met = cms.InputTag('slimmedMETs','','ALPHA'),#("patPFMetT1Smear"),#
         metRecoil = cms.bool(False),
         metRecoilMC = cms.string(''),
         metRecoilData = cms.string(''),
@@ -465,7 +465,7 @@ if isData:
         #process.HLTFilter *
         process.BadPFMuonFilter *
         process.BadChargedCandidateFilter *
-     #   process.fullPatMetSequence *
+        process.fullPatMetSequence *
         
         process.primaryVertexFilter *
         process.egmGsfElectronIDSequence *
@@ -482,7 +482,7 @@ elif not options.tCut == 0:
         process.HLTFilter *
         process.BadPFMuonFilter * process.BadPFMuonSummer16Filter *
         process.BadChargedCandidateFilter * process.BadChargedCandidateSummer16Filter *        
-       # process.fullPatMetSequence *
+        process.fullPatMetSequence *
         process.primaryVertexFilter *
         process.regressionApplication * #debug
         process.egmGsfElectronIDSequence *
@@ -498,7 +498,7 @@ else:
 
         process.BadPFMuonFilter * process.BadPFMuonSummer16Filter *
         process.BadChargedCandidateFilter * process.BadChargedCandidateSummer16Filter *        
-        #process.fullPatMetSequence *
+        process.fullPatMetSequence *
         process.primaryVertexFilter *
         process.regressionApplication * #debug
         process.egmGsfElectronIDSequence *
