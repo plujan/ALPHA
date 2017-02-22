@@ -1,0 +1,2 @@
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISummer16MiniAODv2/StringBall_MD8570_MBH7000_MS2000_gs05_n6_charybdis_13TeV_TuneCUETP8M1-charybdis/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v2/110000/68ACE90D-3DEC-E611-9713-FA163EC2ED0E.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISummer16MiniAODv2/StringBall_MD8570_MBH7000_MS2000_gs05_n6_charybdis_13TeV_TuneCUETP8M1-charybdis/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v2/110000/D03B6BA5-3BEC-E611-8C63-FA163E1CA5BC.root
