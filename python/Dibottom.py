@@ -22,7 +22,7 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
 if len(options.inputFiles) == 0:
     process.source = cms.Source('PoolSource',
         fileNames = cms.untracked.vstring(
-          'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISpring16MiniAODv2/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_ext4-v1/00000/00EF026E-B728-E611-A568-008CFA110C68.root',
+          'root://cmsxrootd.fnal.gov//store/mc/RunIISpring16MiniAODv2/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_ext4-v1/00000/00EF026E-B728-E611-A568-008CFA110C68.root',
           #'root://cms-xrd-global.cern.ch//store/mc/RunIISummer16MiniAODv2/DYJetsToLL_M-50_HT-800to1200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/120000/480D3900-8CC0-E611-81E8-001E67504645.root', # DYJetsToLL
         )
     )
@@ -49,7 +49,7 @@ isPromptReco = (('PromptReco' in sample) and (not isReRecoH))
 print 'Running on', ('data' if isData else 'MC'), ', sample is', (
       'Default dataset' if len(options.inputFiles) == 0 else sample)
 if isReHLT: print '-> re-HLT sample'
-isDibosonInclusive = (True if (sample=='WW_TuneCUETP8M1_13TeV-pythia8_v1' or sample=='WZ_TuneCUETP8M1_13TeV-pythia8_v1' or sample=='ZZ_TuneCUETP8M1_13TeV-pythia8_v1') else False)
+isDibosonInclusive = (True if (sample=='WW_TuneCUETP8M1_13TeV-pythia8_v1' or sample=='WZ_TuneCUETP8M1_13TeV-pythia8_v1' or sample=='ZZ_TuneCUETP8M1_13TeV-pythia8_v1' or sample=='ZZ_TuneCUETP8M1_13TeV-pythia8_ext1-v1') else False)
 if isDibosonInclusive: print '-> Pythia LO sample'
 if isReRecoBCD:
     print "ReReco B-C-D era for JEC on data"
@@ -136,20 +136,34 @@ process.load('RecoMET.METFilters.BadChargedCandidateSummer16Filter_cfi')
 process.BadChargedCandidateSummer16Filter.muons = cms.InputTag('slimmedMuons')
 process.BadChargedCandidateSummer16Filter.PFCandidates = cms.InputTag('packedPFCandidates')
 
-#process.METFilter = cms.EDFilter('HLTHighLevel',
-#    TriggerResultsTag = cms.InputTag('TriggerResults', '', 'RECO'),
-#    HLTPaths = cms.vstring(
-#        'Flag_HBHENoiseFilter',
-#        'Flag_HBHENoiseIsoFilter',
-#        'Flag_EcalDeadCellTriggerPrimitiveFilter',
-#        'Flag_goodVertices',
-#        'Flag_eeBadScFilter',
-#        'Flag_globalTightHalo2016Filter',
-#    ),
-#    eventSetupPathsKey = cms.string(''), # not empty => use read paths from AlCaRecoTriggerBitsRcd via this key
-#    andOr = cms.bool(True),    # how to deal with multiple triggers: True (OR) accept if ANY is true, False (AND) accept if ALL are true
-#    throw = cms.bool(False)    # throw exception on unknown path names
-#)
+#MET corrections and uncertainties
+from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
+if isData:
+    jecFile = cms.string('%s/src/Analysis/ALPHA/data/%s/%s_Uncertainty_AK4PFchs.txt' % (os.environ['CMSSW_BASE'], JECstring, JECstring))
+else:
+    jecFile = cms.string('%s/src/Analysis/ALPHA/data/Summer16_23Sep2016V3_MC/Summer16_23Sep2016V3_MC_Uncertainty_AK4PFchs.txt' % os.environ['CMSSW_BASE'])
+
+runMetCorAndUncFromMiniAOD(process,
+                           #metType="PF",
+                           #correctionLevel=["T1","Smear"],
+                           #computeUncertainties=True,
+                           #produceIntermediateCorrections=False,
+                           #addToPatDefaultSequence=False,
+                           isData=isData,
+                           #onMiniAOD=True,
+                           #reapplyJEC=reapplyJEC,
+                           #reclusterJets=reclusterJets,
+                           #jetSelection=jetSelection,
+                           #recoMetFromPFCs=recoMetFromPFCs,
+                           #autoJetCleaning=jetCleaning,
+                           #manualJetConfig=manualJetConfig,
+                           #jetFlavor=jetFlavor,
+                           #jetCorLabelUpToL3=jetCorLabelL3,
+                           #jetCorLabelL3Res=jetCorLabelRes,
+                           #jecUnFile=jecFile,
+                           #CHS=CHS,
+                           #postfix=postfix,
+                           )
 
 if isData:
     filterString = "RECO"
@@ -175,8 +189,8 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
 from Configuration.AlCa.GlobalTag import GlobalTag
 GT = ''
-if isData: GT = '80X_dataRun2_2016SeptRepro_v6'
-elif not(isData): GT = '80X_mcRun2_asymptotic_2016_TrancheIV_v7'
+if isData: GT = '80X_dataRun2_2016SeptRepro_v7'
+elif not(isData): GT = '80X_mcRun2_asymptotic_2016_TrancheIV_v8'
 process.GlobalTag = GlobalTag(process.GlobalTag, GT)
 print 'GlobalTag', GT
 
