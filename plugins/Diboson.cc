@@ -155,7 +155,9 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     RunNumber = iEvent.id().run();
     
     EventWeight = StitchWeight = ZewkWeight = WewkWeight = 1.;
-    TriggerWeight = 1.;
+    TriggerWeight = TriggerWeightUp = TriggerWeightDown = 1.;
+    BTagWeight = BTagWeightUp = BTagWeightDown = 1.;
+    MaxBTagWeight = MaxBTagWeightUp = MaxBTagWeightDown = 1.;
     LeptonWeight = LeptonWeightUp = LeptonWeightDown = 1.;
     PUWeight = PUWeightUp = PUWeightDown = 1.;
     FacWeightUp = FacWeightDown = RenWeightUp = RenWeightDown = ScaleWeightUp = ScaleWeightDown = 1.;
@@ -164,6 +166,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     nPV = nElectrons = nMuons = nTaus = nPhotons = nJets = nFatJets = nBTagJets = 1;
     nVetoElectrons = nLooseMuons = 0;
     MaxJetBTag = MaxFatJetBTag = Chi2 = -1.;
+    MaxJetBIndex = 100;
     MinJetMetDPhi = 10.;
     massRecoilFormula = -1.;
 
@@ -203,7 +206,6 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     theTriggerAnalyzer->FillMetFiltersMap(iEvent, MetFiltersMap);
     BadPFMuonFlag = theTriggerAnalyzer->GetBadPFMuonFlag(iEvent);
     BadChCandFlag = theTriggerAnalyzer->GetBadChCandFlag(iEvent);
-    EventWeight *= TriggerWeight;
     
     // Electrons
     std::vector<pat::Electron> ElecVetoVect = theElectronAnalyzer->FillElectronVector(iEvent);
@@ -487,6 +489,7 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     // ----------- Z TO NEUTRINOS ---------------
     else if(nLooseMuons==0 && nVetoElectrons==0 && MET.pt() > 100.) {
         isZtoNN=true;
+	//EventWeight*=BTagWeight;//as it is now, it works only for invisible channel where we veto AK8 b-tagged jets
         if(Verbose) std::cout << " - No charged leptons" << std::endl;
     }
 
@@ -670,12 +673,21 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         if(Verbose) std::cout << " - Try to reconstruct Z -> nn" << std::endl;
         theV.addDaughter(MET);
         addP4.set(theV);
+	//std::cout << "Met pt: " << MET.pt() << std::endl;
+	//std::cout << "Trigger eff: " << theJetAnalyzer->GetMetTriggerEfficiency(MET) << std::endl;
+	if(isMC) {
+  	    TriggerWeight *= theJetAnalyzer->GetMetTriggerEfficiency(MET);
+	    TriggerWeightUp *= std::min(1.,(theJetAnalyzer->GetMetTriggerEfficiency(MET))*(1+0.06));//hardcoded 6% unc
+	    TriggerWeightDown *= std::min(1.,(theJetAnalyzer->GetMetTriggerEfficiency(MET))*(1-0.06));//hardcoded 6% unc
+	}
     }
     
     else { if(Verbose) std::cout << " - No reconstructible V candidate" << std::endl; return; }
     // Update event weight with lepton selections
     EventWeight *= LeptonWeight;
-    
+    // Update met trigger weight    
+    EventWeight *= TriggerWeight;
+
     Hist["a_nEvents"]->Fill(4., EventWeight);
     Hist["m_nEvents"]->Fill(9., EventWeight);
 //    if(isZtoEE) Hist["e_nEvents"]->Fill(4., EventWeight);
@@ -724,8 +736,41 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     // ---------- Event Variables ----------
     
     // Max b-tagged jet in the event
-    for(unsigned int i = 2; i < JetsVect.size(); i++) if(JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag")) > MaxJetBTag) MaxJetBTag = JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag"));
-    // Max b-tagged jet in the event
+    //for(unsigned int i = 2; i < JetsVect.size(); i++) {
+    for(unsigned int i = 0; i < JetsVect.size(); i++) {
+        if(JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag")) > MaxJetBTag && FatJetsVect.size() > 0 && deltaR(FatJetsVect.at(0), JetsVect[i])>0.8) {
+             MaxJetBTag = JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag"));
+	     MaxJetBIndex = i;
+	     BTagWeight *= (JetsVect[i].hasUserFloat("ReshapedDiscriminator")?JetsVect[i].userFloat("ReshapedDiscriminator") : 1.);
+	     BTagWeightUp *= (JetsVect[i].hasUserFloat("ReshapedDiscriminatorUp")?JetsVect[i].userFloat("ReshapedDiscriminatorUp") : 1.);
+	     BTagWeightDown *= (JetsVect[i].hasUserFloat("ReshapedDiscriminatorDown")?JetsVect[i].userFloat("ReshapedDiscriminatorDown") : 1.);
+	     //std::cout << "looping on jets outside the AK8; id: " << i << std::endl;
+	     //std::cout << "CSV value: " << JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag")) << std::endl;
+	     //std::cout << "CSV SF: " << (JetsVect[i].hasUserFloat("ReshapedDiscriminator")?JetsVect[i].userFloat("ReshapedDiscriminator") : -1.)  << std::endl;
+	     //std::cout << "CSV SF Up: " << (JetsVect[i].hasUserFloat("ReshapedDiscriminatorUp")?JetsVect[i].userFloat("ReshapedDiscriminatorUp") : -1.)  << std::endl;
+	     //std::cout << "CSV SF Down: " << (JetsVect[i].hasUserFloat("ReshapedDiscriminatorDown")?JetsVect[i].userFloat("ReshapedDiscriminatorDown") : -1.)  << std::endl;
+
+
+	     //std::cout << "BTagWeight: " << BTagWeight << std::endl;
+	     //std::cout << "BTagWeightUp: " << BTagWeightUp << std::endl;
+	     //std::cout << "BTagWeightDown: " << BTagWeightDown << std::endl;
+        }
+    }
+
+    //std::cout << "CHECK : nJets AK4: " << nJets << std::endl;
+    //std::cout << "CHECK : jet number of the max b tag outside the ak8: " << MaxJetBIndex  << std::endl;
+    //std::cout << "CHECK : MaxJetBTag: " << MaxJetBTag  << std::endl;
+    if(JetsVect.size()>=MaxJetBIndex){
+	     MaxBTagWeight *= (JetsVect[MaxJetBIndex].hasUserFloat("ReshapedDiscriminator")?JetsVect[MaxJetBIndex].userFloat("ReshapedDiscriminator") : 1.);
+	     MaxBTagWeightUp *= (JetsVect[MaxJetBIndex].hasUserFloat("ReshapedDiscriminatorUp")?JetsVect[MaxJetBIndex].userFloat("ReshapedDiscriminatorUp") : 1.);
+	     MaxBTagWeightDown *= (JetsVect[MaxJetBIndex].hasUserFloat("ReshapedDiscriminatorDown")?JetsVect[MaxJetBIndex].userFloat("ReshapedDiscriminatorDown") : 1.);
+	     //      std::cout << "CSV SF: " << (JetsVect[MaxJetBIndex].hasUserFloat("ReshapedDiscriminator")?JetsVect[MaxJetBIndex].userFloat("ReshapedDiscriminator") : -1.)  << std::endl;
+	     //      std::cout << "CSV SF Up: " << (JetsVect[MaxJetBIndex].hasUserFloat("ReshapedDiscriminatorUp")?JetsVect[MaxJetBIndex].userFloat("ReshapedDiscriminatorUp") : -1.)  << std::endl;
+	     //      std::cout << "CSV SF Down: " << (JetsVect[MaxJetBIndex].hasUserFloat("ReshapedDiscriminatorDown")?JetsVect[MaxJetBIndex].userFloat("ReshapedDiscriminatorDown") : -1.)  << std::endl;
+    }
+    //std::cout << "-----------------------------------" << std::endl;
+
+    // Max b-tagged jet in the event //OBSOLETE!
     for(unsigned int i = 0; i < JetsVect.size(); i++) if(FatJetsVect.size() > 0 && JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag")) > MaxFatJetBTag && deltaR(FatJetsVect.at(0), JetsVect[i])>0.8) MaxFatJetBTag = JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag"));
     
     for(unsigned int i = 0; i < JetsVect.size(); i++) if(fabs(reco::deltaPhi(JetsVect[i].phi(), MET.phi())) < MinJetMetDPhi) MinJetMetDPhi = fabs(reco::deltaPhi(JetsVect[i].phi(), MET.phi()));
@@ -835,6 +880,14 @@ void Diboson::beginJob() {
     tree->Branch("PUWeightUp", &PUWeightUp, "PUWeightUp/F");
     tree->Branch("PUWeightDown", &PUWeightDown, "PUWeightDown/F");
     tree->Branch("TriggerWeight", &TriggerWeight, "TriggerWeight/F");
+    tree->Branch("TriggerWeightUp", &TriggerWeightUp, "TriggerWeightUp/F");
+    tree->Branch("TriggerWeightDown", &TriggerWeightDown, "TriggerWeightDown/F");
+    tree->Branch("BTagWeight", &BTagWeight, "BTagWeight/F");
+    tree->Branch("BTagWeightUp", &BTagWeightUp, "BTagWeightUp/F");
+    tree->Branch("BTagWeightDown", &BTagWeightDown, "BTagWeightDown/F");
+    tree->Branch("MaxBTagWeight", &MaxBTagWeight, "MaxBTagWeight/F");
+    tree->Branch("MaxBTagWeightUp", &MaxBTagWeightUp, "MaxBTagWeightUp/F");
+    tree->Branch("MaxBTagWeightDown", &MaxBTagWeightDown, "MaxBTagWeightDown/F");
     tree->Branch("LeptonWeight", &LeptonWeight, "LeptonWeight/F");
     tree->Branch("LeptonWeightUp", &LeptonWeightUp, "LeptonWeightUp/F");
     tree->Branch("LeptonWeightDown", &LeptonWeightDown, "LeptonWeightDown/F");
@@ -868,6 +921,7 @@ void Diboson::beginJob() {
     tree->Branch("nBTagJets", &nBTagJets, "nBTagJets/I");
     
     tree->Branch("MaxJetBTag", &MaxJetBTag, "MaxJetBTag/F");
+    tree->Branch("MaxJetBIndex", &MaxJetBIndex, "MaxJetBIndex/I");
     tree->Branch("MaxFatJetBTag", &MaxFatJetBTag, "MaxFatJetBTag/F");
     tree->Branch("MinJetMetDPhi", &MinJetMetDPhi, "MinJetMetDPhi/F");
     tree->Branch("Chi2", &Chi2, "Chi2/F");
