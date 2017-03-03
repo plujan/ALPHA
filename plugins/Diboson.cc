@@ -538,15 +538,15 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
                     LeptonWeight     *= theMuonAnalyzer->GetMuonTriggerSFMu50(MuonVect.at(m2));
                     LeptonWeightUnc  += pow(theMuonAnalyzer->GetMuonTriggerSFErrorMu50(MuonVect.at(m2)),2);
                 }
-                //LeptonWeight *= theMuonAnalyzer->GetMuonTrkSF(MuonVect.at(m1));
-                //LeptonWeight *= theMuonAnalyzer->GetMuonTrkSF(MuonVect.at(m2));
+                LeptonWeight *= theMuonAnalyzer->GetMuonTrkSF(MuonVect.at(m1));
+                LeptonWeight *= theMuonAnalyzer->GetMuonTrkSF(MuonVect.at(m2));
                 LeptonWeight *= theMuonAnalyzer->GetMuonIdSF(MuonVect.at(m1), 0);
                 LeptonWeight *= theMuonAnalyzer->GetMuonIdSF(MuonVect.at(m2), 0);
                 LeptonWeight *= theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(m1), 0);
                 LeptonWeight *= theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(m2), 0);
 
-                //LeptonWeightUnc += pow(theMuonAnalyzer->GetMuonTrkSFError(MuonVect.at(m1))      ,2);
-                //LeptonWeightUnc += pow(theMuonAnalyzer->GetMuonTrkSFError(MuonVect.at(m2))      ,2);
+                LeptonWeightUnc += pow(theMuonAnalyzer->GetMuonTrkSFError(MuonVect.at(m1))      ,2);
+                LeptonWeightUnc += pow(theMuonAnalyzer->GetMuonTrkSFError(MuonVect.at(m2))      ,2);
                 LeptonWeightUnc += pow(theMuonAnalyzer->GetMuonIdSFError(MuonVect.at(m1), 0)    ,2);
                 LeptonWeightUnc += pow(theMuonAnalyzer->GetMuonIdSFError(MuonVect.at(m2), 0)    ,2);
                 LeptonWeightUnc += pow(theMuonAnalyzer->GetMuonIsoSFError(MuonVect.at(m1), 0)   ,2);
