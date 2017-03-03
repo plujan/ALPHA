@@ -14,6 +14,10 @@ options.parseArguments()
 sample = (options.inputFiles[0]).split('/')[-1].replace('.txt', '') if len(options.inputFiles) > 0 else ''
 if sample=='list': sample = (options.inputFiles[0]).split('/')[-3]
 
+### FIXME !!!
+
+sample 
+
 process = cms.Process('ALPHA')
 
 process.load('FWCore.MessageService.MessageLogger_cfi')
@@ -77,38 +81,42 @@ process.TFileService = cms.Service('TFileService',
 )
 
 # Determine whether we are running on data or MC
-isData = ('/store/data/' in process.source.fileNames[0])
-isCustom = ('GluGluToAToZhToLLBB' in process.source.fileNames[0])
-isReHLT = ('_reHLT_' in process.source.fileNames[0])
-isReRecoBCD = ('Run2016B-23Sep' in sample or 'Run2016C-23Sep' in sample or 'Run2016D-23Sep' in sample)
-isReRecoEF = ('Run2016E-23Sep' in sample or 'Run2016F-23Sep' in sample)
-isReRecoG = ('Run2016G-23Sep' in sample)
-isReRecoH = ('Run2016H-PromptReco' in sample)
-isPromptReco = (('PromptReco' in sample) and (not isReRecoH))
+isData            = ('/store/data/' in process.source.fileNames[0])
+isReHLT           = ('_reHLT_' in process.source.fileNames[0])
+isReReco          = ('23Sep2016' in sample)
+isReMiniAod       = ('03Feb2017' in sample)
+isPromptReco      = (('PromptReco' in sample) and (not isReRecoH))
+theRunBCD = ['RunB','RunC','RunD']
+theRunEF  = ['RunE','RunF']
+theRunG   = ['RunG']
+theRunH   = ['RunH']
+
+# Determine if running on LO Diboson MC
 isDibosonInclusive = (True if (sample=='WW_TuneCUETP8M1_13TeV-pythia8-v1' or sample=='WZ_TuneCUETP8M1_13TeV-pythia8-v1' or sample=='ZZ_TuneCUETP8M1_13TeV-pythia8-v1' or sample=='ZZ_TuneCUETP8M1_13TeV-pythia8_ext1-v1') else False)
 
+# Determine if custom MC
+isCustom          = ('GluGluToAToZhToLLBB' in process.source.fileNames[0])
+
+### PRINTOUT OF SAMPLE DETAILS ###
 print 'Running on', ('data' if isData else 'MC'), ', sample is', sample
 if isReHLT: print '-> re-HLT sample'
 if isDibosonInclusive: print '-> Pythia LO sample'
-if isReRecoBCD:
-    print "ReReco B-C-D era for JEC on data"
-    JECstring = "Summer16_23Sep2016BCDV3_DATA"
-elif isReRecoEF:
-    print "ReReco E-F era for JEC on data"
-    JECstring = "Summer16_23Sep2016EFV3_DATA"
-elif isReRecoG:
-    print "ReReco G era for JEC on data"
-    JECstring = "Summer16_23Sep2016GV3_DATA"
-elif isReRecoH:
-    print "ReReco H era for JEC on data"
-    JECstring = "Summer16_23Sep2016HV3_DATA"
-elif isPromptReco:
-    print "Prompt reco, old V6 JEC (before dec 2016)"
-    JECstring = "Spring16_25nsV6_DATA"
-else:
-    #print "MC for JEC"
-    JECstring = "Spring16_25nsV6_DATA"
-#isData = False
+
+if isData and (isReReco or isReMiniAod):
+  if any(s in sample for s in theRunBCD): 
+    JECstring = "Summer16_23Sep2016BCDV4_DATA" if isReMiniAod else "Summer16_23Sep2016BCDV3_DATA"
+  if any(s in sample for s in theRunEF): 
+    JECstring = "Summer16_23Sep2016EFV4_DATA" if isReMiniAod else "Summer16_23Sep2016EFV3_DATA"
+  if any(s in sample for s in theRunG): 
+    JECstring = "Summer16_23Sep2016GV4_DATA" if isReMiniAod else "Summer16_23Sep2016GV3_DATA"
+  if any(s in sample for s in theRunH): 
+    JECstring = "Summer16_23Sep2016HV4_DATA" if isReMiniAod else "Summer16_23Sep2016HV3_DATA"
+elif isData and isPromptReco:
+    JECstring = "Spring16_25nsV6_DATA"  
+elif not isData:
+    JECstring = "Summer16_23Sep2016V4_MC"
+
+print "JEC ->",JECstring
 
 #-----------------------#
 #        FILTERS        #
@@ -121,7 +129,7 @@ if isData:
     #process.source.lumisToProcess = LumiList.LumiList(filename = '%s/src/Analysis/ALPHA/data/JSON/Cert_271036-275783_13TeV_PromptReco_Collisions16_JSON.txt' % os.environ['CMSSW_BASE']).getVLuminosityBlockRange() #6.26
     #process.source.lumisToProcess = LumiList.LumiList(filename = '%s/src/Analysis/ALPHA/data/JSON/Cert_271036-276811_13TeV_PromptReco_Collisions16_JSON_NoL1T.txt' % os.environ['CMSSW_BASE']).getVLuminosityBlockRange() #12.9
     #process.source.lumisToProcess = LumiList.LumiList(filename = '%s/src/Analysis/ALPHA/data/JSON/Cert_271036-284044_13TeV_PromptReco_Collisions16_JSON_NoL1T.txt' % os.environ['CMSSW_BASE']).getVLuminosityBlockRange() #36.2 fb-1, PromptReco
-    process.source.lumisToProcess = LumiList.LumiList(filename = '%s/src/Analysis/ALPHA/data/JSON/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt' % os.environ['CMSSW_BASE']).getVLuminosityBlockRange() #36.814 fb-1, ReReco Moriond
+    process.source.lumisToProcess = LumiList.LumiList(filename = '%s/src/Analysis/ALPHA/data/JSON/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt' % os.environ['CMSSW_BASE']).getVLuminosityBlockRange() #35.867 fb-1, ReReco Moriond
 
 process.counter = cms.EDAnalyzer('CounterAnalyzer',
     lheProduct = cms.InputTag('externalLHEProducer' if not isCustom else 'source'),
@@ -153,7 +161,7 @@ from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMet
 if isData:
     jecFile = cms.string('%s/src/Analysis/ALPHA/data/%s/%s_Uncertainty_AK4PFchs.txt' % (os.environ['CMSSW_BASE'], JECstring, JECstring))
 else:
-    jecFile = cms.string('%s/src/Analysis/ALPHA/data/Summer16_23Sep2016V3_MC/Summer16_23Sep2016V3_MC_Uncertainty_AK4PFchs.txt' % os.environ['CMSSW_BASE'])
+    jecFile = cms.string('%s/src/Analysis/ALPHA/data/Summer16_23Sep2016V4_MC/Summer16_23Sep2016V4_MC_Uncertainty_AK4PFchs.txt' % os.environ['CMSSW_BASE'])
 
 runMetCorAndUncFromMiniAOD(process,
                            #metType="PF",
@@ -204,17 +212,52 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
 from Configuration.AlCa.GlobalTag import GlobalTag
 GT = ''
-if isData:          GT = '80X_dataRun2_2016SeptRepro_v7'
-elif not(isData):   GT = '80X_mcRun2_asymptotic_2016_TrancheIV_v8'
+if isData:
+  if    isReMiniAodH: GT = '80X_dataRun2_Prompt_v16' 
+  else:               GT = '80X_dataRun2_2016SeptRepro_v7'
+elif not(isData):     GT = '80X_mcRun2_asymptotic_2016_TrancheIV_v8'
 process.GlobalTag = GlobalTag(process.GlobalTag, GT)
 print 'GlobalTag', GT
 
 #electron/photon regression modules
 from EgammaAnalysis.ElectronTools.regressionWeights_cfi import regressionWeights
 process = regressionWeights(process)
-process.load('EgammaAnalysis.ElectronTools.regressionApplication_cff')
 
-#electrons upstream modules
+process.RandomNumberGeneratorService = cms.Service("RandomNumberGeneratorService",
+                  # calibratedPatElectrons  = cms.PSet( initialSeed = cms.untracked.uint32(8675389),
+                  #                                     engineName = cms.untracked.string('TRandom3'),
+                  #                                     ),
+                  # calibratedPatPhotons    = cms.PSet( initialSeed = cms.untracked.uint32(8675389),
+                  #                                     engineName = cms.untracked.string('TRandom3'),
+                  #                                     ),
+  EGMSmearerElectrons = cms.PSet(
+    initialSeed = cms.untracked.uint32(8675389),
+    engineName = cms.untracked.string('TRandom3')
+  ),
+
+  EGMSmearerPhotons = cms.PSet(
+    initialSeed = cms.untracked.uint32(8675389),
+    engineName = cms.untracked.string('TRandom3')
+  )
+
+)
+
+process.load('EgammaAnalysis.ElectronTools.regressionApplication_cff')
+process.EGMRegression       = cms.Sequence(process.regressionApplication)
+
+process.load('EgammaAnalysis.ElectronTools.calibratedPatElectronsRun2_cfi')
+from EgammaAnalysis.ElectronTools.calibratedPatElectronsRun2_cfi import *
+process.EGMSmearerElectrons = calibratedPatElectrons.clone(
+  isMC = cms.bool(False if isData else True)
+)
+
+process.load('EgammaAnalysis.ElectronTools.calibratedPatPhotonsRun2_cfi')
+from EgammaAnalysis.ElectronTools.calibratedPatPhotonsRun2_cfi import *
+process.EGMSmearerPhotons = calibratedPatPhotons.clone(
+  isMC = cms.bool(False if isData else True)
+)
+                                        
+
 from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
 switchOnVIDElectronIdProducer(process, DataFormat.MiniAOD)
 ele_id_modules = ['RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Summer16_80X_V1_cff',
@@ -262,56 +305,6 @@ process.load('RecoJets.JetProducers.QGTagger_cfi')
 process.QGTagger.srcJets = cms.InputTag('slimmedJets') # Could be reco::PFJetCollection or pat::JetCollection (both AOD and miniAOD)
 process.QGTagger.jetsLabel = cms.string('QGL_AK4PFchs') # Other options: see https://twiki.cern.ch/twiki/bin/viewauth/CMS/QGDataBaseVersion
 
-#https://twiki.cern.ch/twiki/bin/view/CMS/EGMSmearer#ECAL_scale_and_resolution_correc
-process.load('EgammaAnalysis.ElectronTools.calibratedElectronsRun2_cfi')
-#process.selectedElectrons = cms.EDFilter('PATElectronSelector', 
-                                         #src = cms.InputTag('slimmedElectrons'), 
-                                         #cut = cms.string('pt > 5 && abs(eta)<2.5') 
-                                         #)
-calibratedPatElectrons = cms.EDProducer('CalibratedPatElectronProducerRun2',
-                                        # input collections
-                                        electrons = cms.InputTag('slimmedElectrons'),
-                                        gbrForestName = cms.string('gedelectron_p4combination_25ns'),
-                                        # data or MC corrections
-                                        # if isMC is false, data corrections are applied
-                                        isMC = cms.bool(False) if isData else cms.bool(True),
-                                        # set to True to get special 'fake' smearing for synchronization. Use JUST in case of synchronization
-                                        isSynchronization = cms.bool(False),
-                                        correctionFile = cms.string('80X_DCS05July_plus_Golden22')
-                                        )
-
-## Update PAT jets
-
-#from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
-
-### b-tag discriminators
-#bTagDiscriminators = [
-#    'pfTrackCountingHighEffBJetTags',
-#    'pfTrackCountingHighPurBJetTags',
-#    'pfJetProbabilityBJetTags',
-#    'pfJetBProbabilityBJetTags',
-#    'pfSimpleSecondaryVertexHighEffBJetTags',
-#    'pfSimpleSecondaryVertexHighPurBJetTags',
-#    'pfCombinedSecondaryVertexV2BJetTags',
-#    'pfCombinedInclusiveSecondaryVertexV2BJetTags',
-#    'pfCombinedMVAV2BJetTags',
-#    'pfBoostedDoubleSecondaryVertexAK8BJetTags'
-#]
-
-#from PhysicsTools.PatAlgos.tools.jetTools import *
-### Update the slimmedJets in miniAOD: corrections from the chosen Global Tag are applied and the b-tag discriminators are re-evaluated
-#updateJetCollection(
-#    process,
-#    jetSource = cms.InputTag('slimmedJets'),
-#    jetCorrections = ('AK4PFchs', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute']), 'None'),
-#    btagDiscriminators = bTagDiscriminators
-#)
-
-
-
-
-
-#-----------------------#
 #        NTUPLE         #
 #-----------------------#
 
@@ -385,7 +378,7 @@ process.ntuple = cms.EDAnalyzer('Diboson',
         trigger = cms.InputTag('TriggerResults', '', triggerTag),
         paths = cms.vstring('HLT_Mu45_eta2p1_v', 'HLT_Mu50_v', 'HLT_TkMu50_v', 'HLT_IsoMu20_v', 'HLT_IsoTkMu20_v', 'HLT_IsoMu24_v', 'HLT_IsoTkMu24_v', 'HLT_Mu27_TkMu8_v', 'HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v', 'HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v', 'HLT_Ele105_CaloIdVT_GsfTrkIdT_v', 'HLT_Ele115_CaloIdVT_GsfTrkIdT_v', 'HLT_Ele23_WPLoose_Gsf_v', 'HLT_Ele27_WPLoose_Gsf_v', 'HLT_Ele27_WPTight_Gsf_v', 'HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v', 'HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_v', 'HLT_PFMETNoMu90_PFMHTNoMu90_IDTight_v', 'HLT_PFMETNoMu110_PFMHTNoMu110_IDTight_v', 'HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v', 'HLT_PFMETNoMu90_JetIdCleaned_PFMHTNoMu90_IDTight_v', 'HLT_PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight_v', 'HLT_PFMET120_BTagCSV_p067_v', 'HLT_PFMET170_NotCleaned_v', 'HLT_PFMET170_NoiseCleaned_v', 'HLT_PFMET170_JetIdCleaned_v', 'HLT_PFMET170_HBHECleaned_v', 'HLT_DoublePhoton60_v',),
         metfilters = cms.InputTag('TriggerResults', '', filterString),
-        metpaths = cms.vstring('Flag_HBHENoiseFilter', 'Flag_HBHENoiseIsoFilter', 'Flag_EcalDeadCellTriggerPrimitiveFilter', 'Flag_goodVertices', 'Flag_eeBadScFilter', 'Flag_globalTightHalo2016Filter'),
+        metpaths = cms.vstring('Flag_HBHENoiseFilter', 'Flag_HBHENoiseIsoFilter', 'Flag_EcalDeadCellTriggerPrimitiveFilter', 'Flag_goodVertices', 'Flag_eeBadScFilter', 'Flag_globalTightHalo2016Filter','Flag_badMuons','Flag_duplicateMuons','Flag_noBadMuons') if isReMiniAod else cms.vstring('Flag_HBHENoiseFilter', 'Flag_HBHENoiseIsoFilter', 'Flag_EcalDeadCellTriggerPrimitiveFilter', 'Flag_goodVertices', 'Flag_eeBadScFilter', 'Flag_globalTightHalo2016Filter'),
         badPFMuonFilter = cms.InputTag("BadPFMuonFilter"),
         badChCandFilter = cms.InputTag("BadChargedCandidateFilter"),
     ),
@@ -492,7 +485,7 @@ process.ntuple = cms.EDAnalyzer('Diboson',
         vertices = cms.InputTag('offlineSlimmedPrimaryVertices'),
         rho = cms.InputTag('fixedGridRhoFastjetAll'),        
         jecUncertaintyDATA = cms.string('%s/src/Analysis/ALPHA/data/%s/%s_Uncertainty_AK4PFchs.txt' % (os.environ['CMSSW_BASE'], JECstring, JECstring)),#updating
-        jecUncertaintyMC = cms.string('%s/src/Analysis/ALPHA/data/Summer16_23Sep2016V3_MC/Summer16_23Sep2016V3_MC_Uncertainty_AK4PFchs.txt' % os.environ['CMSSW_BASE']),#updating
+        jecUncertaintyMC = cms.string('%s/src/Analysis/ALPHA/data/Summer16_23Sep2016V4_MC/Summer16_23Sep2016V4_MC_Uncertainty_AK4PFchs.txt' % os.environ['CMSSW_BASE']),#updating
         jecCorrectorDATA = cms.vstring(#updating
             '%s/src/Analysis/ALPHA/data/%s/%s_L1FastJet_AK4PFchs.txt' % (os.environ['CMSSW_BASE'], JECstring, JECstring),
             '%s/src/Analysis/ALPHA/data/%s/%s_L2Relative_AK4PFchs.txt' % (os.environ['CMSSW_BASE'], JECstring, JECstring),
@@ -500,9 +493,9 @@ process.ntuple = cms.EDAnalyzer('Diboson',
             '%s/src/Analysis/ALPHA/data/%s/%s_L2L3Residual_AK4PFchs.txt' % (os.environ['CMSSW_BASE'], JECstring, JECstring),
         ),
         jecCorrectorMC = cms.vstring(#updating!!!
-            '%s/src/Analysis/ALPHA/data/Summer16_23Sep2016V3_MC/Summer16_23Sep2016V3_MC_L1FastJet_AK4PFchs.txt' % os.environ['CMSSW_BASE'],
-            '%s/src/Analysis/ALPHA/data/Summer16_23Sep2016V3_MC/Summer16_23Sep2016V3_MC_L2Relative_AK4PFchs.txt' % os.environ['CMSSW_BASE'],
-            '%s/src/Analysis/ALPHA/data/Summer16_23Sep2016V3_MC/Summer16_23Sep2016V3_MC_L3Absolute_AK4PFchs.txt' % os.environ['CMSSW_BASE'],
+            '%s/src/Analysis/ALPHA/data/Summer16_23Sep2016V4_MC/Summer16_23Sep2016V4_MC_L1FastJet_AK4PFchs.txt' % os.environ['CMSSW_BASE'],
+            '%s/src/Analysis/ALPHA/data/Summer16_23Sep2016V4_MC/Summer16_23Sep2016V4_MC_L2Relative_AK4PFchs.txt' % os.environ['CMSSW_BASE'],
+            '%s/src/Analysis/ALPHA/data/Summer16_23Sep2016V4_MC/Summer16_23Sep2016V4_MC_L3Absolute_AK4PFchs.txt' % os.environ['CMSSW_BASE'],
         ),
         massCorrectorDATA = cms.vstring(#updating!!!
             '%s/src/Analysis/ALPHA/data/%s/%s_L2Relative_AK4PFchs.txt' % (os.environ['CMSSW_BASE'], JECstring, JECstring),
@@ -510,8 +503,8 @@ process.ntuple = cms.EDAnalyzer('Diboson',
             '%s/src/Analysis/ALPHA/data/%s/%s_L2L3Residual_AK4PFchs.txt' % (os.environ['CMSSW_BASE'], JECstring, JECstring),
         ),
         massCorrectorMC = cms.vstring(#updating!!!
-            '%s/src/Analysis/ALPHA/data/Summer16_23Sep2016V3_MC/Summer16_23Sep2016V3_MC_L2Relative_AK4PFchs.txt' % os.environ['CMSSW_BASE'],
-            '%s/src/Analysis/ALPHA/data/Summer16_23Sep2016V3_MC/Summer16_23Sep2016V3_MC_L3Absolute_AK4PFchs.txt' % os.environ['CMSSW_BASE'],
+            '%s/src/Analysis/ALPHA/data/Summer16_23Sep2016V4_MC/Summer16_23Sep2016V4_MC_L2Relative_AK4PFchs.txt' % os.environ['CMSSW_BASE'],
+            '%s/src/Analysis/ALPHA/data/Summer16_23Sep2016V4_MC/Summer16_23Sep2016V4_MC_L3Absolute_AK4PFchs.txt' % os.environ['CMSSW_BASE'],
         ),
         massCorrectorPuppi = cms.string('%s/src/Analysis/ALPHA/data/puppiCorrSummer16.root' % os.environ['CMSSW_BASE']),#updating
         reshapeBTag = cms.bool(True),
@@ -519,7 +512,7 @@ process.ntuple = cms.EDAnalyzer('Diboson',
         btagDB = cms.string('%s/src/Analysis/ALPHA/data/CSVv2_Moriond17_B_H.csv' % os.environ['CMSSW_BASE']),
         jet1btag = cms.int32(0), # 0: no selection, 1: loose, 2: medium, 3: tight
         jet2btag = cms.int32(0),
-        met = cms.InputTag('slimmedMETs','','ALPHA'),#("patPFMetT1Smear"),#
+        met = cms.InputTag('slimmedMETsMuEGClean' if isReMiniAod else 'slimmedMETs','ALPHA'),#("patPFMetT1Smear"),#
         metRecoil = cms.bool(False),
         metRecoilMC = cms.string('%s/src/Analysis/ALPHA/data/recoilfit_gjetsMC_Zu1_pf_v5.root' % os.environ['CMSSW_BASE']),
         metRecoilData = cms.string('%s/src/Analysis/ALPHA/data/recoilfit_gjetsData_Zu1_pf_v5.root' % os.environ['CMSSW_BASE']),
@@ -541,7 +534,7 @@ process.ntuple = cms.EDAnalyzer('Diboson',
         vertices = cms.InputTag('offlineSlimmedPrimaryVertices'),
         rho = cms.InputTag('fixedGridRhoFastjetAll'),        
         jecUncertaintyDATA = cms.string('%s/src/Analysis/ALPHA/data/%s/%s_Uncertainty_AK8PFchs.txt' % (os.environ['CMSSW_BASE'], JECstring, JECstring)),#updating!! Puppi or CHS?
-        jecUncertaintyMC = cms.string('%s/src/Analysis/ALPHA/data/Summer16_23Sep2016V3_MC/Summer16_23Sep2016V3_MC_Uncertainty_AK8PFchs.txt' % os.environ['CMSSW_BASE']),#updating!! Puppi or CHS?
+        jecUncertaintyMC = cms.string('%s/src/Analysis/ALPHA/data/Summer16_23Sep2016V4_MC/Summer16_23Sep2016V4_MC_Uncertainty_AK8PFchs.txt' % os.environ['CMSSW_BASE']),#updating!! Puppi or CHS?
         jecCorrectorDATA = cms.vstring(#updating
             '%s/src/Analysis/ALPHA/data/%s/%s_L1FastJet_AK8PFchs.txt' % (os.environ['CMSSW_BASE'], JECstring, JECstring),
             '%s/src/Analysis/ALPHA/data/%s/%s_L2Relative_AK8PFchs.txt' % (os.environ['CMSSW_BASE'], JECstring, JECstring),
@@ -549,9 +542,9 @@ process.ntuple = cms.EDAnalyzer('Diboson',
             '%s/src/Analysis/ALPHA/data/%s/%s_L2L3Residual_AK8PFchs.txt' % (os.environ['CMSSW_BASE'], JECstring, JECstring),
         ),
         jecCorrectorMC = cms.vstring(#updating!!!
-            '%s/src/Analysis/ALPHA/data/Summer16_23Sep2016V3_MC/Summer16_23Sep2016V3_MC_L1FastJet_AK8PFchs.txt' % os.environ['CMSSW_BASE'],
-            '%s/src/Analysis/ALPHA/data/Summer16_23Sep2016V3_MC/Summer16_23Sep2016V3_MC_L2Relative_AK8PFchs.txt' % os.environ['CMSSW_BASE'],
-            '%s/src/Analysis/ALPHA/data/Summer16_23Sep2016V3_MC/Summer16_23Sep2016V3_MC_L3Absolute_AK8PFchs.txt' % os.environ['CMSSW_BASE'],
+            '%s/src/Analysis/ALPHA/data/Summer16_23Sep2016V4_MC/Summer16_23Sep2016V4_MC_L1FastJet_AK8PFchs.txt' % os.environ['CMSSW_BASE'],
+            '%s/src/Analysis/ALPHA/data/Summer16_23Sep2016V4_MC/Summer16_23Sep2016V4_MC_L2Relative_AK8PFchs.txt' % os.environ['CMSSW_BASE'],
+            '%s/src/Analysis/ALPHA/data/Summer16_23Sep2016V4_MC/Summer16_23Sep2016V4_MC_L3Absolute_AK8PFchs.txt' % os.environ['CMSSW_BASE'],
         ),
         massCorrectorDATA = cms.vstring(#updating
             '%s/src/Analysis/ALPHA/data/%s/%s_L2Relative_AK8PFchs.txt' % (os.environ['CMSSW_BASE'], JECstring, JECstring),
@@ -559,8 +552,8 @@ process.ntuple = cms.EDAnalyzer('Diboson',
             '%s/src/Analysis/ALPHA/data/%s/%s_L2L3Residual_AK8PFchs.txt' % (os.environ['CMSSW_BASE'], JECstring, JECstring),
         ),
         massCorrectorMC = cms.vstring(#updating
-            '%s/src/Analysis/ALPHA/data/Summer16_23Sep2016V3_MC/Summer16_23Sep2016V3_MC_L2Relative_AK8PFchs.txt' % os.environ['CMSSW_BASE'],
-            '%s/src/Analysis/ALPHA/data/Summer16_23Sep2016V3_MC/Summer16_23Sep2016V3_MC_L3Absolute_AK8PFchs.txt' % os.environ['CMSSW_BASE'],
+            '%s/src/Analysis/ALPHA/data/Summer16_23Sep2016V4_MC/Summer16_23Sep2016V4_MC_L2Relative_AK8PFchs.txt' % os.environ['CMSSW_BASE'],
+            '%s/src/Analysis/ALPHA/data/Summer16_23Sep2016V4_MC/Summer16_23Sep2016V4_MC_L3Absolute_AK8PFchs.txt' % os.environ['CMSSW_BASE'],
         ),
         massCorrectorPuppi = cms.string('%s/src/Analysis/ALPHA/data/puppiCorrSummer16.root' % os.environ['CMSSW_BASE']),#updating
         reshapeBTag = cms.bool(True),
@@ -568,7 +561,7 @@ process.ntuple = cms.EDAnalyzer('Diboson',
         btagDB = cms.string('%s/src/Analysis/ALPHA/data/CSVv2_Moriond17_B_H.csv' % os.environ['CMSSW_BASE']),
         jet1btag = cms.int32(0), # 0: no selection, 1: loose, 2: medium, 3: tight
         jet2btag = cms.int32(0),
-        met = cms.InputTag('slimmedMETs','','ALPHA'),#("patPFMetT1Smear"),#
+        met = cms.InputTag('slimmedMETsMuEGClean' if isReMiniAod else 'slimmedMETs','ALPHA'),#("patPFMetT1Smear"),#
         metRecoil = cms.bool(False),
         metRecoilMC = cms.string(''),
         metRecoilData = cms.string(''),
@@ -605,8 +598,8 @@ if isData:
         process.fullPatMetSequence *#L
         
         process.primaryVertexFilter *
+        process.EGMRegression * process.EGMSmearerElectrons * process.EGMSmearerPhotons *
         process.egmGsfElectronIDSequence *
-        process.calibratedPatElectrons *
         process.egmPhotonIDSequence *
         process.cleanedMuons *
         #process.ak4PFL2L3ResidualCorrectorChain *
@@ -621,9 +614,8 @@ else:
         process.fullPatMetSequence *#L
         process.primaryVertexFilter *
         #process.EGMenergyCorrection *
-        process.regressionApplication *
+        process.EGMRegression * process.EGMSmearerElectrons * process.EGMSmearerPhotons *
         process.egmGsfElectronIDSequence *
-        process.calibratedPatElectrons *
         process.egmPhotonIDSequence *
         process.cleanedMuons *
         #process.ak4PFL2L3ResidualCorrectorChain *
