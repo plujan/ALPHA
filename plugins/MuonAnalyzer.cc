@@ -59,7 +59,7 @@ MuonAnalyzer::MuonAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CCo
     // FIXME -> STILL ICHEP-2016 -> TO BE UPDATED ?
     MuonTrkFile=new TFile(MuonTrkFileName.c_str(), "READ");
     if(!MuonTrkFile->IsZombie()) {
-        MuonTrkGraph=(TGraphAsymmErrors*)MuonTrkFile->Get("ratio_eta");
+        MuonTrkGraph=(TGraphAsymmErrors*)MuonTrkFile->Get("ratio_eff_eta3_dr030e030_corr");
         MuonTrk=(TH1F*)ConvertTGraph(MuonTrkGraph);
         isMuonTrkFile=true;
     }
