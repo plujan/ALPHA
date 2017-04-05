@@ -570,13 +570,13 @@ sample = {
         'matcheff': 1.,
         'kfactor' : 1.,
     },
-    'TTTT_TuneCUETP8M1_13TeV-amcatnlo-pythia8-v1' : { # via xrootd
+    'TTTT_TuneCUETP8M1_13TeV-amcatnlo-pythia8-v1' : {
         'nevents' : 250000.,
         'xsec'    : 1., #FIXME
         'matcheff': 1.,
         'kfactor' : 1.,
     },    
-    'ttbb_4FS_ckm_amcatnlo_madspin_pythia8_ext1-v1' : {  # via xrootd
+    'ttbb_4FS_ckm_amcatnlo_madspin_pythia8_ext1-v1' : {
         'nevents' : 3971944.,
         'xsec'    : 1., #FIXME
         'matcheff': 1.,
@@ -873,32 +873,32 @@ sample = {
     },
 
    #ZH - single H
-   'ZH_HToBB_ZToQQ_M125_13TeV_powheg_pythia8-v1' : { # via xrootd
+   'ZH_HToBB_ZToQQ_M125_13TeV_powheg_pythia8-v1' : {
         'nevents' : 499200.,
         'xsec'    : 1., #FIXME
         'matcheff': 1.,
         'kfactor' : 1.,
     },
 
-    'VBFHToBB_M-125_13TeV_powheg_pythia8_weightfix-v1' : { # via xrootd
+    'VBFHToBB_M-125_13TeV_powheg_pythia8_weightfix-v1' : {
         'nevents' : 997371.,
         'xsec'    : 1., #FIXME
         'matcheff': 1.,
         'kfactor' : 1.,
     },
-    'VBFHToBB_M-125_13TeV_powheg_pythia8_weightfix_ext1-v1' : { # via xrootd
+    'VBFHToBB_M-125_13TeV_powheg_pythia8_weightfix_ext1-v1' : {
         'nevents' : 3774811.,
         'xsec'    : 1., #FIXME
         'matcheff': 1.,
         'kfactor' : 1.,
     },
-    'GluGluHToBB_M125_13TeV_powheg_pythia8-v1' : { # via xrootd
+    'GluGluHToBB_M125_13TeV_powheg_pythia8-v1' : {
         'nevents' : 4856192.,
         'xsec'    : 1., #FIXME
         'matcheff': 1.,
         'kfactor' : 1.,
     },
-    'GluGluHToBB_M125_13TeV_powheg_pythia8_ext1-v1' : { # via xrootd
+    'GluGluHToBB_M125_13TeV_powheg_pythia8_ext1-v1' : {
         'nevents' : 4971200.,
         'xsec'    : 1., #FIXME
         'matcheff': 1.,
