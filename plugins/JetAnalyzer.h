@@ -59,6 +59,7 @@ class JetAnalyzer {
         virtual void AddVariables(std::vector<pat::Jet>&, pat::MET&);
         virtual int GetNBJets(std::vector<pat::Jet>&);
         virtual pat::MET FillMetVector(const edm::Event&);
+	virtual float GetMetTriggerEfficiency(pat::MET&);
         virtual void ApplyRecoilCorrections(pat::MET&, const reco::Candidate::LorentzVector*, const reco::Candidate::LorentzVector*, int);
         //virtual float GetScaleUncertainty(pat::Jet&);
 //         virtual float GetResolutionRatio(float);
@@ -94,6 +95,7 @@ class JetAnalyzer {
         bool UseRecoil;
         std::string RecoilMCFile;
         std::string RecoilDataFile;
+        std::string MetTriggerFileName;
         std::string JerName_res;
         std::string JerName_sf;
         float Rparameter;
@@ -102,7 +104,11 @@ class JetAnalyzer {
         TF1* PuppiJECcorr_gen;
         TF1* PuppiJECcorr_reco_0eta1v3;
         TF1* PuppiJECcorr_reco_1v3eta2v5;
-        
+
+	TFile* MetTriggerFile;
+	TH1F* MetTriggerHisto;
+	bool isMetTriggerFile;
+
         // JEC Uncertainty
         JetCorrectionUncertainty* jecUncMC;
         JetCorrectionUncertainty* jecUncDATA;
