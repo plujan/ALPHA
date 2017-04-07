@@ -166,9 +166,11 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     nPV = nElectrons = nMuons = nTaus = nPhotons = nJets = nFatJets = nBTagJets = 1;
     nVetoElectrons = nLooseMuons = 0;
     MaxJetBTag = MaxFatJetBTag = Chi2 = -1.;
+    //MaxJetBTagR = MaxJetBTagRUp = MaxJetBTagRDown = -1.;
     MaxJetBIndex = 100;
     MinJetMetDPhi = 10.;
     massRecoilFormula = -1.;
+    VtagExtrUnc = 0.;
 
     AddFourMomenta addP4;
     
@@ -304,14 +306,23 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
     reco::Candidate* theGenZ = theGenAnalyzer->FindGenParticle(GenPVect, 23);
     reco::Candidate* theGenW = theGenAnalyzer->FindGenParticle(GenPVect, 24);
     // EWK corrections
-    if(theGenZ) ZewkWeight = theGenAnalyzer->GetZewkWeight(theGenZ->pt());
-    if(theGenW) WewkWeight = theGenAnalyzer->GetWewkWeight(theGenW->pt());
-    
+    if(theGenZ) {
+        ZewkWeight = theGenAnalyzer->GetZewkWeight(theGenZ->pt());
+	Hist["g_ZptNoewk"]->Fill(theGenZ->pt(), EventWeight);
+	Hist["g_Zpt"]->Fill(theGenZ->pt(), EventWeight*ZewkWeight);
+    }
+    if(theGenW) {
+        WewkWeight = theGenAnalyzer->GetWewkWeight(theGenW->pt());
+	Hist["g_WptNoewk"]->Fill(theGenW->pt(), EventWeight);
+	Hist["g_Wpt"]->Fill(theGenW->pt(), EventWeight*WewkWeight);
+    }
 //    if(LheMap.find("lhePtZ")!=LheMap.end()) ZewkWeight = theGenAnalyzer->GetZewkWeight(LheMap["lhePtZ"]);
 //    if(LheMap.find("lhePtW")!=LheMap.end()) WewkWeight = theGenAnalyzer->GetWewkWeight(LheMap["lhePtW"]);
     
     EventWeight *= ZewkWeight * WewkWeight;
     
+    
+
     std::vector<int> LepIds = {12,14,16,-12,-14,-16};
     std::vector<int> HadIds = {1,2,3,4,5,-1,-2,-3,-4,-5};
     reco::GenParticle* theGenLep = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, LepIds);
@@ -676,9 +687,10 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
 	//std::cout << "Met pt: " << MET.pt() << std::endl;
 	//std::cout << "Trigger eff: " << theJetAnalyzer->GetMetTriggerEfficiency(MET) << std::endl;
 	if(isMC) {
-  	    TriggerWeight *= theJetAnalyzer->GetMetTriggerEfficiency(MET);
-	    TriggerWeightUp *= std::min(1.,(theJetAnalyzer->GetMetTriggerEfficiency(MET))*(1+0.06));//hardcoded 6% unc
-	    TriggerWeightDown *= std::min(1.,(theJetAnalyzer->GetMetTriggerEfficiency(MET))*(1-0.06));//hardcoded 6% unc
+	    if(MET.pt()<600) {TriggerWeight *= theJetAnalyzer->GetMetTriggerEfficiency(MET);}
+	    else {TriggerWeight *= 1;}
+	    TriggerWeightUp *= std::min(1.,(theJetAnalyzer->GetMetTriggerEfficiency(MET))*(1+0.01));//hardcoded 6% unc
+	    TriggerWeightDown *= std::min(1.,(theJetAnalyzer->GetMetTriggerEfficiency(MET))*(1-0.01));//hardcoded 6% unc
 	}
     }
     
@@ -732,38 +744,54 @@ void Diboson::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup) {
         else massRecoilFormula = FatJetsVect.at(0).energy();
     }
     if(Verbose) std::cout << " - Candidate built" << std::endl;
+
+    // V-tagging high pT extrapolation
+    VtagExtrUnc = log(FatJetsVect.at(0).pt()/200.);
     
     // ---------- Event Variables ----------
     
     // Max b-tagged jet in the event
     //for(unsigned int i = 2; i < JetsVect.size(); i++) {
     for(unsigned int i = 0; i < JetsVect.size(); i++) {
+/*        if( (JetsVect[i].hasUserFloat("ReshapedDiscriminator")?JetsVect[i].userFloat("ReshapedDiscriminator") : -1.) > MaxJetBTagR && FatJetsVect.size() > 0 && deltaR(FatJetsVect.at(0), JetsVect[i])>0.8) {
+             MaxJetBTagR = JetsVect[i].userFloat("ReshapedDiscriminator");
+	}
+        if( (JetsVect[i].hasUserFloat("ReshapedDiscriminatorUp")?JetsVect[i].userFloat("ReshapedDiscriminatorUp") : -1.) > MaxJetBTagRUp && FatJetsVect.size() > 0 && deltaR(FatJetsVect.at(0), JetsVect[i])>0.8) {
+             MaxJetBTagRUp = JetsVect[i].userFloat("ReshapedDiscriminatorUp");
+	}
+        if( (JetsVect[i].hasUserFloat("ReshapedDiscriminatorDown")?JetsVect[i].userFloat("ReshapedDiscriminatorDown") : -1.) > MaxJetBTagRDown && FatJetsVect.size() > 0 && deltaR(FatJetsVect.at(0), JetsVect[i])>0.8) {
+             MaxJetBTagRDown = JetsVect[i].userFloat("ReshapedDiscriminatorDown");
+	}
+*/
         if(JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag")) > MaxJetBTag && FatJetsVect.size() > 0 && deltaR(FatJetsVect.at(0), JetsVect[i])>0.8) {
              MaxJetBTag = JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag"));
 	     MaxJetBIndex = i;
 	     BTagWeight *= (JetsVect[i].hasUserFloat("ReshapedDiscriminator")?JetsVect[i].userFloat("ReshapedDiscriminator") : 1.);
 	     BTagWeightUp *= (JetsVect[i].hasUserFloat("ReshapedDiscriminatorUp")?JetsVect[i].userFloat("ReshapedDiscriminatorUp") : 1.);
 	     BTagWeightDown *= (JetsVect[i].hasUserFloat("ReshapedDiscriminatorDown")?JetsVect[i].userFloat("ReshapedDiscriminatorDown") : 1.);
-	     //std::cout << "looping on jets outside the AK8; id: " << i << std::endl;
-	     //std::cout << "CSV value: " << JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag")) << std::endl;
-	     //std::cout << "CSV SF: " << (JetsVect[i].hasUserFloat("ReshapedDiscriminator")?JetsVect[i].userFloat("ReshapedDiscriminator") : -1.)  << std::endl;
-	     //std::cout << "CSV SF Up: " << (JetsVect[i].hasUserFloat("ReshapedDiscriminatorUp")?JetsVect[i].userFloat("ReshapedDiscriminatorUp") : -1.)  << std::endl;
-	     //std::cout << "CSV SF Down: " << (JetsVect[i].hasUserFloat("ReshapedDiscriminatorDown")?JetsVect[i].userFloat("ReshapedDiscriminatorDown") : -1.)  << std::endl;
+	     ////std::cout << "looping on jets outside the AK8; id: " << i << std::endl;
+	     ////std::cout << "CSV value: " << JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag")) << std::endl;
+	     ////std::cout << "CSV SF: " << (JetsVect[i].hasUserFloat("ReshapedDiscriminator")?JetsVect[i].userFloat("ReshapedDiscriminator") : -1.)  << std::endl;
+	     ////std::cout << "CSV SF Up: " << (JetsVect[i].hasUserFloat("ReshapedDiscriminatorUp")?JetsVect[i].userFloat("ReshapedDiscriminatorUp") : -1.)  << std::endl;
+	     ////std::cout << "CSV SF Down: " << (JetsVect[i].hasUserFloat("ReshapedDiscriminatorDown")?JetsVect[i].userFloat("ReshapedDiscriminatorDown") : -1.)  << std::endl;
 
 
-	     //std::cout << "BTagWeight: " << BTagWeight << std::endl;
-	     //std::cout << "BTagWeightUp: " << BTagWeightUp << std::endl;
-	     //std::cout << "BTagWeightDown: " << BTagWeightDown << std::endl;
+	     ////std::cout << "BTagWeight: " << BTagWeight << std::endl;
+	     ////std::cout << "BTagWeightUp: " << BTagWeightUp << std::endl;
+	     ////std::cout << "BTagWeightDown: " << BTagWeightDown << std::endl;
         }
     }
 
     //std::cout << "CHECK : nJets AK4: " << nJets << std::endl;
     //std::cout << "CHECK : jet number of the max b tag outside the ak8: " << MaxJetBIndex  << std::endl;
     //std::cout << "CHECK : MaxJetBTag: " << MaxJetBTag  << std::endl;
+    //std::cout << "CHECK : MaxJetBTagR: " << MaxJetBTagR  << std::endl;
+    //std::cout << "CHECK : MaxJetBTagRUp: " << MaxJetBTagRUp  << std::endl;
+    //std::cout << "CHECK : MaxJetBTagRDown: " << MaxJetBTagRDown  << std::endl;
     if(JetsVect.size()>=MaxJetBIndex){
-	     MaxBTagWeight *= (JetsVect[MaxJetBIndex].hasUserFloat("ReshapedDiscriminator")?JetsVect[MaxJetBIndex].userFloat("ReshapedDiscriminator") : 1.);
-	     MaxBTagWeightUp *= (JetsVect[MaxJetBIndex].hasUserFloat("ReshapedDiscriminatorUp")?JetsVect[MaxJetBIndex].userFloat("ReshapedDiscriminatorUp") : 1.);
-	     MaxBTagWeightDown *= (JetsVect[MaxJetBIndex].hasUserFloat("ReshapedDiscriminatorDown")?JetsVect[MaxJetBIndex].userFloat("ReshapedDiscriminatorDown") : 1.);
+        MaxBTagWeight *= (JetsVect[MaxJetBIndex].hasUserFloat("ReshapedDiscriminator")?JetsVect[MaxJetBIndex].userFloat("ReshapedDiscriminator") : 1.);
+        MaxBTagWeightUp *= (JetsVect[MaxJetBIndex].hasUserFloat("ReshapedDiscriminatorUp")?JetsVect[MaxJetBIndex].userFloat("ReshapedDiscriminatorUp") : 1.);
+        MaxBTagWeightDown *= (JetsVect[MaxJetBIndex].hasUserFloat("ReshapedDiscriminatorDown")?JetsVect[MaxJetBIndex].userFloat("ReshapedDiscriminatorDown") : 1.);
 	     //      std::cout << "CSV SF: " << (JetsVect[MaxJetBIndex].hasUserFloat("ReshapedDiscriminator")?JetsVect[MaxJetBIndex].userFloat("ReshapedDiscriminator") : -1.)  << std::endl;
 	     //      std::cout << "CSV SF Up: " << (JetsVect[MaxJetBIndex].hasUserFloat("ReshapedDiscriminatorUp")?JetsVect[MaxJetBIndex].userFloat("ReshapedDiscriminatorUp") : -1.)  << std::endl;
 	     //      std::cout << "CSV SF Down: " << (JetsVect[MaxJetBIndex].hasUserFloat("ReshapedDiscriminatorDown")?JetsVect[MaxJetBIndex].userFloat("ReshapedDiscriminatorDown") : -1.)  << std::endl;
@@ -891,7 +919,7 @@ void Diboson::beginJob() {
     tree->Branch("LeptonWeight", &LeptonWeight, "LeptonWeight/F");
     tree->Branch("LeptonWeightUp", &LeptonWeightUp, "LeptonWeightUp/F");
     tree->Branch("LeptonWeightDown", &LeptonWeightDown, "LeptonWeightDown/F");
-    
+    tree->Branch("VtagExtrUnc", &VtagExtrUnc, "VtagExtrUnc/F");
     // Set trigger branches
     for(auto it = TriggerMap.begin(); it != TriggerMap.end(); it++) tree->Branch(it->first.c_str(), &(it->second), (it->first+"/O").c_str());
     for(auto it = MetFiltersMap.begin(); it != MetFiltersMap.end(); it++) tree->Branch(it->first.c_str(), &(it->second), (it->first+"/O").c_str());
@@ -921,16 +949,19 @@ void Diboson::beginJob() {
     tree->Branch("nBTagJets", &nBTagJets, "nBTagJets/I");
     
     tree->Branch("MaxJetBTag", &MaxJetBTag, "MaxJetBTag/F");
+    //tree->Branch("MaxJetBTagR", &MaxJetBTagR, "MaxJetBTagR/F");
+    //tree->Branch("MaxJetBTagRUp", &MaxJetBTagRUp, "MaxJetBTagRUp/F");
+    //tree->Branch("MaxJetBTagRDown", &MaxJetBTagRDown, "MaxJetBTagRDown/F");
     tree->Branch("MaxJetBIndex", &MaxJetBIndex, "MaxJetBIndex/I");
     tree->Branch("MaxFatJetBTag", &MaxFatJetBTag, "MaxFatJetBTag/F");
     tree->Branch("MinJetMetDPhi", &MinJetMetDPhi, "MinJetMetDPhi/F");
     tree->Branch("Chi2", &Chi2, "Chi2/F");
     // Angular variables
-    tree->Branch("CosThetaStar", &CosThetaStar, "CosThetaStar/F");
-    tree->Branch("CosTheta1", &CosTheta1, "CosTheta1/F");
-    tree->Branch("CosTheta2", &CosTheta2, "CosTheta2/F");
-    tree->Branch("Phi", &Phi, "Phi/F");
-    tree->Branch("Phi1", &Phi1, "Phi1/F");
+    //tree->Branch("CosThetaStar", &CosThetaStar, "CosThetaStar/F");
+    //tree->Branch("CosTheta1", &CosTheta1, "CosTheta1/F");
+    //tree->Branch("CosTheta2", &CosTheta2, "CosTheta2/F");
+    //tree->Branch("Phi", &Phi, "Phi/F");
+    //tree->Branch("Phi1", &Phi1, "Phi1/F");
     // Mass recoil formula
     tree->Branch("massRecoilFormula", &massRecoilFormula, "massRecoilFormula/F");
   
