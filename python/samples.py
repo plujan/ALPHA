@@ -785,7 +785,7 @@ sample = {
         'matcheff': 1.,
         'kfactor' : 1.,
     },
-   # FIXME - check xs for QCD (taken from ichep)
+
     'QCD_bEnriched_HT1000to1500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1' : {
         'nevents' : 221429,
         'xsec_br' : 5.26,
@@ -828,7 +828,7 @@ sample = {
         'matcheff': 1.,
         'kfactor' : 1.,
     },
-    # FIXME - check xs for QCD (taken from ichep)
+
     'QCD_HT1000to1500_BGenFilter_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1' : {
         'nevents' : 834688,
         'xsec_br' : 184.4,
