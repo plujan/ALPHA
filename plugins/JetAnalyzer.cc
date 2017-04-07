@@ -325,9 +325,9 @@ std::vector<pat::Jet> JetAnalyzer::FillJetVector(const edm::Event& iEvent) {
             jet.addUserFloat("phiJERDown", jetJERDown.phi());
             jet.addUserFloat("energyJERDown", jetJERDown.energy());
 
-            //jet.addUserFloat("smearFactor", smearFactor);
-            //jet.addUserFloat("smearFactorUp", smearFactorUp);
-            //jet.addUserFloat("smearFactorDown", smearFactorDown);           
+            jet.addUserFloat("smearFactor", smearFactor);
+            jet.addUserFloat("smearFactorUp", smearFactorUp);
+            jet.addUserFloat("smearFactorDown", smearFactorDown);           
         }        
         // JER NEW IMPLEMENTATION        
 
