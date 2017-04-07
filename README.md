@@ -19,8 +19,7 @@ Packages needed by ALPHA:
 ```bash
 ### MET + FILTERS
 # https://twiki.cern.ch/twiki/bin/view/CMSPublic/ReMiniAOD03Feb2017Notes?rev=19#MET_Recipes
-git cms-merge-topic cms-met:METRecipe_8020 -u
-git cms-merge-topic cms-met:METRecipe_80X_part2 -u
+git cms-merge-topic -u cms-met:METRecipe_8020
 
 ### ELECTRON REGRESSION + SMEARER
 # https://twiki.cern.ch/twiki/bin/view/CMS/EGMRegression?rev=20#Consistent_EGMSmearer
