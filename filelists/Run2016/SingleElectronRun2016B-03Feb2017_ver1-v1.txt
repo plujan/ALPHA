@@ -1,0 +1,17 @@
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleElectron/MINIAOD/03Feb2017_ver1-v1/100000/000E1D21-47ED-E611-85E0-0CC47A4D762A.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleElectron/MINIAOD/03Feb2017_ver1-v1/100000/0A6D482F-13ED-E611-B475-0025905A48FC.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleElectron/MINIAOD/03Feb2017_ver1-v1/100000/0C422E2C-13ED-E611-B684-0CC47A4D76B8.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleElectron/MINIAOD/03Feb2017_ver1-v1/100000/18E57871-1AED-E611-9313-0025905A60BC.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleElectron/MINIAOD/03Feb2017_ver1-v1/100000/3CF1D22F-13ED-E611-A99F-0025905B85EC.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleElectron/MINIAOD/03Feb2017_ver1-v1/100000/42786121-47ED-E611-9D93-0025905A6088.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleElectron/MINIAOD/03Feb2017_ver1-v1/100000/6495D973-1AED-E611-8677-0CC47A7C3422.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleElectron/MINIAOD/03Feb2017_ver1-v1/100000/66804B15-47ED-E611-A447-0CC47A4C8E1C.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleElectron/MINIAOD/03Feb2017_ver1-v1/100000/70E9466F-1AED-E611-8C4F-0CC47A7452D0.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleElectron/MINIAOD/03Feb2017_ver1-v1/100000/767FE26E-1AED-E611-9ED5-0CC47A7C356A.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleElectron/MINIAOD/03Feb2017_ver1-v1/100000/7A49296E-1AED-E611-8332-0CC47A4D76D6.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleElectron/MINIAOD/03Feb2017_ver1-v1/100000/A2FDB898-0BED-E611-8D25-0CC47A4D75EE.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleElectron/MINIAOD/03Feb2017_ver1-v1/100000/A84EFE30-13ED-E611-8BED-0025905A6126.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleElectron/MINIAOD/03Feb2017_ver1-v1/100000/E2219131-13ED-E611-8CDA-0025905B85BC.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleElectron/MINIAOD/03Feb2017_ver1-v1/100000/E48E1F6E-1AED-E611-A8A4-0CC47A4C8ECA.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleElectron/MINIAOD/03Feb2017_ver1-v1/100000/E890926D-1AED-E611-BCFB-0CC47A7C356A.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/SingleElectron/MINIAOD/03Feb2017_ver1-v1/100000/FC1E3295-0BED-E611-89C7-0CC47A4C8F08.root
