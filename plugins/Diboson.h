@@ -174,8 +174,10 @@ class Diboson : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
         int nPV, nElectrons, nVetoElectrons, nMuons, nLooseMuons, nTaus, nPhotons, nJets, nFatJets, nBTagJets;
         float MaxJetBTag, MaxFatJetBTag, MinJetMetDPhi, Chi2;
         unsigned int MaxJetBIndex;
+        float VtagExtrUnc;
+        //float MaxJetBTagR, MaxJetBTagRUp, MaxJetBTagRDown;
         // Angular
-        float CosThetaStar, CosTheta1, CosTheta2, Phi, Phi1, AngularLD;
+        //float CosThetaStar, CosTheta1, CosTheta2, Phi, Phi1, AngularLD;
         // Mass recoil formula
         float massRecoilFormula;
         //

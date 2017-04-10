@@ -17,6 +17,7 @@ process.load('FWCore.MessageService.MessageLogger_cfi')
 process.MessageLogger.cerr.threshold = 'ERROR'
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+#process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
 
 # input
 # default: if no filelist from command line, run on specified samples
@@ -59,7 +60,7 @@ print 'isReMiniAod',isReMiniAod
 print 'isPromptReco',isPromptReco      
 
 # Determine if running on LO Diboson MC
-isDibosonInclusive = (True if (sample=='WW_TuneCUETP8M1_13TeV-pythia8-v1' or sample=='WZ_TuneCUETP8M1_13TeV-pythia8-v1' or sample=='ZZ_TuneCUETP8M1_13TeV-pythia8-v1' or sample=='ZZ_TuneCUETP8M1_13TeV-pythia8_ext1-v1') else False)
+isDibosonInclusive = (True if (sample=='WW_TuneCUETP8M1_13TeV-pythia8-v1' or sample=='WW_TuneCUETP8M1_13TeV-pythia8_ext1-v1' or sample=='WZ_TuneCUETP8M1_13TeV-pythia8-v1' or sample=='WZ_TuneCUETP8M1_13TeV-pythia8_ext1-v1' or sample=='ZZ_TuneCUETP8M1_13TeV-pythia8-v1' or sample=='ZZ_TuneCUETP8M1_13TeV-pythia8_ext1-v1') else False)
 
 # Determine if custom MC
 isCustom          = ('GluGluToAToZhToLLBB' in process.source.fileNames[0])
@@ -476,7 +477,7 @@ process.ntuple = cms.EDAnalyzer('Diboson',
         btagDB = cms.string('%s/src/Analysis/ALPHA/data/CSVv2_Moriond17_B_H.csv' % os.environ['CMSSW_BASE']),
         jet1btag = cms.int32(0), # 0: no selection, 1: loose, 2: medium, 3: tight
         jet2btag = cms.int32(0),
-        met = cms.InputTag('slimmedMETsMuEGClean', '') if isReMiniAod else cms.InputTag('slimmedMETs', 'ALPHA'), 
+        met = cms.InputTag('slimmedMETsMuEGClean', '', '') if isReMiniAod else cms.InputTag('slimmedMETs', '', 'ALPHA'), 
         metRecoil = cms.bool(False),
         metRecoilMC = cms.string(''),
         metRecoilData = cms.string(''),
