@@ -59,6 +59,7 @@ class ElectronAnalyzer {
         edm::EDGetTokenT<edm::ValueMap<bool>> EleMVATrigMediumIdMapToken;
         edm::EDGetTokenT<edm::ValueMap<bool>> EleMVATrigTightIdMapToken;
         edm::EDGetTokenT<EcalRecHitCollection> EleEcalRecHitCollectionToken;
+        std::string EleSingleTriggerIsoFileName;
         std::string EleSingleTriggerFileName;
         std::string EleVetoIdFileName;
         std::string EleLooseIdFileName;
@@ -72,9 +73,11 @@ class ElectronAnalyzer {
         float Electron1Pt, Electron2Pt;
         float EleTriggerPtMax;
         
-        bool isEleVetoIdFile, isEleLooseIdFile, isEleMediumIdFile, isEleTightIdFile, isEleMVATrigMediumIdFile, isEleMVATrigTightIdFile, isEleTriggerFile, isEleSingleTriggerFile, isEleRecoEffFile;
+        bool isEleVetoIdFile, isEleLooseIdFile, isEleMediumIdFile, isEleTightIdFile, isEleMVATrigMediumIdFile, isEleMVATrigTightIdFile, isEleTriggerFile, isEleTriggerIsoFile, isEleSingleTriggerFile, isEleSingleTriggerIsoFile, isEleRecoEffFile;
         
+        TFile* EleTriggerIsoFile;
         TFile* EleTriggerFile;
+        TFile* EleSingleTriggerIsoFile;
         TFile* EleSingleTriggerFile;
         TFile* EleVetoIdFile;
         TFile* EleLooseIdFile;
