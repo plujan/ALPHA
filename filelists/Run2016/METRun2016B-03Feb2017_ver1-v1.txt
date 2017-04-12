@@ -1,6 +1,0 @@
-dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/MET/MINIAOD/03Feb2017_ver1-v1/100000/1CDECD1B-0CEB-E611-A2A9-D4AE526A0455.root
-dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/MET/MINIAOD/03Feb2017_ver1-v1/100000/281D7989-EEEA-E611-A3D6-D4AE526A0B29.root
-dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/MET/MINIAOD/03Feb2017_ver1-v1/100000/4830312A-FEEA-E611-B263-0CC47A7EEE80.root
-dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/MET/MINIAOD/03Feb2017_ver1-v1/100000/C0A13010-0CEB-E611-A3C5-842B2B758AD8.root
-dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/MET/MINIAOD/03Feb2017_ver1-v1/100000/DA56831A-FEEA-E611-8F6A-D4AE526A0D2E.root
-dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016B/MET/MINIAOD/03Feb2017_ver1-v1/100000/F840351D-E7EA-E611-9689-842B2B7669E2.root
