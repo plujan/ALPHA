@@ -32,11 +32,25 @@ void ObjectsFormat::FillElectronType(LeptonType& I, const pat::Electron* R, bool
     I.isMedium    = R->hasUserInt("isMedium") ? R->userInt("isMedium") : false;
     I.isTight     = R->hasUserInt("isTight") ? R->userInt("isTight") : false;
     I.isHighPt    = R->hasUserInt("isHEEP") ? R->userInt("isHEEP") : false;
+
+    I.SSscale               = R->hasUserFloat("SSscale") ? R->userFloat("SSscale") : -1.;
+    I.SSsigma               = R->hasUserFloat("SSsigma") ? R->userFloat("SSsigma") : -1.;
+    I.SSscaleUnc            = R->hasUserFloat("SSscaleUnc") ? R->userFloat("SSscaleUnc") : -1.;
+    I.SSsigmaUncUp          = R->hasUserFloat("SSsigmaUncUp") ? R->userFloat("SSsigmaUncUp") : -1.;
+    I.SSsigmaUncDown        = R->hasUserFloat("SSsigmaUncDown") ? R->userFloat("SSsigmaUncDown") : -1.;
+    I.SScorr                = R->hasUserFloat("SScorr") ? R->userFloat("SScorr") : -1.;
+    I.energySScorr          = R->hasUserFloat("energySScorr") ? R->userFloat("energySScorr") : -1.;
+    I.energySScorrUncUp     = R->hasUserFloat("energySScorrUncUp") ? R->userFloat("energySScorrUncUp") : -1.;
+    I.energySScorrUncDown   = R->hasUserFloat("energySScorrUncDown") ? R->userFloat("energySScorrUncDown") : -1.;
+    I.ptSScorr              = R->hasUserFloat("ptSScorr") ? R->userFloat("ptSScorr") : -1.;
+    I.ptSScorrUncUp         = R->hasUserFloat("ptSScorrUncUp") ? R->userFloat("ptSScorrUncUp") : -1.;
+    I.ptSScorrUncDown       = R->hasUserFloat("ptSScorrUncDown") ? R->userFloat("ptSScorrUncDown") : -1.;
+
+    if(isMC && R->genLepton()) I.isMatched = false;//(Utilities::FindMotherId(dynamic_cast<const reco::Candidate*>(R->genLepton()))==23);
 //    I.isMVANonTrigMedium      = R->hasUserInt("isMVANonTrigMedium") ? R->userInt("isMVANonTrigMedium") : false;
 //    I.isMVANonTrigTight      = R->hasUserInt("isMVANonTrigTight") ? R->userInt("isMVANonTrigTight") : false;
 //    I.isMVATrigMedium      = R->hasUserInt("isMVATrigMedium") ? R->userInt("isMVATrigMedium") : false;
 //    I.isMVATrigTight      = R->hasUserInt("isMVATrigTight") ? R->userInt("isMVATrigTight") : false;
-    if(isMC && R->genLepton()) I.isMatched = false;//(Utilities::FindMotherId(dynamic_cast<const reco::Candidate*>(R->genLepton()))==23);
 }
 
 void ObjectsFormat::FillMuonType(LeptonType& I, const pat::Muon* R, bool isMC) {
@@ -67,6 +81,7 @@ void ObjectsFormat::FillMuonType(LeptonType& I, const pat::Muon* R, bool isMC) {
     I.isTight     = R->hasUserInt("isTight") ? R->userInt("isTight") : false;
     I.isHighPt    = R->hasUserInt("isHighPt") ? R->userInt("isHighPt") : false;
     I.isTrackerHighPt = R->hasUserInt("isTrackerHighPt") ? R->userInt("isTrackerHighPt") : false;
+
     if(isMC && R->genLepton()) I.isMatched = false;//(Utilities::FindMotherId(dynamic_cast<const reco::Candidate*>(R->genLepton()))==23);
 }
 
@@ -101,10 +116,24 @@ void ObjectsFormat::ResetLeptonType(LeptonType& I) {
 //    I.isMVANonTrigTight = false;
 //    I.isMVATrigMedium = false;
 //    I.isMVATrigTight = false;
+
+    I.SSscale               = -1.;
+    I.SSsigma               = -1.;
+    I.SSscaleUnc            = -1.;
+    I.SSsigmaUncUp          = -1.;
+    I.SSsigmaUncDown        = -1.;
+    I.SScorr                = -1.;
+    I.energySScorr          = -1.;
+    I.energySScorrUncUp     = -1.;
+    I.energySScorrUncDown   = -1.;
+    I.ptSScorr              = -1.;
+    I.ptSScorrUncUp         = -1.;
+    I.ptSScorrUncDown       = -1.;
+
     I.isMatched   = false;
 }
 
-std::string ObjectsFormat::ListLeptonType() {return "pt/F:eta/F:phi/F:mass/F:energy/F:inTrkPt/F:pfIso03/F:pfIso04/F:trkIso/F:miniIso/F:dxy/F:dz/F:ip3d/F:sip3d/F:nPixelHits/F:dPhi_met/F:charge/I:pdgId/I:isElectron/O:isMuon/O:isVeto/O:isLoose/O:isMedium/O:isTight/O:isHighPt/O:isTrackerHighPt/O:isMatched/O";} // isHEEP/O:isMVANonTrigMedium/O:isMVANonTrigTight/O:isMVATrigMedium/O:isMVATrigTight/O:
+std::string ObjectsFormat::ListLeptonType() {return "pt/F:eta/F:phi/F:mass/F:energy/F:inTrkPt/F:pfIso03/F:pfIso04/F:trkIso/F:miniIso/F:dxy/F:dz/F:ip3d/F:sip3d/F:nPixelHits/F:dPhi_met/F:charge/I:pdgId/I:isElectron/O:isMuon/O:isVeto/O:isLoose/O:isMedium/O:isTight/O:isHighPt/O:isTrackerHighPt/O:SSscale/F:SSsigma/F:SSscaleUnc/F:SSsigmaUncUp/F:SSsigmaUncDown/F:SScorr/F:energySScorr/F:energySScorrUncUp/F:energySScorrUncDown/F:ptSScorr/F:ptSScorrUncUp/F:ptSScorrUncDown/F:isMatched/O";} // isHEEP/O:isMVANonTrigMedium/O:isMVANonTrigTight/O:isMVATrigMedium/O:isMVATrigTight/O:
 
 //********************//
 //    Photons         // 

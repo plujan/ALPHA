@@ -1,5 +1,5 @@
 #include "ElectronAnalyzer.h"
-
+#include "EgammaAnalysis/ElectronTools/src/EnergyScaleCorrection_class.cc"
 
 
 ElectronAnalyzer::ElectronAnalyzer(const edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl):
@@ -15,6 +15,7 @@ ElectronAnalyzer::ElectronAnalyzer(const edm::ParameterSet& PSet, edm::ConsumesC
     EleMVATrigMediumIdMapToken(CColl.consumes<edm::ValueMap<bool>>(PSet.getParameter<edm::InputTag>("eleMVATrigMediumIdMap"))),
     EleMVATrigTightIdMapToken(CColl.consumes<edm::ValueMap<bool>>(PSet.getParameter<edm::InputTag>("eleMVATrigTightIdMap"))),
     EleEcalRecHitCollectionToken(CColl.consumes<EcalRecHitCollection>(PSet.getParameter<edm::InputTag>("eleEcalRecHitCollection"))),
+    EleSingleTriggerIsoFileName(PSet.getParameter<std::string>("eleSingleTriggerIsoFileName")),
     EleSingleTriggerFileName(PSet.getParameter<std::string>("eleSingleTriggerFileName")),
     EleVetoIdFileName(PSet.getParameter<std::string>("eleVetoIdFileName")),
     EleLooseIdFileName(PSet.getParameter<std::string>("eleLooseIdFileName")),
@@ -23,6 +24,7 @@ ElectronAnalyzer::ElectronAnalyzer(const edm::ParameterSet& PSet, edm::ConsumesC
     EleMVATrigMediumIdFileName(PSet.getParameter<std::string>("eleMVATrigMediumIdFileName")),
     EleMVATrigTightIdFileName(PSet.getParameter<std::string>("eleMVATrigTightIdFileName")),
     EleRecoEffFileName(PSet.getParameter<std::string>("eleRecoEffFileName")),
+    EleScaleSmearCorrectionName(PSet.getParameter<std::string>("eleScaleSmearCorrectionName")),
     Electron1Id(PSet.getParameter<int>("electron1id")),
     Electron2Id(PSet.getParameter<int>("electron2id")),
     //Electron1Iso(PSet.getParameter<int>("electron1iso")),
@@ -30,14 +32,23 @@ ElectronAnalyzer::ElectronAnalyzer(const edm::ParameterSet& PSet, edm::ConsumesC
     Electron1Pt(PSet.getParameter<double>("electron1pt")),
     Electron2Pt(PSet.getParameter<double>("electron2pt"))
 {
-    isEleVetoIdFile = isEleLooseIdFile = isEleMediumIdFile = isEleTightIdFile = isEleRecoEffFile = isEleMVATrigMediumIdFile = isEleMVATrigTightIdFile = isEleTriggerFile = isEleSingleTriggerFile = false;    
+    isEleVetoIdFile = isEleLooseIdFile = isEleMediumIdFile = isEleTightIdFile = isEleRecoEffFile = isEleMVATrigMediumIdFile = isEleMVATrigTightIdFile = isEleTriggerFile = isEleSingleTriggerFile = isEleSingleTriggerIsoFile = false;    
 
-    // FIXME -> 2016 numbers, now obsolete!!!
+    // Electron SingleTriggerIso
+    EleSingleTriggerIsoFile=new TFile(EleSingleTriggerIsoFileName.c_str(), "READ");
+    if(!EleSingleTriggerIsoFile->IsZombie()) {
+      ElectronTriggerEle27Tight=(TH2F*)EleSingleTriggerIsoFile->Get("Ele27_WPTight/eleTrigEff_Ele27Tight");//X:eta;Y:pt
+      isEleSingleTriggerIsoFile=true;
+    }
+    else {
+      throw cms::Exception("ElectronAnalyzer", "No SingleTriggerIso File");
+      return;
+    }
+
     // Electron SingleTrigger
     EleSingleTriggerFile=new TFile(EleSingleTriggerFileName.c_str(), "READ");
     if(!EleSingleTriggerFile->IsZombie()) {
-      ElectronTriggerEle105=(TH2F*)EleSingleTriggerFile->Get("Ele105/eleTrigEff_Ele105");//X:pt;Y:eta
-      ElectronTriggerEle27Tight=(TH2F*)EleSingleTriggerFile->Get("Ele27_WPTight/eleTrigEff_Ele27Tight");//X:eta;Y:pt
+      ElectronTriggerEle105=(TH2F*)EleSingleTriggerFile->Get("sf");//X:pt;Y:eta
       isEleSingleTriggerFile=true;
     }
     else {
@@ -132,6 +143,7 @@ ElectronAnalyzer::ElectronAnalyzer(const edm::ParameterSet& PSet, edm::ConsumesC
 
 ElectronAnalyzer::~ElectronAnalyzer() {
     EleSingleTriggerFile->Close();
+    EleSingleTriggerIsoFile->Close();
     EleVetoIdFile->Close();
     EleLooseIdFile->Close();
     EleMediumIdFile->Close();
@@ -185,7 +197,16 @@ std::vector<pat::Electron> ElectronAnalyzer::FillElectronVector(const edm::Event
     iEvent.getByToken(EleMVATrigTightIdMapToken, MVATrigTightIdDecisions);
     
     unsigned int elIdx = 0;
-    
+
+    // EnergyScaleCorrection_class eScaleSmearer(EleScaleSmearCorrectionName);
+    EnergyScaleCorrection_class eScaleSmearer("EgammaAnalysis/ElectronTools/data/ScalesSmearings/Moriond17_23Jan_ele");
+    if (isMC){
+        eScaleSmearer.doSmearings = true;
+    }
+    else{
+        eScaleSmearer.doScale = true;
+    }
+
     // Loop on Electron collection
     for(std::vector<pat::Electron>::const_iterator it=EleCollection->begin(); it!=EleCollection->end(); ++it) {
         if(Vect.size()>0) {
@@ -237,10 +258,47 @@ std::vector<pat::Electron> ElectronAnalyzer::FillElectronVector(const edm::Event
         el.addUserInt("isMVANonTrigTight", isPassMVANonTrigTight ? 1 : 0);
         el.addUserInt("isMVATrigMedium", isPassMVATrigMedium ? 1 : 0);
         el.addUserInt("isMVATrigTight", isPassMVATrigTight ? 1 : 0);
-        ++elIdx;
 
+        float scale         = eScaleSmearer.ScaleCorrection           (iEvent.id().run(), el.isEB(), el.r9(), el.superCluster()->eta(), el.et(), 0);
+        float sigma         = eScaleSmearer.getSmearingSigma          (iEvent.id().run(), el.isEB(), el.r9(), el.superCluster()->eta(), el.et(), 0, 0, 0);
+        float error_scale   = eScaleSmearer.ScaleCorrectionUncertainty(iEvent.id().run(), el.isEB(), el.r9(), el.superCluster()->eta(), el.et(), 0);
+        float error_sigma_u = eScaleSmearer.getSmearingSigma          (iEvent.id().run(), el.isEB(), el.r9(), el.superCluster()->eta(), el.et(), 0, 1,  0);
+        float error_sigma_d = eScaleSmearer.getSmearingSigma          (iEvent.id().run(), el.isEB(), el.r9(), el.superCluster()->eta(), el.et(), 0, -1, 0);
+
+        el.addUserFloat("SSscale",          scale);
+        el.addUserFloat("SSsigma",          sigma);
+        el.addUserFloat("SSscaleUnc",       error_scale);
+        el.addUserFloat("SSsigmaUncUp",     error_sigma_u);
+        el.addUserFloat("SSsigmaUncDown",   error_sigma_d);
+
+        TRandom3 * rgen_ = new TRandom3(0);
+
+        if(isMC){
+            float smear = rgen_->Gaus(1, sigma);
+            float smearUp = rgen_->Gaus(1, error_sigma_u);
+            float smearDown = rgen_->Gaus(1, error_sigma_d);
+            el.addUserFloat("SScorr",               smear);
+            el.addUserFloat("ptSScorr",             el.pt()*smear);
+            el.addUserFloat("ptSScorrUncUp",        el.pt()*smearUp);
+            el.addUserFloat("ptSScorrUncDown",      el.pt()*smearDown);
+            el.addUserFloat("energySScorr",         el.energy()*smear);
+            el.addUserFloat("energySScorrUncUp",    el.energy()*smearUp);
+            el.addUserFloat("energySScorrUncDown",  el.energy()*smearDown);
+        }
+        else{
+            el.addUserFloat("SScorr",               scale);
+            el.addUserFloat("ptSScorr",             el.pt()*scale);
+            el.addUserFloat("ptSScorrUncUp",        el.pt()*(1+error_scale));
+            el.addUserFloat("ptSScorrUncDown",      el.pt()*(1-error_scale));
+            el.addUserFloat("energySScorr",         el.energy()*scale);
+            el.addUserFloat("energySScorrUncUp",    el.energy()*(1+error_scale));
+            el.addUserFloat("energySScorrUncDown",  el.energy()*(1-error_scale));            
+        }
+
+        ++elIdx;
         // Fill vector
         Vect.push_back(el);
+
     }
     return Vect;
 }
@@ -363,30 +421,30 @@ float ElectronAnalyzer::GetElectronRecoEffSFError(pat::Electron& el) {
 
 float ElectronAnalyzer::GetElectronTriggerSFEle105(pat::Electron& ele) {
     if(!isEleSingleTriggerFile) return 1.;
-    double pt = std::min( std::max( ElectronTriggerEle105->GetXaxis()->GetXmin(), ele.pt() ) , ElectronTriggerEle105->GetXaxis()->GetXmax() - 0.000001 );
+    double pt = std::min( std::max( ElectronTriggerEle105->GetYaxis()->GetXmin(), ele.pt() ) , ElectronTriggerEle105->GetYaxis()->GetXmax() - 0.000001 );
     double eta = 0.;
     if (ele.eta() > 0){
-        eta = std::min( ElectronTriggerEle105->GetYaxis()->GetXmax() - 0.000001 , ele.eta() );
+        eta = std::min( ElectronTriggerEle105->GetXaxis()->GetXmax() - 0.000001 , ele.eta() );
     }
     else{
-        eta = std::max( ElectronTriggerEle105->GetYaxis()->GetXmin() + 0.000001 , ele.eta() );
+        eta = std::max( ElectronTriggerEle105->GetXaxis()->GetXmin() + 0.000001 , ele.eta() );
     }
-    return ElectronTriggerEle105->GetBinContent( ElectronTriggerEle105->FindBin(pt, eta) );
+    return ElectronTriggerEle105->GetBinContent( ElectronTriggerEle105->FindBin(eta, pt) );
 }
 
 float ElectronAnalyzer::GetElectronTriggerSFErrorEle105(pat::Electron& ele) {
     if(!isEleSingleTriggerFile) return 1.;
-    double pt = std::min( std::max( ElectronTriggerEle105->GetXaxis()->GetXmin(), ele.pt() ) , ElectronTriggerEle105->GetXaxis()->GetXmax() - 0.000001 );
+    double pt = std::min( std::max( ElectronTriggerEle105->GetYaxis()->GetXmin(), ele.pt() ) , ElectronTriggerEle105->GetYaxis()->GetXmax() - 0.000001 );
     double eta = 0.;
     if (ele.eta() > 0)
-        eta = std::min( ElectronTriggerEle105->GetYaxis()->GetXmax() - 0.000001 , ele.eta() );
+        eta = std::min( ElectronTriggerEle105->GetXaxis()->GetXmax() - 0.000001 , ele.eta() );
     else
-        eta = std::max( ElectronTriggerEle105->GetYaxis()->GetXmin() + 0.000001 , ele.eta() );
-    return ElectronTriggerEle105->GetBinError( ElectronTriggerEle105->FindBin(pt, eta) );
+        eta = std::max( ElectronTriggerEle105->GetXaxis()->GetXmin() + 0.000001 , ele.eta() );
+    return ElectronTriggerEle105->GetBinError( ElectronTriggerEle105->FindBin(eta, pt) );
 }
 
 float ElectronAnalyzer::GetElectronTriggerSFEle27Tight(pat::Electron& ele) {
-    if(!isEleSingleTriggerFile) return 1.;
+    if(!isEleSingleTriggerIsoFile) return 1.;
     double pt = std::min( std::max( ElectronTriggerEle27Tight->GetYaxis()->GetXmin(), ele.pt() ) , ElectronTriggerEle27Tight->GetYaxis()->GetXmax() - 0.000001 );
     double eta = 0.;
     if (ele.eta() > 0)
