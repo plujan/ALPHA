@@ -1,2 +1,0 @@
-dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISummer16MiniAODv2/BlackHole_BH4_MD5000_MBH9000_n2_13TeV_TuneCUETP8M1-charybdis/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/100000/1E494191-8CEC-E611-BF73-02163E00BECB.root
-dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISummer16MiniAODv2/BlackHole_BH4_MD5000_MBH9000_n2_13TeV_TuneCUETP8M1-charybdis/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/100000/EE96CD7D-8CEC-E611-9A51-02163E00AD57.root
