@@ -23,13 +23,13 @@ git cms-merge-topic cms-met:METRecipe_8020 -u
 git cms-merge-topic cms-met:METRecipe_80X_part2 -u
 
 ### ELECTRON REGRESSION + SMEARER
-# https://twiki.cern.ch/twiki/bin/view/CMS/EGMRegression?rev=20#Consistent_EGMSmearer
-git cms-merge-topic -u rafaellopesdesa:EgammaAnalysis80_EGMSmearer_Moriond17_23Jan 
+# https://twiki.cern.ch/twiki/bin/view/CMS/EGMRegression?rev=24#Consistent_EGMSmearer
+git cms-merge-topic cms-egamma:EGM_gain_v1
 cd EgammaAnalysis/ElectronTools/data
-git clone https://github.com/ECALELFS/ScalesSmearings.git
+git clone -b Moriond17_gainSwitch_unc https://github.com/ECALELFS/ScalesSmearings.git
 cd $CMSSW_BASE/src
-# https://twiki.cern.ch/twiki/bin/view/CMS/EGMRegression?rev=20#Application_of_regression_outsid
-git cms-merge-topic -u rafaellopesdesa:RegressionCheckNegEnergy 
+# https://twiki.cern.ch/twiki/bin/view/CMS/EGMRegression?rev=24#Application_of_regression_outsid
+git cms-merge-topic rafaellopesdesa:RegressionCheckNegEnergy
 
 ### ELECTRON ID (CUT-BASED AND MVA)
 # https://twiki.cern.ch/twiki/bin/view/CMS/CutBasedElectronIdentificationRun2?rev=41#Recipe_for_regular_users_for_8_0
