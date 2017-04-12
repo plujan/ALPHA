@@ -61,9 +61,9 @@ var_template = {
     },
     "nPV": {
       "title" : "number of reconstructed Primary Vertices",
-      "nbins" : 40,
+      "nbins" : 50,
       "min" : -0.5,
-      "max" : 39.5,
+      "max" : 49.5,
       "log" : False,
     },
     "nElectrons": {
@@ -75,6 +75,20 @@ var_template = {
     },
     "nMuons": {
       "title" : "number of muons",
+      "nbins" : 5,
+      "min" : -0.5,
+      "max" : 4.5,
+      "log" : True,
+    },
+    "nVetoElectrons": {
+      "title" : "number of veto electrons",
+      "nbins" : 5,
+      "min" : -0.5,
+      "max" : 4.5,
+      "log" : True,
+    },
+    "nLooseMuons": {
+      "title" : "number of loose muons",
       "nbins" : 5,
       "min" : -0.5,
       "max" : 4.5,
@@ -142,7 +156,7 @@ var_template = {
 #    },
     "MEt.pt": {
       "title" : "#slash{E}_{T} (GeV)",
-      "nbins" : 10,
+      "nbins" : 25,
       "min" : 200,
       "max" : 1200,
       "log" : True,
@@ -312,6 +326,13 @@ var_template = {
     },
     "MaxJetBTag": {
       "title" : "max CSV of other AK4 jets",
+      "nbins" : 50,
+      "min" : 0,
+      "max" : 1,
+      "log" : False,
+    },
+    "MaxJetBTagR": {
+      "title" : "max reshaped CSV of other AK4 jets",
       "nbins" : 50,
       "min" : 0,
       "max" : 1,
@@ -514,9 +535,9 @@ var_template = {
     # Fatjets
     "FatJet[N].pt": {
       "title" : "jet  p_{T} (GeV)",
-      "nbins" : 30,
-      "min" : 170,
-      "max" : 1000,
+      "nbins" : 37,
+      "min" : 200,
+      "max" : 2050,
       "log" : True,
     },
     "FatJet[N].eta": {
@@ -611,21 +632,21 @@ var_template = {
       "log" : False,
     },
     "FatJet[N].chsTau21": {
-      "title" : "#tau_{2} / #tau_{1}",
+      "title" : "chs #tau_{2} / #tau_{1}",
       "nbins" : 30,
       "min" : 0,
       "max" : 1.,
       "log" : False,
     },
     "FatJet[N].puppiTau21": {
-      "title" : "#tau_{2} / #tau_{1}",
+      "title" : "puppi #tau_{2} / #tau_{1}",
       "nbins" : 30,
       "min" : 0,
       "max" : 1.,
       "log" : False,
     },
     "FatJet[N].ddtTau21": {
-      "title" : "#tau_{2} / #tau_{1}",
+      "title" : "ddt #tau_{2} / #tau_{1}",
       "nbins" : 30,
       "min" : 0,
       "max" : 1.,
@@ -653,14 +674,14 @@ var_template = {
       "log" : False,
     },
     "FatJet[N].CSVR1": {
-      "title" : "subjet 1 CSV",
+      "title" : "reshaped subjet 1 CSV",
       "nbins" : 50,
       "min" : 0,
       "max" : 1,
       "log" : False,
     },
     "FatJet[N].CSVR2": {
-      "title" : "subjet 2 CSV",
+      "title" : "reshaped subjet 2 CSV",
       "nbins" : 50,
       "min" : 0,
       "max" : 1,
@@ -1163,9 +1184,23 @@ var_template = {
     },
     "X.tmass": {
       "title" : "m_{VX}^{T} (GeV)",
+      "nbins" : 45,#20,
+      "min" : 500,#750,
+      "max" : 5000,#4250,
+      "log" : True,
+    },
+    "X_tmass": {#alpha
+      "title" : "m_{VX}^{T} (GeV)",
+      "nbins" : 100,#20,
+      "min" : 500,#750,
+      "max" : 5000,#4250,
+      "log" : True,
+    },
+    "massRecoilFormula": {
+      "title" : "m_{VX}^{T} (GeV) (mass recoil formula)",
       "nbins" : 20,
-      "min" : 750,
-      "max" : 4250,
+      "min" : 0,
+      "max" : 5000,
       "log" : True,
     },
     "X.charge": {

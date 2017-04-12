@@ -447,19 +447,19 @@ void JetAnalyzer::CorrectPuppiMass(pat::Jet& jet, bool isMC) {
     jet.addUserFloat("ak8PFJetsPuppiSoftDropMassCorrNotSmeared", jet.userFloat("ak8PFJetsPuppiSoftDropMass") * corr);
 
     if(isMC){
-        float JMSSf  = 1.;
-        float JMSUnc = 0.004;
+      float JMSSf  = 1.;//Moriond17
+        float JMSUnc = 0.0094;//Moriond17
         float JESUnc = jet.userFloat("JESUncertainty");    
         jet.addUserFloat("ak8PFJetsPuppiSoftDropMassCorrJMS", jet.userFloat("ak8PFJetsPuppiSoftDropMassCorr")       * JMSSf);
         jet.addUserFloat("ak8PFJetsPuppiSoftDropMassCorrJMSUp", jet.userFloat("ak8PFJetsPuppiSoftDropMassCorr")     * (JMSSf + sqrt(JMSUnc*JMSUnc + JESUnc*JESUnc) ) );
         jet.addUserFloat("ak8PFJetsPuppiSoftDropMassCorrJMSDown", jet.userFloat("ak8PFJetsPuppiSoftDropMassCorr")   * (JMSSf - sqrt(JMSUnc*JMSUnc + JESUnc*JESUnc) ) );
         
-        float JMRSf   = 1.08;
-        float JMRUnc  = 0.11;
+        float JMRSf   = 1.;//Moriond17
+        float JMRUnc  = 0.20;//Moriond17
         TRandom3 rnd(0);
-        float smearJMR    = rnd.Gaus(1.,JMRSf-1.);//0.08
-        float smearJMRUp    = rnd.Gaus(1.,(JMRSf-1.)*(1. + JMRUnc/JMRSf));//0.08 + 10%
-	float smearJMRDown    = rnd.Gaus(1.,(JMRSf -1.)*(1. - JMRUnc/JMRSf));//0.08 - 10%
+        float smearJMR    = rnd.Gaus(1.,JMRSf-1.);
+        float smearJMRUp    = rnd.Gaus(1.,(JMRSf-1.)*(1. + JMRUnc/JMRSf));
+	float smearJMRDown    = rnd.Gaus(1.,(JMRSf -1.)*(1. - JMRUnc/JMRSf));
         jet.addUserFloat("ak8PFJetsPuppiSoftDropMassCorrJMR", jet.userFloat("ak8PFJetsPuppiSoftDropMassCorr")       * smearJMR);
         jet.addUserFloat("ak8PFJetsPuppiSoftDropMassCorrJMRUp", jet.userFloat("ak8PFJetsPuppiSoftDropMassCorr")     * smearJMRUp);
         jet.addUserFloat("ak8PFJetsPuppiSoftDropMassCorrJMRDown", jet.userFloat("ak8PFJetsPuppiSoftDropMassCorr")   * smearJMRDown);

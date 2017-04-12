@@ -5,6 +5,117 @@
 
 sample = {
     ########## DATA ##########
+    ##ReMiniAOD##
+    'METRun2016B-03Feb2017_ver1-v1' : {
+        'nevents' : 583427,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+        },
+    'METRun2016B-03Feb2017_ver2-v2' : {
+        'nevents' : 35987712,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+        },
+    'METRun2016C-03Feb2017-v1' : {
+        'nevents' : 17381222,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+        },
+    'METRun2016D-03Feb2017-v1' : {
+        'nevents' : 20947429,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+        },
+    'METRun2016E-03Feb2017-v1' : {
+        'nevents' : 22348402,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+        },
+    'METRun2016F-03Feb2017-v1' : {
+        'nevents' : 13319829,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+        },
+    'METRun2016G-03Feb2017-v1' : {
+        'nevents' : 26974131,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+        },
+    'METRun2016H-03Feb2017_ver2-v1' : {
+        'nevents' : 38957320,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'METRun2016H-03Feb2017_ver3-v1' : {
+        'nevents' : 816165,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },    
+    ##ReMiniAOD##
+    'JetHTRun2016B-03Feb2017_ver1-v1' : {
+        'nevents' : 583427,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+        },
+    'JetHTRun2016B-03Feb2017_ver2-v2' : {
+        'nevents' : 35987712,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+        },
+    'JetHTRun2016C-03Feb2017-v1' : {
+        'nevents' : 17381222,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+        },
+    'JetHTRun2016D-03Feb2017-v1' : {
+        'nevents' : 20947429,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+        },
+    'JetHTRun2016E-03Feb2017-v1' : {
+        'nevents' : 22348402,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+        },
+    'JetHTRun2016F-03Feb2017-v1' : {
+        'nevents' : 13319829,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+        },
+    'JetHTRun2016G-03Feb2017-v1' : {
+        'nevents' : 26974131,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+        },
+    'JetHTRun2016H-03Feb2017_ver2-v1' : {
+        'nevents' : 38957320,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'JetHTRun2016H-03Feb2017_ver3-v1' : {
+        'nevents' : 816165,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },    
+    ########## DATA ##########
     'METRun2016B-23Sep2016-v2' : {
         'nevents' : 583427,
         'xsec'    : 1.,
@@ -261,188 +372,263 @@ sample = {
     },
     'DYJetsToNuNu_PtZ-250To400_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_ext1-v1' : {
         'nevents' : 1059634,
-        'xsec'    : 6.636, #2.082,
+        'xsec'    : 6.636, #2.082,#
         'matcheff': 0.4,
         'kfactor' : 1.,
     },
     'DYJetsToNuNu_PtZ-400To650_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8-v1' : {
         'nevents' : 1050705,
-        'xsec'    : 0.9372, #0.2816,
+        'xsec'    : 0.9372, #0.2816,#
         'matcheff': 0.41,
         'kfactor' : 1.,
     },
     'DYJetsToNuNu_PtZ-400To650_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_ext1-v1' : {
         'nevents' : 1050592,
-        'xsec'    : 0.9372, #0.2816,
+        'xsec'    : 0.9372, #0.2816,#
         'matcheff': 0.41,
         'kfactor' : 1.,
     },
     'DYJetsToNuNu_PtZ-650ToInf_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8-v1' : {
         'nevents' : 1022595,
-        'xsec'    : 0.1042, #0.02639,
+        'xsec'    : 0.1042, #0.02639,#
         'matcheff': 0.42,
         'kfactor' : 1.,
     },
     'DYJetsToNuNu_PtZ-650ToInf_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_ext1-v1' : {
         'nevents' : 1024620,
-        'xsec'    : 0.1042, #0.02639,
+        'xsec'    : 0.1042, #0.02639,#
         'matcheff': 0.42,
         'kfactor' : 1.,
     },
 
-    #WJetsToLNu_HT*
-    'WJetsToLNu_HT-100To200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1' : {
-        'nevents' : 10235198,
-        'xsec'    : 1292.,
+    #ZJetsToNuNu_HT
+    'ZJetsToNuNu_HT-100To200_13TeV-madgraph-v1' : {
+        'nevents' : 5246318,
+        'xsec'    : 280.5,# <--monojet ##280.47,# <--Alberto ##
         'matcheff': 1.,
-        'kfactor' : 1.459,
+        'kfactor' : 1.23,# <--flat ##1.626,# <--Alberto ## 
     },
+    'ZJetsToNuNu_HT-100To200_13TeV-madgraph_ext1-v1' : {
+        'nevents' : 19026540,
+        'xsec'    : 280.5,# <--monojet ##280.47,# <--Alberto ##
+        'matcheff': 1.,
+        'kfactor' : 1.23,# <--flat ##1.626,# <--Alberto ## 
+    },
+    'ZJetsToNuNu_HT-200To400_13TeV-madgraph-v1' : {
+        'nevents' : 5132650,
+        'xsec'    : 77.7,# <--monojet ##78.36,# <--Alberto ##
+        'matcheff': 1.,
+        'kfactor' : 1.23,# <--flat ##1.617,# <--Alberto ## 
+    },
+    'ZJetsToNuNu_HT-200To400_13TeV-madgraph_ext1-v1' : {
+        'nevents' : 19612266,
+        'xsec'    : 77.7,# <--monojet ##78.36,# <--Alberto ##
+        'matcheff': 1.,
+        'kfactor' : 1.23,# <--flat ##1.617,# <--Alberto ## 
+    },
+    'ZJetsToNuNu_HT-400To600_13TeV-madgraph-v1' : {
+        'nevents' : 1020309,
+        'xsec'    : 10.71,# <--monojet ##10.944,# <--Alberto ##
+        'matcheff': 1.,
+        'kfactor' : 1.23,# <--flat ##1.459,# <--Alberto ## 
+    },
+    'ZJetsToNuNu_HT-400To600_13TeV-madgraph_ext1-v1' : {
+        'nevents' : 8842560,
+        'xsec'    : 10.71,# <--monojet ##10.944,# <--Alberto ##
+        'matcheff': 1.,
+        'kfactor' : 1.23,# <--flat ##1.459,# <--Alberto ## 
+    },
+    'ZJetsToNuNu_HT-600To800_13TeV-madgraph-v1' : {
+        'nevents' : 5763506,
+        'xsec'    : 2.562,# <--monojet ##4.203,# <--Alberto ##
+        'matcheff': 1.,
+        'kfactor' : 1.23,# <--flat ##1.391,# <--Alberto ## 
+    },
+    'ZJetsToNuNu_HT-800To1200_13TeV-madgraph-v1' : {
+        'nevents' : 2170137,
+        'xsec'    : 1.183,# <--monojet ##2.109,# <--Alberto ##
+        'matcheff': 1.,
+        'kfactor' : 1.23,# <--flat ##1.391,# <--Alberto ## 
+    },
+    'ZJetsToNuNu_HT-1200To2500_13TeV-madgraph-v1' : {
+        'nevents' : 369514,
+        'xsec'    : 0.286,# <--monojet ##0.1795,# <--Alberto ##
+        'matcheff': 1.,
+        'kfactor' : 1.23,# <--flat ##1.391,# <--Alberto ## 
+    },
+    'ZJetsToNuNu_HT-1200To2500_13TeV-madgraph_ext1-v1' : {
+        'nevents' : 143957,
+        'xsec'    : 0.286,# <--monojet ##0.1795,# <--Alberto ##
+        'matcheff': 1.,
+        'kfactor' : 1.23,# <--flat ##1.391,# <--Alberto ## 
+    },
+    'ZJetsToNuNu_HT-2500ToInf_13TeV-madgraph-v1' : {
+        'nevents' : 405030,
+        'xsec'    : 6.976e-04,# <--monojet ##0.004011,# <--Alberto ##
+        'matcheff': 1.,
+        'kfactor' : 1.23,# <--flat ##1.391,# <--Alberto ## 
+    },
+
+
+    #WJetsToLNu_HT*
+#    'WJetsToLNu_HT-100To200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1' : {
+#        'nevents' : 10235198,
+#        'xsec'    : 1343.,#<--Monojet ## 13072.8173/10.,#<-- Julie H ## 1292.,#<--Alberto ##
+#        'matcheff': 1.,
+#        'kfactor' : 1./0.998056,#<-- Julie H ## 1.21,#<--Flat ## 1.459,#<--Alberto ##
+#    },
    'WJetsToLNu_HT-100To200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1-v1' : {
         'nevents' : 29503700,
-        'xsec'    : 1292.,
+        'xsec'    : 1343.,#<--Monojet ## 13072.8173/10.,#<-- Julie H ## 1292.,#<--Alberto ##
         'matcheff': 1.,
-        'kfactor' : 1.459,
+        'kfactor' : 1.395,#<--Lisav1 ## 1.400,#<--Lisav2 ## 1.21,#<--Flat ## 1./0.998056,#<-- Julie H ## 1.459,#<--Alberto ##  
     },
-    'WJetsToLNu_HT-100To200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext2-v1' : {
-        'nevents' : 39617787,
-        'xsec'    : 1292.,
-        'matcheff': 1.,
-        'kfactor' : 1.459,
-    },
-    'WJetsToLNu_HT-200To400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1' : {
-        'nevents' : 4950373,
-        'xsec'    : 385.9,
-        'matcheff': 1.,
-        'kfactor' : 1.434,
-    },
+#    'WJetsToLNu_HT-100To200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext2-v1' : {
+#        'nevents' : 39617787,
+#        'xsec'    : 1343.,#<--Monojet ## 13072.8173/10.,#<-- Julie H ## 1292.,#<--Alberto ##
+#        'matcheff': 1.,
+#        'kfactor' : 1./0.998056,#<-- Julie H ## 1.21,#<--Flat ## 1.459,#<--Alberto ##
+#    },
+#    'WJetsToLNu_HT-200To400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1' : {
+#        'nevents' : 4950373,
+#        'xsec'    : 359.6,#<--Monojet ## 4223.9214/10.,#<-- Julie H ## 385.9,#<--Alberto ##
+#        'matcheff': 1.,
+#        'kfactor' : 1./0.978569,#<-- Julie H ## 1.21,#<--Flat ## 1.434,#<--Alberto ##
+#    },
     'WJetsToLNu_HT-200To400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1-v1' : {
         'nevents' : 14815928,
-        'xsec'    : 385.9,
+        'xsec'    : 359.6,#<--Monojet ## 4223.9214/10.,#<-- Julie H ## 385.9,#<--Alberto #### 
         'matcheff': 1.,
-        'kfactor' : 1.434,
+        'kfactor' : 1.526,#<--Lisav1 ## 1.531,#<--Lisav2 ## 1.21,#<--Flat ## 1./0.978569,#<-- Julie H ## 1.434,#<--Alberto ##  
     },
-    'WJetsToLNu_HT-200To400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext2-v1' : {
-        'nevents' : 19914590,
-        'xsec'    : 385.9,
-        'matcheff': 1.,
-        'kfactor' : 1.434,
-    },
-    'WJetsToLNu_HT-400To600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1' : {
-        'nevents' : 1963464,
-        'xsec'    : 47.9,
-        'matcheff': 1.,
-        'kfactor' : 1.532,
-    },
+#    'WJetsToLNu_HT-200To400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext2-v1' : {
+#        'nevents' : 19914590,
+#        'xsec'    : 359.6,#<--Monojet ## 4223.9214/10.,#<-- Julie H ## 385.9,#<--Alberto ##
+#        'matcheff': 1.,
+#        'kfactor' : 1./0.978569,#<-- Julie H ## 1.21,#<--Flat ## 1.434,#<--Alberto ##
+#    },
+#    'WJetsToLNu_HT-400To600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1' : {
+#        'nevents' : 1963464,
+#        'xsec'    : 48.85,#<--Monojet ## 627.9155/10.,#<-- Julie H ## 47.9,#<--Alberto ##
+#        'matcheff': 1.,
+#        'kfactor' : 1./0.928054,#<-- Julie H ## 1.21,#<--Flat ## 1.532,#<--Alberto ##
+#    },
     'WJetsToLNu_HT-400To600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1-v1' : {
         'nevents' : 5796237,
-        'xsec'    : 47.9,
+        'xsec'    : 48.85,#<--Monojet ## 627.9155/10.,#<-- Julie H ## 47.9,#<--Alberto ##
         'matcheff': 1.,
-        'kfactor' : 1.532,
+        'kfactor' : 1.679,#<--Lisav1 ## 1.715,#<--Lisav2 ## 1.21,#<--Flat ## 1./0.928054,#<-- Julie H ## 1.532,#<--Alberto ## 
     },
-    'WJetsToLNu_HT-600To800_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1' : {
-        'nevents' : 3779141,
-        'xsec'    : 12.8,
-        'matcheff': 1.,
-        'kfactor' : 1.004,
-    },
+#    'WJetsToLNu_HT-600To800_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1' : {
+#        'nevents' : 3779141,
+#        'xsec'    : 12.05,#<--Monojet ## 159.1029/10.,#<-- Julie H ## 12.8,#<--Alberto ##
+#        'matcheff': 1.,
+#        'kfactor' : 1./0.856705,#<-- Julie H ## 1.21,#<--Flat ## 1.004,#<--Alberto ##
+#    },
     'WJetsToLNu_HT-600To800_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1-v1' : {
         'nevents' : 14908339,
-        'xsec'    : 12.8,
+        'xsec'    : 12.05,#<--Monojet ## 159.1029/10.,#<-- Julie H ## 12.8,#<--Alberto ##
         'matcheff': 1.,
-        'kfactor' : 1.004,
+        'kfactor' : 1.442,#<--Lisav1 ## 1.539,#<--Lisav2 ## 1.21,#<--Flat ## 1./0.856705,#<-- Julie H ## 1.004,#<--Alberto ## 
     },
-    'WJetsToLNu_HT-800To1200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1' : {
-        'nevents' : 1544513,
-        'xsec'    : 5.261,
-        'matcheff': 1.,
-        'kfactor' : 1.004,
-    },
+#    'WJetsToLNu_HT-800To1200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1' : {
+#        'nevents' : 1544513,
+#        'xsec'    : 5.501,#<--Monojet ## 73.4766/10.,#<-- Julie H ## 5.261,#<--Alberto ##
+#        'matcheff': 1.,
+#        'kfactor' : 1./0.757463,#<-- Julie H ## 1.21,#<--Flat ## 1.004,#<--Alberto ##
+#    },
     'WJetsToLNu_HT-800To1200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1-v1' : {
         'nevents' : 6200954,
-        'xsec'    : 5.261,
+        'xsec'    : 5.501,#<--Monojet ## 73.4766/10.,#<-- Julie H ## 5.261,#<--Alberto ## 
         'matcheff': 1.,
-        'kfactor' : 1.004,
+        'kfactor' : 1.442,#<--Lisav1 ## 1.014,#<--Lisav2 ## 1.21,#<--Flat ## 1./0.757463,#<-- Julie H ## 1.004,#<--Alberto ## 
     },
-    'WJetsToLNu_HT-1200To2500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1' : {
-        'nevents' : 244532,
-        'xsec'    : 1.334,
-        'matcheff': 1.,
-        'kfactor' : 1.004,
-    },
+#    'WJetsToLNu_HT-1200To2500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1' : {
+#        'nevents' : 244532,
+#        'xsec'    : 1.329,#<--Monojet ## 17.5912/10.,#<-- Julie H ## 1.334,#<--Alberto ##
+#        'matcheff': 1.,
+#        'kfactor' : 1./0.608292,#<-- Julie H ## 1.21,#<--Flat ## 1.004,#<--Alberto ##
+#    },
     'WJetsToLNu_HT-1200To2500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1-v1' : {
         'nevents' : 6627909,
-        'xsec'    : 1.334,
+        'xsec'    : 1.329,#<--Monojet ## 17.5912/10.,#<-- Julie H ## 1.334,#<--Alberto ## 
         'matcheff': 1.,
-        'kfactor' : 1.004,
+        'kfactor' : 1.442,#<--Lisav1 ## 1.014,#<--Lisav2 ## 1.21,#<--Flat ## 1./0.608292,#<-- Julie H ## 1.004,#<--Alberto ## 
     },
-    'WJetsToLNu_HT-2500ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1' : {
-        'nevents' : 253561,
-        'xsec'    : 0.03089,
-        'matcheff': 1.,
-        'kfactor' : 1.004,
-    },
+#    'WJetsToLNu_HT-2500ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1' : {
+#        'nevents' : 253561,
+#        'xsec'    : 0.03216,#<--Monojet ## 0.3970/10.,#<-- Julie H ## 0.03089,#<--Alberto ##
+#        'matcheff': 1.,
+#        'kfactor' : 1./0.454246,#<-- Julie H ## 1.21,#<--Flat ## 1.004,#<--Alberto ##
+#    },
     'WJetsToLNu_HT-2500ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1-v1' : {
         'nevents' : 2384260,
-        'xsec'    : 0.03089,
+        'xsec'    : 0.03216,#<--Monojet ## 0.3970/10.,#<-- Julie H ## 0.03089,#<--Alberto ## 
         'matcheff': 1.,
-        'kfactor' : 1.004,
+        'kfactor' : 1.442,#<--Lisav1 ## 1.014,#<--Lisav2 ## 1.21,#<--Flat ## 1./0.454246,#<-- Julie H ## 1.004,#<--Alberto ## 
     },
     #WJetsToLNu_Pt*
     'WJetsToLNu_Pt-100To250_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8-v1' : {
         'nevents' : 10089661,
         'xsec'    : 676.3,
         'matcheff': 1.,
-        'kfactor' : 1.,
+        'kfactor' : 1.042,#<--Lisav2 ## 1.038,#<--Lisav1 ##1.,
     },
     'WJetsToLNu_Pt-100To250_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_ext1-v1' : {
         'nevents' : 10088599,
         'xsec'    : 676.3,
         'matcheff': 1.,
-        'kfactor' : 1.,
+        'kfactor' : 1.042,#<--Lisav2 ## 1.038,#<--Lisav1 ##1.,
     },
     'WJetsToLNu_Pt-250To400_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8-v1' : {
         'nevents' : 1001250,
         'xsec'    : 23.94,
         'matcheff': 1.,
-        'kfactor' : 1.,
+        'kfactor' : 1.159,#<--Lisav2 ## 1.117,#<--Lisav1 ##1.,
     },
     'WJetsToLNu_Pt-250To400_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_ext1-v1' : {
         'nevents' : 1000132,
         'xsec'    : 23.94,
         'matcheff': 1.,
-        'kfactor' : 1.,
+        'kfactor' : 1.159,#<--Lisav2 ## 1.117,#<--Lisav1 ##1.,
     },
     'WJetsToLNu_Pt-250To400_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_ext4-v1' : {
         'nevents' : 10021205,
         'xsec'    : 23.94,
         'matcheff': 1.,
-        'kfactor' : 1.,
+        'kfactor' : 1.159,#<--Lisav2 ## 1.117,#<--Lisav1 ##1.,
     },
     'WJetsToLNu_Pt-400To600_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8-v1' : {
         'nevents' : 951713,
         'xsec'    : 3.031,
         'matcheff': 1.,
-        'kfactor' : 1.,
+        'kfactor' : 1.299,#<--Lisav2 ## 1.259,#<--Lisav1 ##1.,
     },
     'WJetsToLNu_Pt-400To600_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_ext1-v1' : {
         'nevents' : 988234,
         'xsec'    : 3.031,
         'matcheff': 1.,
-        'kfactor' : 1.,
+        'kfactor' : 1.299,#<--Lisav2 ## 1.259,#<--Lisav1 ##1.,
     },
     'WJetsToLNu_Pt-600ToInf_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8-v1' : {
         'nevents' : 989482,
         'xsec'    : 0.4524,
         'matcheff': 1.,
-        'kfactor' : 1.,
+        'kfactor' : 1.124,#<--Lisav2 ## 1.069,#<--Lisav1 ##1.,
     },
     'WJetsToLNu_Pt-600ToInf_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_ext1-v1' : {
         'nevents' : 985127,
         'xsec'    : 0.4524 ,
         'matcheff': 1.,
-        'kfactor' : 1.,
+        'kfactor' : 1.124,#<--Lisav2 ## 1.069,#<--Lisav1 ##1.,
     },
-    
+#WJetsToLNu NLO inclusive
+    'WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8-v1' : {
+        'nevents' : 24120319,
+        'xsec'    : 60290.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },    
 ##DYJetsToLL_Pt
     'DYJetsToLL_Pt-100To250_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8-v2' : {
         'nevents' : 2040596,
@@ -624,12 +810,12 @@ sample = {
         'matcheff': 1.,
         'kfactor' : 1.,
     },
-#    'WW_TuneCUETP8M1_13TeV-pythia8_ext1-v1' : {
-#        'nevents' : 6987124,
-#        'xsec'    : 118.7,
-#        'matcheff': 1.,
-#        'kfactor' : 1.,
-#    },
+    'WW_TuneCUETP8M1_13TeV-pythia8_ext1-v1' : {
+        'nevents' : 6987124,
+        'xsec'    : 118.7,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
 ##WZ
     'WZ_TuneCUETP8M1_13TeV-pythia8-v1' : {
         'nevents' : 1000000,
@@ -643,12 +829,12 @@ sample = {
         'matcheff': 1.,
         'kfactor' : 1.,
     },    
-#    'WZ_TuneCUETP8M1_13TeV-pythia8_ext1-v1' : {
-#        'nevents' : 2995828,
-#        'xsec'    : 47.2,
-#        'matcheff': 1.,
-#        'kfactor' : 1.,
-#    },
+    'WZ_TuneCUETP8M1_13TeV-pythia8_ext1-v1' : {
+        'nevents' : 2995828,
+        'xsec'    : 47.2,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
 #ZZ
     'ZZ_TuneCUETP8M1_13TeV-pythia8-v1' : {
         'nevents' : 990064,
@@ -839,6 +1025,86 @@ sample = {
     'BulkGravToZZToZhadZinv_narrow_M-4500_13TeV-madgraph-v1' : {
         'nevents' : 100000,
         'xsec'    : 2.*0.6991*0.20,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+
+    #WHadZInv
+    'WprimeToWZToWhadZinv_narrow_M-600_13TeV-madgraph-v1' : {
+        'nevents' : 100000,
+        'xsec'    : 1.*0.20*0.6741,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'WprimeToWZToWhadZinv_narrow_M-800_13TeV-madgraph-v1' : {
+        'nevents' : 100000,
+        'xsec'    : 1.*0.20*0.6741,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'WprimeToWZToWhadZinv_narrow_M-1000_13TeV-madgraph-v1' : {
+        'nevents' : 100000,
+        'xsec'    : 1.*0.20*0.6741,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'WprimeToWZToWhadZinv_narrow_M-1200_13TeV-madgraph-v1' : {
+        'nevents' : 100000,
+        'xsec'    : 1.*0.20*0.6741,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'WprimeToWZToWhadZinv_narrow_M-1400_13TeV-madgraph-v1' : {
+        'nevents' : 100000,
+        'xsec'    : 1.*0.20*0.6741,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'WprimeToWZToWhadZinv_narrow_M-1600_13TeV-madgraph-v1' : {
+        'nevents' : 100000,
+        'xsec'    : 1.*0.20*0.6741,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'WprimeToWZToWhadZinv_narrow_M-1800_13TeV-madgraph-v1' : {
+        'nevents' : 100000,
+        'xsec'    : 1.*0.20*0.6741,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'WprimeToWZToWhadZinv_narrow_M-2000_13TeV-madgraph-v1' : {
+        'nevents' : 100000,
+        'xsec'    : 1.*0.20*0.6741,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'WprimeToWZToWhadZinv_narrow_M-2500_13TeV-madgraph-v1' : {
+        'nevents' : 100000,
+        'xsec'    : 1.*0.20*0.6741,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'WprimeToWZToWhadZinv_narrow_M-3000_13TeV-madgraph-v1' : {
+        'nevents' : 100000,
+        'xsec'    : 1.*0.20*0.6741,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'WprimeToWZToWhadZinv_narrow_M-3500_13TeV-madgraph-v1' : {
+        'nevents' : 100000,
+        'xsec'    : 1.*0.20*0.6741,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'WprimeToWZToWhadZinv_narrow_M-4000_13TeV-madgraph-v1' : {
+        'nevents' : 100000,
+        'xsec'    : 1.*0.20*0.6741,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'WprimeToWZToWhadZinv_narrow_M-4500_13TeV-madgraph-v1' : {
+        'nevents' : 100000,
+        'xsec'    : 1.*0.20*0.6741,
         'matcheff': 1.,
         'kfactor' : 1.,
     },
@@ -1116,7 +1382,21 @@ sample = {
 samples = {
     'data_obs' : {
         'order' : 0,
-        'files' : ['METRun2016B-23Sep2016-v2', 'METRun2016B-23Sep2016-v3', 'METRun2016C-23Sep2016-v1', 'METRun2016D-23Sep2016-v1', 'METRun2016E-23Sep2016-v1', 'METRun2016F-23Sep2016-v1', 'METRun2016G-23Sep2016-v1', 'METRun2016H-PromptReco-v1', 'METRun2016H-PromptReco-v2', 'METRun2016H-PromptReco-v3'],
+        'files' : ['METRun2016B-03Feb2017_ver1-v1', 'METRun2016B-03Feb2017_ver2-v2', 'METRun2016C-03Feb2017-v1', 'METRun2016D-03Feb2017-v1', 'METRun2016E-03Feb2017-v1', 'METRun2016F-03Feb2017-v1', 'METRun2016G-03Feb2017-v1', 'METRun2016H-03Feb2017_ver2-v1', 'METRun2016H-03Feb2017_ver3-v1'],
+ #        'files' : ['METRun2016B-23Sep2016-v2', 'METRun2016B-23Sep2016-v3', 'METRun2016C-23Sep2016-v1', 'METRun2016D-23Sep2016-v1', 'METRun2016E-23Sep2016-v1', 'METRun2016F-23Sep2016-v1', 'METRun2016G-23Sep2016-v1', 'METRun2016H-PromptReco-v1', 'METRun2016H-PromptReco-v2', 'METRun2016H-PromptReco-v3'],
+        'fillcolor' : 0,
+        'fillstyle' : 1,
+        'linecolor' : 1,
+        'linewidth' : 2,
+        'linestyle' : 1,
+        'label' : "Data",
+        'weight': 1.,
+        'plot': True,
+    },
+    'data_obs1' : {
+        'order' : 0,
+        'files' : ['METRun2016B-PromptReco-v1', 'METRun2016B-PromptReco-v2', 'METRun2016C-PromptReco-v2', 'METRun2016D-PromptReco-v2', 'METRun2016E-PromptReco-v2', 'METRun2016F-PromptReco-v1', 'METRun2016G-PromptReco-v1', 'METRun2016H-PromptReco-v1', 'METRun2016H-PromptReco-v2', 'METRun2016H-PromptReco-v3'],
+ #        'files' : ['METRun2016B-23Sep2016-v2', 'METRun2016B-23Sep2016-v3', 'METRun2016C-23Sep2016-v1', 'METRun2016D-23Sep2016-v1', 'METRun2016E-23Sep2016-v1', 'METRun2016F-23Sep2016-v1', 'METRun2016G-23Sep2016-v1', 'METRun2016H-PromptReco-v1', 'METRun2016H-PromptReco-v2', 'METRun2016H-PromptReco-v3'],
         'fillcolor' : 0,
         'fillstyle' : 1,
         'linecolor' : 1,
@@ -1145,7 +1425,20 @@ samples = {
 
     'DYJetsToNuNu_PtZ' : {
         'order' : 1,
-        'files' : ['DYJetsToNuNu_PtZ-100To250_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_ext1-v1','DYJetsToNuNu_PtZ-250To400_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_ext1-v1','DYJetsToNuNu_PtZ-400To650_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_ext1-v1','DYJetsToNuNu_PtZ-650ToInf_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_ext1-v1'],#['DYJetsToNuNu_PtZ-100To250_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8-v1','DYJetsToNuNu_PtZ-100To250_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_ext1-v1','DYJetsToNuNu_PtZ-250To400_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_ext1-v1','DYJetsToNuNu_PtZ-400To650_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8-v1','DYJetsToNuNu_PtZ-400To650_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_ext1-v1','DYJetsToNuNu_PtZ-50To100_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8-v1','DYJetsToNuNu_PtZ-650ToInf_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8-v1','DYJetsToNuNu_PtZ-650ToInf_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_ext1-v1'],
+        'files' : ['DYJetsToNuNu_PtZ-100To250_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8-v1','DYJetsToNuNu_PtZ-250To400_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_ext1-v1','DYJetsToNuNu_PtZ-400To650_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8-v1','DYJetsToNuNu_PtZ-650ToInf_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8-v1'],#['DYJetsToNuNu_PtZ-100To250_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8-v1','DYJetsToNuNu_PtZ-100To250_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_ext1-v1','DYJetsToNuNu_PtZ-250To400_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_ext1-v1','DYJetsToNuNu_PtZ-400To650_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8-v1','DYJetsToNuNu_PtZ-400To650_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_ext1-v1','DYJetsToNuNu_PtZ-50To100_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8-v1','DYJetsToNuNu_PtZ-650ToInf_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8-v1','DYJetsToNuNu_PtZ-650ToInf_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_ext1-v1'],
+        'fillcolor' : 856,
+        'fillstyle' : 1001,
+        'linecolor' : 856,
+        'linewidth' : 2,
+        'linestyle' : 1,
+        'label' : "Z(#nu#nu) + jets Pt",
+        'weight': 1.,
+        'plot': True,
+    },
+
+    'DYJetsToNuNu_PtZ1' : {
+        'order' : 1,
+        'files' : ['DYJetsToNuNu_PtZ-100To250_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8-v1', 'DYJetsToNuNu_PtZ-250To400_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8-v1', 'DYJetsToNuNu_PtZ-400To650_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8-v1', 'DYJetsToNuNu_PtZ-650ToInf_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8-v1'],
         'fillcolor' : 856,
         'fillstyle' : 1001,
         'linecolor' : 856,
@@ -1155,16 +1448,43 @@ samples = {
         'weight': 1.,
         'plot': True,
     },
-    
-    'WJetsToLNu_Pt' : {
+
+    'ZJetsToNuNu_HT' : {
         'order' : 1,
-        'files' : ['WJetsToLNu_Pt-100To250_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8-v1','WJetsToLNu_Pt-250To400_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8-v1','WJetsToLNu_Pt-400To600_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_ext1-v1','WJetsToLNu_Pt-600ToInf_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8-v1'],#['WJetsToLNu_Pt-100To250_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8-v1','WJetsToLNu_Pt-100To250_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_ext1-v1','WJetsToLNu_Pt-250To400_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8-v1','WJetsToLNu_Pt-250To400_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_ext1-v1','WJetsToLNu_Pt-250To400_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_ext4-v1','WJetsToLNu_Pt-400To600_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8-v1','WJetsToLNu_Pt-400To600_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_ext1-v1','WJetsToLNu_Pt-600ToInf_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8-v1','WJetsToLNu_Pt-600ToInf_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_ext1-v1'],
+        'files' : ['ZJetsToNuNu_HT-100To200_13TeV-madgraph-v1', 'ZJetsToNuNu_HT-200To400_13TeV-madgraph-v1', 'ZJetsToNuNu_HT-400To600_13TeV-madgraph-v1', 'ZJetsToNuNu_HT-600To800_13TeV-madgraph-v1', 'ZJetsToNuNu_HT-800To1200_13TeV-madgraph-v1', 'ZJetsToNuNu_HT-1200To2500_13TeV-madgraph-v1', 'ZJetsToNuNu_HT-2500ToInf_13TeV-madgraph-v1'],
+        'fillcolor' : 856,
+        'fillstyle' : 1001,
+        'linecolor' : 856,
+        'linewidth' : 2,
+        'linestyle' : 1,
+        'label' : "Z(#nu#nu) + jets HT",
+        'weight': 1.,
+        'plot': True,
+    },
+    
+    'WJetsToLNu_Incl' : {
+        'order' : 1,
+        'files' : ['WJetsToLNu_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8-v1'],
         'fillcolor' : 881,
         'fillstyle' : 1001,
         'linecolor' : 881,
         'linewidth' : 2,
         'linestyle' : 1,
-        'label' : "W(l#nu) + jets",
+        'label' : "W(l#nu) + jets Incl",
+        'weight': 1.,
+        'plot': True,
+    },
+
+
+    'WJetsToLNu_Pt' : {
+        'order' : 1,
+        'files' : ['WJetsToLNu_Pt-100To250_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8-v1','WJetsToLNu_Pt-250To400_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8-v1','WJetsToLNu_Pt-400To600_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8-v1','WJetsToLNu_Pt-600ToInf_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8-v1'],#['WJetsToLNu_Pt-100To250_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8-v1','WJetsToLNu_Pt-100To250_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_ext1-v1','WJetsToLNu_Pt-250To400_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8-v1','WJetsToLNu_Pt-250To400_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_ext1-v1','WJetsToLNu_Pt-250To400_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_ext4-v1','WJetsToLNu_Pt-400To600_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8-v1','WJetsToLNu_Pt-400To600_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_ext1-v1','WJetsToLNu_Pt-600ToInf_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8-v1','WJetsToLNu_Pt-600ToInf_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_ext1-v1'],
+        'fillcolor' : 881,
+        'fillstyle' : 1001,
+        'linecolor' : 881,
+        'linewidth' : 2,
+        'linestyle' : 1,
+        'label' : "W(l#nu) + jets Pt",
         'weight': 1.,
         'plot': True,
     },
@@ -1172,6 +1492,19 @@ samples = {
     'WJetsToLNu_HT' : {
         'order' : 1,
         'files' : ['WJetsToLNu_HT-100To200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1-v1','WJetsToLNu_HT-200To400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1-v1','WJetsToLNu_HT-400To600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1-v1','WJetsToLNu_HT-600To800_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1-v1','WJetsToLNu_HT-800To1200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1-v1','WJetsToLNu_HT-1200To2500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1-v1','WJetsToLNu_HT-2500ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1-v1'],
+        'fillcolor' : 881,
+        'fillstyle' : 1001,
+        'linecolor' : 881,
+        'linewidth' : 2,
+        'linestyle' : 1,
+        'label' : "W(l#nu) + jets HT",
+        'weight': 1.,
+        'plot': True,
+    },
+
+    'WJetsToLNu_HT1' : {
+        'order' : 1,
+        'files' : ['WJetsToLNu_HT-100To200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1-v1', 'WJetsToLNu_HT-200To400_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1-v1', 'WJetsToLNu_HT-400To600_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1', 'WJetsToLNu_HT-600To800_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1', 'WJetsToLNu_HT-800To1200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v2', 'WJetsToLNu_HT-1200To2500_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_ext1-v1', 'WJetsToLNu_HT-2500ToInf_TuneCUETP8M1_13TeV-madgraphMLM-pythia8-v1'],
         'fillcolor' : 881,
         'fillstyle' : 1001,
         'linecolor' : 881,
@@ -1195,9 +1528,34 @@ samples = {
         'plot': True,
     },
 
+    'TTbar1' : {
+        'order' : 3,
+        'files' : ['TT_TuneCUETP8M1_13TeV-powheg-pythia8_ext4-v1',],
+        'fillcolor' : 798,
+        'fillstyle' : 1001,
+        'linecolor' : 798,
+        'linewidth' : 2,
+        'linestyle' : 1,
+        'label' : "t#bar{t}",
+        'weight': 1.,
+        'plot': True,
+    },
+
     'ST' : {
         'order' : 4,
-        'files' : ['ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1_ext1-v1','ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1_ext1-v1'],#['ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M2T4-v1','ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M2T4-v1'],
+        'files' : ['ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1_ext1-v1','ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1_ext1-v1','ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1-v1','ST_t-channel_antitop_4f_inclusiveDecays_13TeV-powhegV2-madspin-pythia8_TuneCUETP8M1-v1','ST_t-channel_top_4f_inclusiveDecays_13TeV-powhegV2-madspin-pythia8_TuneCUETP8M1-v1'],#['ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M2T4-v1','ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M2T4-v1'],
+        'fillcolor' : 801,
+        'fillstyle' : 1001,
+        'linecolor' : 801,
+        'linewidth' : 2,
+        'linestyle' : 1,
+        'label' : "Single-t",
+        'weight': 1.,
+        'plot': True,
+    },
+    'ST1' : {
+        'order' : 4,
+        'files' : ['ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1-v1','ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1-v2',],
         'fillcolor' : 801,
         'fillstyle' : 1001,
         'linecolor' : 801,
@@ -1210,7 +1568,7 @@ samples = {
 
     'Top' : {
         'order' : 4,
-        'files' : ['TT_TuneCUETP8M2T4_13TeV-powheg-pythia8-v1','ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1_ext1-v1','ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M2T4-v1'],
+        'files' : ['TT_TuneCUETP8M2T4_13TeV-powheg-pythia8-v1','ST_tW_antitop_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1_ext1-v1','ST_tW_top_5f_inclusiveDecays_13TeV-powheg-pythia8_TuneCUETP8M1_ext1-v1','ST_s-channel_4f_leptonDecays_13TeV-amcatnlo-pythia8_TuneCUETP8M1-v1','ST_t-channel_antitop_4f_inclusiveDecays_13TeV-powhegV2-madspin-pythia8_TuneCUETP8M1-v1','ST_t-channel_top_4f_inclusiveDecays_13TeV-powhegV2-madspin-pythia8_TuneCUETP8M1-v1'],
         'fillcolor' : 801,
         'fillstyle' : 1001,
         'linecolor' : 801,
@@ -1222,6 +1580,19 @@ samples = {
     },
 
     'VV' : {
+        'order' : 5,
+        'files' : ['WW_TuneCUETP8M1_13TeV-pythia8-v1','WZ_TuneCUETP8M1_13TeV-pythia8-v1','ZZ_TuneCUETP8M1_13TeV-pythia8-v1'],#'ZZ_TuneCUETP8M1_13TeV-pythia8_ext1-v1',
+        'fillcolor' : 602,
+        'fillstyle' : 1001,
+        'linecolor' : 602,
+        'linewidth' : 2,
+        'linestyle' : 1,
+        'label' : "VV",
+        'weight': 1.,
+        'plot': True,
+    },
+
+    'VV1' : {
         'order' : 5,
         'files' : ['WW_TuneCUETP8M1_13TeV-pythia8-v1','WZ_TuneCUETP8M1_13TeV-pythia8-v1','ZZ_TuneCUETP8M1_13TeV-pythia8-v1'],#'ZZ_TuneCUETP8M1_13TeV-pythia8_ext1-v1',
         'fillcolor' : 602,
@@ -1265,156 +1636,314 @@ samples = {
     'XZZInv_M600' : {
         'order' : 1001,
         'files' : ['BulkGravToZZToZhadZinv_narrow_M-600_13TeV-madgraph-v1'],
-        'fillcolor' : 820,#51,
+        'fillcolor' : 826,#51,
         'fillstyle' : 3344,#3005,
-        'linecolor' : 820,#51,
+        'linecolor' : 826,#51,
         'linewidth' : 3,
         'linestyle' : 1,
-        'label' : "m_{X} = 600 GeV",
+        'label' : "m_{G} = 600 GeV",
         'weight': 1.,
         'plot': True,
     },
     'XZZInv_M800' : {
         'order' : 1001,
         'files' : ['BulkGravToZZToZhadZinv_narrow_M-800_13TeV-madgraph-v1'],
-        'fillcolor' : 821,#52,
+        'fillcolor' : 827,#52,
         'fillstyle' : 3344,#3005,
-        'linecolor' : 821,#52,
+        'linecolor' : 827,#52,
         'linewidth' : 3,
         'linestyle' : 1,
-        'label' : "m_{X} = 800 GeV",
+        'label' : "m_{G} = 800 GeV",
         'weight': 1.,
         'plot': True,
     },
     'XZZInv_M1000' : {
         'order' : 1001,
         'files' : ['BulkGravToZZToZhadZinv_narrow_M-1000_13TeV-madgraph-v1'],
-        'fillcolor' : 822,#53,
+        'fillcolor' : 829,#53,
         'fillstyle' : 3344,#3005,
-        'linecolor' : 822,#53,
+        'linecolor' : 829,#53,
         'linewidth' : 3,
         'linestyle' : 1,
-        'label' : "m_{X} = 1000 GeV",
+        'label' : "m_{G} = 1000 GeV",
         'weight': 1.,
         'plot': True,
     },
     'XZZInv_M1200' : {
         'order' : 1001,
         'files' : ['BulkGravToZZToZhadZinv_narrow_M-1200_13TeV-madgraph-v1'],
-        'fillcolor' : 823,#55,
+        'fillcolor' : 840,#55,
         'fillstyle' : 3344,#3005,
-        'linecolor' : 823,#55,
+        'linecolor' : 840,#55,
         'linewidth' : 3,
         'linestyle' : 1,
-        'label' : "m_{X} = 1200 GeV",
+        'label' : "m_{G} = 1200 GeV",
         'weight': 1.,
         'plot': True,
     },
     'XZZInv_M1400' : {
         'order' : 1001,
         'files' : ['BulkGravToZZToZhadZinv_narrow_M-1400_13TeV-madgraph-v1'],
-        'fillcolor' : 824,#57,
+        'fillcolor' : 831,#57,
         'fillstyle' : 3344,#3005,
-        'linecolor' : 824,#57,
+        'linecolor' : 831,#57,
         'linewidth' : 3,
         'linestyle' : 1,
-        'label' : "m_{X} = 1400 GeV",
+        'label' : "m_{G} = 1400 GeV",
         'weight': 1.,
         'plot': True,
     },
     'XZZInv_M1600' : {
         'order' : 1001,
         'files' : ['BulkGravToZZToZhadZinv_narrow_M-1600_13TeV-madgraph-v1'],
-        'fillcolor' : 825,#59,
+        'fillcolor' : 832,#59,
         'fillstyle' : 3344,#3005,
-        'linecolor' : 825,#59,
+        'linecolor' : 832,#59,
         'linewidth' : 3,
         'linestyle' : 1,
-        'label' : "m_{X} = 1600 GeV",
+        'label' : "m_{G} = 1600 GeV",
         'weight': 1.,
         'plot': True,
     },
     'XZZInv_M1800' : {
         'order' : 1001,
         'files' : ['BulkGravToZZToZhadZinv_narrow_M-1800_13TeV-madgraph-v1'],
-        'fillcolor' : 826,#61,
+        'fillcolor' : 833,#61,
         'fillstyle' : 3344,#3005,
-        'linecolor' : 826,#61,
+        'linecolor' : 833,#61,
         'linewidth' : 3,
         'linestyle' : 1,
-        'label' : "m_{X} = 1800 GeV",
+        'label' : "m_{G} = 1800 GeV",
         'weight': 1.,
         'plot': True,
     },
     'XZZInv_M2000' : {
         'order' : 1001,
         'files' : ['BulkGravToZZToZhadZinv_narrow_M-2000_13TeV-madgraph-v1'],
-        'fillcolor' : 827,#63,
+        'fillcolor' : 834,#63,
         'fillstyle' : 3344,#3005,
-        'linecolor' : 827,#63,
+        'linecolor' : 834,#63,
         'linewidth' : 3,
         'linestyle' : 1,
-        'label' : "m_{X} = 2000 GeV",
+        'label' : "m_{G} = 2000 GeV",
         'weight': 1.,
         'plot': True,
     },
     'XZZInv_M2500' : {
         'order' : 1001,
         'files' : ['BulkGravToZZToZhadZinv_narrow_M-2500_13TeV-madgraph-v1'],
-        'fillcolor' : 828,#65,
+        'fillcolor' : 843,#65,
         'fillstyle' : 3344,#3005,
-        'linecolor' : 828,#65,
+        'linecolor' : 843,#65,
         'linewidth' : 3,
         'linestyle' : 1,
-        'label' : "m_{X} = 2500 GeV",
+        'label' : "m_{G} = 2500 GeV",
         'weight': 1.,
         'plot': True,
     },
     'XZZInv_M3000' : {
         'order' : 1001,
         'files' : ['BulkGravToZZToZhadZinv_narrow_M-3000_13TeV-madgraph-v1'],
-        'fillcolor' : 829,#67,
+        'fillcolor' : 845,#67,
         'fillstyle' : 3344,#3005,
-        'linecolor' : 829,#67,
+        'linecolor' : 845,#67,
         'linewidth' : 3,
         'linestyle' : 1,
-        'label' : "m_{X} = 3000 GeV",
+        'label' : "m_{G} = 3000 GeV",
         'weight': 1.,
         'plot': True,
     },
     'XZZInv_M3500' : {
         'order' : 1001,
         'files' : ['BulkGravToZZToZhadZinv_narrow_M-3500_13TeV-madgraph-v1'],
-        'fillcolor' : 831,#69,
+        'fillcolor' : 847,#69,
         'fillstyle' : 3344,#3005,
-        'linecolor' : 831,#69,
+        'linecolor' : 847,#69,
         'linewidth' : 3,
         'linestyle' : 1,
-        'label' : "m_{X} = 3500 GeV",
+        'label' : "m_{G} = 3500 GeV",
         'weight': 1.,
         'plot': True,
     },
     'XZZInv_M4000' : {
         'order' : 1001,
         'files' : ['BulkGravToZZToZhadZinv_narrow_M-4000_13TeV-madgraph-v1'],
-        'fillcolor' : 833,#71,
+        'fillcolor' : 849,#71,
         'fillstyle' : 3344,#3005,
-        'linecolor' : 833,#71,
+        'linecolor' : 849,#71,
         'linewidth' : 3,
         'linestyle' : 1,
-        'label' : "m_{X} = 4000 GeV",
+        'label' : "m_{G} = 4000 GeV",
         'weight': 1.,
         'plot': True,
     },
     'XZZInv_M4500' : {
         'order' : 1001,
         'files' : ['BulkGravToZZToZhadZinv_narrow_M-4500_13TeV-madgraph-v1'],
-        'fillcolor' : 835,#73,
+        'fillcolor' : 850,#73,
         'fillstyle' : 3344,#3005,
-        'linecolor' : 835,#73,
+        'linecolor' : 850,#73,
         'linewidth' : 3,
         'linestyle' : 1,
-        'label' : "m_{X} = 4500 GeV",
+        'label' : "m_{G} = 4500 GeV",
+        'weight': 1.,
+        'plot': True,
+    },
+
+    ### BulkG -> Zhad Zinv
+    'XWZInv_M600' : {
+        'order' : 1001,
+        'files' : ['WprimeToWZToWhadZinv_narrow_M-600_13TeV-madgraph-v1'],
+        'fillcolor' : 826,#51,
+        'fillstyle' : 3344,#3005,
+        'linecolor' : 826,#51,
+        'linewidth' : 3,
+        'linestyle' : 1,
+        'label' : "m_{W^{'}} = 600 GeV",
+        'weight': 1.,
+        'plot': True,
+    },
+    'XWZInv_M800' : {
+        'order' : 1001,
+        'files' : ['WprimeToWZToWhadZinv_narrow_M-800_13TeV-madgraph-v1'],
+        'fillcolor' : 827,#52,
+        'fillstyle' : 3344,#3005,
+        'linecolor' : 827,#52,
+        'linewidth' : 3,
+        'linestyle' : 1,
+        'label' : "m_{W^{'}} = 800 GeV",
+        'weight': 1.,
+        'plot': True,
+    },
+    'XWZInv_M1000' : {
+        'order' : 1001,
+        'files' : ['WprimeToWZToWhadZinv_narrow_M-1000_13TeV-madgraph-v1'],
+        'fillcolor' : 829,#53,
+        'fillstyle' : 3344,#3005,
+        'linecolor' : 829,#53,
+        'linewidth' : 3,
+        'linestyle' : 1,
+        'label' : "m_{W^{'}} = 1000 GeV",
+        'weight': 1.,
+        'plot': True,
+    },
+    'XWZInv_M1200' : {
+        'order' : 1001,
+        'files' : ['WprimeToWZToWhadZinv_narrow_M-1200_13TeV-madgraph-v1'],
+        'fillcolor' : 840,#55,
+        'fillstyle' : 3344,#3005,
+        'linecolor' : 840,#55,
+        'linewidth' : 3,
+        'linestyle' : 1,
+        'label' : "m_{W^{'}} = 1200 GeV",
+        'weight': 1.,
+        'plot': True,
+    },
+    'XWZInv_M1400' : {
+        'order' : 1001,
+        'files' : ['WprimeToWZToWhadZinv_narrow_M-1400_13TeV-madgraph-v1'],
+        'fillcolor' : 831,#57,
+        'fillstyle' : 3344,#3005,
+        'linecolor' : 831,#57,
+        'linewidth' : 3,
+        'linestyle' : 1,
+        'label' : "m_{W^{'}} = 1400 GeV",
+        'weight': 1.,
+        'plot': True,
+    },
+    'XWZInv_M1600' : {
+        'order' : 1001,
+        'files' : ['WprimeToWZToWhadZinv_narrow_M-1600_13TeV-madgraph-v1'],
+        'fillcolor' : 832,#59,
+        'fillstyle' : 3344,#3005,
+        'linecolor' : 832,#59,
+        'linewidth' : 3,
+        'linestyle' : 1,
+        'label' : "m_{W^{'}} = 1600 GeV",
+        'weight': 1.,
+        'plot': True,
+    },
+    'XWZInv_M1800' : {
+        'order' : 1001,
+        'files' : ['WprimeToWZToWhadZinv_narrow_M-1800_13TeV-madgraph-v1'],
+        'fillcolor' : 833,#61,
+        'fillstyle' : 3344,#3005,
+        'linecolor' : 833,#61,
+        'linewidth' : 3,
+        'linestyle' : 1,
+        'label' : "m_{W^{'}} = 1800 GeV",
+        'weight': 1.,
+        'plot': True,
+    },
+    'XWZInv_M2000' : {
+        'order' : 1001,
+        'files' : ['WprimeToWZToWhadZinv_narrow_M-2000_13TeV-madgraph-v1'],
+        'fillcolor' : 834,#841,
+        'fillstyle' : 3344,#3005,
+        'linecolor' : 834,#841#63,
+        'linewidth' : 3,
+        'linestyle' : 1,
+        'label' : "m_{W^{'}} = 2000 GeV",
+        'weight': 1.,
+        'plot': True,
+    },
+    'XWZInv_M2500' : {
+        'order' : 1001,
+        'files' : ['WprimeToWZToWhadZinv_narrow_M-2500_13TeV-madgraph-v1'],
+        'fillcolor' : 843,#65,
+        'fillstyle' : 3344,#3005,
+        'linecolor' : 843,#65,
+        'linewidth' : 3,
+        'linestyle' : 1,
+        'label' : "m_{W^{'}} = 2500 GeV",
+        'weight': 1.,
+        'plot': True,
+    },
+    'XWZInv_M3000' : {
+        'order' : 1001,
+        'files' : ['WprimeToWZToWhadZinv_narrow_M-3000_13TeV-madgraph-v1'],
+        'fillcolor' : 845,#67,
+        'fillstyle' : 3344,#3005,
+        'linecolor' : 845,#67,
+        'linewidth' : 3,
+        'linestyle' : 1,
+        'label' : "m_{W^{'}} = 3000 GeV",
+        'weight': 1.,
+        'plot': True,
+    },
+    'XWZInv_M3500' : {
+        'order' : 1001,
+        'files' : ['WprimeToWZToWhadZinv_narrow_M-3500_13TeV-madgraph-v1'],
+        'fillcolor' : 847,#69,
+        'fillstyle' : 3344,#3005,
+        'linecolor' : 847,#69,
+        'linewidth' : 3,
+        'linestyle' : 1,
+        'label' : "m_{W^{'}} = 3500 GeV",
+        'weight': 1.,
+        'plot': True,
+    },
+    'XWZInv_M4000' : {
+        'order' : 1001,
+        'files' : ['WprimeToWZToWhadZinv_narrow_M-4000_13TeV-madgraph-v1'],
+        'fillcolor' : 849,#71,
+        'fillstyle' : 3344,#3005,
+        'linecolor' : 849,#71,
+        'linewidth' : 3,
+        'linestyle' : 1,
+        'label' : "m_{W^{'}} = 4000 GeV",
+        'weight': 1.,
+        'plot': True,
+    },
+    'XWZInv_M4500' : {
+        'order' : 1001,
+        'files' : ['WprimeToWZToWhadZinv_narrow_M-4500_13TeV-madgraph-v1'],
+        'fillcolor' : 850,#73,
+        'fillstyle' : 3344,#3005,
+        'linecolor' : 850,#73,
+        'linewidth' : 3,
+        'linestyle' : 1,
+        'label' : "m_{W^{'}} = 4500 GeV",
         'weight': 1.,
         'plot': True,
     },
