@@ -1,0 +1,1 @@
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISummer16MiniAODv2/BlackHole_BH2_MD-2000_MBH-4000_n-6_TuneCUETP8M1_13TeV-blackmax/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/70000/4CE7FEB6-92BE-E611-9704-0CC47AD98D70.root

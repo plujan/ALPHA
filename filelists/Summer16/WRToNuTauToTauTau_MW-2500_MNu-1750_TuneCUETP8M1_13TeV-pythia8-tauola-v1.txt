@@ -1,0 +1,2 @@
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISummer16MiniAODv2/WRToNuTauToTauTau_MW-2500_MNu-1750_TuneCUETP8M1_13TeV-pythia8-tauola/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/3004EA88-2BCC-E611-8F4E-44A84225C893.root
+dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISummer16MiniAODv2/WRToNuTauToTauTau_MW-2500_MNu-1750_TuneCUETP8M1_13TeV-pythia8-tauola/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/50000/4C2402E1-2ECC-E611-9F87-D48564593FAC.root
