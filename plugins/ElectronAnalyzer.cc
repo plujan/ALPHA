@@ -1,5 +1,5 @@
 #include "ElectronAnalyzer.h"
-
+#include "EgammaAnalysis/ElectronTools/src/EnergyScaleCorrection_class.cc"
 
 
 ElectronAnalyzer::ElectronAnalyzer(const edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl):
@@ -24,6 +24,7 @@ ElectronAnalyzer::ElectronAnalyzer(const edm::ParameterSet& PSet, edm::ConsumesC
     EleMVATrigMediumIdFileName(PSet.getParameter<std::string>("eleMVATrigMediumIdFileName")),
     EleMVATrigTightIdFileName(PSet.getParameter<std::string>("eleMVATrigTightIdFileName")),
     EleRecoEffFileName(PSet.getParameter<std::string>("eleRecoEffFileName")),
+    EleScaleSmearCorrectionName(PSet.getParameter<std::string>("eleScaleSmearCorrectionName")),
     Electron1Id(PSet.getParameter<int>("electron1id")),
     Electron2Id(PSet.getParameter<int>("electron2id")),
     //Electron1Iso(PSet.getParameter<int>("electron1iso")),
@@ -196,7 +197,16 @@ std::vector<pat::Electron> ElectronAnalyzer::FillElectronVector(const edm::Event
     iEvent.getByToken(EleMVATrigTightIdMapToken, MVATrigTightIdDecisions);
     
     unsigned int elIdx = 0;
-    
+
+    // EnergyScaleCorrection_class eScaleSmearer(EleScaleSmearCorrectionName);
+    EnergyScaleCorrection_class eScaleSmearer("EgammaAnalysis/ElectronTools/data/ScalesSmearings/Moriond17_23Jan_ele");
+    if (isMC){
+        eScaleSmearer.doSmearings = true;
+    }
+    else{
+        eScaleSmearer.doScale = true;
+    }
+
     // Loop on Electron collection
     for(std::vector<pat::Electron>::const_iterator it=EleCollection->begin(); it!=EleCollection->end(); ++it) {
         if(Vect.size()>0) {
@@ -248,10 +258,47 @@ std::vector<pat::Electron> ElectronAnalyzer::FillElectronVector(const edm::Event
         el.addUserInt("isMVANonTrigTight", isPassMVANonTrigTight ? 1 : 0);
         el.addUserInt("isMVATrigMedium", isPassMVATrigMedium ? 1 : 0);
         el.addUserInt("isMVATrigTight", isPassMVATrigTight ? 1 : 0);
-        ++elIdx;
 
+        float scale         = eScaleSmearer.ScaleCorrection           (iEvent.id().run(), el.isEB(), el.r9(), el.superCluster()->eta(), el.et(), 0);
+        float sigma         = eScaleSmearer.getSmearingSigma          (iEvent.id().run(), el.isEB(), el.r9(), el.superCluster()->eta(), el.et(), 0, 0, 0);
+        float error_scale   = eScaleSmearer.ScaleCorrectionUncertainty(iEvent.id().run(), el.isEB(), el.r9(), el.superCluster()->eta(), el.et(), 0);
+        float error_sigma_u = eScaleSmearer.getSmearingSigma          (iEvent.id().run(), el.isEB(), el.r9(), el.superCluster()->eta(), el.et(), 0, 1,  0);
+        float error_sigma_d = eScaleSmearer.getSmearingSigma          (iEvent.id().run(), el.isEB(), el.r9(), el.superCluster()->eta(), el.et(), 0, -1, 0);
+
+        el.addUserFloat("SSscale",          scale);
+        el.addUserFloat("SSsigma",          sigma);
+        el.addUserFloat("SSscaleUnc",       error_scale);
+        el.addUserFloat("SSsigmaUncUp",     error_sigma_u);
+        el.addUserFloat("SSsigmaUncDown",   error_sigma_d);
+
+        TRandom3 * rgen_ = new TRandom3(0);
+
+        if(isMC){
+            float smear = rgen_->Gaus(1, sigma);
+            float smearUp = rgen_->Gaus(1, error_sigma_u);
+            float smearDown = rgen_->Gaus(1, error_sigma_d);
+            el.addUserFloat("SScorr",               smear);
+            el.addUserFloat("ptSScorr",             el.pt()*smear);
+            el.addUserFloat("ptSScorrUncUp",        el.pt()*smearUp);
+            el.addUserFloat("ptSScorrUncDown",      el.pt()*smearDown);
+            el.addUserFloat("energySScorr",         el.energy()*smear);
+            el.addUserFloat("energySScorrUncUp",    el.energy()*smearUp);
+            el.addUserFloat("energySScorrUncDown",  el.energy()*smearDown);
+        }
+        else{
+            el.addUserFloat("SScorr",               scale);
+            el.addUserFloat("ptSScorr",             el.pt()*scale);
+            el.addUserFloat("ptSScorrUncUp",        el.pt()*(1+error_scale));
+            el.addUserFloat("ptSScorrUncDown",      el.pt()*(1-error_scale));
+            el.addUserFloat("energySScorr",         el.energy()*scale);
+            el.addUserFloat("energySScorrUncUp",    el.energy()*(1+error_scale));
+            el.addUserFloat("energySScorrUncDown",  el.energy()*(1-error_scale));            
+        }
+
+        ++elIdx;
         // Fill vector
         Vect.push_back(el);
+
     }
     return Vect;
 }

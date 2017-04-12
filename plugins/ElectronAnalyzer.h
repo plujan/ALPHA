@@ -26,6 +26,7 @@
 
 #include "TFile.h"
 #include "TH2.h"
+#include "TRandom3.h"
 
 class ElectronAnalyzer {
     public:
@@ -68,6 +69,7 @@ class ElectronAnalyzer {
         std::string EleMVATrigMediumIdFileName;
         std::string EleMVATrigTightIdFileName;
         std::string EleRecoEffFileName;
+        std::string EleScaleSmearCorrectionName;
 
         int Electron1Id, Electron2Id;// Electron1Iso, Electron2Iso;
         float Electron1Pt, Electron2Pt;
@@ -101,6 +103,7 @@ class ElectronAnalyzer {
         TH2F* ElectronIdMVATrigMedium;
         TH2F* ElectronIdMVATrigTight;
         TH2F* ElectronRecoEff;
+
 };
 
 
