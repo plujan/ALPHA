@@ -8,7 +8,7 @@ from ROOT import TObject, TFile, TH1, TH1F
 from Analysis.ALPHA.samples import sample
 from array import array
 
-LUMI        = 12900 # in pb-1
+LUMI        = 35867 # in pb-1
 
 # use the following lists to include/exclude samples to be merged
 
