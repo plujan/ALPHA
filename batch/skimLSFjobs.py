@@ -29,8 +29,7 @@ def skim(name):
     newFile = TFile("Skim/"+name, "RECREATE")
     newFile.mkdir("ntuple/")
     newFile.cd("ntuple/")
-    #newTree = oldTree.CopyTree("V.pt>200 && FatJet1.pt>200")
-    newTree = oldTree.CopyTree("V.pt>200 && FatJet1.pt>170")
+    newTree = oldTree.CopyTree("V.pt>170 && FatJet1.pt>170")
     newTree.AutoSave()
     
     oldFile.Close()

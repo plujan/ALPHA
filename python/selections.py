@@ -1,22 +1,20 @@
 #! /usr/bin/env python
 
 selection = {
+    "METfilters" : "(isMC?Flag_eeBadScFilter:1) && (Flag_EcalDeadCellTriggerPrimitiveFilter && Flag_HBHENoiseFilter && Flag_HBHENoiseIsoFilter && Flag_globalTightHalo2016Filter && Flag_goodVertices && Flag_BadPFMuon && Flag_BadChCand) "
     "triggerMET" : "(isMC?1:(HLT_PFMETNoMu90_PFMHTNoMu90_IDTight_v||HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v||HLT_PFMETNoMu90_JetIdCleaned_PFMHTNoMu90_IDTight_v||HLT_PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight_v))",
     "triggerIsoEle" : "(isMC?1:HLT_Ele23_WPLoose_Gsf_v)",
     "triggerIsoMuo" : "(isMC?1:(HLT_IsoMu20_v||HLT_IsoTkMu20_v))",
     "triggerEle" : "(isMC?1:(HLT_Ele105_CaloIdVT_GsfTrkIdT_v || HLT_Ele115_CaloIdVT_GsfTrkIdT_v))",
-    "triggerMuo" : "(isMC?1:(HLT_Mu45_eta2p1_v))",
+    "triggerMuo" : "(isMC?1:(HLT_Mu50_v || HLT_TkMu50_v))",
     # Leptons
     "singleEle" : "isWtoEN && Lepton1.pt>135 && Lepton1.isTight && V.dPhi<2 && X.dPhi>2 && MEt.pt>80", #  && nTaus==0
     "singleMuo" : "isWtoMN && Lepton1.pt>55 && Lepton1.isHighPt && Lepton1.trkIso<0.1 && V.dPhi<2 && X.dPhi>2", # && nTaus==0
     "singleIsoLep" : "((isWtoEN && Lepton1.isElectron && Lepton1.isLoose && Lepton2.isMuon && Lepton2.isHighPt) || (isWtoMN && Lepton2.isElectron && Lepton2.isLoose && Lepton1.isMuon && Lepton1.isHighPt))",
-    "doubleEle" : "isZtoEE && Lepton1.pt>135 && Lepton2.pt>35 && Lepton1.isLoose && Lepton2.isLoose", # && Lepton1.isHighPt && Lepton2.isHighPt && Lepton1.miniIso<0.1 && Lepton2.miniIso<0.1",
-    #"doubleMuo" : "isZtoMM && ((Lepton1.isHighPt && Lepton2.isHighPt) || (Lepton1.isTrackerHighPt && Lepton2.isHighPt) || (Lepton1.isHighPt && Lepton2.isTrackerHighPt)) && Lepton1.pt>55 && Lepton2.pt>20 && Lepton1.trkIso<0.1 && Lepton2.trkIso<0.1",
-    "doubleMuo" : "isZtoMM && ((Lepton1.isHighPt && Lepton2.isHighPt) || (Lepton1.isTrackerHighPt && Lepton2.isHighPt) || (Lepton1.isHighPt && Lepton2.isTrackerHighPt)) && Lepton1.pt>55 && Lepton2.pt>20 && abs(Lepton1.eta)<2.1 && abs(Lepton2.eta)<2.1 && !(Lepton1.pt>500 && abs(Lepton1.eta)>1.2) && !(Lepton2.pt>500 && abs(Lepton2.eta)>1.2) && Lepton1.trkIso<0.1 && Lepton2.trkIso<0.1",
+    "doubleEle" : "isZtoEE && Lepton1.pt>135 && Lepton2.pt>35 && Lepton1.isLoose && Lepton2.isLoose", 
+    "doubleMuo" : "isZtoMM && ((Lepton1.isHighPt && Lepton2.isHighPt) || (Lepton1.isTrackerHighPt && Lepton2.isHighPt) || (Lepton1.isHighPt && Lepton2.isTrackerHighPt)) && Lepton1.pt>55 && Lepton2.pt>20 && Lepton1.trkIso<0.1 && Lepton2.trkIso<0.1",
 
-
-    "MuonEle" : "((Lepton1.isMuon && Lepton1.isHighPt && Lepton1.pt>55 && Lepton1.trkIso<0.1 && abs(Lepton1.eta)<2.1 && !(Lepton1.pt>500 && abs(Lepton1.eta)>1.2) && Lepton2.isElectron && Lepton2.pt>35 && Lepton2.isLoose) || (Lepton1.isElectron && Lepton1.pt>35 && Lepton1.isLoose && Lepton2.isMuon && Lepton2.isHighPt && Lepton2.pt>55 && abs(Lepton2.eta)<2.1 && !(Lepton2.pt>500 && abs(Lepton2.eta)>1.2) && Lepton2.trkIso<0.1))", # && Lepton1.isHighPt && Lepton2.isHighPt && Lepton1.miniIso<0.1 && Lepton2.miniIso<0.1",
-
+    "MuonEle" : "((Lepton1.isMuon && Lepton1.isHighPt && Lepton1.pt>55 && Lepton1.trkIso<0.1 && Lepton2.isElectron && Lepton2.pt>35 && Lepton2.isLoose) || (Lepton1.isElectron && Lepton1.pt>35 && Lepton1.isLoose && Lepton2.isMuon && Lepton2.isHighPt && Lepton2.pt>55 && Lepton2.trkIso<0.1))", 
 
     "doubleIsoEle" : "isZtoEE && Lepton1.pt>25 && Lepton2.pt>10 && Lepton1.isLoose && Lepton2.isLoose",
     "doubleIsoMuo" : "isZtoMM && ((Lepton1.isHighPt && Lepton2.isHighPt) || (Lepton1.isTrackerHighPt && Lepton2.isHighPt) || (Lepton1.isHighPt && Lepton2.isTrackerHighPt)) && Lepton1.pt>25 && Lepton2.pt>10 && Lepton1.trkIso<0.1 && Lepton2.trkIso<0.1",
@@ -32,72 +30,72 @@ selection = {
     "SRcut" : "(FatJet1.softdropPuppiMassCorr>65 && FatJet1.softdropPuppiMassCorr<105)",
     "LSBcut" : "FatJet1.softdropPuppiMassCorr>30 && FatJet1.softdropPuppiMassCorr<65",
     "HSBcut" : "FatJet1.softdropPuppiMassCorr>135 && FatJet1.softdropPuppiMassCorr<300",
-    "HPcut" : "FatJet1.puppiTau21<0.40",
-    "LPcut" : "FatJet1.puppiTau21>0.40 && FatJet1.puppiTau21<0.75",
+    "HPcut" : "FatJet1.puppiTau21<0.35",
+    "LPcut" : "FatJet1.puppiTau21>0.35 && FatJet1.puppiTau21<0.75",
     "1Btag" : "((FatJet1.CSV1>0.460 && FatJet1.CSV2<0.460) || (FatJet1.CSV1<0.460 && FatJet1.CSV2>0.460))",
     "2Btag" : "(FatJet1.CSV1>0.460 && FatJet1.CSV2>0.460)",
     
     #------------------------------#
     #----------    VZ    ----------#
     #------------------------------#
-    "XVZllPre"  : "((triggerEle && doubleEle) || (triggerMuo && doubleMuo)) && Boost && Zcut",
+    "XVZllPre"  : "METfilters && ((triggerEle && doubleEle) || (triggerMuo && doubleMuo)) && Boost && Zcut",
     # 2 electrons
-    "XVZeeNoBoost"  : "triggerEle && doubleEle && Zcut",
-    "XVZeePre"  : "triggerEle && doubleEle && Boost && Zcut",
-    "XVZeeInc"  : "triggerEle && doubleEle && Boost && Zcut && (FatJet1.softdropPuppiMassCorr<65 || FatJet1.softdropPuppiMassCorr>135)",
+    "XVZeeNoBoost"  : "METfilters && triggerEle && doubleEle && Zcut",
+    "XVZeePre"  : "METfilters && triggerEle && doubleEle && Boost && Zcut",
+    "XVZeeInc"  : "METfilters && triggerEle && doubleEle && Boost && Zcut && (FatJet1.softdropPuppiMassCorr<65 || FatJet1.softdropPuppiMassCorr>135)",
     #
-    "XVZeeSB"  : "triggerEle && doubleEle && Boost && Zcut && SBcut",
-    "XVZeeSR"  : "triggerEle && doubleEle && Boost && Zcut && SRcut",
-    "XVZeeNR"  : "triggerEle && doubleEle && Boost && Zcut && FatJet1.softdropPuppiMassCorr>30",
+    "XVZeeSB"  : "METfilters && triggerEle && doubleEle && Boost && Zcut && SBcut",
+    "XVZeeSR"  : "METfilters && triggerEle && doubleEle && Boost && Zcut && SRcut",
+    "XVZeeNR"  : "METfilters && triggerEle && doubleEle && Boost && Zcut && FatJet1.softdropPuppiMassCorr>30",
     #
-    "XVZeelpSB" : "triggerEle && doubleEle && Boost && Zcut && LPcut && SBcut",
-    "XVZeehpSB" : "triggerEle && doubleEle && Boost && Zcut && HPcut && SBcut",
+    "XVZeelpSB" : "METfilters && triggerEle && doubleEle && Boost && Zcut && LPcut && SBcut",
+    "XVZeehpSB" : "METfilters && triggerEle && doubleEle && Boost && Zcut && HPcut && SBcut",
     #
-    "XVZeelpSR" : "triggerEle && doubleEle && Boost && Zcut && LPcut && SRcut",
-    "XVZeehpSR" : "triggerEle && doubleEle && Boost && Zcut && HPcut && SRcut",
+    "XVZeelpSR" : "METfilters && triggerEle && doubleEle && Boost && Zcut && LPcut && SRcut",
+    "XVZeehpSR" : "METfilters && triggerEle && doubleEle && Boost && Zcut && HPcut && SRcut",
     # 2 muons
-    "XVZmmNoBoost"  : "triggerMuo && doubleMuo && Zcut",
-    "XVZmmPre"  : "triggerMuo && doubleMuo && Boost && Zcut",
-    "XVZmmInc"  : "triggerMuo && doubleMuo && Boost && Zcut && (FatJet1.softdropPuppiMassCorr<65 || FatJet1.softdropPuppiMassCorr>135)",
+    "XVZmmNoBoost"  : "METfilters && triggerMuo && doubleMuo && Zcut",
+    "XVZmmPre"  : "METfilters && triggerMuo && doubleMuo && Boost && Zcut",
+    "XVZmmInc"  : "METfilters && triggerMuo && doubleMuo && Boost && Zcut && (FatJet1.softdropPuppiMassCorr<65 || FatJet1.softdropPuppiMassCorr>135)",
     #
-    "XVZmmSB"  : "triggerMuo && doubleMuo && Boost && Zcut && SBcut",
-    "XVZmmSR"  : "triggerMuo && doubleMuo && Boost && Zcut && SRcut",
-    "XVZmmNR"  : "triggerMuo && doubleMuo && Boost && Zcut && FatJet1.softdropPuppiMassCorr>30",
+    "XVZmmSB"  : "METfilters && triggerMuo && doubleMuo && Boost && Zcut && SBcut",
+    "XVZmmSR"  : "METfilters && triggerMuo && doubleMuo && Boost && Zcut && SRcut",
+    "XVZmmNR"  : "METfilters && triggerMuo && doubleMuo && Boost && Zcut && FatJet1.softdropPuppiMassCorr>30",
     #
-    "XVZmmlpSB" : "triggerMuo && doubleMuo && Boost && Zcut && LPcut && SBcut",
-    "XVZmmhpSB" : "triggerMuo && doubleMuo && Boost && Zcut && HPcut && SBcut",
+    "XVZmmlpSB" : "METfilters && triggerMuo && doubleMuo && Boost && Zcut && LPcut && SBcut",
+    "XVZmmhpSB" : "METfilters && triggerMuo && doubleMuo && Boost && Zcut && HPcut && SBcut",
     #
-    "XVZmmlpSR" : "triggerMuo && doubleMuo && Boost && Zcut && LPcut && SRcut",
-    "XVZmmhpSR" : "triggerMuo && doubleMuo && Boost && Zcut && HPcut && SRcut",
+    "XVZmmlpSR" : "METfilters && triggerMuo && doubleMuo && Boost && Zcut && LPcut && SRcut",
+    "XVZmmhpSR" : "METfilters && triggerMuo && doubleMuo && Boost && Zcut && HPcut && SRcut",
     # 1 muon 1 electron
-    "XVZmeNoBoost"   : "triggerMuo && MuonEle",
-    "XVZmelp"   : "triggerMuo && MuonEle && FatJet1.pt>170 && LPcut",
-    "XVZmehp"   : "triggerMuo && MuonEle && FatJet1.pt>170 && HPcut",
-    "XVZmelpSR" : "triggerMuo && MuonEle && FatJet1.pt>170 && LPcut && SRcut",
-    "XVZmehpSR" : "triggerMuo && MuonEle && FatJet1.pt>170 && HPcut && SRcut",
+    "XVZmeNoBoost"   : "METfilters && triggerMuo && MuonEle",
+    "XVZmelp"   : "METfilters && triggerMuo && MuonEle && FatJet1.pt>170 && LPcut",
+    "XVZmehp"   : "METfilters && triggerMuo && MuonEle && FatJet1.pt>170 && HPcut",
+    "XVZmelpSR" : "METfilters && triggerMuo && MuonEle && FatJet1.pt>170 && LPcut && SRcut",
+    "XVZmehpSR" : "METfilters && triggerMuo && MuonEle && FatJet1.pt>170 && HPcut && SRcut",
     # 2 leptons (e or m)
-    "XVZllNR"  : "(triggerEle && doubleEle && Boost && Zcut && FatJet1.softdropPuppiMassCorr>30) || (triggerMuo && doubleMuo && Boost && Zcut && FatJet1.softdropPuppiMassCorr>30)",
+    "XVZllNR"  : "METfilters && (triggerEle && doubleEle && Boost && Zcut && FatJet1.softdropPuppiMassCorr>30) || (triggerMuo && doubleMuo && Boost && Zcut && FatJet1.softdropPuppiMassCorr>30)",
     
 
-    #"XVZmelp"   : "triggerEle && ((Lepton1.isMuon && Lepton1.isHighPt && Lepton1.pt>20 && Lepton1.trkIso<0.1 && Lepton2.isElectron && Lepton2.isLoose && Lepton2.pt>20) || (Lepton2.isMuon && Lepton2.isHighPt && Lepton2.pt>55 && Lepton2.trkIso<0.1 && Lepton1.isElectron && Lepton1.isLoose && Lepton1.pt>20)) && Boost && LPcut && FatJet1.softdropPuppiMassCorr>30",
-    #"XVZmehp"   : "triggerEle && ((Lepton1.isMuon && Lepton1.isHighPt && Lepton1.pt>20 && Lepton1.trkIso<0.1 && Lepton2.isElectron && Lepton2.isLoose && Lepton2.pt>20) || (Lepton2.isMuon && Lepton2.isHighPt && Lepton2.pt>55 && Lepton2.trkIso<0.1 && Lepton1.isElectron && Lepton1.isLoose && Lepton1.pt>20)) && Boost && HPcut && FatJet1.softdropPuppiMassCorr>30",
+    #"XVZmelp"   : "METfilters && triggerEle && ((Lepton1.isMuon && Lepton1.isHighPt && Lepton1.pt>20 && Lepton1.trkIso<0.1 && Lepton2.isElectron && Lepton2.isLoose && Lepton2.pt>20) || (Lepton2.isMuon && Lepton2.isHighPt && Lepton2.pt>55 && Lepton2.trkIso<0.1 && Lepton1.isElectron && Lepton1.isLoose && Lepton1.pt>20)) && Boost && LPcut && FatJet1.softdropPuppiMassCorr>30",
+    #"XVZmehp"   : "METfilters && triggerEle && ((Lepton1.isMuon && Lepton1.isHighPt && Lepton1.pt>20 && Lepton1.trkIso<0.1 && Lepton2.isElectron && Lepton2.isLoose && Lepton2.pt>20) || (Lepton2.isMuon && Lepton2.isHighPt && Lepton2.pt>55 && Lepton2.trkIso<0.1 && Lepton1.isElectron && Lepton1.isLoose && Lepton1.pt>20)) && Boost && HPcut && FatJet1.softdropPuppiMassCorr>30",
 
     # 0 leptons
-    "XVZnnPre"  : "triggerMET && noLeptons && Boost",
-    "XVZnnInc"  : "triggerMET && noLeptons && Boost && TopVetocut && (FatJet1.softdropPuppiMassCorr<65 || FatJet1.softdropPuppiMassCorr>135)",
+    "XVZnnPre"  : "METfilters && triggerMET && noLeptons && Boost",
+    "XVZnnInc"  : "METfilters && triggerMET && noLeptons && Boost && TopVetocut && (FatJet1.softdropPuppiMassCorr<65 || FatJet1.softdropPuppiMassCorr>135)",
     #
-    "XVZnnlpSB" : "triggerMET && noLeptons && Boost && TopVetocut && LPcut && SBcut",
-    "XVZnnhpSB" : "triggerMET && noLeptons && Boost && TopVetocut && HPcut && SBcut",
+    "XVZnnlpSB" : "METfilters && triggerMET && noLeptons && Boost && TopVetocut && LPcut && SBcut",
+    "XVZnnhpSB" : "METfilters && triggerMET && noLeptons && Boost && TopVetocut && HPcut && SBcut",
     #
-    "XVZnnlpSR" : "triggerMET && noLeptons && Boost && TopVetocut && LPcut && SRcut",
-    "XVZnnhpSR" : "triggerMET && noLeptons && Boost && TopVetocut && HPcut && SRcut",
+    "XVZnnlpSR" : "METfilters && triggerMET && noLeptons && Boost && TopVetocut && LPcut && SRcut",
+    "XVZnnhpSR" : "METfilters && triggerMET && noLeptons && Boost && TopVetocut && HPcut && SRcut",
     # 2 lepton, 1 additional btag
-    "XVZlnTR"   : "((triggerEle && singleEle) || (triggerMuo && singleMuo)) && Boost && Topcut",
-    "XVZlnlpTR" : "((triggerEle && singleEle) || (triggerMuo && singleMuo)) && Boost && Topcut && LPcut && (SBcut || VRcut || SRcut)",
-    "XVZlnhpTR" : "((triggerEle && singleEle) || (triggerMuo && singleMuo)) && Boost && Topcut && HPcut && (SBcut || VRcut || SRcut)",
+    "XVZlnTR"   : "METfilters && ((triggerEle && singleEle) || (triggerMuo && singleMuo)) && Boost && Topcut",
+    "XVZlnlpTR" : "METfilters && ((triggerEle && singleEle) || (triggerMuo && singleMuo)) && Boost && Topcut && LPcut && (SBcut || VRcut || SRcut)",
+    "XVZlnhpTR" : "METfilters && ((triggerEle && singleEle) || (triggerMuo && singleMuo)) && Boost && Topcut && HPcut && (SBcut || VRcut || SRcut)",
     # 0 lepton, 1 additional btag
-    "XVZnnbTR"  : "triggerMET && noLeptons && Topcut && LPcut && (SBcut || VRcut || SRcut)",
-    "XVZnnbbTR" : "triggerMET && noLeptons && Topcut && HPcut && (SBcut || VRcut || SRcut)",
+    "XVZnnbTR"  : "METfilters && triggerMET && noLeptons && Topcut && LPcut && (SBcut || VRcut || SRcut)",
+    "XVZnnbbTR" : "METfilters && triggerMET && noLeptons && Topcut && HPcut && (SBcut || VRcut || SRcut)",
     
     #------------------------------#
     #----------    VH    ----------#

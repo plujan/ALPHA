@@ -111,34 +111,38 @@ def skim(name):
 
         # Alpha selections
         
-        # Channel
+        # check if any channel is ON
         if not oldTree.isZtoMM and not oldTree.isZtoEE and not oldTree.isZtoNN: continue
         
-        # Trigger
-        if not oldTree.isMC:
-            if oldTree.isZtoMM:
-                #if not ( oldTree.HLT_TkMu50_v or oldTree.HLT_Mu50_v ): continue
-                if not ( oldTree.HLT_Mu45_eta2p1_v ): continue
-            elif oldTree.isZtoEE:
-                if not ( oldTree.HLT_Ele105_CaloIdVT_GsfTrkIdT_v or oldTree.HLT_Ele115_CaloIdVT_GsfTrkIdT_v ): continue
-            elif oldTree.isZtoNN:
-                if not ( oldTree.HLT_PFMETNoMu90_PFMHTNoMu90_IDTight_v or oldTree.HLT_PFMETNoMu110_PFMHTNoMu110_IDTight_v or oldTree.HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v or oldTree.HLT_PFMET170_NoiseCleaned_v or oldTree.HLT_PFMET170_JetIdCleaned_v or oldTree.HLT_PFMET170_HBHECleaned_v): continue
-            else: continue
-        # Leptons
-        if oldTree.isZtoMM and not ( ((Lepton1.isHighPt and Lepton2.isHighPt) or (Lepton1.isTrackerHighPt and Lepton2.isHighPt) or (Lepton1.isHighPt and Lepton2.isTrackerHighPt)) and Lepton1.pt>55 and Lepton2.pt>20 and abs(Lepton1.eta)<2.1 and abs(Lepton2.eta)<2.1 and not (Lepton1.pt>500 and abs(Lepton1.eta)>1.2) and not (Lepton2.pt>500 and abs(Lepton2.eta)>1.2) and Lepton1.trkIso<0.1 and Lepton2.trkIso<0.1): continue
+        # check MET filters (for all events)
+        if not (oldTree.Flag_EcalDeadCellTriggerPrimitiveFilter and oldTree.Flag_HBHENoiseFilter and oldTree.Flag_HBHENoiseIsoFilter and  oldTree.Flag_globalTightHalo2016Filter and oldTree.Flag_goodVertices and oldTree.Flag_BadPFMuon and oldTree.Flag_BadChCand): continue
+        if oldTree.isMC: # this one only for MC
+            if not oldTree.Flag_eeBadScFilter: continue
 
-        if oldTree.isZtoEE and not (Lepton1.pt>135 and Lepton2.pt>35 and Lepton1.isLoose and Lepton2.isLoose): continue
-        # No Leptons
-        if oldTree.isZtoNN and not (MEt.pt>200 and oldTree.nLooseMuons==0 and oldTree.nVetoElectrons==0 and oldTree.nPhotons==0 and oldTree.nTaus==0 and oldTree.MinJetMetDPhi>0.5 and oldTree.Flag_EcalDeadCellTriggerPrimitiveFilter and oldTree.Flag_HBHENoiseFilter and oldTree.Flag_HBHENoiseIsoFilter and  oldTree.Flag_globalTightHalo2016Filter and oldTree.Flag_goodVertices and oldTree.Flag_BadPFMuon and oldTree.Flag_BadChCand): continue
-        if not oldTree.isMC:
-            if oldTree.isZtoNN and not oldTree.Flag_eeBadScFilter: continue
-        # Boost and Z
-        if (oldTree.isZtoEE or oldTree.isZtoMM) and not (V.pt>170 and FatJet1.pt>170 and V.mass>70 and V.mass<110): continue
-        # Boost and Cleaning for Z invisible
-        if oldTree.isZtoNN and not (FatJet1.pt>200 and FatJet1.isTight and FatJet1.nhf<0.8 and FatJet1.chf>0.2 and oldTree.MaxJetBTag<0.5426 and X.dPhi>2): continue
-        # Grooming
-        if not (FatJet1.softdropPuppiMassCorr>30): continue
-        
+        # do Zmm
+        if oldTree.isZtoMM:
+            if not ( oldTree.HLT_TkMu50_v or oldTree.HLT_Mu50_v ): continue
+            if not ( ((Lepton1.isHighPt and Lepton2.isHighPt) or (Lepton1.isTrackerHighPt and Lepton2.isHighPt) or (Lepton1.isHighPt and Lepton2.isTrackerHighPt)) and Lepton1.pt>55 and Lepton2.pt>20 and Lepton1.trkIso<0.1 and Lepton2.trkIso<0.1 ): continue
+            if not (V.pt>170 and FatJet1.pt>170 and V.mass>70 and V.mass<110): continue
+            if not (FatJet1.softdropPuppiMassCorr>30): continue
+        # do Zee
+        elif oldTree.isZtoEE:
+            if not ( oldTree.HLT_Ele105_CaloIdVT_GsfTrkIdT_v or oldTree.HLT_Ele115_CaloIdVT_GsfTrkIdT_v ): continue
+            if not ( Lepton1.pt>135 and Lepton2.pt>35 and Lepton1.isLoose and Lepton2.isLoose ): continue
+            if not (V.pt>170 and FatJet1.pt>170 and V.mass>70 and V.mass<110): continue
+            if not (FatJet1.softdropPuppiMassCorr>30): continue
+        # do Znn
+        elif oldTree.isZtoNN:
+            if not oldTree.isMC: # apply MET trigger only in data
+                if not ( oldTree.HLT_PFMETNoMu90_PFMHTNoMu90_IDTight_v or oldTree.HLT_PFMETNoMu110_PFMHTNoMu110_IDTight_v or oldTree.HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v or oldTree.HLT_PFMET170_NoiseCleaned_v or oldTree.HLT_PFMET170_JetIdCleaned_v or oldTree.HLT_PFMET170_HBHECleaned_v): continue
+            if not (MEt.pt>200 and oldTree.nLooseMuons==0 and oldTree.nVetoElectrons==0 and oldTree.nPhotons==0 and oldTree.nTaus==0 and oldTree.MinJetMetDPhi>0.5): continue
+            if not (FatJet1.pt>200 and FatJet1.isTight and FatJet1.nhf<0.8 and FatJet1.chf>0.2 and oldTree.MaxJetBTag<0.5426 and X.dPhi>2): continue
+            if not (FatJet1.softdropPuppiMassCorr>30): continue        
+        # should be useless
+        else:
+            print 'ERROR' 
+            continue
+
         # Copy relevant variables
         EventNumber[0] = oldTree.EventNumber
         EventWeight[0] = oldTree.EventWeight * theweight
