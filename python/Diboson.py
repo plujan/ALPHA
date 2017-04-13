@@ -16,8 +16,7 @@ process = cms.Process('ALPHA')
 process.load('FWCore.MessageService.MessageLogger_cfi')
 process.MessageLogger.cerr.threshold = 'ERROR'
 
-# process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10000) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 # input
 # default: if no filelist from command line, run on specified samples
