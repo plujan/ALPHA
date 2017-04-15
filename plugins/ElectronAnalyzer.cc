@@ -1,5 +1,5 @@
 #include "ElectronAnalyzer.h"
-#include "EgammaAnalysis/ElectronTools/src/EnergyScaleCorrection_class.cc"
+// #include "EgammaAnalysis/ElectronTools/src/EnergyScaleCorrection_class.cc"
 
 
 ElectronAnalyzer::ElectronAnalyzer(const edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl):
@@ -128,6 +128,8 @@ ElectronAnalyzer::ElectronAnalyzer(const edm::ParameterSet& PSet, edm::ConsumesC
       return;
     }
     
+    eScaleSmearer = new EnergyScaleCorrection_class(EleScaleSmearCorrectionName);
+
     std::cout << " --- ElectronAnalyzer initialization ---" << std::endl;
     std::cout << "  jet Id [1, 2]     :\t" << Electron1Id << "\t" << Electron2Id << std::endl;
     std::cout << "  jet pT [1, 2]     :\t" << Electron1Pt << "\t" << Electron2Pt << std::endl;
@@ -198,13 +200,11 @@ std::vector<pat::Electron> ElectronAnalyzer::FillElectronVector(const edm::Event
     
     unsigned int elIdx = 0;
 
-    // EnergyScaleCorrection_class eScaleSmearer(EleScaleSmearCorrectionName);
-    EnergyScaleCorrection_class eScaleSmearer("EgammaAnalysis/ElectronTools/data/ScalesSmearings/Moriond17_23Jan_ele");
     if (isMC){
-        eScaleSmearer.doSmearings = true;
+        eScaleSmearer->doSmearings = true;
     }
     else{
-        eScaleSmearer.doScale = true;
+        eScaleSmearer->doScale = true;
     }
 
     // Loop on Electron collection
@@ -259,11 +259,11 @@ std::vector<pat::Electron> ElectronAnalyzer::FillElectronVector(const edm::Event
         el.addUserInt("isMVATrigMedium", isPassMVATrigMedium ? 1 : 0);
         el.addUserInt("isMVATrigTight", isPassMVATrigTight ? 1 : 0);
 
-        float scale         = eScaleSmearer.ScaleCorrection           (iEvent.id().run(), el.isEB(), el.r9(), el.superCluster()->eta(), el.et(), 0);
-        float sigma         = eScaleSmearer.getSmearingSigma          (iEvent.id().run(), el.isEB(), el.r9(), el.superCluster()->eta(), el.et(), 0, 0, 0);
-        float error_scale   = eScaleSmearer.ScaleCorrectionUncertainty(iEvent.id().run(), el.isEB(), el.r9(), el.superCluster()->eta(), el.et(), 0);
-        float error_sigma_u = eScaleSmearer.getSmearingSigma          (iEvent.id().run(), el.isEB(), el.r9(), el.superCluster()->eta(), el.et(), 0, 1,  0);
-        float error_sigma_d = eScaleSmearer.getSmearingSigma          (iEvent.id().run(), el.isEB(), el.r9(), el.superCluster()->eta(), el.et(), 0, -1, 0);
+        float scale         = eScaleSmearer->ScaleCorrection           (iEvent.id().run(), el.isEB(), el.r9(), el.superCluster()->eta(), el.et(), 0);
+        float sigma         = eScaleSmearer->getSmearingSigma          (iEvent.id().run(), el.isEB(), el.r9(), el.superCluster()->eta(), el.et(), 0, 0, 0);
+        float error_scale   = eScaleSmearer->ScaleCorrectionUncertainty(iEvent.id().run(), el.isEB(), el.r9(), el.superCluster()->eta(), el.et(), 0);
+        float error_sigma_u = eScaleSmearer->getSmearingSigma          (iEvent.id().run(), el.isEB(), el.r9(), el.superCluster()->eta(), el.et(), 0, 1,  0);
+        float error_sigma_d = eScaleSmearer->getSmearingSigma          (iEvent.id().run(), el.isEB(), el.r9(), el.superCluster()->eta(), el.et(), 0, -1, 0);
 
         el.addUserFloat("SSscale",          scale);
         el.addUserFloat("SSsigma",          sigma);

@@ -33,6 +33,7 @@
 <use name="RecoMET/METAlgorithms"/>
 <use name="CondFormats/BTauObjects"/>
 <use name="CondTools/BTau"/>
+<use name="EgammaAnalysis/ElectronTools"/>
 <!--<use name="lhapdf"/>-->
 
 <flags CXXFLAGS="-Wno-delete-non-virtual-dtor"/>

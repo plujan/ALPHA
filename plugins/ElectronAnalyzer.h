@@ -28,6 +28,10 @@
 #include "TH2.h"
 #include "TRandom3.h"
 
+#include "EgammaAnalysis/ElectronTools/interface/EnergyScaleCorrection_class.h"
+
+class EnergyScaleCorrection_class;
+
 class ElectronAnalyzer {
     public:
         ElectronAnalyzer(const edm::ParameterSet&, edm::ConsumesCollector&&);
@@ -103,6 +107,8 @@ class ElectronAnalyzer {
         TH2F* ElectronIdMVATrigMedium;
         TH2F* ElectronIdMVATrigTight;
         TH2F* ElectronRecoEff;
+
+        EnergyScaleCorrection_class * eScaleSmearer;
 
 };
 
