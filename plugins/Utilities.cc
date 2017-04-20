@@ -109,7 +109,7 @@ float Utilities::ReturnPhi1(const reco::Candidate::LorentzVector& theA, const re
 // -----------------------------------
 // ---------- KINEMATIC FIT ----------
 // -----------------------------------
-
+/*
 float Utilities::PerformKinematicFit(pat::Jet* tJet1, pat::Jet* tJet2, reco::Candidate::LorentzVector* fJet1, reco::Candidate::LorentzVector* fJet2, float mass) {
   //  TLorentzVector b1, b2;
   //  b1.SetPtEtaPhiE(tJet1->pt(), tJet1->eta(), tJet1->phi(), tJet1->energy());
@@ -172,7 +172,7 @@ float Utilities::PerformKinematicFit(pat::Jet* tJet1, pat::Jet* tJet2, reco::Can
     float dPhi2 = jet2.getCurr4Vec()->Phi() - jet2.getIni4Vec()->Phi();
 
     float chi2( dPt1*dPt1/m1(0,0) + dEta1*dEta1/m1(1,1) + dPhi1*dPhi1/m1(2,2) + dPt2*dPt2/m2(0,0) + dEta2*dEta2/m2(1,1) + dPhi2*dPhi2/m2(2,2) ); //=fitter.getS();
-    /*
+    
     float pchi2=TMath::Prob(chi2, fitter.getNDF());
     
     Hist["k_chi2"]->Fill(chi2, EventWeight);
@@ -193,7 +193,7 @@ float Utilities::PerformKinematicFit(pat::Jet* tJet1, pat::Jet* tJet2, reco::Can
       Hist["k_pullEta2"]->Fill((jet2.getCurr4Vec()->Eta()-tJet2->genParton()->eta())/sqrt(m2(1,1)), EventWeight);
       Hist["k_pullPhi2"]->Fill((jet2.getCurr4Vec()->Phi()-tJet2->genParton()->phi())/sqrt(m2(2,2)), EventWeight);
     }
-    */
+    
     
     // Update objects
     fJet1->SetPxPyPzE(jet1.getCurr4Vec()->Px(), jet1.getCurr4Vec()->Py(), jet1.getCurr4Vec()->Pz(), jet1.getCurr4Vec()->Energy());
@@ -201,7 +201,7 @@ float Utilities::PerformKinematicFit(pat::Jet* tJet1, pat::Jet* tJet2, reco::Can
     
     return chi2;
 }
-
+*/
 
 
 // Neutrino pz recovering by trading W mass
