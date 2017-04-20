@@ -5,11 +5,11 @@
 #include "HHAnalyzer.h"
 
 HHAnalyzer::HHAnalyzer(const edm::ParameterSet& iConfig):
-    GenPSet(iConfig.getParameter<edm::ParameterSet>("genSet")),
-    PileupPSet(iConfig.getParameter<edm::ParameterSet>("pileupSet")),
-    TriggerPSet(iConfig.getParameter<edm::ParameterSet>("triggerSet")),
-    ElectronPSet(iConfig.getParameter<edm::ParameterSet>("electronSet")),
-    MuonPSet(iConfig.getParameter<edm::ParameterSet>("muonSet")),
+ //   GenPSet(iConfig.getParameter<edm::ParameterSet>("genSet")),
+  //  PileupPSet(iConfig.getParameter<edm::ParameterSet>("pileupSet")),
+   // TriggerPSet(iConfig.getParameter<edm::ParameterSet>("triggerSet")),
+   // ElectronPSet(iConfig.getParameter<edm::ParameterSet>("electronSet")),
+   // MuonPSet(iConfig.getParameter<edm::ParameterSet>("muonSet")),
     JetPSet(iConfig.getParameter<edm::ParameterSet>("jetSet")),
     FatJetPSet(iConfig.getParameter<edm::ParameterSet>("fatJetSet")),
     WriteNJets(iConfig.getParameter<int>("writeNJets")),
@@ -21,14 +21,14 @@ HHAnalyzer::HHAnalyzer(const edm::ParameterSet& iConfig):
     usesResource("TFileService");
     
     // Initialize Objects
-    theGenAnalyzer      = new GenAnalyzer(GenPSet, consumesCollector());
-    thePileupAnalyzer   = new PileupAnalyzer(PileupPSet, consumesCollector());
-    theTriggerAnalyzer  = new TriggerAnalyzer(TriggerPSet, consumesCollector());
-    theElectronAnalyzer = new ElectronAnalyzer(ElectronPSet, consumesCollector());
-    theMuonAnalyzer     = new MuonAnalyzer(MuonPSet, consumesCollector());
+ //   theGenAnalyzer      = new GenAnalyzer(GenPSet, consumesCollector());
+   // thePileupAnalyzer   = new PileupAnalyzer(PileupPSet, consumesCollector());
+  //  theTriggerAnalyzer  = new TriggerAnalyzer(TriggerPSet, consumesCollector());
+   // theElectronAnalyzer = new ElectronAnalyzer(ElectronPSet, consumesCollector());
+  //  theMuonAnalyzer     = new MuonAnalyzer(MuonPSet, consumesCollector());
     theJetAnalyzer      = new JetAnalyzer(JetPSet, consumesCollector());    
 
-    std::vector<std::string> TriggerList(TriggerPSet.getParameter<std::vector<std::string> >("paths"));
+   // std::vector<std::string> TriggerList(TriggerPSet.getParameter<std::vector<std::string> >("paths"));
         
     // ---------- Plots Initialization ----------
     TFileDirectory allDir=fs->mkdir("All/");
@@ -70,10 +70,10 @@ HHAnalyzer::~HHAnalyzer() {
     std::cout << "---------- ENDING  ----------" << std::endl;
     
     delete theGenAnalyzer;
-    delete thePileupAnalyzer;
+  //  delete thePileupAnalyzer;
     delete theTriggerAnalyzer;
-    delete theElectronAnalyzer;
-    delete theMuonAnalyzer;
+  //  delete theElectronAnalyzer;
+   // delete theMuonAnalyzer;
     delete theJetAnalyzer;
 }
 
@@ -95,7 +95,7 @@ void HHAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
 
    
     EventWeight = StitchWeight = TriggerWeight = LeptonWeight = 1.;
-    PUWeight = PUWeightUp = PUWeightDown = 1.;
+  //  PUWeight = PUWeightUp = PUWeightDown = 1.;
     FacWeightUp = FacWeightDown = RenWeightUp = RenWeightDown = ScaleWeightUp = ScaleWeightDown = 1.;
     PdfWeight = 1.;
     nPV = nElectrons = nMuons = nJets = nFatJets = nBTagJets = -1;
@@ -107,42 +107,43 @@ void HHAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
     // -----------------------------------
     
     // Pu weight
-    PUWeight     = thePileupAnalyzer->GetPUWeight(iEvent);
-    PUWeightUp   = thePileupAnalyzer->GetPUWeightUp(iEvent);
-    PUWeightDown = thePileupAnalyzer->GetPUWeightDown(iEvent);
-    nPV = thePileupAnalyzer->GetPV(iEvent);
-    Hist["a_nPVNoWeight"]->Fill(nPV, EventWeight);
-    EventWeight *= PUWeight;
-    Hist["a_nPVReWeight"]->Fill(nPV, EventWeight);
+  //  PUWeight     = thePileupAnalyzer->GetPUWeight(iEvent);
+   // PUWeightUp   = thePileupAnalyzer->GetPUWeightUp(iEvent);
+    //PUWeightDown = thePileupAnalyzer->GetPUWeightDown(iEvent);
+   // nPV = thePileupAnalyzer->GetPV(iEvent);
+   // Hist["a_nPVNoWeight"]->Fill(nPV, EventWeight);
+   // EventWeight *= PUWeight;
+   // Hist["a_nPVReWeight"]->Fill(nPV, EventWeight);
     
     // Trigger
-    std::map<std::string, bool> TriggerMap;
-    theTriggerAnalyzer->FillTriggerMap(iEvent, TriggerMap);
-    EventWeight *= TriggerWeight;
-    for (const auto & kv : TriggerMap) {
-      filterPairs.emplace_back(kv.first, kv.second);
-    } 
+   // std::map<std::string, bool> TriggerMap;
+   // theTriggerAnalyzer->FillTriggerMap(iEvent, TriggerMap);
+   // EventWeight *= TriggerWeight;
+   // for (const auto & kv : TriggerMap) {
+   //   filterPairs.emplace_back(kv.first, kv.second);
+   // } 
     
     // Electrons
-    std::vector<pat::Electron> ElecVect = theElectronAnalyzer->FillElectronVector(iEvent);
-    nElectrons = ElecVect.size();
-    for(unsigned int i =0; i<ElecVect.size(); i++){
-        if(ElecVect.at(i).userInt("isVeto")==1) nVetoElectrons++;
-    }
+   // std::vector<pat::Electron> ElecVect = theElectronAnalyzer->FillElectronVector(iEvent);
+   // nElectrons = ElecVect.size();
+   // for(unsigned int i =0; i<ElecVect.size(); i++){
+  //      if(ElecVect.at(i).userInt("isVeto")==1) nVetoElectrons++;
+   // }
 
     // Muons
-    std::vector<pat::Muon> MuonVect = theMuonAnalyzer->FillMuonVector(iEvent);
-    std::vector<pat::Muon> LooseMuonVect;
-    for(unsigned int i =0; i<MuonVect.size(); i++){
-      if(MuonVect.at(i).userInt("isLoose")==1){
-	      LooseMuonVect.push_back(MuonVect.at(i));
-	    }
-    }
+   // std::vector<pat::Muon> MuonVect = theMuonAnalyzer->FillMuonVector(iEvent);
+   // std::vector<pat::Muon> LooseMuonVect;
+   // for(unsigned int i =0; i<MuonVect.size(); i++){
+   //   if(MuonVect.at(i).userInt("isLoose")==1){
+	//      LooseMuonVect.push_back(MuonVect.at(i));
+	//    }
+    //}
     // Jets
     std::vector<pat::Jet> JetsVect = theJetAnalyzer->FillJetVector(iEvent);
-    theJetAnalyzer->CleanJetsFromMuons(JetsVect, MuonVect, 0.4);
-    theJetAnalyzer->CleanJetsFromElectrons(JetsVect, ElecVect, 0.4);
+   // theJetAnalyzer->CleanJetsFromMuons(JetsVect, MuonVect, 0.4);
+   // theJetAnalyzer->CleanJetsFromElectrons(JetsVect, ElecVect, 0.4);
     nJets = JetsVect.size();
+    std::cout<< nJets << std::endl;
     nBTagJets = theJetAnalyzer->GetNBJets(JetsVect);
 
     // Fat Jets
@@ -150,15 +151,15 @@ void HHAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
     //nFatJets = FatJetsVect.size();
 
     // Missing Energy
-    pat::MET MET = theJetAnalyzer->FillMetVector(iEvent);
-    pat::MET Neutrino(MET);
+    pat::MET MET; // = theJetAnalyzer->FillMetVector(iEvent);
+//    pat::MET Neutrino(MET);
     
     // -----------------------------------
     //           GEN LEVEL
     // -----------------------------------
     
     // Gen weights
-    std::map<int, float> GenWeight = theGenAnalyzer->FillWeightsMap(iEvent);
+/*    std::map<int, float> GenWeight = theGenAnalyzer->FillWeightsMap(iEvent);
     EventWeight *= GenWeight[-1];
 //     if(GenWeight.find(0) != GenWeight.end()) EventWeight    *= GenWeight[0];
     if(GenWeight.find(-1) != GenWeight.end()) EventWeight   *= GenWeight[-1];
@@ -183,7 +184,7 @@ void HHAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
     }
     if (tmpPdfN>0) PdfWeight = 1. + sqrt(sqsumPdfWeight/float(tmpPdfN)) - sumPdfWeight/float(tmpPdfN); /// 1 + RMS - MEAN
     //std::cout << "PdfWeight " << PdfWeight << "\n";
-
+*/
     // LHE Particles
     std::map<std::string, float> LheMap = theGenAnalyzer->FillLheMap(iEvent);
     // MC Stitching
@@ -197,17 +198,17 @@ void HHAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
     Hist["a_nEvents"]->Fill(2., EventWeight);
     
     // Jet variables
-    theJetAnalyzer->AddVariables(JetsVect, MET);
+    theJetAnalyzer->AddVariables(JetsVect, MET); //
     // Leptons
-    theElectronAnalyzer->AddVariables(ElecVect, MET);
-    theMuonAnalyzer->AddVariables(MuonVect, MET);
+   // theElectronAnalyzer->AddVariables(ElecVect, MET);
+  //  theMuonAnalyzer->AddVariables(MuonVect, MET);
 
     // ---------- Fill objects ----------
     // reconstructed
-    alp::convert(ElecVect, Electrons);
-    alp::convert(MuonVect, Muons);
+   // alp::convert(ElecVect, Electrons);
+   // alp::convert(MuonVect, Muons);
     alp::convert(JetsVect, Jets);
-    alp::convert(MET, alp_MET);
+   // alp::convert(MET, alp_MET);
     // gen level
     alp::convert(GenBFromHsPart, GenBFromHs);
     alp::convert(GenHsPart, GenHs);
@@ -221,13 +222,13 @@ void HHAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
     weightPairs.emplace_back("ScaleWeightDown", ScaleWeightDown);
     weightPairs.emplace_back("PdfWeight", PdfWeight);
     weightPairs.emplace_back("StichWeight", StitchWeight);
-    weightPairs.emplace_back("PUWeight", PUWeight);
-    weightPairs.emplace_back("PUWeightUp", PUWeightUp);
-    weightPairs.emplace_back("PUWeightDown", PUWeightDown);
-    weightPairs.emplace_back("TriggerWeight", TriggerWeight);
-    weightPairs.emplace_back("LeptonWeight", LeptonWeight);
-    weightPairs.emplace_back("LeptonWeightUp", LeptonWeightUp);
-    weightPairs.emplace_back("LeptonWeightDown", LeptonWeightDown);
+   // weightPairs.emplace_back("PUWeight", PUWeight);
+    //weightPairs.emplace_back("PUWeightUp", PUWeightUp);
+   // weightPairs.emplace_back("PUWeightDown", PUWeightDown);
+   // weightPairs.emplace_back("TriggerWeight", TriggerWeight);
+   // weightPairs.emplace_back("LeptonWeight", LeptonWeight);
+   // weightPairs.emplace_back("LeptonWeightUp", LeptonWeightUp);
+  //  weightPairs.emplace_back("LeptonWeightDown", LeptonWeightDown);
 
 
     // fill sorting vectors
@@ -274,13 +275,13 @@ void HHAnalyzer::beginJob() {
     // branch to save event information 
     tree->Branch("EventInfo", &(EventInfo), 64000, 2);
     // save vector of electron, muon and jets
-    tree->Branch("Electrons", &(Electrons), 64000, 2);
-    tree->Branch("Muons", &(Muons), 64000, 2);
+   // tree->Branch("Electrons", &(Electrons), 64000, 2);
+   // tree->Branch("Muons", &(Muons), 64000, 2);
     tree->Branch("Jets", &(Jets), 64000, 2);
-    tree->Branch("MET", &(alp_MET),64000,2);
-    tree->Branch("GenBFromHs", &(GenBFromHs), 64000, 2);
-    tree->Branch("GenHs", &(GenHs), 64000, 2);
-    tree->Branch("TL_GenHs", &(TL_GenHs), 64000, 2);
+   // tree->Branch("MET", &(alp_MET),64000,2);
+    //tree->Branch("GenBFromHs", &(GenBFromHs), 64000, 2);
+  //  tree->Branch("GenHs", &(GenHs), 64000, 2);
+  //  tree->Branch("TL_GenHs", &(TL_GenHs), 64000, 2);
 
     tree->Branch("j_sort_pt", &(j_sort_pt), 64000, 2);
     tree->Branch("j_sort_csv", &(j_sort_csv), 64000, 2);
