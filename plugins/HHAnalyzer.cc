@@ -11,9 +11,9 @@ HHAnalyzer::HHAnalyzer(const edm::ParameterSet& iConfig):
    // ElectronPSet(iConfig.getParameter<edm::ParameterSet>("electronSet")),
    // MuonPSet(iConfig.getParameter<edm::ParameterSet>("muonSet")),
     JetPSet(iConfig.getParameter<edm::ParameterSet>("jetSet")),
-    FatJetPSet(iConfig.getParameter<edm::ParameterSet>("fatJetSet")),
+  //  FatJetPSet(iConfig.getParameter<edm::ParameterSet>("fatJetSet")),
     WriteNJets(iConfig.getParameter<int>("writeNJets")),
-    WriteNFatJets(iConfig.getParameter<int>("writeNFatJets")),
+  //  WriteNFatJets(iConfig.getParameter<int>("writeNFatJets")),
     HistFile(iConfig.getParameter<std::string>("histFile")),
     Verbose(iConfig.getParameter<bool>("verbose"))
 {
@@ -69,9 +69,9 @@ HHAnalyzer::~HHAnalyzer() {
     // (e.g. close files, deallocate resources etc.)
     std::cout << "---------- ENDING  ----------" << std::endl;
     
-    delete theGenAnalyzer;
+   // delete theGenAnalyzer;
   //  delete thePileupAnalyzer;
-    delete theTriggerAnalyzer;
+ //   delete theTriggerAnalyzer;
   //  delete theElectronAnalyzer;
    // delete theMuonAnalyzer;
     delete theJetAnalyzer;
@@ -144,14 +144,14 @@ void HHAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
    // theJetAnalyzer->CleanJetsFromElectrons(JetsVect, ElecVect, 0.4);
     nJets = JetsVect.size();
     std::cout<< nJets << std::endl;
-    nBTagJets = theJetAnalyzer->GetNBJets(JetsVect);
+    //nBTagJets = theJetAnalyzer->GetNBJets(JetsVect);
 
     // Fat Jets
     //std::vector<pat::Jet> FatJetsVect = theFatJetAnalyzer->FillJetVector(iEvent);
     //nFatJets = FatJetsVect.size();
 
     // Missing Energy
-    pat::MET MET; // = theJetAnalyzer->FillMetVector(iEvent);
+    //pat::MET MET;// = theJetAnalyzer->FillMetVector(iEvent);
 //    pat::MET Neutrino(MET);
     
     // -----------------------------------
@@ -185,20 +185,21 @@ void HHAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
     if (tmpPdfN>0) PdfWeight = 1. + sqrt(sqsumPdfWeight/float(tmpPdfN)) - sumPdfWeight/float(tmpPdfN); /// 1 + RMS - MEAN
     //std::cout << "PdfWeight " << PdfWeight << "\n";
 */
+   std::cout << "aaaa" << std::endl;
     // LHE Particles
-    std::map<std::string, float> LheMap = theGenAnalyzer->FillLheMap(iEvent);
+   // std::map<std::string, float> LheMap = theGenAnalyzer->FillLheMap(iEvent);
     // MC Stitching
-    StitchWeight = theGenAnalyzer->GetStitchWeight(LheMap);
+    //StitchWeight = theGenAnalyzer->GetStitchWeight(LheMap);
     // Gen Particles
-    std::vector<reco::GenParticle> GenPVect = theGenAnalyzer->FillGenVector(iEvent);    
-    std::vector<reco::GenParticle> GenHsPart;
-    std::vector<reco::GenParticle> GenBFromHsPart = theGenAnalyzer->PartonsFromDecays({25}, GenHsPart);
-    std::vector<reco::GenParticle> TL_GenHsPart = theGenAnalyzer->FirstNGenParticles({25}, 2);
+    //std::vector<reco::GenParticle> GenPVect = theGenAnalyzer->FillGenVector(iEvent);    
+    //std::vector<reco::GenParticle> GenHsPart;
+    //std::vector<reco::GenParticle> GenBFromHsPart = theGenAnalyzer->PartonsFromDecays({25}, GenHsPart);
+   // std::vector<reco::GenParticle> TL_GenHsPart = theGenAnalyzer->FirstNGenParticles({25}, 2);
     
     Hist["a_nEvents"]->Fill(2., EventWeight);
     
     // Jet variables
-    theJetAnalyzer->AddVariables(JetsVect, MET); //
+    //theJetAnalyzer->AddVariables(JetsVect, MET); //
     // Leptons
    // theElectronAnalyzer->AddVariables(ElecVect, MET);
   //  theMuonAnalyzer->AddVariables(MuonVect, MET);
@@ -210,9 +211,9 @@ void HHAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
     alp::convert(JetsVect, Jets);
    // alp::convert(MET, alp_MET);
     // gen level
-    alp::convert(GenBFromHsPart, GenBFromHs);
-    alp::convert(GenHsPart, GenHs);
-    alp::convert(TL_GenHsPart, TL_GenHs);
+   // alp::convert(GenBFromHsPart, GenBFromHs);
+   // alp::convert(GenHsPart, GenHs);
+   // alp::convert(TL_GenHsPart, TL_GenHs);
 
     // fill weights
     weightPairs.emplace_back("EventWeight", EventWeight);
@@ -222,13 +223,13 @@ void HHAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
     weightPairs.emplace_back("ScaleWeightDown", ScaleWeightDown);
     weightPairs.emplace_back("PdfWeight", PdfWeight);
     weightPairs.emplace_back("StichWeight", StitchWeight);
-   // weightPairs.emplace_back("PUWeight", PUWeight);
+    //weightPairs.emplace_back("PUWeight", PUWeight);
     //weightPairs.emplace_back("PUWeightUp", PUWeightUp);
-   // weightPairs.emplace_back("PUWeightDown", PUWeightDown);
+    //weightPairs.emplace_back("PUWeightDown", PUWeightDown);
    // weightPairs.emplace_back("TriggerWeight", TriggerWeight);
-   // weightPairs.emplace_back("LeptonWeight", LeptonWeight);
-   // weightPairs.emplace_back("LeptonWeightUp", LeptonWeightUp);
-  //  weightPairs.emplace_back("LeptonWeightDown", LeptonWeightDown);
+    //weightPairs.emplace_back("LeptonWeight", LeptonWeight);
+    //weightPairs.emplace_back("LeptonWeightUp", LeptonWeightUp);
+    //weightPairs.emplace_back("LeptonWeightDown", LeptonWeightDown);
 
 
     // fill sorting vectors

@@ -33,7 +33,7 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(options.maxE
 # default: if no filelist from command line, run on specified samples
 if len(options.inputFiles) == 0:
     #SIGNAL - full list
-    filelist = ['file:miniAOD-prod62_PAT.root'] 
+    filelist = ['file:miniAOD-prod_PAT.root'] 
 # production: read externally provided filelist
 else:
     filelist = open(options.inputFiles[0], 'r').readlines()
@@ -151,13 +151,13 @@ else:
     filterString = "PAT"
 
 # Primary vertex
-import RecoVertex.PrimaryVertexProducer.OfflinePrimaryVertices_cfi
-process.primaryVertexFilter = cms.EDFilter('GoodVertexFilter',
-    vertexCollection = cms.InputTag('offlineSlimmedPrimaryVertices'),
-    minimumNDOF = cms.uint32(4) ,
-    maxAbsZ = cms.double(24), 
-    maxd0 = cms.double(2) 
-)
+#import RecoVertex.PrimaryVertexProducer.OfflinePrimaryVertices_cfi
+#process.primaryVertexFilter = cms.EDFilter('GoodVertexFilter',
+#    vertexCollection = cms.InputTag('offlineSlimmedPrimaryVertices'),
+#    minimumNDOF = cms.uint32(4) ,
+#    maxAbsZ = cms.double(24), 
+#    maxd0 = cms.double(2) 
+#)
 
 
 #-----------------------#
@@ -204,23 +204,6 @@ print 'GlobalTag', GT
 #process.load('JetMETCorrections.Configuration.JetCorrectors_cff')
 
 
-#quark gluon likelihood upstream modules
-qgDatabaseVersion = 'v2b' # check https://twiki.cern.ch/twiki/bin/viewauth/CMS/QGDataBaseVersion
-from CondCore.CondDB.CondDB_cfi import *
-CondDB.connect = cms.string('frontier://FrontierProd/CMS_COND_PAT_000')
-QGPoolDBESSource = cms.ESSource('PoolDBESSource',
-      CondDB,
-      toGet = cms.VPSet()
-)
-for type in ['AK4PFchs','AK4PFchs_antib']:
-    QGPoolDBESSource.toGet.extend(cms.VPSet(cms.PSet(
-        record = cms.string('QGLikelihoodRcd'),
-        tag    = cms.string('QGLikelihoodObject_'+qgDatabaseVersion+'_'+type),
-        label  = cms.untracked.string('QGL_'+type)
-    )))
-process.load('RecoJets.JetProducers.QGTagger_cfi')
-process.QGTagger.srcJets = cms.InputTag('slimmedJets') # Could be reco::PFJetCollection or pat::JetCollection (both AOD and miniAOD)
-process.QGTagger.jetsLabel = cms.string('QGL_AK4PFchs') # Other options: see https://twiki.cern.ch/twiki/bin/viewauth/CMS/QGDataBaseVersion
 
 #### new
 process.load('CommonTools.PileupAlgos.Puppi_cff')
@@ -237,7 +220,7 @@ updateJetCollection(
    pfCandidates = cms.InputTag('puppi'),
    btagDiscriminators = ["pfCombinedSecondaryVertexV2BJetTags", "pfCombinedInclusiveSecondaryVertexV2BJetTags"]
 )
-######################
+##############################
 
 
 #https://twiki.cern.ch/twiki/bin/view/CMS/EGMSmearer#ECAL_scale_and_resolution_correc
@@ -279,17 +262,17 @@ process.ntuple = cms.EDAnalyzer('HHAnalyzer',
 
     jetSet = cms.PSet(
         #https://twiki.cern.ch/twiki/bin/view/CMS/JECDataMC#Jet_Energy_Corrections_in_Run2
-        jets = cms.InputTag('selectedUpdatedPatJets'),#('slimmedJetsAK8'), #selectedPatJetsAK8PFCHSPrunedPacked
-        jetid = cms.int32(0), # 0: no selection, 1: loose, 2: medium, 3: tight
-        jet1pt = cms.double(0.),
-        jet2pt = cms.double(0.),
-        jeteta = cms.double(0.),
-        addQGdiscriminator = cms.bool(True),
+        jets = cms.InputTag('slimmedJetsPuppi'), # 'slimmedJetsPuppi'),#('slimmedJetsAK8'), #selectedPatJetsAK8PFCHSPrunedPacked
+        jetid = cms.int32(1), # 0: no selection, 1: loose, 2: medium, 3: tight
+        jet1pt = cms.double(20.),
+        jet2pt = cms.double(20.),
+        jeteta = cms.double(2.8),
+        addQGdiscriminator = cms.bool(False), #True
         recalibrateJets = cms.bool(False),#True
         recalibrateMass = cms.bool(False),
         recalibratePuppiMass = cms.bool(False),
         smearJets = cms.bool(False),#True
-        vertices = cms.InputTag('offlineSlimmedPrimaryVertices'),
+        vertices = cms.InputTag('offlineSlimmedPrimaryVertices'),#'offlineSlimmedPrimaryVertices'),
         rho = cms.InputTag('fixedGridRhoFastjetAll'),
         jecShift = cms.int32(0),  # -1: down, 0: nominal, 1: up
         jecUncertaintyDATA = cms.string('{0}/src/Analysis/ALPHA/data/{1}_DATA/{1}_DATA_Uncertainty_AK4PFchs.txt'.format(os.environ['CMSSW_BASE'], JECstring) ),
@@ -315,15 +298,15 @@ process.ntuple = cms.EDAnalyzer('HHAnalyzer',
             '{0}/src/Analysis/ALPHA/data/{1}_MC/{1}_MC_L3Absolute_AK4PFchs.txt'.format(os.environ['CMSSW_BASE'], JECstring_MC),
         ),
         massCorrectorPuppi = cms.string('%s/src/Analysis/ALPHA/data/puppiCorrSummer16.root' % os.environ['CMSSW_BASE']),
-        reshapeBTag = cms.bool(True),
+        reshapeBTag = cms.bool(False), #True
         btag = cms.string('pfCombinedInclusiveSecondaryVertexV2BJetTags'),
         btagDB = cms.string('{0}/src/Analysis/ALPHA/data/CSVv2_Moriond17_B_H.csv'.format(os.environ['CMSSW_BASE'])),
         jet1btag = cms.int32(0), # 0: no selection, 1: loose, 2: medium, 3: tight
         jet2btag = cms.int32(0),
-      #  met = cms.InputTag('slimmedMETs','','ALPHA'),#("patPFMetT1Smear"),#
-      #  metRecoil = cms.bool(False),
-      #  metRecoilMC = cms.string('{0}/src/Analysis/ALPHA/data/recoilfit_gjetsMC_Zu1_pf_v5.root'.format(os.environ['CMSSW_BASE'])),
-      #  metRecoilData = cms.string('{0}/src/Analysis/ALPHA/data/recoilfit_gjetsData_Zu1_pf_v5.root'.format(os.environ['CMSSW_BASE'])),
+        #met = cms.InputTag("patPFMetT1Smear"),#
+        #metRecoil = cms.bool(False),
+        #metRecoilMC = cms.string('{0}/src/Analysis/ALPHA/data/recoilfit_gjetsMC_Zu1_pf_v5.root'.format(os.environ['CMSSW_BASE'])),
+        #metRecoilData = cms.string('{0}/src/Analysis/ALPHA/data/recoilfit_gjetsData_Zu1_pf_v5.root'.format(os.environ['CMSSW_BASE'])),
       #  metTriggerFileName = cms.string('%s/src/Analysis/ALPHA/data/MET_trigger_eff_data_SingleMuRunBH.root' % os.environ['CMSSW_BASE']),
         jerShift = cms.int32(0),  # -1: down, 0: nominal, 1: up
         jerNameRes = cms.string('{0}/src/Analysis/ALPHA/data/JER/{1}_MC_PtResolution_AK4PFchs.txt'.format(os.environ['CMSSW_BASE'], JERstring)),

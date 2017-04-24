@@ -22,12 +22,12 @@ namespace alp {
     }
     dest.partonFlavour_ = orig.partonFlavour();
     dest.hadronFlavour_ = orig.hadronFlavour();
-    dest.ptRaw_ = orig.correctedJet(0).pt();
-    dest.JESunc_ = orig.userFloat("JESUncertainty");    
-    dest.JERunc_ = orig.userFloat("smearFactor");
-    dest.JERuncUp_ = orig.userFloat("smearFactorUp");
-    dest.JERuncDown_ = orig.userFloat("smearFactorDown");
-    dest.puId_ = orig.userFloat("pileupJetId:fullDiscriminant");
+//    dest.ptRaw_ = orig.correctedJet(0).pt();
+//    dest.JESunc_ = orig.userFloat("JESUncertainty");    
+//    dest.JERunc_ = orig.userFloat("smearFactor");
+//    dest.JERuncUp_ = orig.userFloat("smearFactorUp");
+//    dest.JERuncDown_ = orig.userFloat("smearFactorDown");
+//    dest.puId_ = orig.userFloat("pileupJetId:fullDiscriminant");
     dest.mult_ = orig.chargedMultiplicity() + orig.neutralMultiplicity();
     dest.chm_ = orig.chargedHadronMultiplicity();
     dest.chf_ = orig.chargedHadronEnergyFraction();
@@ -38,8 +38,8 @@ namespace alp {
     std::vector<std::string> ids = { "isLoose",
                                      //"isMedium", #unknown
                                      "isTight",  
-                                     "isTightLepVeto",
-                                     "pileupJetId:fullId"
+                                     //"isTightLepVeto",
+                                    // "pileupJetId:fullId"
                                     };
     for (const auto & iD : ids) {
       dest.ids_.emplace_back(iD, orig.userInt(iD));
@@ -57,7 +57,7 @@ namespace alp {
                                         "CMVAR",
                                         "CMVARUp",
                                         "CMVARDown",
-                                        "QGLikelihood"
+                                        //"QGLikelihood"
                                        };
     for (const auto & oDisc : oDiscs) {
       if (orig.hasUserFloat(oDisc)) {

@@ -3,9 +3,9 @@
 #include "JetAnalyzer.h"
 
 
-JetAnalyzer::JetAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl):
+JetAnalyzer::JetAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl): //
     JetToken(CColl.consumes<std::vector<pat::Jet> >(PSet.getParameter<edm::InputTag>("jets"))),
-    MetToken(CColl.consumes<std::vector<pat::MET> >(PSet.getParameter<edm::InputTag>("met"))),
+   // MetToken(CColl.consumes<std::vector<pat::MET> >(PSet.getParameter<edm::InputTag>("met"))),
     QGToken(CColl.consumes<edm::ValueMap<float>>(edm::InputTag("QGTagger", "qgLikelihood"))),
     JetId(PSet.getParameter<int>("jetid")),
     Jet1Pt(PSet.getParameter<double>("jet1pt")),
@@ -30,10 +30,10 @@ JetAnalyzer::JetAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl
     Jet1BTag(PSet.getParameter<int>("jet1btag")),
     Jet2BTag(PSet.getParameter<int>("jet2btag")),
     BTagDB(PSet.getParameter<std::string>("btagDB")),
-    UseRecoil(PSet.getParameter<bool>("metRecoil")),
-    RecoilMCFile(PSet.getParameter<std::string>("metRecoilMC")),
-    RecoilDataFile(PSet.getParameter<std::string>("metRecoilData")),
-    MetTriggerFileName(PSet.getParameter<std::string>("metTriggerFileName")),
+    //UseRecoil(PSet.getParameter<bool>("metRecoil")),
+    //RecoilMCFile(PSet.getParameter<std::string>("metRecoilMC")),
+    //RecoilDataFile(PSet.getParameter<std::string>("metRecoilData")),
+    //MetTriggerFileName(PSet.getParameter<std::string>("metTriggerFileName")),
     JerName_res(PSet.getParameter<std::string>("jerNameRes")),
     JerName_sf(PSet.getParameter<std::string>("jerNameSf"))
 {
@@ -145,15 +145,15 @@ JetAnalyzer::JetAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl
         recoilCorr->addMCFile(RecoilMCFile);
     }
 
-    MetTriggerFile=new TFile(MetTriggerFileName.c_str(), "READ");
-    if(!MetTriggerFile->IsZombie()) {
-        MetTriggerHisto=(TH1F*)MetTriggerFile->Get("SingleMuAll_numOR");
-        isMetTriggerFile=true;
-    }
-    else {
-        throw cms::Exception("JetAnalyzer", "No Met Trigger File");
-        return;
-    }
+   // MetTriggerFile=new TFile(MetTriggerFileName.c_str(), "READ");
+  //  if(!MetTriggerFile->IsZombie()) {
+  //      MetTriggerHisto=(TH1F*)MetTriggerFile->Get("SingleMuAll_numOR");
+   //     isMetTriggerFile=true;
+  //  }
+  //  else {
+    //    throw cms::Exception("JetAnalyzer", "No Met Trigger File");
+     //   return;
+   // }
     
     std::cout << " --- JetAnalyzer initialization ---" << std::endl;
     std::cout << "  jet Id            :\t" << JetId << std::endl;
@@ -176,7 +176,7 @@ JetAnalyzer::~JetAnalyzer() {
     delete jecUncMC;
     delete jecUncDATA;
     if(UseRecoil) delete recoilCorr;
-    MetTriggerFile->Close();
+    //MetTriggerFile->Close();
 }
 
 
@@ -193,21 +193,23 @@ std::vector<pat::Jet> JetAnalyzer::FillJetVector(const edm::Event& iEvent) {
     iEvent.getByToken(JetToken, PFJetsCollection);
     
     // Open QG value maps
-    edm::Handle<edm::ValueMap<float>> QGHandle;
-    if(AddQG) iEvent.getByToken(QGToken, QGHandle);
+  //  edm::Handle<edm::ValueMap<float>> QGHandle;
+  //  if(AddQG) iEvent.getByToken(QGToken, QGHandle);
 
     // Vertex collection
-    edm::Handle<reco::VertexCollection> PVCollection;
-    iEvent.getByToken(VertexToken, PVCollection);
+    //edm::Handle<reco::VertexCollection> PVCollection;
+    //iEvent.getByToken(VertexToken, PVCollection);
     
     // Rho handle
-    edm::Handle<double> rho_handle;
-    iEvent.getByToken(RhoToken, rho_handle);
+  //  edm::Handle<double> rho_handle;
+  //  iEvent.getByToken(RhoToken, rho_handle);
  
+
+
     // Loop on Jet collection
     for(std::vector<pat::Jet>::const_iterator it=PFJetsCollection->begin(); it!=PFJetsCollection->end(); ++it) {
 
-        if(Vect.size()>0) {
+       if(Vect.size()>0) {
             PtTh=Jet2Pt;
             BTagTh=Jet2BTag;
         }
@@ -220,15 +222,15 @@ std::vector<pat::Jet> JetAnalyzer::FillJetVector(const edm::Event& iEvent) {
         // Quality cut
         if(JetId==1 && !isLooseJet(jet)) continue;
         if(JetId==2 && !isTightJet(jet)) continue;
-        if(JetId==3 && !isTightLepVetoJet(jet)) continue;
+        //if(JetId==3 && !isTightLepVetoJet(jet)) continue;
         // b-tagging
         if(BTagTh==1 && jet.bDiscriminator(BTag)<BTagTh) continue;
         // Fill jet scale uncertainty
         jet.addUserInt("isLoose", isLooseJet(jet) ? 1 : 0);
         jet.addUserInt("isTight", isTightJet(jet) ? 1 : 0);
-        jet.addUserInt("isTightLepVeto", isTightLepVetoJet(jet) ? 1 : 0);
+       // jet.addUserInt("isTightLepVeto", isTightLepVetoJet(jet) ? 1 : 0);
 
-        if(RecalibrateJets) CorrectJet(jet, *rho_handle, PVCollection->size(), isMC);
+//        if(RecalibrateJets) CorrectJet(jet, *rho_handle, PVCollection->size(), isMC);
 
         // JEC Uncertainty
         if (!isMC){
@@ -238,7 +240,7 @@ std::vector<pat::Jet> JetAnalyzer::FillJetVector(const edm::Event& iEvent) {
         } else {
             jecUncMC->setJetEta(jet.eta());
             jecUncMC->setJetPt(jet.pt()); // here you must use the CORRECTED jet pt
-            jet.addUserFloat("JESUncertainty", jecUncMC->getUncertainty(true));
+            jet.addUserFloat("JESUncertainty",1.); // jecUncMC->getUncertainty(true));
         }
 	//std::cout << "JES uncertainty: " << jet.userFloat("JESUncertainty") <<std::endl;
         // PUPPI soft drop mass for AK8 jets
@@ -262,15 +264,15 @@ std::vector<pat::Jet> JetAnalyzer::FillJetVector(const edm::Event& iEvent) {
             jet.addUserFloat("ddtTau21", ddt);
         }
         
-        if(RecalibrateMass) CorrectMass(jet, *rho_handle, PVCollection->size(), isMC);
-        if(RecalibratePuppiMass) CorrectPuppiMass(jet, isMC);
+//        if(RecalibrateMass) CorrectMass(jet, *rho_handle, PVCollection->size(), isMC);
+  //      if(RecalibratePuppiMass) CorrectPuppiMass(jet, isMC);
         
         // JER NEW IMPLEMENTATION
         if(SmearJets) {
             JME::JetParameters TheJetParameters;
             TheJetParameters.setJetPt(jet.pt());
             TheJetParameters.setJetEta(jet.eta());
-            TheJetParameters.setRho(*rho_handle);
+//            TheJetParameters.setRho(*rho_handle);
 
             float smearFactor = 1.;
             float smearFactorUp = 1.;
@@ -366,12 +368,13 @@ std::vector<pat::Jet> JetAnalyzer::FillJetVector(const edm::Event& iEvent) {
         }
         
         //QG tagger for AK4 jets
-        if(AddQG && jet.nSubjetCollections()<=0) {
-            jet.addUserFloat("QGLikelihood", (*QGHandle)[jetRef]);
-        }
-        
+       // if(AddQG && jet.nSubjetCollections()<=0) {
+       //     jet.addUserFloat("QGLikelihood", (*QGHandle)[jetRef]);
+       // }
+       
         Vect.push_back(jet); // Fill vector
     }
+    
     return Vect;
 }
 
