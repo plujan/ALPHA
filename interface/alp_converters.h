@@ -81,6 +81,7 @@ namespace alp {
     dest.p4_ = orig.p4();
     // other variables (isolation only for the time being
     dest.iso03_ = orig.hasUserFloat("pfIso03") ? orig.userFloat("pfIso03") : -1.;
+    dest.iso04_ = orig.hasUserFloat("pfIso04") ? orig.userFloat("pfIso04") : -1.;
 
   }
 
@@ -98,6 +99,7 @@ namespace alp {
     dest.p4_ = orig.p4();
     // other variables (isolation only for the time being
     dest.iso03_ = orig.hasUserFloat("pfIso03") ? orig.userFloat("pfIso03") : -1.;
+    dest.iso04_ = orig.hasUserFloat("pfIso04") ? orig.userFloat("pfIso04") : -1.;
 
   }
 
