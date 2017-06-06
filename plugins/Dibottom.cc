@@ -1,5 +1,4 @@
 // -*- C++ -*-
-//
 //Package:    Analysis/dibottom
 // Class:      dibottom
 // 
@@ -38,7 +37,6 @@ Dibottom::Dibottom(const edm::ParameterSet& iConfig):
     TauPSet(iConfig.getParameter<edm::ParameterSet>("tauSet")),
     PhotonPSet(iConfig.getParameter<edm::ParameterSet>("photonSet")),
     JetPSet(iConfig.getParameter<edm::ParameterSet>("jetSet")),
-    //BTagAlgo(iConfig.getParameter<std::string>("bTagAlgo")),
     WriteNElectrons(iConfig.getParameter<int>("writeNElectrons")),
     WriteNMuons(iConfig.getParameter<int>("writeNMuons")),
     WriteNLeptons(iConfig.getParameter<int>("writeNLeptons")),
@@ -49,6 +47,9 @@ Dibottom::Dibottom(const edm::ParameterSet& iConfig):
     Verbose(iConfig.getParameter<bool>("verbose"))
 
 {
+
+  std::cout << "CONSTRUCTOR";
+
    //now do what ever initialization is needed
    usesResource("TFileService");
 
@@ -62,13 +63,15 @@ Dibottom::Dibottom(const edm::ParameterSet& iConfig):
     thePhotonAnalyzer   = new PhotonAnalyzer(PhotonPSet, consumesCollector());
     theJetAnalyzer      = new JetAnalyzer(JetPSet, consumesCollector());
     //theBTagAnalyzer     = new BTagInterface(BTagAlgo);
+
+    theUtilities        = new Utilities();
     
     std::vector<std::string> TriggerList(TriggerPSet.getParameter<std::vector<std::string> >("paths"));
     for(unsigned int i = 0; i < TriggerList.size(); i++) TriggerMap[ TriggerList[i] ] = false;
-
     std::vector<std::string> MetFiltersList(TriggerPSet.getParameter<std::vector<std::string> >("metpaths"));
     for(unsigned int i = 0; i < MetFiltersList.size(); i++) MetFiltersMap[ MetFiltersList[i] ] = false;
         
+
     // ---------- Plots Initialization ----------
     TFileDirectory allDir=fs->mkdir("All/");
     TFileDirectory genDir=fs->mkdir("Gen/");
@@ -113,7 +116,8 @@ Dibottom::Dibottom(const edm::ParameterSet& iConfig):
     histFile.close();
 
     nevent=0;
-
+    
+    std::cout << "---------- STARTING ----------" << std::endl;
 }
 
 
@@ -122,6 +126,7 @@ Dibottom::~Dibottom()
  
    // do anything here that needs to be done at desctruction time
    // (e.g. close files, deallocate resources etc.)
+  std::cout << "---------- ENDING  ----------" << std::endl;
    
   delete theGenAnalyzer;
   delete thePileupAnalyzer;
@@ -153,15 +158,18 @@ Dibottom::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     
   //
   EventWeight = StitchWeight = ZewkWeight = WewkWeight = TopPtWeight = 1.;
-  TriggerWeight = 1.;
+  TriggerWeight = TriggerWeightUp = TriggerWeightDown = 1.;
+  BTagWeight = BTagWeightUp = BTagWeightDown = 1.;
+  MaxBTagWeight = MaxBTagWeightUp = MaxBTagWeightDown = 1.;
   LeptonWeight = LeptonWeightUp = LeptonWeightDown = 1.;
   PUWeight = PUWeightUp = PUWeightDown = 1.;
   FacWeightUp = FacWeightDown = RenWeightUp = RenWeightDown = ScaleWeightUp = ScaleWeightDown = 1.;
   PdfWeight = 1.;
   isZtoEE = isZtoMM = isTtoEM = isWtoEN = isWtoMN = isZtoNN = false;
-  nPV = nElectrons = nMuons = nTaus = nPhotons = nJets = nBTagJets = 0;
+  nPV = nElectrons = nMuons = nTaus = nPhotons = nJets = nBTagJets = 1.;
   nTightElectrons = nTightMuons = 0;
-  MaxJetBTag = -1.;
+  MaxJetBTag = Chi2 = -1.;
+  MaxJetBIndex = 100;
   MinJetMetDPhi = 10.;
   massRecoilFormula = -1.;
 
@@ -202,7 +210,6 @@ Dibottom::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   theTriggerAnalyzer->FillMetFiltersMap(iEvent, MetFiltersMap);
   BadPFMuonFlag = theTriggerAnalyzer->GetBadPFMuonFlag(iEvent);
   BadChCandFlag = theTriggerAnalyzer->GetBadChCandFlag(iEvent);
-  EventWeight *= TriggerWeight;
 
   // Electrons 
   std::vector<pat::Electron> ElecVect = theElectronAnalyzer->FillElectronVector(iEvent);
@@ -234,22 +241,18 @@ Dibottom::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   
   // Photons
   std::vector<pat::Photon> PhotonVect = thePhotonAnalyzer->FillPhotonVector(iEvent);
-  thePhotonAnalyzer->CleanPhotonsFromMuons(PhotonVect, MuonVect, 0.4);
-  thePhotonAnalyzer->CleanPhotonsFromElectrons(PhotonVect, ElecVect, 0.4);
+  //thePhotonAnalyzer->CleanPhotonsFromMuons(PhotonVect, MuonVect, 0.4);
+  //thePhotonAnalyzer->CleanPhotonsFromElectrons(PhotonVect, ElecVect, 0.4);
   nPhotons = PhotonVect.size();
   
   // Jets
   std::vector<pat::Jet> JetsVect = theJetAnalyzer->FillJetVector(iEvent);
   //sort jet in ascending pt order
-  sort(JetsVect.begin(), JetsVect.end(), jetComparator);
+  //sort(JetsVect.begin(), JetsVect.end(), jetComparator);
   theJetAnalyzer->CleanJetsFromMuons(JetsVect, MuonVect, 0.4);
   theJetAnalyzer->CleanJetsFromElectrons(JetsVect, ElecVect, 0.4);
   nJets = JetsVect.size();
-  
-  //btagjet 
   nBTagJets = theJetAnalyzer->GetNBJets(JetsVect);
-  
-  //theBTagAnalyzer->FillBTagVector(iEvent,JetsVect);
   
   // Missing Energy
   pat::MET MET = theJetAnalyzer->FillMetVector(iEvent);
@@ -284,19 +287,29 @@ Dibottom::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     }
   }
   if (tmpPdfN>0) PdfWeight = 1. + sqrt(sqsumPdfWeight/float(tmpPdfN)) - sumPdfWeight/float(tmpPdfN); /// 1 + RMS - MEAN
+
+  //     std::cout << "GenWeight       " << GenWeight[-1] << "\n";                                       
+  //     std::cout << "GenWeight       " << GenWeight[0] << "\n";                                                                                      
+  //     std::cout << "FacWeightUp     " << FacWeightUp << "\n";                                                                                                                    
+  //     std::cout << "FacWeightDown   " << FacWeightDown << "\n";                                                                                                                            
+  //     std::cout << "RenWeightUp     " << RenWeightUp << "\n";                                                                                                                        
+  //     std::cout << "RenWeightDown   " << RenWeightDown << "\n";                                                                                                                         
+  //     std::cout << "ScaleWeightUp   " << ScaleWeightUp << "\n";                                                                                                                               
+  //     std::cout << "ScaleWeightDown " << ScaleWeightDown << "\n";                                                                                                                                     
+  //     std::cout << "PdfWeight       " << PdfWeight << "  " << sqrt(sqsumPdfWeight/float(tmpPdfN)) << "\n";   
   
   // Lhe Particles
   // reading LHE event content and prepare it in Map format std::map<std::string, float>
   std::map<std::string, float> LheMap = theGenAnalyzer->FillLheMap(iEvent);
+  // Mc Stitching                                                                           
+  StitchWeight = theGenAnalyzer->GetStitchWeight(LheMap);
+  //EventWeight *= StitchWeight; // Not yet
   
   Hist["g_nBPartons"]->Fill(LheMap["lheBPartons"]);
   Hist["g_lheHT"]->Fill(LheMap["lheHT"]);
   Hist["g_lhePtZ"]->Fill(LheMap["lhePtZ"]);
   Hist["g_lhePtW"]->Fill(LheMap["lhePtW"]);
-  
-  // Mc Stitching
-  StitchWeight = theGenAnalyzer->GetStitchWeight(LheMap);
-  //EventWeight *= StitchWeight; // Not yet
+ 
   // Gen Particles
   std::vector<reco::GenParticle> GenPVect = theGenAnalyzer->FillGenVector(iEvent); //serve as a carrier
   // Gen candidates
@@ -305,8 +318,21 @@ Dibottom::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   reco::Candidate* theGenTop     = theGenAnalyzer->FindGenParticle(GenPVect, 6);
   reco::Candidate* theGenAntiTop = theGenAnalyzer->FindGenParticle(GenPVect, -6);
   // EWK corrections
-  if(theGenZ) ZewkWeight = theGenAnalyzer->GetZewkWeight(theGenZ->pt());
-  if(theGenW) WewkWeight = theGenAnalyzer->GetWewkWeight(theGenW->pt());
+  if(theGenZ) {
+    ZewkWeight = theGenAnalyzer->GetZewkWeight(theGenZ->pt());
+    Hist["g_Zmass"]->Fill(theGenZ->mass(), EventWeight);
+    Hist["g_Zpt"]->Fill(theGenZ->pt(), EventWeight);
+    Hist["g_Zeta"]->Fill(theGenZ->eta(), EventWeight);
+    Hist["g_Zphi"]->Fill(theGenZ->phi(), EventWeight);
+ 
+  }
+  if(theGenW) {
+    WewkWeight = theGenAnalyzer->GetWewkWeight(theGenW->pt());
+    Hist["g_Wmass"]->Fill(theGenW->mass(), EventWeight);
+    Hist["g_Wpt"]->Fill(theGenW->pt(), EventWeight);
+    Hist["g_Weta"]->Fill(theGenW->eta(), EventWeight);
+    Hist["g_Wphi"]->Fill(theGenW->phi(), EventWeight);
+  }
   // TopPtReweighting corrections
   if(theGenTop && theGenAntiTop) TopPtWeight = theGenAnalyzer->GetTopPtWeight(theGenTop->pt())*theGenAnalyzer->GetTopPtWeight(theGenAntiTop->pt());
   
@@ -318,35 +344,143 @@ Dibottom::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   std::vector<int> LepIds = {11,13,15,-11,-13,-15};
   std::vector<int> NeuIds = {12,14,16,-12,-14,-16};
   std::vector<int> HadIds = {1,2,3,4,5,-1,-2,-3,-4,-5};
-
   reco::GenParticle* theGenLep = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, LepIds);
   reco::GenParticle* theGenNeu = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, NeuIds);
   reco::GenParticle* theGenHad = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, HadIds);
 
-  if(theGenZ){
-    Hist["g_Zmass"]->Fill(theGenZ->mass(), EventWeight);
-    Hist["g_Zpt"]->Fill(theGenZ->pt(), EventWeight);
-    Hist["g_Zeta"]->Fill(theGenZ->eta(), EventWeight);
-    Hist["g_Zphi"]->Fill(theGenZ->phi(), EventWeight);
+  //Gen level plots and candidates
+  double GenHadDR = -9.;
+  double GenLepDR = -9.;
+  //bool isGenZZ = false;
+  reco::Particle::LorentzVector p4GenZHad;
+  if(theGenLep!=NULL && theGenHad!=NULL){
+    const reco::Candidate* theGenZLep = theGenAnalyzer->FindMother(theGenLep);
+    const reco::Candidate* theGenZHad = theGenAnalyzer->FindMother(theGenHad);
+    for(unsigned int a = 0; a<=theGenZHad->numberOfDaughters(); a++) {
+      if(theGenZHad!=NULL && theGenZHad->daughter(a)!=NULL && (theGenZHad->pdgId()==23 || theGenZHad->pdgId()==25) && (theGenZHad->daughter(a)->pdgId() == - theGenHad->pdgId())){
+	GenHadDR = reco::deltaR(theGenHad->eta(),theGenHad->phi(),theGenZHad->daughter(a)->eta(),theGenZHad->daughter(a)->phi());
+	break;
+      }
+    }
+    for(unsigned int b = 0; b<=theGenZLep->numberOfDaughters(); b++) {
+      if(theGenZLep!=NULL && theGenZLep->daughter(b)!=NULL && (theGenZLep->pdgId()==23 || theGenZLep->pdgId()==25) && (theGenZLep->daughter(b)->pdgId() == - theGenLep->pdgId())){
+	GenLepDR = reco::deltaR(theGenLep->eta(),theGenLep->phi(),theGenZLep->daughter(b)->eta(),theGenZLep->daughter(b)->phi());
+	break;
+      }
+    }
+    if(theGenZLep!=NULL && theGenZLep->pdgId()==23 && theGenZHad!=NULL && (theGenZHad->pdgId()==23 || theGenZHad->pdgId()==25)) {
+      Hist["g_ZLepMass"]->Fill(theGenZLep->mass(), EventWeight);
+      Hist["g_ZLepPt"]->Fill(theGenZLep->pt(), EventWeight);
+      Hist["g_LepPt"]->Fill(theGenLep->pt(), EventWeight);
+      Hist["g_ZHadMass"]->Fill(theGenZHad->mass(), EventWeight);
+      Hist["g_ZHadPt"]->Fill(theGenZHad->pt(), EventWeight);
+      Hist["g_HadPt"]->Fill(theGenHad->pt(), EventWeight);
+      Hist["g_HadEta"]->Fill(theGenHad->eta(), EventWeight);
+      Hist["g_HadDR"]->Fill(GenHadDR, EventWeight);
+      Hist["g_LepDR"]->Fill(GenLepDR, EventWeight);
+      Hist["g_LepEta"]->Fill(theGenLep->eta(), EventWeight);
+      Hist["g_ZZDR"]->Fill(reco::deltaR(theGenZHad->eta(),theGenZHad->phi(),theGenZLep->eta(),theGenZLep->phi()), EventWeight);
+      Hist["g_ZZDPhi"]->Fill(reco::deltaPhi(theGenZHad->phi(),theGenZLep->phi()), EventWeight);
+      Hist["g_LepHadDR"]->Fill(reco::deltaR(theGenHad->eta(),theGenHad->phi(),theGenLep->eta(),theGenLep->phi()), EventWeight);
+      //isGenZZ = true;
+      p4GenZHad = theGenZHad->p4();
+    }
   }
-  
-  if(theGenW){
-    Hist["g_Wmass"]->Fill(theGenW->mass(), EventWeight);
-    Hist["g_Wpt"]->Fill(theGenW->pt(), EventWeight);
-    Hist["g_Weta"]->Fill(theGenW->eta(), EventWeight);
-    Hist["g_Wphi"]->Fill(theGenW->phi(), EventWeight);
-  }
-  
-  
-  
-  // ---------- Trigger selections ----------
-  // Dummy trigger
-  //TriggerWeight*=theElectronAnalyzer->GetDoubleElectronTriggerSF(ElecVect.at(0), ElecVect.at(1));
-  //TriggerWeight*=theMuonAnalyzer->GetDoubleMuonTriggerSF(MuonVect.at(0), MuonVect.at(1));
+  //  reco::Candidate* theGenX = theGenAnalyzer->FindGenParticleByIdAndStatus(GenPVect, 39, 62);
+  //if(!theGenX) theGenX = theGenAnalyzer->FindGenParticleByIdAndStatus(GenPVect, 36, 62);
+  //if(theGenX!=NULL && theGenLep!=NULL && theGenHad!=NULL && isGenZZ){
+  //  Hist["g_XMass"]->Fill(theGenX->mass(), EventWeight);
+  //  Hist["g_XMT"]->Fill(theGenX->mt(), EventWeight);
+  //  Hist["g_XPt"]->Fill(theGenX->pt(), EventWeight);
+  //  Hist["g_XRapidity"]->Fill(theGenX->rapidity(), EventWeight);
+  //}
 
   Hist["a_nEvents"]->Fill(2., EventWeight);
   Hist["e_nEvents"]->Fill(2., EventWeight);
   Hist["m_nEvents"]->Fill(2., EventWeight);
+
+  // Electron efficiency plots
+  reco::GenParticle* genE1 = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, std::vector<int>{-11});
+  reco::GenParticle* genE2 = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, std::vector<int>{+11});
+  if(genE1!=NULL && genE2!=NULL) {
+    int e1(-1), e2(-1);
+    float dRll(-1.);
+    dRll = reco::deltaR(genE1->eta(), genE1->phi(), genE2->eta(), genE2->phi());
+    //pTll = (genE1->p4() + genE2->p4()).pt();                                                                                                                                                          
+
+    for(unsigned int e = 0; e < ElecVect.size(); e++) {
+      if(reco::deltaR(genE1->eta(), genE1->phi(), ElecVect[e].eta(), ElecVect[e].phi()) < 0.1 && fabs(1.-ElecVect[e].pt()/genE1->pt()) < 0.3) e1 = e;
+      else if(((int)e)!=e1 && reco::deltaR(genE2->eta(), genE2->phi(), ElecVect[e].eta(), ElecVect[e].phi()) < 0.1 && fabs(1.-ElecVect[e].pt()/genE2->pt()) < 0.3) e2 = e;
+    }
+    if(e1 >= 0 && e2 >= 0) {
+      Hist["e_nEvents"]->Fill(3., EventWeight);
+      Hist["e_dR_reco"]->Fill(dRll);
+      if(ElecVect[e1].pt() > 55. && ElecVect[e2].pt() > 20.) {
+	Hist["e_nEvents"]->Fill(4., EventWeight);
+	Hist["e_dR_pt"]->Fill(dRll);
+	if(ElecVect[e1].charge() != ElecVect[e2].charge() && (ElecVect[e1].p4() + ElecVect[e2].p4()).mass() > 70 && (ElecVect[e1].p4() + ElecVect[e2].p4()).mass() < 110) {
+	  Hist["e_nEvents"]->Fill(5., EventWeight);
+	  Hist["e_dR_Z"]->Fill(dRll);
+	  Hist["e_dR"]->Fill(dRll);
+	  if(ElecVect[e1].userInt("isLoose") == 1 || ElecVect[e2].userInt("isLoose") == 1) {
+	    Hist["e_nEvents"]->Fill(6., EventWeight);
+	    Hist["e_dR_LooseId"]->Fill(dRll);
+	    if(ElecVect[e1].userInt("isLoose") == 1 && ElecVect[e2].userInt("isLoose") == 1) {
+	      Hist["e_nEvents"]->Fill(7., EventWeight);
+	      Hist["e_dR_LooseLooseId"]->Fill(dRll);
+	    }
+	  }
+	  if(ElecVect[e1].userInt("isVeto") == 1 && ElecVect[e2].userInt("isVeto") == 1) Hist["e_dR_VetoVetoId"]->Fill(dRll);
+	  if(ElecVect[e1].userInt("isMedium") == 1 && ElecVect[e2].userInt("isMedium") == 1) Hist["e_dR_MediumMediumId"]->Fill(dRll);
+	  if(ElecVect[e1].userInt("isTight") == 1 && ElecVect[e2].userInt("isTight") == 1) Hist["e_dR_TightTightId"]->Fill(dRll);
+	}
+      }
+    }
+  }
+  
+  // Muon efficiency plots
+  reco::GenParticle* genM1 = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, std::vector<int>{-13});
+  reco::GenParticle* genM2 = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, std::vector<int>{+13});
+  if(genM1!=NULL && genM2!=NULL) {
+    int m1(-1), m2(-1);
+    float dRll(-1.);
+    dRll = reco::deltaR(genM1->eta(), genM1->phi(), genM2->eta(), genM2->phi());
+    //pTll = (genM1->p4() + genM2->p4()).pt();
+
+    for(unsigned int m = 0; m < MuonVect.size(); m++) {
+      if(reco::deltaR(genM1->eta(), genM1->phi(), MuonVect[m].eta(), MuonVect[m].phi()) < 0.1 && fabs(1.-MuonVect[m].pt()/genM1->pt()) < 0.3) m1 = m;
+      else if(((int)m)!=m1 && reco::deltaR(genM2->eta(), genM2->phi(), MuonVect[m].eta(), MuonVect[m].phi()) < 0.1 && fabs(1.-MuonVect[m].pt()/genM2->pt()) < 0.3) m2 = m;
+    }
+    if(m1 >= 0 && m2 >= 0) {
+      Hist["m_nEvents"]->Fill(3., EventWeight);
+      Hist["m_dR_reco"]->Fill(dRll);
+      if(MuonVect[m1].pt() > 55. && MuonVect[m2].pt() > 20.) {
+	Hist["m_nEvents"]->Fill(4., EventWeight);
+	Hist["m_dR_pt"]->Fill(dRll);
+	if(MuonVect[m1].charge() != MuonVect[m2].charge() && (MuonVect[m1].p4() + MuonVect[m2].p4()).mass() > 70 && (MuonVect[m1].p4() + MuonVect[m2].p4()).mass() < 110) {
+	  Hist["m_nEvents"]->Fill(5., EventWeight);
+	  Hist["m_dR_Z"]->Fill(dRll);
+	  Hist["m_dR"]->Fill(dRll);
+	  if(MuonVect[m1].userInt("isHighPt") == 1 || MuonVect[m2].userInt("isHighPt") == 1) {
+	    Hist["m_nEvents"]->Fill(6., EventWeight);
+	    Hist["m_dR_HighptId"]->Fill(dRll);
+	    if((MuonVect[m1].userInt("isHighPt")==1 && MuonVect[m2].userInt("isTrackerHighPt")==1) || (MuonVect[m2].userInt("isHighPt")==1 && MuonVect[m1].userInt("isTrackerHighPt")==1)) {
+	      Hist["m_nEvents"]->Fill(7., EventWeight);
+	      Hist["m_dR_HighptTrackerId"]->Fill(dRll);
+	      if(MuonVect[m1].userFloat("trkIso") < 0.1 && MuonVect[m2].userFloat("trkIso") < 0.1) {
+		Hist["m_nEvents"]->Fill(8., EventWeight);
+		Hist["m_dR_HighptTrackerIdTrackerIso"]->Fill(dRll);
+	      }
+	    }
+	  }
+	  if(MuonVect[m1].userInt("isHighPt") == 1 && MuonVect[m2].userInt("isHighPt") == 1) Hist["m_dR_HighptHighptId"]->Fill(dRll);
+	  if(MuonVect[m1].userInt("isTight") == 1 && MuonVect[m2].userInt("isTight") == 1) Hist["m_dR_TightTightId"]->Fill(dRll);
+	  if(MuonVect[m1].userInt("isMedium") == 1 && MuonVect[m2].userInt("isMedium") == 1) Hist["m_dR_MediumMediumId"]->Fill(dRll);
+	  if(MuonVect[m1].userInt("isLoose") == 1 && MuonVect[m2].userInt("isLoose") == 1) Hist["m_dR_LooseLooseId"]->Fill(dRll);
+	}
+      }
+    }
+  }
   
   // -----------------------------------
   //           VECTOR BOSON
@@ -374,10 +508,8 @@ Dibottom::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 
   // ----------- Z TO NEUTRINOS -------------------
   else if ( ElecVect.size() == 0 && MuonVect.size() == 0 ){
-    
+    isZtoNN=true;    
     if(Verbose) std::cout << " - No charged leptons" << std::endl;
-    
-    isZtoNN=true;
     
   }
   else {if(Verbose) std::cout << " - No leptons and not enough MET to have Z->inv" << std::endl; return;}
@@ -394,7 +526,6 @@ Dibottom::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   if(isZtoMM) Hist["m_nEvents"]->Fill(3., EventWeight);
   
   // ---------- Reconstruct V Candidate --------------- //
-
   pat::CompositeCandidate theV;
   
   if(isZtoMM) {
@@ -404,8 +535,7 @@ Dibottom::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     float maxZpt(-1.);
     for(unsigned int i = 0; i < MuonVect.size(); i++) {
       for(unsigned int j = 1; j < MuonVect.size(); j++) {
-	if(i==j) continue;
-	if(MuonVect[i].charge() == MuonVect[j].charge()) continue;
+	if(i==j || MuonVect[i].charge() == MuonVect[j].charge()) continue;
 	float Zpt = (MuonVect[i].p4() + MuonVect[j].p4()).pt();
 	float Zmass = (MuonVect[i].p4() + MuonVect[j].p4()).mass();
 	if(Zmass > 70. && Zmass < 110. && Zpt > maxZpt) {m1 = i; m2 = j; maxZpt = Zpt;}
@@ -418,24 +548,33 @@ Dibottom::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       addP4.set(theV);
       // SF
       if(isMC) {
-	LeptonWeight *= theMuonAnalyzer->GetMuonTrkSF(MuonVect.at(m1));
-	LeptonWeight *= theMuonAnalyzer->GetMuonTrkSF(MuonVect.at(m2));
+	float LeptonWeightUnc = 0.;
+	/// FIXME -> APPLYING THE SF FOR Mu50 HADRCODED <- FIXME ///
 	if (MuonVect.at(m1).pt() > MuonVect.at(m2).pt() ) {
-	  /// FIXME -> APPLYING THE SF FOR IsoMu24 HADRCODED <- FIXME ///
-	  LeptonWeight *= theMuonAnalyzer->GetMuonTriggerSFIsoMu24(MuonVect.at(m1));
-	  LeptonWeight *= theMuonAnalyzer->GetMuonIdSF(MuonVect.at(m1), 3); // TightID
-	  LeptonWeight *= theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(m1), 2);// TightIso
-	  LeptonWeight *= theMuonAnalyzer->GetMuonIdSF(MuonVect.at(m2), 1); // LooseID
-	  LeptonWeight *= theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(m2), 1);// LooseIso
+	  LeptonWeight     *= theMuonAnalyzer->GetMuonTriggerSFMu50(MuonVect.at(m1));
+	  LeptonWeightUnc  += pow(theMuonAnalyzer->GetMuonTriggerSFErrorMu50(MuonVect.at(m1)),2);
+	  
 	}
 	else {
-	  /// FIXME -> APPLYING THE SF FOR IsoMu24 HADRCODED <- FIXME ///
-	  LeptonWeight *= theMuonAnalyzer->GetMuonTriggerSFIsoMu24(MuonVect.at(m2));
-	  LeptonWeight *= theMuonAnalyzer->GetMuonIdSF(MuonVect.at(m2), 3); // TightID
-	  LeptonWeight *= theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(m2), 2);// TightIso
-	  LeptonWeight *= theMuonAnalyzer->GetMuonIdSF(MuonVect.at(m1), 1); // LooseID
-	  LeptonWeight *= theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(m1), 1);// LooseIso
+	  LeptonWeight     *= theMuonAnalyzer->GetMuonTriggerSFMu50(MuonVect.at(m2));
+	  LeptonWeightUnc  += pow(theMuonAnalyzer->GetMuonTriggerSFErrorMu50(MuonVect.at(m2)),2);
 	}
+	LeptonWeight *= theMuonAnalyzer->GetMuonTrkSF(MuonVect.at(m1));
+	LeptonWeight *= theMuonAnalyzer->GetMuonTrkSF(MuonVect.at(m2));
+	LeptonWeight *= theMuonAnalyzer->GetMuonIdSF(MuonVect.at(m1), 0);
+	LeptonWeight *= theMuonAnalyzer->GetMuonIdSF(MuonVect.at(m2), 0);
+	LeptonWeight *= theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(m1), 0);
+	LeptonWeight *= theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(m2), 0);
+
+	LeptonWeightUnc += pow(theMuonAnalyzer->GetMuonTrkSFError(MuonVect.at(m1))      ,2);
+	LeptonWeightUnc += pow(theMuonAnalyzer->GetMuonTrkSFError(MuonVect.at(m2))      ,2);
+	LeptonWeightUnc += pow(theMuonAnalyzer->GetMuonIdSFError(MuonVect.at(m1), 0)    ,2);
+	LeptonWeightUnc += pow(theMuonAnalyzer->GetMuonIdSFError(MuonVect.at(m2), 0)    ,2);
+	LeptonWeightUnc += pow(theMuonAnalyzer->GetMuonIsoSFError(MuonVect.at(m1), 0)   ,2);
+	LeptonWeightUnc += pow(theMuonAnalyzer->GetMuonIsoSFError(MuonVect.at(m2), 0)   ,2);
+
+	LeptonWeightUp   = LeptonWeight+sqrt(LeptonWeightUnc);
+	LeptonWeightDown = LeptonWeight-sqrt(LeptonWeightUnc);
       }
     }
     else { if(Verbose) std::cout << " - No OS muons" << std::endl; return; }
@@ -444,7 +583,8 @@ Dibottom::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     MuonVect.clear();
     if(Mu1.pt() > Mu2.pt()) {MuonVect.push_back(Mu1); MuonVect.push_back(Mu2);}
     else {MuonVect.push_back(Mu2); MuonVect.push_back(Mu1);}
-    
+
+    //recompute MET without leptonic components
     float px = MET.px() + Mu1.px() + Mu2.px();
     float py = MET.py() + Mu1.py() + Mu2.py();      
     hadRecoil.setP4(reco::Particle::LorentzVector(px, py, 0, sqrt(px*px + py*py) ));
@@ -457,8 +597,7 @@ Dibottom::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     float maxZpt(-1.);
     for(unsigned int i = 0; i < ElecVect.size(); i++) {
       for(unsigned int j = 1; j < ElecVect.size(); j++) {
-	if(i==j) continue;
-	if(ElecVect[i].charge() == ElecVect[j].charge()) continue;
+	if(i==j || ElecVect[i].charge() == ElecVect[j].charge()) continue;
 	float Zpt = (ElecVect[i].p4() + ElecVect[j].p4()).pt();
 	float Zmass = (ElecVect[i].p4() + ElecVect[j].p4()).mass();
 	if(Zmass > 70. && Zmass < 110. && Zpt > maxZpt) {e1 = i; e2 = j; maxZpt = Zpt;}
@@ -471,21 +610,29 @@ Dibottom::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       addP4.set(theV);
       // SF
       if(isMC) {
-	LeptonWeight *= theElectronAnalyzer->GetElectronRecoEffSF(ElecVect.at(e1));
-	LeptonWeight *= theElectronAnalyzer->GetElectronRecoEffSF(ElecVect.at(e2));
-	if (ElecVect.at(e1).pt() > ElecVect.at(e2).pt() ) {
-	  /// FIXME -> APPLYING THE SF FOR Ele27 HADRCODED <- FIXME ///
-	  LeptonWeight *= theElectronAnalyzer->GetElectronTriggerSFEle27Tight(ElecVect.at(e1));
-	  LeptonWeight *= theElectronAnalyzer->GetElectronIdSF(ElecVect.at(e1), 3);// TightID
-	  LeptonWeight *= theElectronAnalyzer->GetElectronIdSF(ElecVect.at(e2), 1);// LooseID
+	float LeptonWeightUnc = 0.;
+	/// FIXME -> APPLYING THE SF FOR Ele27 HADRCODED <- FIXME ///  
+	if (ElecVect.at(e1).pt() > ElecVect.at(e2).pt() ){
+	  LeptonWeight     *= theElectronAnalyzer->GetElectronTriggerSFEle27Tight(ElecVect.at(e1));
+	  //LeptonWeightUnc  += pow(theElectronAnalyzer->GetElectronTriggerSFErrorEle27(ElecVect.at(e1)),2); //NEED SCRUTINY
 	}
-	else {
-	  /// FIXME -> APPLYING THE SF FOR Ele27 HADRCODED <- FIXME ///
-	  LeptonWeight *= theElectronAnalyzer->GetElectronTriggerSFEle27Tight(ElecVect.at(e2));                
-	  LeptonWeight *= theElectronAnalyzer->GetElectronIdSF(ElecVect.at(e2), 3);// TightID
-	  LeptonWeight *= theElectronAnalyzer->GetElectronIdSF(ElecVect.at(e1), 1);// LooseID
+	else{
+	  LeptonWeight     *= theElectronAnalyzer->GetElectronTriggerSFEle27Tight(ElecVect.at(e2));
+	  //LeptonWeightUnc  += pow(theElectronAnalyzer->GetElectronTriggerSFErrorEle105(ElecVect.at(e2)),2);
 	}
-      }        
+	LeptonWeight    *= theElectronAnalyzer->GetElectronRecoEffSF(ElecVect.at(0));
+	LeptonWeight    *= theElectronAnalyzer->GetElectronRecoEffSF(ElecVect.at(1));
+	LeptonWeight    *= theElectronAnalyzer->GetElectronIdSF(ElecVect.at(0), 0);
+	LeptonWeight    *= theElectronAnalyzer->GetElectronIdSF(ElecVect.at(1), 0);
+
+	LeptonWeightUnc += pow(theElectronAnalyzer->GetElectronRecoEffSFError(ElecVect.at(0))   ,2);
+	LeptonWeightUnc += pow(theElectronAnalyzer->GetElectronRecoEffSFError(ElecVect.at(1))   ,2);
+	LeptonWeightUnc += pow(theElectronAnalyzer->GetElectronIdSFError(ElecVect.at(0), 0)     ,2);
+	LeptonWeightUnc += pow(theElectronAnalyzer->GetElectronIdSFError(ElecVect.at(1), 0)     ,2);
+
+	LeptonWeightUp   = LeptonWeight+sqrt(LeptonWeightUnc);
+	LeptonWeightDown = LeptonWeight-sqrt(LeptonWeightUnc);
+      }
     }
     else { if(Verbose) std::cout << " - No OS electrons" << std::endl; return; }
     // Clean-up electron collection
@@ -493,7 +640,8 @@ Dibottom::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     ElecVect.clear();
     if(Ele1.pt() > Ele2.pt()) {ElecVect.push_back(Ele1); ElecVect.push_back(Ele2);}
     else {ElecVect.push_back(Ele2); ElecVect.push_back(Ele1);}
-    
+   
+    //Recompute MET without leptonic components
     float px = MET.px() + Ele1.px() + Ele2.px();
     float py = MET.py() + Ele1.py() + Ele2.py();      
     hadRecoil.setP4(reco::Particle::LorentzVector(px, py, 0, sqrt(px*px + py*py) ));
@@ -504,6 +652,7 @@ Dibottom::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     theV.addDaughter(ElecVect.at(0));
     addP4.set(theV);
     // SF
+    //need to do something about it
     if(isMC) {
       ///Mu
       LeptonWeight *= theMuonAnalyzer->GetMuonTrkSF(MuonVect.at(0));
@@ -565,6 +714,13 @@ Dibottom::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     if(Verbose) std::cout << " - Try to reconstruct Z -> nn" << std::endl;
     theV.addDaughter(MET);
     addP4.set(theV);
+
+    if(isMC) {
+      if(MET.pt()<600) {TriggerWeight *= theJetAnalyzer->GetMetTriggerEfficiency(MET);}
+      else {TriggerWeight *= 1;}
+      TriggerWeightUp *= std::min(1.,(theJetAnalyzer->GetMetTriggerEfficiency(MET))*(1+0.01));//hardcoded 6% unc                                                                                      
+      TriggerWeightDown *= std::min(1.,(theJetAnalyzer->GetMetTriggerEfficiency(MET))*(1-0.01));//hardcoded 6% unc                                                                                    
+    }
   }
   
   else { if(Verbose) std::cout << " - No reconstructible V candidate" << std::endl; return; }
@@ -572,6 +728,8 @@ Dibottom::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   
   // Update event weight with lepton selections
   EventWeight *= LeptonWeight;
+  // Update met trigger weight                                                                                                                                                                            
+  EventWeight *= TriggerWeight;
   
   Hist["a_nEvents"]->Fill(4., EventWeight);
   Hist["m_nEvents"]->Fill(9., EventWeight);
@@ -598,34 +756,65 @@ Dibottom::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   // ---------- Event Variables ----------
   
   // Max b-tagged jet in the event
-  for(unsigned int i = 2; i < JetsVect.size(); i++) if(JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag")) > MaxJetBTag) MaxJetBTag = JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag"));
+  //for(unsigned int i = 2; i < JetsVect.size(); i++) if(JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag")) > MaxJetBTag) MaxJetBTag = JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag"));
   
   for(unsigned int i = 0; i < JetsVect.size(); i++) if(fabs(reco::deltaPhi(JetsVect[i].phi(), MET.phi())) < MinJetMetDPhi) MinJetMetDPhi = fabs(reco::deltaPhi(JetsVect[i].phi(), MET.phi()));
+
+  for(unsigned int i = 0; i < JetsVect.size(); i++) {
+    if(JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag")) > MaxJetBTag && JetsVect.size() > 0 && deltaR(JetsVect.at(0), JetsVect[i])>0.8) {
+      MaxJetBTag = JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag"));
+      MaxJetBIndex = i;
+      BTagWeight *= (JetsVect[i].hasUserFloat("ReshapedDiscriminator")?JetsVect[i].userFloat("ReshapedDiscriminator") : 1.);
+      BTagWeightUp *= (JetsVect[i].hasUserFloat("ReshapedDiscriminatorUp")?JetsVect[i].userFloat("ReshapedDiscriminatorUp") : 1.);
+      BTagWeightDown *= (JetsVect[i].hasUserFloat("ReshapedDiscriminatorDown")?JetsVect[i].userFloat("ReshapedDiscriminatorDown") : 1.);
+      ////std::cout << "looping on jets outside the AK8; id: " << i << std::endl;                                                                                                                    
+      ////std::cout << "CSV value: " << JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag")) << std::endl;                                                                          
+      ////std::cout << "CSV SF: " << (JetsVect[i].hasUserFloat("ReshapedDiscriminator")?JetsVect[i].userFloat("ReshapedDiscriminator") : -1.)  << std::endl;                                         
+      ////std::cout << "CSV SF Up: " << (JetsVect[i].hasUserFloat("ReshapedDiscriminatorUp")?JetsVect[i].userFloat("ReshapedDiscriminatorUp") : -1.)  << std::endl;                                  
+      ////std::cout << "CSV SF Down: " << (JetsVect[i].hasUserFloat("ReshapedDiscriminatorDown")?JetsVect[i].userFloat("ReshapedDiscriminatorDown") : -1.)  << std::endl;                            
+      
+      ////std::cout << "BTagWeight: " << BTagWeight << std::endl;                                                                                                                                    
+      ////std::cout << "BTagWeightUp: " << BTagWeightUp << std::endl;                                                                                                                                
+      ////std::cout << "BTagWeightDown: " << BTagWeightDown << std::endl;    
+    }
+  }
+
+  //std::cout << "CHECK : nJets AK4: " << nJets << std::endl;                                                                                                                                             
+  //std::cout << "CHECK : jet number of the max b tag outside the ak8: " << MaxJetBIndex  << std::endl;                                                                                                   
+  //std::cout << "CHECK : MaxJetBTag: " << MaxJetBTag  << std::endl;                                                                                                                                      
+  //std::cout << "CHECK : MaxJetBTagR: " << MaxJetBTagR  << std::endl;                                                                                                                                    
+  //std::cout << "CHECK : MaxJetBTagRUp: " << MaxJetBTagRUp  << std::endl;                                                                                                                                
+  //std::cout << "CHECK : MaxJetBTagRDown: " << MaxJetBTagRDown  << std::endl;     
+  if(JetsVect.size()>=MaxJetBIndex){
+    MaxBTagWeight *= (JetsVect[MaxJetBIndex].hasUserFloat("ReshapedDiscriminator")?JetsVect[MaxJetBIndex].userFloat("ReshapedDiscriminator") : 1.);
+    MaxBTagWeightUp *= (JetsVect[MaxJetBIndex].hasUserFloat("ReshapedDiscriminatorUp")?JetsVect[MaxJetBIndex].userFloat("ReshapedDiscriminatorUp") : 1.);
+    MaxBTagWeightDown *= (JetsVect[MaxJetBIndex].hasUserFloat("ReshapedDiscriminatorDown")?JetsVect[MaxJetBIndex].userFloat("ReshapedDiscriminatorDown") : 1.);
+    //      std::cout << "CSV SF: " << (JetsVect[MaxJetBIndex].hasUserFloat("ReshapedDiscriminator")?JetsVect[MaxJetBIndex].userFloat("ReshapedDiscriminator") : -1.)  << std::endl;               
+    //      std::cout << "CSV SF Up: " << (JetsVect[MaxJetBIndex].hasUserFloat("ReshapedDiscriminatorUp")?JetsVect[MaxJetBIndex].userFloat("ReshapedDiscriminatorUp") : -1.)  << std::endl;        
+    //      std::cout << "CSV SF Down: " << (JetsVect[MaxJetBIndex].hasUserFloat("ReshapedDiscriminatorDown")?JetsVect[MaxJetBIndex].userFloat("ReshapedDiscriminatorDown") : -1.)  << std::endl;  
+  }
+  //std::cout << "-----------------------------------" << std::endl;             
+
   
   // Jet variables
   theJetAnalyzer->AddVariables(JetsVect, MET);
   theElectronAnalyzer->AddVariables(ElecVect, MET);
   theMuonAnalyzer->AddVariables(MuonVect, MET);
+
   
   // ---------- Print Summary ----------
   if(Verbose) {
     std::cout << " --- Event n. " << iEvent.id().event() << ", lumi " << iEvent.luminosityBlock() << ", run " << iEvent.id().run() << ", weight " << EventWeight << std::endl;
-    
     std::cout << "number of electrons: " << ElecVect.size() << std::endl;
     for(unsigned int i = 0; i < ElecVect.size(); i++) std::cout << "  electron [" << i << "]\tpt: " << ElecVect[i].pt() << "\teta: " << ElecVect[i].eta() << "\tphi: " << ElecVect[i].phi() << "\tmass: " << ElecVect[i].mass() << "\tcharge: " << ElecVect[i].charge() << std::endl;
-    
     std::cout << "number of muons:     " << MuonVect.size() << std::endl;
     for(unsigned int i = 0; i < MuonVect.size(); i++) std::cout << "  muon     [" << i << "]\tpt: " << MuonVect[i].pt() << "\teta: " << MuonVect[i].eta() << "\tphi: " << MuonVect[i].phi() << "\tmass: " << MuonVect[i].mass() << "\tcharge: " << MuonVect[i].charge() << std::endl;
-    
     std::cout << "number of taus:  " << TauVect.size() << std::endl;
     for(unsigned int i = 0; i < TauVect.size(); i++) std::cout << "  tau  [" << i << "]\tpt: " << TauVect[i].pt() << "\teta: " << TauVect[i].eta() << "\tphi: " << TauVect[i].phi() << std::endl;
-    
     std::cout << "number of photons:  " << PhotonVect.size() << std::endl;
     for(unsigned int i = 0; i < PhotonVect.size(); i++) std::cout << "  photon  [" << i << "]\tpt: " << PhotonVect[i].pt() << "\teta: " << PhotonVect[i].eta() << "\tphi: " << PhotonVect[i].phi() << std::endl;
-    
     std::cout << "number of AK4 jets:  " << JetsVect.size() << std::endl;    
     for(unsigned int i = 0; i < JetsVect.size(); i++) std::cout << "  AK4 jet  [" << i << "]\tpt: " << JetsVect[i].pt() << "\teta: " << JetsVect[i].eta() << "\tphi: " << JetsVect[i].phi() << "\tmass: " << JetsVect[i].mass() << "\tBtag" <<JetsVect[i].bDiscriminator(JetPSet.getParameter<std::string>("btag")) << std::endl;
-    
     std::cout << "Missing energy:      " << MET.pt() << std::endl;
     std::cout << "V leptonic mass:     " << theV.mass() << std::endl;
     std::cout<<std::endl;
@@ -657,6 +846,7 @@ Dibottom::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   
   ObjectsFormat::FillMEtType(MEt, &MET, isMC);
   ObjectsFormat::FillCandidateType(V, &theV, isMC); // V is the reconstructed boson
+  ObjectsFormat::FillMEtType(hadronicRecoil, &hadRecoil, isMC);
 
  if (Verbose) {
         std::cout << "isZtoEE | isZtoMM | isZtoNN | isWtoEN | isWtoMN | isTtoEM\n"; 
