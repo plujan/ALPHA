@@ -148,6 +148,7 @@ Dibottom::~Dibottom()
 void
 Dibottom::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 {
+  //std::cout<<"Event Start"<<std::endl;
 
   nevent++;
   
@@ -262,7 +263,7 @@ Dibottom::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   // -----------------------------------
   //           GEN LEVEL
   // -----------------------------------
-  
+  //std::cout<<"GEN LEVEL"<<std::endl;
   // Gen weights
   std::map<int, float> GenWeight = theGenAnalyzer->FillWeightsMap(iEvent);
   
@@ -277,6 +278,7 @@ Dibottom::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   float sumPdfWeight = 0.;
   float sqsumPdfWeight = 0.;
   int   tmpPdfN = 0;
+  //std::cout<<"PDF WEIGHT"<<std::endl;
   for(auto const& pdfw : GenWeight) {
     if (pdfw.first >=   9  && 
 	pdfw.first <= 109  && 
@@ -299,17 +301,19 @@ Dibottom::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   //     std::cout << "PdfWeight       " << PdfWeight << "  " << sqrt(sqsumPdfWeight/float(tmpPdfN)) << "\n";   
   
   // Lhe Particles
+  //std::cout<<"LHE Particles"<<std::endl;
   // reading LHE event content and prepare it in Map format std::map<std::string, float>
   std::map<std::string, float> LheMap = theGenAnalyzer->FillLheMap(iEvent);
   // Mc Stitching                                                                           
   StitchWeight = theGenAnalyzer->GetStitchWeight(LheMap);
   //EventWeight *= StitchWeight; // Not yet
   
-  Hist["g_nBPartons"]->Fill(LheMap["lheBPartons"]);
-  Hist["g_lheHT"]->Fill(LheMap["lheHT"]);
-  Hist["g_lhePtZ"]->Fill(LheMap["lhePtZ"]);
-  Hist["g_lhePtW"]->Fill(LheMap["lhePtW"]);
+  //Hist["g_nBPartons"]->Fill(LheMap["lheBPartons"]);
+  //Hist["g_lheHT"]->Fill(LheMap["lheHT"]);
+  //Hist["g_lhePtZ"]->Fill(LheMap["lhePtZ"]);
+  //Hist["g_lhePtW"]->Fill(LheMap["lhePtW"]);
  
+  //std::cout<<"GEN Particle"<<std::endl;
   // Gen Particles
   std::vector<reco::GenParticle> GenPVect = theGenAnalyzer->FillGenVector(iEvent); //serve as a carrier
   // Gen candidates
@@ -349,6 +353,7 @@ Dibottom::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   reco::GenParticle* theGenHad = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, HadIds);
 
   //Gen level plots and candidates
+  //std::cout<<"Gen level plots and candidates"<<std::endl;
   double GenHadDR = -9.;
   double GenLepDR = -9.;
   //bool isGenZZ = false;
@@ -399,6 +404,7 @@ Dibottom::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   Hist["e_nEvents"]->Fill(2., EventWeight);
   Hist["m_nEvents"]->Fill(2., EventWeight);
 
+
   // Electron efficiency plots
   reco::GenParticle* genE1 = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, std::vector<int>{-11});
   reco::GenParticle* genE2 = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, std::vector<int>{+11});
@@ -421,7 +427,7 @@ Dibottom::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	if(ElecVect[e1].charge() != ElecVect[e2].charge() && (ElecVect[e1].p4() + ElecVect[e2].p4()).mass() > 70 && (ElecVect[e1].p4() + ElecVect[e2].p4()).mass() < 110) {
 	  Hist["e_nEvents"]->Fill(5., EventWeight);
 	  Hist["e_dR_Z"]->Fill(dRll);
-	  Hist["e_dR"]->Fill(dRll);
+	  //Hist["e_dR"]->Fill(dRll);
 	  if(ElecVect[e1].userInt("isLoose") == 1 || ElecVect[e2].userInt("isLoose") == 1) {
 	    Hist["e_nEvents"]->Fill(6., EventWeight);
 	    Hist["e_dR_LooseId"]->Fill(dRll);
@@ -437,7 +443,9 @@ Dibottom::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       }
     }
   }
-  
+
+  //std::cout<<"PASS electron efficiency"<<std::endl;
+
   // Muon efficiency plots
   reco::GenParticle* genM1 = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, std::vector<int>{-13});
   reco::GenParticle* genM2 = theGenAnalyzer->FindGenParticleGenByIds(GenPVect, std::vector<int>{+13});
@@ -460,7 +468,7 @@ Dibottom::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	if(MuonVect[m1].charge() != MuonVect[m2].charge() && (MuonVect[m1].p4() + MuonVect[m2].p4()).mass() > 70 && (MuonVect[m1].p4() + MuonVect[m2].p4()).mass() < 110) {
 	  Hist["m_nEvents"]->Fill(5., EventWeight);
 	  Hist["m_dR_Z"]->Fill(dRll);
-	  Hist["m_dR"]->Fill(dRll);
+	  //Hist["m_dR"]->Fill(dRll);
 	  if(MuonVect[m1].userInt("isHighPt") == 1 || MuonVect[m2].userInt("isHighPt") == 1) {
 	    Hist["m_nEvents"]->Fill(6., EventWeight);
 	    Hist["m_dR_HighptId"]->Fill(dRll);
@@ -481,6 +489,8 @@ Dibottom::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       }
     }
   }
+
+  //std::cout<<"PASS muons efficiency"<<std::endl;
   
   // -----------------------------------
   //           VECTOR BOSON
@@ -895,6 +905,14 @@ Dibottom::beginJob()
   tree->Branch("PUWeightUp", &PUWeightUp, "PUWeightUp/F");
   tree->Branch("PUWeightDown", &PUWeightDown, "PUWeightDown/F");
   tree->Branch("TriggerWeight", &TriggerWeight, "TriggerWeight/F");
+  tree->Branch("TriggerWeightUp", &TriggerWeightUp, "TriggerWeightUp/F");
+  tree->Branch("TriggerWeightDown", &TriggerWeightDown, "TriggerWeightDown/F");
+  tree->Branch("BTagWeight", &BTagWeight, "BTagWeight/F");
+  tree->Branch("BTagWeightUp", &BTagWeightUp, "BTagWeightUp/F");
+  tree->Branch("BTagWeightDown", &BTagWeightDown, "BTagWeightDown/F");
+  tree->Branch("MaxBTagWeight", &MaxBTagWeight, "MaxBTagWeight/F");
+  tree->Branch("MaxBTagWeightUp", &MaxBTagWeightUp, "MaxBTagWeightUp/F");
+  tree->Branch("MaxBTagWeightDown", &MaxBTagWeightDown, "MaxBTagWeightDown/F");
   tree->Branch("PdfWeight", &PdfWeight, "PdfWeight/F");
   tree->Branch("LeptonWeight", &LeptonWeight, "LeptonWeight/F");
   tree->Branch("LeptonWeightUp", &LeptonWeightUp, "LeptonWeightUp/F");
@@ -926,8 +944,9 @@ Dibottom::beginJob()
   tree->Branch("nBTagJets", &nBTagJets, "nBTagJets/I");
   
   tree->Branch("MaxJetBTag", &MaxJetBTag, "MaxJetBTag/F");
+  tree->Branch("MaxJetBIndex", &MaxJetBIndex, "MaxJetBIndex/I");
   tree->Branch("MinJetMetDPhi", &MinJetMetDPhi, "MinJetMetDPhi/F");
-
+  tree->Branch("Chi2", &Chi2, "Chi2/F");
   tree->Branch("massRecoilFormula", &massRecoilFormula, "massRecoilFormula/F");
   
   // Set Branches for objects
