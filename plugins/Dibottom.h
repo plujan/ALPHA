@@ -163,30 +163,31 @@ class Dibottom : public edm::one::EDAnalyzer<edm::one::SharedResources>  {
   bool isMC, isZtoEE, isZtoMM, isTtoEM, isWtoEN, isWtoMN, isZtoNN;
   long int EventNumber, RunNumber, LumiNumber;
   float EventWeight, StitchWeight, ZewkWeight, WewkWeight, TopPtWeight; 
-  float TriggerWeight;
+  float TriggerWeight, TriggerWeightUp, TriggerWeightDown;
+  float BTagWeight, BTagWeightUp, BTagWeightDown;
+  float MaxBTagWeight, MaxBTagWeightUp, MaxBTagWeightDown;
   float LeptonWeight, LeptonWeightUp, LeptonWeightDown;
   float PUWeight, PUWeightUp, PUWeightDown;
   float FacWeightUp, FacWeightDown, RenWeightUp, RenWeightDown, ScaleWeightUp, ScaleWeightDown;
   float PdfWeight;
-  int nPV, nElectrons, nMuons, nTaus, nPhotons, nJets, nBTagJets;
-  int nTightElectrons, nTightMuons;
+  int nPV, nElectrons, nMuons, nTaus, nPhotons, nJets, nBTagJets, nTightElectrons, nTightMuons;
   float MaxJetBTag, MinJetMetDPhi, Chi2, massRecoilFormula;
-  
+  unsigned int MaxJetBIndex;
+
   //Objects declared in Objects.h (constum struct type)
   std::vector<LeptonType> Electrons;
   std::vector<LeptonType> Muons;
   std::vector<LeptonType> Leptons;
   std::vector<TauType> Taus;
   std::vector<PhotonType> Photons;
-  std::vector<JetType> Jets;
-  
+  std::vector<JetType> Jets;  
   MEtType MEt;
   MEtType hadronicRecoil;
   CandidateType V;
   
   int nevent;
-  bool isSR, isZCR, isWCR, isTCR;
-  bool isSR1, isSR2;
+  //bool isSR, isZCR, isWCR, isTCR;
+  //bool isSR1, isSR2;
 
   struct JetIndexByPt{
     const Bool_t operator() (const pat::Jet& j1, const pat::Jet& j2) {return ( (j1.pt()) > (j2.pt()) );}
