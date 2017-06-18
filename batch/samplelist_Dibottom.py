@@ -4,41 +4,73 @@ samplelists = [
 ####### DATA
 
 ### Run2016B
-'METRun2016B-23Sep2016-v2',
-'METRun2016B-23Sep2016-v3',
-'SingleElectronRun2016B-23Sep2016-v2',
-'SingleElectronRun2016B-23Sep2016-v3',
+#'METRun2016B-23Sep2016-v2',
+#'METRun2016B-23Sep2016-v3',
+#'SingleElectronRun2016B-23Sep2016-v2',
+#'SingleElectronRun2016B-23Sep2016-v3',
 
 ### RunC
-'METRun2016C-23Sep2016-v1',
-'SingleElectronRun2016C-23Sep2016-v1',
+#'METRun2016C-23Sep2016-v1',
+#'SingleElectronRun2016C-23Sep2016-v1',
 
 ### RunD
-'METRun2016D-23Sep2016-v1',
-'SingleElectronRun2016D-23Sep2016-v1',
+#'METRun2016D-23Sep2016-v1',
+#'SingleElectronRun2016D-23Sep2016-v1',
 
 ### RunE
-'METRun2016E-23Sep2016-v1',
+#'METRun2016E-23Sep2016-v1',
 ##'METRun2016E-PromptReco-v2',
-'SingleElectronRun2016E-23Sep2016-v1',
+#'SingleElectronRun2016E-23Sep2016-v1',
 
 ### RunF
-'METRun2016F-23Sep2016-v1',
+#'METRun2016F-23Sep2016-v1',
 ##'METRun2016F-PromptReco-v1',
-'SingleElectronRun2016F-23Sep2016-v1',
+#'SingleElectronRun2016F-23Sep2016-v1',
 
 ### RunG
-'METRun2016G-23Sep2016-v1',
+#'METRun2016G-23Sep2016-v1',
 ##'METRun2016G-PromptReco-v1',
-'SingleElectronRun2016G-23Sep2016-v1',
+#'SingleElectronRun2016G-23Sep2016-v1',
 
 ### RunH
-'METRun2016H-PromptReco-v1',
-'METRun2016H-PromptReco-v2',
-'METRun2016H-PromptReco-v3',
+#'METRun2016H-PromptReco-v1',
+#'METRun2016H-PromptReco-v2',
+#'METRun2016H-PromptReco-v3',
 ##'SingleElectronRun2016H-PromptReco-v1',
-'SingleElectronRun2016H-PromptReco-v2',
-'SingleElectronRun2016H-PromptReco-v3',
+#'SingleElectronRun2016H-PromptReco-v2',
+#'SingleElectronRun2016H-PromptReco-v3',
+
+#ReminiAOD
+
+    'METRun2016B-03Feb2017_ver1-v1',
+    'METRun2016B-03Feb2017_ver2-v2',
+    'METRun2016C-03Feb2017-v1',
+    'METRun2016D-03Feb2017-v1',
+    'METRun2016E-03Feb2017-v1',
+    'METRun2016F-03Feb2017-v1',
+    'METRun2016G-03Feb2017-v1',
+    'METRun2016H-03Feb2017_ver3-v1',
+    'METRun2016H-03Feb2017_ver2-v1',
+
+    'SingleElectronRun2016B-03Feb2017_ver1-v1',
+    'SingleElectronRun2016B-03Feb2017_ver2-v2',
+    'SingleElectronRun2016C-03Feb2017-v1',
+    'SingleElectronRun2016D-03Feb2017-v1',
+    'SingleElectronRun2016E-03Feb2017-v1',
+    'SingleElectronRun2016F-03Feb2017-v1',
+    'SingleElectronRun2016G-03Feb2017-v1',
+    'SingleElectronRun2016H-03Feb2017_ver2-v1',
+    'SingleElectronRun2016H-03Feb2017_ver3-v1',
+
+    'SingleMuonRun2016B-03Feb2017_ver1-v1',
+    'SingleMuonRun2016B-03Feb2017_ver2-v2',
+    'SingleMuonRun2016C-03Feb2017-v1',
+    'SingleMuonRun2016D-03Feb2017-v1',
+    'SingleMuonRun2016E-03Feb2017-v1',
+    'SingleMuonRun2016F-03Feb2017-v1',
+    'SingleMuonRun2016G-03Feb2017-v1',
+    'SingleMuonRun2016H-03Feb2017_ver3-v1',
+    'SingleMuonRun2016H-03Feb2017_ver2-v1',
 
 ######## MC
 
