@@ -14,7 +14,7 @@ process = cms.Process('ALPHA')
 process.load('FWCore.MessageService.MessageLogger_cfi')
 process.MessageLogger.cerr.threshold = 'ERROR'
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
 
 # input
 # default: if no filelist from command line, run on specified samples
@@ -24,6 +24,7 @@ if len(options.inputFiles) == 0:
         fileNames = cms.untracked.vstring(
           #'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISpring16MiniAODv2/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_ext4-v1/00000/00EF026E-B728-E611-A568-008CFA110C68.root',
           'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/mc/RunIISummer16MiniAODv2/DYJetsToLL_M-50_HT-800to1200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/120000/480D3900-8CC0-E611-81E8-001E67504645.root', # DYJetsToLL
+            #'dcap://t2-srm-02.lnl.infn.it/pnfs/lnl.infn.it/data/cms//store/data/Run2016C/SingleMuon/MINIAOD/03Feb2017-v1/50000/0C4AFCD2-1AEB-E611-B588-0CC47A5FC61D.root',
         )
     )
 # production: read externally provided filelist
@@ -38,11 +39,18 @@ process.TFileService = cms.Service('TFileService',
 )
 
 # Determine whether we are running on data or MC
-isData             = ('/store/data/' in process.source.fileNames[0])
-isReHLT            = ('_reHLT_' in process.source.fileNames[0])
-isReReco           = ('23Sep2016' in sample)
-isReMiniAod        = ('03Feb2017' in sample)
-isPromptReco       = ('PromptReco' in sample)
+if '' in sample:
+    isData             = ( '/store/data/'  in process.source.fileNames[0] )
+    isReHLT            = ( '_reHLT_'       in process.source.fileNames[0] )
+    isReReco           = ( '23Sep2016'     in process.source.fileNames[0] )
+    isReMiniAod        = ( '03Feb2017'     in process.source.fileNames[0] )
+    isPromptReco       = ( 'PromptReco'    in process.source.fileNames[0] )
+else:
+    isData             = ( '/store/data/'  in sample )
+    isReHLT            = ( '_reHLT_'       in sample )
+    isReReco           = ( '23Sep2016'     in sample )
+    isReMiniAod        = ( '03Feb2017'     in sample )
+    isPromptReco       = ( 'PromptReco'    in sample )
 
 theRunBCD = ['Run2016B','Run2016C','Run2016D']
 theRunEF  = ['Run2016E','Run2016F']
@@ -534,7 +542,7 @@ process.ntuple = cms.EDAnalyzer('Dibottom',
     writeNPhotons = cms.int32(0),
     writeNJets = cms.int32(3),
     histFile = cms.string('%s/src/Analysis/ALPHA/data/HistList_bb.dat' % os.environ['CMSSW_BASE']),
-    verbose  = cms.bool(True),
+    verbose  = cms.bool(False),
 )
 
 
