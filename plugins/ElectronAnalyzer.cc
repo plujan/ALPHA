@@ -455,3 +455,14 @@ float ElectronAnalyzer::GetElectronTriggerSFEle27Tight(pat::Electron& ele) {
     return ElectronTriggerEle27Tight->GetBinContent( ElectronTriggerEle27Tight->FindBin(eta, pt) );
 }
 
+float ElectronAnalyzer::GetElectronTriggerSFErrorEle27Tight(pat::Electron& ele) {
+  if(!isEleSingleTriggerIsoFile) return 1.;
+  double pt = std::min( std::max( ElectronTriggerEle27Tight->GetYaxis()->GetXmin(), ele.pt() ) , ElectronTriggerEle27Tight->GetYaxis()->GetXmax() - 0.000001 );
+  double eta = 0.;
+  if (ele.eta() > 0)
+    eta = std::min( ElectronTriggerEle27Tight->GetXaxis()->GetXmax() - 0.000001 , ele.eta() );
+  else
+    eta = std::max( ElectronTriggerEle27Tight->GetXaxis()->GetXmin() + 0.000001 , ele.eta() );
+
+  return ElectronTriggerEle27Tight->GetBinError( ElectronTriggerEle27Tight->FindBin(eta, pt) );
+}
