@@ -278,7 +278,7 @@ Dibottom::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   float sumPdfWeight = 0.;
   float sqsumPdfWeight = 0.;
   int   tmpPdfN = 0;
-  //std::cout<<"PDF WEIGHT"<<std::endl;
+  
   for(auto const& pdfw : GenWeight) {
     if (pdfw.first >=   9  && 
 	pdfw.first <= 109  && 
