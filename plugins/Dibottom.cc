@@ -559,16 +559,10 @@ Dibottom::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
       // SF
       if(isMC) {
 	float LeptonWeightUnc = 0.;
-	/// FIXME -> APPLYING THE SF FOR Mu50 HADRCODED <- FIXME ///
-	if (MuonVect.at(m1).pt() > MuonVect.at(m2).pt() ) {
-	  LeptonWeight     *= theMuonAnalyzer->GetMuonTriggerSFMu50(MuonVect.at(m1));
-	  LeptonWeightUnc  += pow(theMuonAnalyzer->GetMuonTriggerSFErrorMu50(MuonVect.at(m1)),2);
-	  
-	}
-	else {
-	  LeptonWeight     *= theMuonAnalyzer->GetMuonTriggerSFMu50(MuonVect.at(m2));
-	  LeptonWeightUnc  += pow(theMuonAnalyzer->GetMuonTriggerSFErrorMu50(MuonVect.at(m2)),2);
-	}
+	
+	LeptonWeight *= theJetAnalyzer->GetMetTriggerEfficiency(MET);
+	LeptonWeightUnc  += pow(theJetAnalyzer->GetMetTriggerEfficiency(MET),2);
+	
 	LeptonWeight *= theMuonAnalyzer->GetMuonTrkSF(MuonVect.at(m1));
 	LeptonWeight *= theMuonAnalyzer->GetMuonTrkSF(MuonVect.at(m2));
 	LeptonWeight *= theMuonAnalyzer->GetMuonIdSF(MuonVect.at(m1), 0);
@@ -601,7 +595,7 @@ Dibottom::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
   }
   else if(isZtoEE) {
     if(Verbose) std::cout << " - Try to reconstruct Z -> ee" << std::endl;
-    std::cout<<"nElectron = "<<nElectrons<<std::endl;
+    //std::cout<<"nElectron = "<<nElectrons<<std::endl;
     // Indentify leptons
     int e1(-1), e2(-1);
     float maxZpt(-1.);
@@ -624,11 +618,11 @@ Dibottom::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
 	/// FIXME -> APPLYING THE SF FOR Ele27 HADRCODED <- FIXME ///  
 	if (ElecVect.at(e1).pt() > ElecVect.at(e2).pt() ){
 	  LeptonWeight     *= theElectronAnalyzer->GetElectronTriggerSFEle27Tight(ElecVect.at(e1));
-	  //LeptonWeightUnc  += pow(theElectronAnalyzer->GetElectronTriggerSFErrorEle27(ElecVect.at(e1)),2); //NEED SCRUTINY
+	  LeptonWeightUnc  += pow(theElectronAnalyzer->GetElectronTriggerSFErrorEle27Tight(ElecVect.at(e1)),2); //NEED SCRUTINY
 	}
 	else{
 	  LeptonWeight     *= theElectronAnalyzer->GetElectronTriggerSFEle27Tight(ElecVect.at(e2));
-	  //LeptonWeightUnc  += pow(theElectronAnalyzer->GetElectronTriggerSFErrorEle105(ElecVect.at(e2)),2);
+	  LeptonWeightUnc  += pow(theElectronAnalyzer->GetElectronTriggerSFErrorEle27Tight(ElecVect.at(e2)),2);
 	}
 	LeptonWeight    *= theElectronAnalyzer->GetElectronRecoEffSF(ElecVect.at(0));
 	LeptonWeight    *= theElectronAnalyzer->GetElectronRecoEffSF(ElecVect.at(1));
@@ -664,15 +658,26 @@ Dibottom::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     // SF
     //need to do something about it
     if(isMC) {
+
+      int LeptonWeightUnc = 0.;
       ///Mu
+      LeptonWeight *= theJetAnalyzer->GetMetTriggerEfficiency(MET);
+      LeptonWeightUnc  += pow(theJetAnalyzer->GetMetTriggerEfficiency(MET),2);
+
       LeptonWeight *= theMuonAnalyzer->GetMuonTrkSF(MuonVect.at(0));
       LeptonWeight *= theMuonAnalyzer->GetMuonIdSF(MuonVect.at(0), 3); //TightID
       LeptonWeight *= theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(0), 2);//TightIso
       ///Ele
       /// FIXME -> APPLYING THE SF FOR Ele27 HADRCODED <- FIXME ///
       LeptonWeight *= theElectronAnalyzer->GetElectronTriggerSFEle27Tight(ElecVect.at(0));
+      LeptonWeightUnc += pow( theElectronAnalyzer->GetElectronTriggerSFErrorEle27Tight(ElecVect.at(0)),2 );
+
       LeptonWeight *= theElectronAnalyzer->GetElectronRecoEffSF(ElecVect.at(0));
       LeptonWeight *= theElectronAnalyzer->GetElectronIdSF(ElecVect.at(0), 3);// TightID
+
+      LeptonWeightUp   = LeptonWeight+sqrt(LeptonWeightUnc);
+      LeptonWeightDown = LeptonWeight-sqrt(LeptonWeightUnc);
+
     }
     
     float px = MET.px() + MuonVect.at(0).px() + ElecVect.at(0).px();
@@ -689,11 +694,19 @@ Dibottom::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     addP4.set(theV);
     // SF
     if(isMC) {
+      int LeptonWeightUnc = 0.;
       /// FIXME -> APPLYING THE SF FOR IsoMu22 HADRCODED <- FIXME ///
       /// LeptonWeight *= theMuonAnalyzer->GetMuonTriggerSFIsoMu22(MuonVect.at(0));
+      LeptonWeight *= theJetAnalyzer->GetMetTriggerEfficiency(MET);
+      LeptonWeightUnc  += pow(theJetAnalyzer->GetMetTriggerEfficiency(MET),2);
+
       LeptonWeight *= theMuonAnalyzer->GetMuonTrkSF(MuonVect.at(0));
       LeptonWeight *= theMuonAnalyzer->GetMuonIdSF(MuonVect.at(0), 3); //TightID
       LeptonWeight *= theMuonAnalyzer->GetMuonIsoSF(MuonVect.at(0), 2);//TightIso
+
+      LeptonWeightUp   = LeptonWeight+sqrt(LeptonWeightUnc);
+      LeptonWeightDown = LeptonWeight-sqrt(LeptonWeightUnc);
+
     }
     
     float px = MET.px() + MuonVect.at(0).px();
@@ -707,13 +720,21 @@ Dibottom::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup)
     // Neutrino.setP4(reco::Particle::LorentzVector(MET.px(), MET.py(), pz, sqrt(MET.pt()*MET.pt() + pz*pz) ));
     theV.addDaughter(ElecVect.at(0));
     theV.addDaughter(MET);
-        addP4.set(theV);
+    addP4.set(theV);
         // SF
         if(isMC) {
+	  int LeptonWeightUnc = 0.;
 	  /// FIXME -> APPLYING THE SF FOR Ele27 HADRCODED <- FIXME ///
+
 	  LeptonWeight *= theElectronAnalyzer->GetElectronTriggerSFEle27Tight(ElecVect.at(0));
+	  LeptonWeightUnc += pow( theElectronAnalyzer->GetElectronTriggerSFErrorEle27Tight(ElecVect.at(0)),2 );
+
 	  LeptonWeight *= theElectronAnalyzer->GetElectronIdSF(ElecVect.at(0), 3); //TightID
 	  LeptonWeight *= theElectronAnalyzer->GetElectronRecoEffSF(ElecVect.at(0));
+
+	  LeptonWeightUp   = LeptonWeight+sqrt(LeptonWeightUnc);
+	  LeptonWeightDown = LeptonWeight-sqrt(LeptonWeightUnc);
+
         }
 	
         float px = MET.px() + ElecVect.at(0).px();
