@@ -492,13 +492,6 @@ elif not options.tCut == 0:
         process.cleanedMuons *
         #process.ak4PFL2L3ResidualCorrectorChain *
         process.QGTagger *
-        process.primaryVertexFilter *
-        process.regressionApplication * #debug
-        process.egmGsfElectronIDSequence *
-        process.calibratedPatElectrons *
-        process.cleanedMuons *
-        #process.ak4PFL2L3ResidualCorrectorChain *
-        process.QGTagger *
         process.ntuple
     )
 else:
