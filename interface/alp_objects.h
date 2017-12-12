@@ -192,7 +192,9 @@ namespace alp {
         nhf_(rhs.nhf_),
         muf_(rhs.muf_),
         discs_(rhs.discs_),
-        ids_(rhs.ids_) {}
+        ids_(rhs.ids_), 
+        genJets_(rhs.genJets_),
+        genPartons_(rhs.genPartons_){}
 
       // inherit other constructors
       using Candidate::Candidate;
