@@ -33,13 +33,15 @@ JetAnalyzer::JetAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl
     UseRecoil(PSet.getParameter<bool>("metRecoil")),
     RecoilMCFile(PSet.getParameter<std::string>("metRecoilMC")),
     RecoilDataFile(PSet.getParameter<std::string>("metRecoilData")),
+    MetTriggerFileName(PSet.getParameter<std::string>("metTriggerFileName")),
     JerName_res(PSet.getParameter<std::string>("jerNameRes")),
     JerName_sf(PSet.getParameter<std::string>("jerNameSf"))
 {
   
     jecUncMC = new JetCorrectionUncertainty(JECUncertaintyMC);
     jecUncDATA = new JetCorrectionUncertainty(JECUncertaintyDATA);
-    
+
+    isMetTriggerFile = false;
     
     if(RecalibrateJets) {
         std::vector<JetCorrectorParameters> jetParMC;
@@ -142,6 +144,16 @@ JetAnalyzer::JetAnalyzer(edm::ParameterSet& PSet, edm::ConsumesCollector&& CColl
         recoilCorr->addDataFile(RecoilDataFile);
         recoilCorr->addMCFile(RecoilMCFile);
     }
+
+    MetTriggerFile=new TFile(MetTriggerFileName.c_str(), "READ");
+    if(!MetTriggerFile->IsZombie()) {
+        MetTriggerHisto=(TH1F*)MetTriggerFile->Get("SingleMuAll_numOR");
+        isMetTriggerFile=true;
+    }
+    else {
+        throw cms::Exception("JetAnalyzer", "No Met Trigger File");
+        return;
+    }
     
     std::cout << " --- JetAnalyzer initialization ---" << std::endl;
     std::cout << "  jet Id            :\t" << JetId << std::endl;
@@ -164,6 +176,7 @@ JetAnalyzer::~JetAnalyzer() {
     delete jecUncMC;
     delete jecUncDATA;
     if(UseRecoil) delete recoilCorr;
+    MetTriggerFile->Close();
 }
 
 
@@ -202,6 +215,18 @@ std::vector<pat::Jet> JetAnalyzer::FillJetVector(const edm::Event& iEvent) {
         int idx=it-PFJetsCollection->begin();
         jet.addUserInt("Index", idx);
         pat::JetRef jetRef(PFJetsCollection, idx);
+
+	//First of all, jet id selections
+        // Quality cut
+        if(JetId==1 && !isLooseJet(jet)) continue;
+        if(JetId==2 && !isTightJet(jet)) continue;
+        if(JetId==3 && !isTightLepVetoJet(jet)) continue;
+        // b-tagging
+        if(BTagTh==1 && jet.bDiscriminator(BTag)<BTagTh) continue;
+        // Fill jet scale uncertainty
+        jet.addUserInt("isLoose", isLooseJet(jet) ? 1 : 0);
+        jet.addUserInt("isTight", isTightJet(jet) ? 1 : 0);
+        jet.addUserInt("isTightLepVeto", isTightLepVetoJet(jet) ? 1 : 0);
 
         if(RecalibrateJets) CorrectJet(jet, *rho_handle, PVCollection->size(), isMC);
 
@@ -321,16 +346,6 @@ std::vector<pat::Jet> JetAnalyzer::FillJetVector(const edm::Event& iEvent) {
 
         // Pt and eta cut
         if(jet.pt()<PtTh || fabs(jet.eta())>EtaTh) continue;
-        // Quality cut
-        if(JetId==1 && !isLooseJet(jet)) continue;
-        if(JetId==2 && !isTightJet(jet)) continue;
-        if(JetId==3 && !isTightLepVetoJet(jet)) continue;
-        // b-tagging
-        if(BTagTh==1 && jet.bDiscriminator(BTag)<BTagTh) continue;
-        // Fill jet scale uncertainty
-        jet.addUserInt("isLoose", isLooseJet(jet) ? 1 : 0);
-        jet.addUserInt("isTight", isTightJet(jet) ? 1 : 0);
-        jet.addUserInt("isTightLepVeto", isTightLepVetoJet(jet) ? 1 : 0);
 	std::vector<float> reshapedDiscriminator = ReshapeBtagDiscriminator(jet);
         jet.addUserFloat("ReshapedDiscriminator", reshapedDiscriminator[0]);
         jet.addUserFloat("ReshapedDiscriminatorUp", reshapedDiscriminator[1]);
@@ -429,6 +444,7 @@ void JetAnalyzer::CorrectPuppiMass(pat::Jet& jet, bool isMC) {
     }
     if(corr < 0.) corr = 0.;
     jet.addUserFloat("ak8PFJetsPuppiSoftDropMassCorr", jet.userFloat("ak8PFJetsPuppiSoftDropMass") * corr);
+    jet.addUserFloat("ak8PFJetsPuppiSoftDropMassCorrNotSmeared", jet.userFloat("ak8PFJetsPuppiSoftDropMass") * corr);
 
     if(isMC){
         float JMSSf  = 1.;
@@ -441,10 +457,12 @@ void JetAnalyzer::CorrectPuppiMass(pat::Jet& jet, bool isMC) {
         float JMRSf   = 1.08;
         float JMRUnc  = 0.11;
         TRandom3 rnd(0);
-        float smearJMR    = rnd.Gaus(1.,JMRSf-1.);        
+        float smearJMR    = rnd.Gaus(1.,JMRSf-1.);//0.08
+        float smearJMRUp    = rnd.Gaus(1.,(JMRSf-1.)*(1. + JMRUnc/JMRSf));//0.08 + 10%
+	float smearJMRDown    = rnd.Gaus(1.,(JMRSf -1.)*(1. - JMRUnc/JMRSf));//0.08 - 10%
         jet.addUserFloat("ak8PFJetsPuppiSoftDropMassCorrJMR", jet.userFloat("ak8PFJetsPuppiSoftDropMassCorr")       * smearJMR);
-        jet.addUserFloat("ak8PFJetsPuppiSoftDropMassCorrJMRUp", jet.userFloat("ak8PFJetsPuppiSoftDropMassCorr")     * smearJMR * (1. + JMRUnc) );
-        jet.addUserFloat("ak8PFJetsPuppiSoftDropMassCorrJMRDown", jet.userFloat("ak8PFJetsPuppiSoftDropMassCorr")   * smearJMR * (1. - JMRUnc) );
+        jet.addUserFloat("ak8PFJetsPuppiSoftDropMassCorrJMRUp", jet.userFloat("ak8PFJetsPuppiSoftDropMassCorr")     * smearJMRUp);
+        jet.addUserFloat("ak8PFJetsPuppiSoftDropMassCorrJMRDown", jet.userFloat("ak8PFJetsPuppiSoftDropMassCorr")   * smearJMRDown);
     }
 }
 
@@ -481,8 +499,11 @@ int JetAnalyzer::GetNBJets(std::vector<pat::Jet>& Jets) {
 }
 
 
-
-
+float JetAnalyzer::GetMetTriggerEfficiency(pat::MET& MET) {
+    if(!isMetTriggerFile) return 1.;
+    double pt = std::min( std::max( MetTriggerHisto->GetXaxis()->GetXmin(), MET.pt() ) , MetTriggerHisto->GetXaxis()->GetXmax() - 0.000001 );
+    return(MetTriggerHisto->Interpolate(pt));
+}
 
 pat::MET JetAnalyzer::FillMetVector(const edm::Event& iEvent) {
     
@@ -495,12 +516,8 @@ pat::MET JetAnalyzer::FillMetVector(const edm::Event& iEvent) {
     MEt.addUserFloat("ptShiftJetEnDown", MEt.shiftedPt(pat::MET::METUncertainty::JetEnDown));
     MEt.addUserFloat("ptShiftUnclusteredEnUp", MEt.shiftedPt(pat::MET::METUncertainty::UnclusteredEnUp));
     MEt.addUserFloat("ptShiftUnclusteredEnDown", MEt.shiftedPt(pat::MET::METUncertainty::UnclusteredEnDown));
-    //MEt.addUserFloat("ptShiftJetResUpSmear", MEt.shiftedPt(pat::MET::METUncertainty::JetResUpSmear));
-    //MEt.addUserFloat("ptShiftJetResDownSmear", MEt.shiftedPt(pat::MET::METUncertainty::JetResDownSmear));
     MEt.addUserFloat("ptRaw", MEt.uncorPt());
     MEt.addUserFloat("phiRaw", MEt.uncorPhi());
-    //MEt.addUserFloat("ptType1", MEt.pt());
-    //MEt.addUserFloat("phiType1", MEt.phi());
     return MEt;
 }
 

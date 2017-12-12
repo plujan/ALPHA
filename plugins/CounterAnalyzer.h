@@ -71,12 +71,12 @@ class CounterAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources>  
       
       edm::EDGetToken LheToken;
       edm::Service<TFileService> fs;
-      TH1F* Weight;
-      TH1F* NPartons;
-      TH1F* NBPartons;
-      TH1F* LheHT;
-      TH1F* LhePtZ;
-      TH3F* Bin;
+      TH1D* Weight;
+      TH1D* NPartons;
+      TH1D* NBPartons;
+      TH1D* LheHT;
+      TH1D* LhePtZ;
+      TH3D* Bin;
       bool PythiaLOSample;
 };
 

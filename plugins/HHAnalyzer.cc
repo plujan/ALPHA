@@ -94,9 +94,8 @@ void HHAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
     EventInfo.setIsMC(!iEvent.isRealData());
 
    
-    EventWeight = StitchWeight = TriggerWeight = LeptonWeight = 1.;
+    EventWeight = TriggerWeight = LeptonWeight = 1.;
     PUWeight = PUWeightUp = PUWeightDown = 1.;
-    FacWeightUp = FacWeightDown = RenWeightUp = RenWeightDown = ScaleWeightUp = ScaleWeightDown = 1.;
     PdfWeight = 1.;
     nPV = nElectrons = nMuons = nJets = nFatJets = nBTagJets = -1;
 
@@ -158,41 +157,17 @@ void HHAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
     // -----------------------------------
     
     // Gen weights
-    std::map<int, float> GenWeight = theGenAnalyzer->FillWeightsMap(iEvent);
-    EventWeight *= GenWeight[-1];
-//     if(GenWeight.find(0) != GenWeight.end()) EventWeight    *= GenWeight[0];
-    if(GenWeight.find(-1) != GenWeight.end()) EventWeight   *= GenWeight[-1];
-    if(GenWeight.find(1) != GenWeight.end()) FacWeightUp     = GenWeight[1];
-    if(GenWeight.find(2) != GenWeight.end()) FacWeightDown   = GenWeight[2];
-    if(GenWeight.find(3) != GenWeight.end()) RenWeightUp     = GenWeight[3];
-    if(GenWeight.find(6) != GenWeight.end()) RenWeightDown   = GenWeight[6];
-    if(GenWeight.find(4) != GenWeight.end()) ScaleWeightUp   = GenWeight[4];
-    if(GenWeight.find(8) != GenWeight.end()) ScaleWeightDown = GenWeight[8];
+    std::map<int, float> GenWeight = theGenAnalyzer->LHEWeightsMap(iEvent);
+    EventWeight *= GenWeight[-1]; // apply default weight
      
-    float sumPdfWeight = 0.;
-    float sqsumPdfWeight = 0.;
-    int   tmpPdfN = 0;
-    for(auto const& pdfw : GenWeight) {
-        if (pdfw.first >=   9  && 
-            pdfw.first <= 109  && 
-            pdfw.second>0) {
-            ++tmpPdfN;
-            sumPdfWeight   = sumPdfWeight   + pdfw.second;
-            sqsumPdfWeight = sqsumPdfWeight + pdfw.second*pdfw.second;
-        }
-    }
-    if (tmpPdfN>0) PdfWeight = 1. + sqrt(sqsumPdfWeight/float(tmpPdfN)) - sumPdfWeight/float(tmpPdfN); /// 1 + RMS - MEAN
-    //std::cout << "PdfWeight " << PdfWeight << "\n";
-
     // LHE Particles
     std::map<std::string, float> LheMap = theGenAnalyzer->FillLheMap(iEvent);
-    // MC Stitching
-    StitchWeight = theGenAnalyzer->GetStitchWeight(LheMap);
     // Gen Particles
     std::vector<reco::GenParticle> GenPVect = theGenAnalyzer->FillGenVector(iEvent);    
     std::vector<reco::GenParticle> GenHsPart;
     std::vector<reco::GenParticle> GenBFromHsPart = theGenAnalyzer->PartonsFromDecays({25}, GenHsPart);
     std::vector<reco::GenParticle> TL_GenHsPart = theGenAnalyzer->FirstNGenParticles({25}, 2);
+    std::vector<reco::GenParticle> TL_GenBFromHsPart = theGenAnalyzer->FirstNGenParticles({5,-5}, 4);
     
     Hist["a_nEvents"]->Fill(2., EventWeight);
     
@@ -212,15 +187,10 @@ void HHAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
     alp::convert(GenBFromHsPart, GenBFromHs);
     alp::convert(GenHsPart, GenHs);
     alp::convert(TL_GenHsPart, TL_GenHs);
+    alp::convert(TL_GenBFromHsPart, TL_GenBFromHs);
 
     // fill weights
     weightPairs.emplace_back("EventWeight", EventWeight);
-    weightPairs.emplace_back("FacWeightUp", FacWeightUp);
-    weightPairs.emplace_back("FacWeightDown", FacWeightDown);
-    weightPairs.emplace_back("ScaleWeightUp", ScaleWeightUp);
-    weightPairs.emplace_back("ScaleWeightDown", ScaleWeightDown);
-    weightPairs.emplace_back("PdfWeight", PdfWeight);
-    weightPairs.emplace_back("StichWeight", StitchWeight);
     weightPairs.emplace_back("PUWeight", PUWeight);
     weightPairs.emplace_back("PUWeightUp", PUWeightUp);
     weightPairs.emplace_back("PUWeightDown", PUWeightDown);
@@ -228,6 +198,11 @@ void HHAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
     weightPairs.emplace_back("LeptonWeight", LeptonWeight);
     weightPairs.emplace_back("LeptonWeightUp", LeptonWeightUp);
     weightPairs.emplace_back("LeptonWeightDown", LeptonWeightDown);
+
+    // add all LHE weights ("lhe_weight_{id}",lhe_weight_{id})
+    for (const auto & weight : GenWeight) {
+      weightPairs.emplace_back("lhe_weight_"+std::to_string(weight.first), weight.second);
+    }
 
 
     // fill sorting vectors
@@ -280,6 +255,7 @@ void HHAnalyzer::beginJob() {
     tree->Branch("MET", &(alp_MET),64000,2);
     tree->Branch("GenBFromHs", &(GenBFromHs), 64000, 2);
     tree->Branch("GenHs", &(GenHs), 64000, 2);
+    tree->Branch("TL_GenBFromHs", &(TL_GenBFromHs), 64000, 2);
     tree->Branch("TL_GenHs", &(TL_GenHs), 64000, 2);
 
     tree->Branch("j_sort_pt", &(j_sort_pt), 64000, 2);

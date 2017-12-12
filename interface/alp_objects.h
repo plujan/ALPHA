@@ -153,15 +153,18 @@ namespace alp {
       // copy constructor
       Lepton( const Lepton & rhs) : 
         Candidate(rhs),
-        iso03_(rhs.iso03_) {}
+        iso03_(rhs.iso03_),
+        iso04_(rhs.iso04_) {}
 
       // inherit other constructors
       using Candidate::Candidate;
 
       float iso03() const { return iso03_;} 
+      float iso04() const { return iso04_;} 
 
       // attributes (also public)
       float iso03_ = -99.;
+      float iso04_ = -99.;
 
   };
 
@@ -189,7 +192,9 @@ namespace alp {
         nhf_(rhs.nhf_),
         muf_(rhs.muf_),
         discs_(rhs.discs_),
-        ids_(rhs.ids_) {}
+        ids_(rhs.ids_), 
+        genJets_(rhs.genJets_),
+        genPartons_(rhs.genPartons_){}
 
       // inherit other constructors
       using Candidate::Candidate;

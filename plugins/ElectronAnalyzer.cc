@@ -32,12 +32,11 @@ ElectronAnalyzer::ElectronAnalyzer(const edm::ParameterSet& PSet, edm::ConsumesC
 {
     isEleVetoIdFile = isEleLooseIdFile = isEleMediumIdFile = isEleTightIdFile = isEleRecoEffFile = isEleMVATrigMediumIdFile = isEleMVATrigTightIdFile = isEleTriggerFile = isEleSingleTriggerFile = false;    
 
-    // FIXME -> 2016 numbers, now obsolete!!!
     // Electron SingleTrigger
     EleSingleTriggerFile=new TFile(EleSingleTriggerFileName.c_str(), "READ");
     if(!EleSingleTriggerFile->IsZombie()) {
       ElectronTriggerEle105=(TH2F*)EleSingleTriggerFile->Get("Ele105/eleTrigEff_Ele105");//X:pt;Y:eta
-      ElectronTriggerEle27Tight=(TH2F*)EleSingleTriggerFile->Get("Ele27_WPTight/eleTrigEff_Ele27Tight");//X:eta;Y:pt
+      ElectronTriggerEle27Tight=(TH2F*)EleSingleTriggerFile->Get("Ele27_WPTight_Gsf"); //X:pt;Y:eta 
       isEleSingleTriggerFile=true;
     }
     else {
@@ -387,12 +386,12 @@ float ElectronAnalyzer::GetElectronTriggerSFErrorEle105(pat::Electron& ele) {
 
 float ElectronAnalyzer::GetElectronTriggerSFEle27Tight(pat::Electron& ele) {
     if(!isEleSingleTriggerFile) return 1.;
-    double pt = std::min( std::max( ElectronTriggerEle27Tight->GetYaxis()->GetXmin(), ele.pt() ) , ElectronTriggerEle27Tight->GetYaxis()->GetXmax() - 0.000001 );
+    double pt = std::min( std::max( ElectronTriggerEle27Tight->GetXaxis()->GetXmin(), ele.pt() ) , ElectronTriggerEle27Tight->GetXaxis()->GetXmax() - 0.000001 );
     double eta = 0.;
     if (ele.eta() > 0)
-        eta = std::min( ElectronTriggerEle27Tight->GetXaxis()->GetXmax() - 0.000001 , ele.eta() );
+        eta = std::min( ElectronTriggerEle27Tight->GetYaxis()->GetXmax() - 0.000001 , ele.eta() );
     else
-        eta = std::max( ElectronTriggerEle27Tight->GetXaxis()->GetXmin() + 0.000001 , ele.eta() );
+        eta = std::max( ElectronTriggerEle27Tight->GetYaxis()->GetXmin() + 0.000001 , ele.eta() );
         
     return ElectronTriggerEle27Tight->GetBinContent( ElectronTriggerEle27Tight->FindBin(eta, pt) );
 }

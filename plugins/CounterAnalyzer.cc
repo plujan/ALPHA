@@ -8,16 +8,16 @@ CounterAnalyzer::CounterAnalyzer(const edm::ParameterSet& iConfig):
 {
     //now do what ever initialization is needed
     usesResource("TFileService");
-    Weight = fs->make<TH1F>("c_nEvents", "Event Counter", 1, 0., 1.); Weight->Sumw2();
-    NPartons = fs->make<TH1F>("c_lhePartons", "Event Counter", 5, 0., 5.); NPartons->Sumw2();
-    NBPartons = fs->make<TH1F>("c_lheBPartons", "Event Counter", 3, 0., 3.); NBPartons->Sumw2();
-    LheHT = fs->make<TH1F>("c_lheHT", "Event Counter", 400, 0., 4000.); LheHT->Sumw2();
-    LhePtZ = fs->make<TH1F>("c_lhePtZ", "Event Counter", 100, 0., 1000.); LhePtZ->Sumw2();
+    Weight = fs->make<TH1D>("c_nEvents", "Event Counter", 1, 0., 1.); Weight->Sumw2();
+    NPartons = fs->make<TH1D>("c_lhePartons", "Event Counter", 5, 0., 5.); NPartons->Sumw2();
+    NBPartons = fs->make<TH1D>("c_lheBPartons", "Event Counter", 3, 0., 3.); NBPartons->Sumw2();
+    LheHT = fs->make<TH1D>("c_lheHT", "Event Counter", 400, 0., 4000.); LheHT->Sumw2();
+    LhePtZ = fs->make<TH1D>("c_lhePtZ", "Event Counter", 100, 0., 1000.); LhePtZ->Sumw2();
     
     float binNp[6] = {0., 1., 2., 3., 4., 5.};
     float binNb[4] = {0., 1., 2., 3.};
     float binHT[9] = {0., 100., 200., 400., 600., 800., 1200., 2500., 4000.};
-    Bin = fs->make<TH3F>("c_bin", "Event Counter", 8, binHT, 5, binNp, 3, binNb); Bin->Sumw2();
+    Bin = fs->make<TH3D>("c_bin", "Event Counter", 8, binHT, 5, binNp, 3, binNb); Bin->Sumw2();
     
     std::cout << " --- CounterAnalyzer initialization ---" << std::endl;
     if(PythiaLOSample) std::cout << "  Pythia LO sample" << std::endl;
