@@ -184,6 +184,50 @@ sample = {
         'kfactor' : 1.,
     },
 
+    ### DoubleMuon
+    'DoubleMuonRun2016B-23Sep2016-v3' : {
+        'nevents' : 82535526,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'DoubleMuonRun2016C-23Sep2016-v1' : {
+        'nevents' : 27934629,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'DoubleMuonRun2016D-23Sep2016-v1' : {
+        'nevents' : 33861745,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'DoubleMuonRun2016E-23Sep2016-v1' : {
+        'nevents' : 28246946,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'DoubleMuonRun2016F-23Sep2016-v1' : {
+        'nevents' : 20329921,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'DoubleMuonRun2016G-23Sep2016-v1' : {
+        'nevents' : 45235604,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+    'DoubleMuonRun2016H-PromptReco-v3' : {
+        'nevents' : 1219733,
+        'xsec'    : 1.,
+        'matcheff': 1.,
+        'kfactor' : 1.,
+    },
+
     'BTagCSVRun2016B-23Sep2016-v2' : {
         'nevents' : 1972666,
         'xsec'    : 1.,
